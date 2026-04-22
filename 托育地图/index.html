@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>托育地图 - 找到身边的好托育</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --primary-light: #FFE8E8;
+            --secondary: #4ECDC4;
+            --secondary-light: #E8F8F7;
+            --warning: #FFB347;
+            --text-dark: #2D3436;
+            --text-gray: #636E72;
+            --text-light: #B2BEC3;
+            --bg-light: #F8F9FA;
+            --white: #FFFFFF;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #FF8E8E);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .vip-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .vip-badge.active {
+            background: linear-gradient(135deg, #555, #333);
+            color: #FFD700;
+        }
+
+        /* 搜索栏 */
+        .search-bar {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.95);
+            color: var(--text-dark);
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+
+        .search-btn {
+            background: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 主内容 */
+        .main {
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        /* 功能入口 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .feature-name {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        /* 筛选栏 */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-tag {
+            background: var(--white);
+            border: 1px solid #E0E0E0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 机构列表 */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nursery-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .nursery-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nursery-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nursery-header {
+            height: 120px;
+            background: linear-gradient(135deg, #E8F8F7, #FFE8E8);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nursery-icon {
+            font-size: 48px;
+        }
+
+        .nursery-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--secondary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .nursery-badge.vip-only {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+        }
+
+        .nursery-body {
+            padding: 14px;
+        }
+
+        .nursery-name {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .nursery-info {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .info-tag {
+            background: var(--bg-light);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .nursery-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #F0F0F0;
+        }
+
+        .nursery-price {
+            font-size: 18px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .nursery-price span {
+            font-size: 12px;
+            color: var(--text-gray);
+            font-weight: 400;
+        }
+
+        .nursery-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stars {
+            color: #FFD700;
+        }
+
+        .rating-text {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-text {
+            font-size: 11px;
+        }
+
+        /* 详情页 */
+        .detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-light);
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .detail-modal.show {
+            display: block;
+        }
+
+        .detail-header {
+            background: linear-gradient(135deg, var(--primary), #FF8E8E);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .detail-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .share-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .detail-banner {
+            height: 150px;
+            background: linear-gradient(135deg, #E8F8F7, #FFE8E8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-content {
+            padding: 20px;
+            background: var(--white);
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-top: -20px;
+            position: relative;
+        }
+
+        .detail-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .detail-accreditation {
+            display: inline-block;
+            background: var(--secondary-light);
+            color: var(--secondary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        .detail-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: var(--bg-light);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .info-value.hidden {
+            color: var(--warning);
+        }
+
+        .features-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title-sm {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .reviews-section {
+            margin-bottom: 20px;
+        }
+
+        .review-item {
+            padding: 14px;
+            background: var(--bg-light);
+            border-radius: var(--radius-sm);
+            margin-bottom: 10px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .review-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .review-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .review-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .review-vip-tag {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 6px;
+        }
+
+        .review-rating {
+            color: #FFD700;
+        }
+
+        .review-content {
+            font-size: 14px;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        .review-locked {
+            text-align: center;
+            padding: 20px;
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
+            color: var(--primary);
+        }
+
+        .book-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary), #FF8E8E);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* 地图页 */
+        .map-container {
+            height: 300px;
+            background: #E8F8F7;
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .map-placeholder {
+            text-align: center;
+            color: var(--text-gray);
+        }
+
+        .map-placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .map-marker {
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .map-marker:hover {
+            transform: scale(1.2);
+        }
+
+        .map-marker-icon {
+            font-size: 32px;
+        }
+
+        /* 政策页 */
+        .policy-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .policy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .policy-title {
+            font-size: 15px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .policy-district {
+            background: var(--secondary-light);
+            color: var(--secondary);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .policy-amount {
+            font-size: 20px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .policy-info {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+        }
+
+        .policy-info strong {
+            color: var(--text-dark);
+        }
+
+        /* 表单 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E0E0E0;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* VIP弹窗 */
+        .vip-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .vip-modal.show {
+            display: flex;
+        }
+
+        .vip-content {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .vip-header {
+            margin-bottom: 20px;
+        }
+
+        .vip-icon {
+            font-size: 64px;
+            margin-bottom: 10px;
+        }
+
+        .vip-title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 16px 0;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        .vip-benefits {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .vip-benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .vip-benefit-icon {
+            color: var(--secondary);
+            font-size: 18px;
+        }
+
+        .vip-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .vip-close {
+            background: var(--bg-light);
+            color: var(--text-gray);
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        /* 预约成功弹窗 */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .success-modal.show {
+            display: flex;
+        }
+
+        .success-content {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px 30px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 72px;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .success-desc {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 20px;
+        }
+
+        .success-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* Tab内容 */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 加载动画 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-gray);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bg-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-gray);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span class="logo-icon">👶</span>
+                <span>托育地图</span>
+            </div>
+            <div class="vip-badge" id="vipBadge" onclick="showVipModal()">VIP ¥15/月</div>
+        </div>
+        <div class="search-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索机构名称、区域、特点...">
+            <button class="search-btn" onclick="searchNurseries()">搜索</button>
+        </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <!-- 首页Tab -->
+        <div class="tab-content active" id="tab-home">
+            <!-- 功能入口 -->
+            <div class="feature-grid">
+                <div class="feature-item" onclick="switchTab('map')">
+                    <div class="feature-icon">🗺️</div>
+                    <div class="feature-name">地图找</div>
+                </div>
+                <div class="feature-item" onclick="switchTab('policies')">
+                    <div class="feature-icon">💰</div>
+                    <div class="feature-name">补贴政策</div>
+                </div>
+                <div class="feature-item" onclick="showVipModal()">
+                    <div class="feature-icon">⭐</div>
+                    <div class="feature-name">VIP权益</div>
+                </div>
+                <div class="feature-item" onclick="showVipModal()">
+                    <div class="feature-icon">💬</div>
+                    <div class="feature-name">咨询</div>
+                </div>
+            </div>
+
+            <!-- 区域筛选 -->
+            <div class="filter-bar" id="districtFilter">
+                <div class="filter-tag active" data-district="全部">全部</div>
+            </div>
+
+            <!-- 机构列表 -->
+            <div class="section-title">
+                <span>🏠</span> 附近托育机构
+            </div>
+            <div class="nursery-list" id="nurseryList">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 地图Tab -->
+        <div class="tab-content" id="tab-map">
+            <div class="section-title">
+                <span>🗺️</span> 附近托育机构地图
+            </div>
+            <div class="map-container" id="mapContainer">
+                <div class="map-placeholder">
+                    <div class="map-placeholder-icon">🗺️</div>
+                    <div>地图展示区域</div>
+                </div>
+            </div>
+            <div class="nursery-list" id="mapNurseryList"></div>
+        </div>
+
+        <!-- 政策Tab -->
+        <div class="tab-content" id="tab-policies">
+            <div class="section-title">
+                <span>💰</span> 托育补贴政策
+            </div>
+            <div class="policy-list" id="policyList">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的Tab -->
+        <div class="tab-content" id="tab-mine">
+            <div class="section-title">
+                <span>👤</span> 个人中心
+            </div>
+            <div class="info-card" style="margin-bottom: 20px; text-align: center; padding: 30px;">
+                <div style="font-size: 64px; margin-bottom: 16px;">👨‍👩‍👧</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;" id="userStatus">访客用户</div>
+                <div style="font-size: 13px; color: var(--text-gray); margin-bottom: 16px;">开通VIP解锁更多权益</div>
+                <button class="vip-btn" onclick="showVipModal()" style="width: auto; display: inline-block; padding: 12px 30px;">
+                    立即开通VIP
+                </button>
+            </div>
+
+            <div class="info-card">
+                <div class="info-label" style="margin-bottom: 12px;">VIP专属权益</div>
+                <div class="vip-benefits" style="margin: 0;">
+                    <div class="vip-benefit-item" style="border: none; padding: 8px 0;">
+                        <span class="vip-benefit-icon">✓</span>
+                        <span>解锁全部VIP评价</span>
+                    </div>
+                    <div class="vip-benefit-item" style="border: none; padding: 8px 0;">
+                        <span class="vip-benefit-icon">✓</span>
+                        <span>一对一育儿咨询</span>
+                    </div>
+                    <div class="vip-benefit-item" style="border: none; padding: 8px 0;">
+                        <span class="vip-benefit-icon">✓</span>
+                        <span>查看详细师资配比</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-tab="home" onclick="switchTab('home')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">首页</span>
+        </div>
+        <div class="nav-item" data-tab="map" onclick="switchTab('map')">
+            <span class="nav-icon">🗺️</span>
+            <span class="nav-text">地图</span>
+        </div>
+        <div class="nav-item" data-tab="policies" onclick="switchTab('policies')">
+            <span class="nav-icon">💰</span>
+            <span class="nav-text">政策</span>
+        </div>
+        <div class="nav-item" data-tab="mine" onclick="switchTab('mine')">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">我的</span>
+        </div>
+    </nav>
+
+    <!-- 详情弹窗 -->
+    <div class="detail-modal" id="detailModal">
+        <div class="detail-header">
+            <div class="detail-header-top">
+                <button class="back-btn" onclick="closeDetailModal()">←</button>
+                <button class="share-btn" onclick="shareNursery()">↗</button>
+            </div>
+        </div>
+        <div class="detail-banner">
+            <span class="nursery-icon" id="detailIcon">🏠</span>
+        </div>
+        <div class="detail-content">
+            <div class="detail-name" id="detailName">机构名称</div>
+            <div class="detail-accreditation" id="detailAccreditation">市级示范</div>
+            
+            <div class="detail-info-grid">
+                <div class="info-card">
+                    <div class="info-label">参考价格</div>
+                    <div class="info-value" id="detailPrice">¥5800<span>/月</span></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">师生配比</div>
+                    <div class="info-value" id="detailStaffRatio">1:3</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">招生年龄</div>
+                    <div class="info-value" id="detailAge">6个月-3岁</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">机构类型</div>
+                    <div class="info-value" id="detailType">私立</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">联系电话</div>
+                    <div class="info-value" id="detailPhone">010-12345678</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">营业时间</div>
+                    <div class="info-value" id="detailHours">07:30-18:30</div>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-bottom: 20px;">
+                <div class="info-label">备案编号</div>
+                <div class="info-value" id="detailLicense">托育备字[2024]001号</div>
+            </div>
+
+            <div class="features-section">
+                <div class="section-title-sm">机构特色</div>
+                <div class="feature-tags" id="detailFeatures"></div>
+            </div>
+
+            <div class="info-card" style="margin-bottom: 20px;">
+                <div class="info-label">机构地址</div>
+                <div class="info-value" id="detailAddress" style="font-size: 13px;">朝阳区建国路88号</div>
+            </div>
+
+            <div class="reviews-section">
+                <div class="section-title-sm">家长评价</div>
+                <div id="detailReviews"></div>
+            </div>
+        </div>
+        <button class="book-btn" onclick="showBookModal()">立即预约参观</button>
+    </div>
+
+    <!-- 预约弹窗 -->
+    <div class="detail-modal" id="bookModal">
+        <div class="detail-header">
+            <div class="detail-header-top">
+                <button class="back-btn" onclick="closeBookModal()">←</button>
+                <span style="color: white; font-weight: 600;">预约参观</span>
+                <div style="width: 36px;"></div>
+            </div>
+        </div>
+        <div class="detail-content" style="margin-top: 0; border-radius: 0;">
+            <div class="info-card" style="margin-bottom: 20px;">
+                <div style="font-size: 14px; color: var(--text-gray);">预约机构</div>
+                <div style="font-size: 16px; font-weight: 600;" id="bookNurseryName">阳光宝贝托育中心</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">家长姓名 *</label>
+                <input type="text" class="form-input" id="bookParentName" placeholder="请输入您的姓名">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">联系电话 *</label>
+                <input type="tel" class="form-input" id="bookPhone" placeholder="请输入手机号码">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">宝宝年龄</label>
+                <select class="form-input" id="bookBabyAge">
+                    <option value="">请选择宝宝年龄</option>
+                    <option value="0-6个月">0-6个月</option>
+                    <option value="6-12个月">6-12个月</option>
+                    <option value="1-2岁">1-2岁</option>
+                    <option value="2-3岁">2-3岁</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">预约日期 *</label>
+                    <input type="date" class="form-input" id="bookDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">预约时间 *</label>
+                    <select class="form-input" id="bookTime">
+                        <option value="">请选择时间</option>
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">备注</label>
+                <textarea class="form-input" id="bookRemark" rows="3" placeholder="如有特殊需求请备注"></textarea>
+            </div>
+
+            <button class="book-btn" onclick="submitBooking()">提交预约</button>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="vip-modal" id="vipModal">
+        <div class="vip-content">
+            <div class="vip-header">
+                <div class="vip-icon">👑</div>
+                <div class="vip-title">开通VIP会员</div>
+            </div>
+            <div class="vip-price">¥15<span>/月</span></div>
+            <div style="font-size: 13px; color: var(--text-gray); margin-bottom: 16px;">相当于每天不到0.5元</div>
+            <div class="vip-benefits">
+                <div class="vip-benefit-item">
+                    <span class="vip-benefit-icon">✓</span>
+                    <span>解锁全部VIP专属评价</span>
+                </div>
+                <div class="vip-benefit-item">
+                    <span class="vip-benefit-icon">✓</span>
+                    <span>一对一育儿咨询服务</span>
+                </div>
+                <div class="vip-benefit-item">
+                    <span class="vip-benefit-icon">✓</span>
+                    <span>优先预约热门机构</span>
+                </div>
+                <div class="vip-benefit-item">
+                    <span class="vip-benefit-icon">✓</span>
+                    <span>查看真实价格趋势</span>
+                </div>
+                <div class="vip-benefit-item">
+                    <span class="vip-benefit-icon">✓</span>
+                    <span>获取专属入园攻略</span>
+                </div>
+            </div>
+            <button class="vip-btn" onclick="purchaseVip()">立即开通</button>
+            <button class="vip-close" onclick="closeVipModal()">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- 预约成功弹窗 -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">🎉</div>
+            <div class="success-title">预约成功！</div>
+            <div class="success-desc">我们将尽快与您联系确认参观时间</div>
+            <button class="success-btn" onclick="closeSuccessModal()">知道了</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 全局状态
+        let isVip = false;
+        let currentNursery = null;
+        let allNurseries = [];
+        let allDistricts = ['全部'];
+
+        // API基础URL
+        const API_BASE = '/api';
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNurseries();
+            loadDistricts();
+            loadPolicies();
+            
+            // 搜索回车事件
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchNurseries();
+                }
+            });
+
+            // 设置默认预约日期
+            const today = new Date();
+            const futureDate = new Date(today);
+            futureDate.setDate(today.getDate() + 3);
+            document.getElementById('bookDate').min = futureDate.toISOString().split('T')[0];
+            document.getElementById('bookDate').value = futureDate.toISOString().split('T')[0];
+        });
+
+        // 加载机构列表
+        async function loadNurseries() {
+            try {
+                const response = await fetch(`${API_BASE}/nurseries`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    allNurseries = result.data;
+                    renderNurseryList(allNurseries);
+                    renderMapMarkers(allNurseries);
+                }
+            } catch (error) {
+                console.error('加载机构失败:', error);
+                document.getElementById('nurseryList').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">😢</div>
+                        <div class="empty-title">加载失败</div>
+                        <div>请检查网络连接后重试</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 加载区域列表
+        async function loadDistricts() {
+            try {
+                const response = await fetch(`${API_BASE}/districts`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    allDistricts = result.data;
+                    renderDistrictFilter(allDistricts);
+                }
+            } catch (error) {
+                console.error('加载区域失败:', error);
+            }
+        }
+
+        // 加载政策列表
+        async function loadPolicies() {
+            try {
+                const response = await fetch(`${API_BASE}/policies`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    renderPolicyList(result.data);
+                }
+            } catch (error) {
+                console.error('加载政策失败:', error);
+            }
+        }
+
+        // 渲染机构列表
+        function renderNurseryList(nurseries) {
+            const container = document.getElementById('nurseryList');
+            
+            if (nurseries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-title">未找到相关机构</div>
+                        <div>试试其他搜索条件</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = nurseries.map(nursery => `
+                <div class="nursery-card" onclick="openDetail(${nursery.id})">
+                    <div class="nursery-header">
+                        <span class="nursery-icon">🏠</span>
+                        <span class="nursery-badge ${nursery.is_vip_only ? 'vip-only' : ''}">${nursery.accreditation}</span>
+                    </div>
+                    <div class="nursery-body">
+                        <div class="nursery-name">${nursery.name}</div>
+                        <div class="nursery-info">
+                            <span class="info-tag">📍${nursery.district}</span>
+                            <span class="info-tag">👶${nursery.age_range}</span>
+                            <span class="info-tag">📞${nursery.phone}</span>
+                        </div>
+                        <div class="nursery-footer">
+                            <div class="nursery-price">¥${nursery.price}<span>/${nursery.price_unit}</span></div>
+                            <div class="nursery-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-text">${nursery.rating} (${nursery.review_count})</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染区域筛选
+        function renderDistrictFilter(districts) {
+            const container = document.getElementById('districtFilter');
+            container.innerHTML = districts.map(district => `
+                <div class="filter-tag ${district === '全部' ? 'active' : ''}" 
+                     data-district="${district}" 
+                     onclick="filterByDistrict('${district}')">
+                    ${district}
+                </div>
+            `).join('');
+        }
+
+        // 渲染政策列表
+        function renderPolicyList(policies) {
+            const container = document.getElementById('policyList');
+            
+            if (policies.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <div class="empty-title">暂无政策信息</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = policies.map(policy => `
+                <div class="policy-card">
+                    <div class="policy-header">
+                        <div class="policy-title">${policy.title}</div>
+                        <span class="policy-district">${policy.district}</span>
+                    </div>
+                    <div class="policy-amount">${policy.subsidy_amount}</div>
+                    <div class="policy-info">
+                        <strong>适用对象：</strong>${policy.eligibility}
+                    </div>
+                    <div class="policy-info">${policy.description}</div>
+                    <div class="policy-info" style="margin-top: 10px;">
+                        <strong>咨询电话：</strong>${policy.contact}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染地图标记
+        function renderMapMarkers(nurseries) {
+            const container = document.getElementById('mapContainer');
+            const placeholder = container.querySelector('.map-placeholder');
+            
+            // 移除旧的标记
+            container.querySelectorAll('.map-marker').forEach(m => m.remove());
+            
+            // 添加新标记（模拟位置）
+            const positions = [
+                { x: 20, y: 30 },
+                { x: 50, y: 20 },
+                { x: 70, y: 50 },
+                { x: 30, y: 70 },
+                { x: 60, y: 60 },
+                { x: 80, y: 35 }
+            ];
+
+            nurseries.forEach((nursery, index) => {
+                if (index < positions.length) {
+                    const marker = document.createElement('div');
+                    marker.className = 'map-marker';
+                    marker.style.left = positions[index].x + '%';
+                    marker.style.top = positions[index].y + '%';
+                    marker.innerHTML = `<span class="map-marker-icon" onclick="openDetail(${nursery.id})">📍</span>`;
+                    container.appendChild(marker);
+                }
+            });
+
+            // 隐藏占位符
+            if (placeholder && nurseries.length > 0) {
+                placeholder.style.display = 'none';
+            }
+        }
+
+        // 按区域筛选
+        function filterByDistrict(district) {
+            // 更新选中状态
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            document.querySelector(`[data-district="${district}"]`).classList.add('active');
+
+            // 筛选数据
+            if (district === '全部') {
+                renderNurseryList(allNurseries);
+            } else {
+                const filtered = allNurseries.filter(n => n.district === district);
+                renderNurseryList(filtered);
+            }
+        }
+
+        // 搜索
+        function searchNurseries() {
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            if (!keyword) {
+                renderNurseryList(allNurseries);
+                return;
+            }
+
+            const filtered = allNurseries.filter(n => 
+                n.name.toLowerCase().includes(keyword) ||
+                n.address.toLowerCase().includes(keyword) ||
+                n.district.toLowerCase().includes(keyword) ||
+                n.features.some(f => f.toLowerCase().includes(keyword))
+            );
+
+            renderNurseryList(filtered);
+            showToast(`找到 ${filtered.length} 个相关机构`);
+        }
+
+        // 切换Tab
+        function switchTab(tabName) {
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+
+            // 更新内容显示
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabName}`)?.classList.add('active');
+        }
+
+        // 打开详情页
+        async function openDetail(nurseryId) {
+            try {
+                const response = await fetch(`${API_BASE}/nurseries/${nurseryId}?is_vip=${isVip}`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    currentNursery = result.data;
+                    renderDetail(currentNursery);
+                    document.getElementById('detailModal').classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            } catch (error) {
+                console.error('加载详情失败:', error);
+                showToast('加载失败，请重试');
+            }
+        }
+
+        // 渲染详情
+        function renderDetail(nursery) {
+            document.getElementById('detailIcon').textContent = getNurseryIcon(nursery.type);
+            document.getElementById('detailName').textContent = nursery.name;
+            document.getElementById('detailAccreditation').textContent = nursery.accreditation;
+            document.getElementById('detailPrice').innerHTML = `¥${nursery.price}<span>/${nursery.price_unit}</span>`;
+            
+            const staffRatioEl = document.getElementById('detailStaffRatio');
+            staffRatioEl.textContent = nursery.detail_hidden ? '开通VIP查看' : nursery.staff_ratio;
+            staffRatioEl.classList.toggle('hidden', nursery.detail_hidden);
+            
+            document.getElementById('detailAge').textContent = nursery.age_range;
+            document.getElementById('detailType').textContent = nursery.type;
+            document.getElementById('detailPhone').textContent = nursery.phone;
+            document.getElementById('detailHours').textContent = nursery.hours;
+            
+            const licenseEl = document.getElementById('detailLicense');
+            licenseEl.textContent = nursery.detail_hidden ? '开通VIP查看' : nursery.license;
+            licenseEl.classList.toggle('hidden', nursery.detail_hidden);
+            
+            document.getElementById('detailAddress').textContent = nursery.address;
+
+            // 特色标签
+            const featuresEl = document.getElementById('detailFeatures');
+            featuresEl.innerHTML = nursery.features.map(f => `<span class="feature-tag">${f}</span>`).join('');
+
+            // 评价
+            const reviewsEl = document.getElementById('detailReviews');
+            const reviews = nursery.reviews || [];
+            
+            if (reviews.length === 0) {
+                reviewsEl.innerHTML = `
+                    <div class="empty-state" style="padding: 30px;">
+                        <div style="font-size: 14px;">暂无评价</div>
+                    </div>
+                `;
+            } else {
+                reviewsEl.innerHTML = reviews.map(review => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="review-user">
+                                <span class="review-avatar">${review.avatar}</span>
+                                <span class="review-name">
+                                    ${review.user}
+                                    ${review.is_vip_review ? '<span class="review-vip-tag">VIP</span>' : ''}
+                                </span>
+                            </div>
+                            <span class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</span>
+                        </div>
+                        <div class="review-content">${review.content}</div>
+                        <div class="review-date">${review.date}</div>
+                    </div>
+                `).join('');
+            }
+
+            // 如果是VIP专属机构，显示锁定提示
+            if (nursery.detail_hidden) {
+                reviewsEl.innerHTML = `
+                    <div class="review-locked">
+                        <div style="font-size: 24px; margin-bottom: 8px;">🔒</div>
+                        <div style="font-weight: 600;">VIP专属内容</div>
+                        <div style="font-size: 13px; margin: 8px 0;">开通VIP解锁详细评价和师资信息</div>
+                        <button onclick="showVipModal()" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;">立即开通</button>
+                    </div>
+                ` + reviewsEl.innerHTML;
+            }
+        }
+
+        // 获取机构图标
+        function getNurseryIcon(type) {
+            const icons = {
+                '私立': '🏠',
+                '国际': '🌍',
+                '社区': '🏘️',
+                '家庭式': '👨‍👩‍👧‍👦'
+            };
+            return icons[type] || '🏠';
+        }
+
+        // 关闭详情页
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 显示预约弹窗
+        function showBookModal() {
+            if (!currentNursery) return;
+            document.getElementById('bookNurseryName').textContent = currentNursery.name;
+            closeDetailModal();
+            document.getElementById('bookModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭预约弹窗
+        function closeBookModal() {
+            document.getElementById('bookModal').classList.remove('show');
+            document.body.style.overflow = '';
+            // 清空表单
+            document.getElementById('bookParentName').value = '';
+            document.getElementById('bookPhone').value = '';
+            document.getElementById('bookBabyAge').value = '';
+            document.getElementById('bookRemark').value = '';
+        }
+
+        // 提交预约
+        async function submitBooking() {
+            const parentName = document.getElementById('bookParentName').value.trim();
+            const phone = document.getElementById('bookPhone').value.trim();
+            const visitDate = document.getElementById('bookDate').value;
+            const visitTime = document.getElementById('bookTime').value;
+
+            // 验证必填项
+            if (!parentName) {
+                showToast('请输入家长姓名');
+                return;
+            }
+            if (!phone) {
+                showToast('请输入联系电话');
+                return;
+            }
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                showToast('请输入正确的手机号码');
+                return;
+            }
+            if (!visitDate || !visitTime) {
+                showToast('请选择预约时间和日期');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/appointments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nursery_id: currentNursery.id,
+                        parent_name: parentName,
+                        phone: phone,
+                        baby_age: document.getElementById('bookBabyAge').value,
+                        visit_date: visitDate,
+                        visit_time: visitTime,
+                        remark: document.getElementById('bookRemark').value
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    closeBookModal();
+                    document.getElementById('successModal').classList.add('show');
+                } else {
+                    showToast(result.message || '预约失败');
+                }
+            } catch (error) {
+                console.error('预约失败:', error);
+                showToast('预约失败，请重试');
+            }
+        }
+
+        // 关闭成功弹窗
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 显示VIP弹窗
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('show');
+        }
+
+        // 关闭VIP弹窗
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.remove('show');
+        }
+
+        // 购买VIP
+        async function purchaseVip() {
+            try {
+                const response = await fetch(`${API_BASE}/vip/purchase`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: 'demo_user' })
+                });
+
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    isVip = true;
+                    closeVipModal();
+                    document.getElementById('vipBadge').classList.add('active');
+                    document.getElementById('vipBadge').textContent = '✓ VIP已开通';
+                    document.getElementById('userStatus').textContent = 'VIP会员';
+                    showToast('恭喜！VIP开通成功');
+                } else {
+                    showToast(result.message || '开通失败');
+                }
+            } catch (error) {
+                console.error('VIP购买失败:', error);
+                showToast('开通失败，请重试');
+            }
+        }
+
+        // 分享
+        function shareNursery() {
+            if (nursery && navigator.share) {
+                navigator.share({
+                    title: nursery.name,
+                    text: `发现一个不错的托育机构：${nursery.name}`,
+                    url: window.location.href
+                });
+            } else {
+                // 复制链接
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showToast('链接已复制到剪贴板');
+                });
+            }
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>💒 婚礼筹备 - 让爱更轻松</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #e84c5a;
+            --primary-light: #ff6b7a;
+            --primary-dark: #c73e4c;
+            --secondary: #4a90a4;
+            --bg: #faf8f7;
+            --card: #ffffff;
+            --text: #333333;
+            --text-light: #888888;
+            --border: #eeeeee;
+            --success: #52c41a;
+            --warning: #faad14;
+            --danger: #ff4d4f;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* 倒计时卡片 */
+        .countdown-card {
+            background: var(--card);
+            margin: -20px 16px 16px;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(232, 76, 90, 0.15);
+            position: relative;
+            z-index: 10;
+        }
+
+        .countdown-days {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        .wedding-date {
+            font-size: 1rem;
+            color: var(--text);
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .set-date-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 0 16px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* 导航栏 */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 12px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 1.4rem;
+            margin-bottom: 2px;
+        }
+
+        /* 内容区域 */
+        .content {
+            padding: 16px;
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 清单样式 */
+        .checklist-filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .checklist-item {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: all 0.2s;
+        }
+
+        .checklist-item.completed {
+            opacity: 0.6;
+        }
+
+        .checklist-item.completed .item-title {
+            text-decoration: line-through;
+        }
+
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .item-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .item-category {
+            font-size: 0.7rem;
+            color: var(--secondary);
+            background: rgba(74, 144, 164, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .item-priority {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .priority-high { background: rgba(255, 77, 79, 0.1); color: var(--danger); }
+        .priority-medium { background: rgba(250, 173, 20, 0.1); color: var(--warning); }
+        .priority-low { background: rgba(82, 196, 26, 0.1); color: var(--success); }
+
+        .add-btn {
+            position: fixed;
+            right: 16px;
+            bottom: 80px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 12px rgba(232, 76, 90, 0.4);
+            cursor: pointer;
+            z-index: 50;
+        }
+
+        /* 预算样式 */
+        .budget-summary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .budget-total {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .budget-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .budget-categories {
+            display: grid;
+            gap: 10px;
+        }
+
+        .budget-category {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .budget-cat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .budget-cat-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .budget-cat-amount {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .budget-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .budget-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .budget-bar-fill.normal { background: var(--success); }
+        .budget-bar-fill.warning { background: var(--warning); }
+        .budget-bar-fill.danger { background: var(--danger); }
+
+        .budget-cat-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        /* 宾客样式 */
+        .guest-stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .guest-stat {
+            flex: 1;
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .guest-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .guest-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .guest-item {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .guest-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .guest-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .guest-relation {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .guest-info {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .guest-tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: var(--bg);
+        }
+
+        .guest-tag.category {
+            color: var(--secondary);
+        }
+
+        .guest-tag.status {
+            color: var(--text-light);
+        }
+
+        .guest-tag.status.confirmed {
+            color: var(--success);
+            background: rgba(82, 196, 26, 0.1);
+        }
+
+        .guest-tag.table {
+            color: var(--primary);
+        }
+
+        /* 供应商样式 */
+        .vendor-filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .vendor-item {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .vendor-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .vendor-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .vendor-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--warning);
+        }
+
+        .vendor-price {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-top: 4px;
+        }
+
+        .vendor-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .vendor-tag {
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 10px;
+            background: rgba(232, 76, 90, 0.08);
+            color: var(--primary);
+        }
+
+        .vendor-contact {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .vendor-contact-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .vendor-contact-btn.phone {
+            background: var(--primary);
+            color: white;
+        }
+
+        .vendor-contact-btn.map {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        #budgetChart {
+            width: 100%;
+            height: 250px;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--card);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--card);
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: white;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        /* 会员卡片 */
+        .vip-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .vip-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .vip-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .vip-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .vip-price span {
+            font-size: 0.8rem;
+        }
+
+        .vip-features {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .vip-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            z-index: 300;
+            transition: transform 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 响应式 */
+        @media (max-width: 360px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .stat-value {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <div class="header">
+        <h1>💒 婚礼筹备</h1>
+        <p>让每一份期待都不被辜负</p>
+    </div>
+
+    <!-- 倒计时卡片 -->
+    <div class="countdown-card">
+        <div class="countdown-days" id="countdownDays">--</div>
+        <div class="countdown-label">距离婚礼还有</div>
+        <div class="wedding-date" id="weddingDateDisplay">
+            <span>📅 请设置婚礼日期</span>
+        </div>
+        <button class="set-date-btn" onclick="showDateModal()">📅 设置婚礼日期</button>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="checklistProgress">0%</div>
+            <div class="stat-label">清单进度</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="budgetProgress">0%</div>
+            <div class="stat-label">预算使用</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="guestCount">0</div>
+            <div class="stat-label">宾客人数</div>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+        <button class="nav-item active" onclick="switchTab('checklist')">
+            <span class="icon">📋</span>
+            <span>清单</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('budget')">
+            <span class="icon">💰</span>
+            <span>预算</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('guests')">
+            <span class="icon">👥</span>
+            <span>宾客</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('vendors')">
+            <span class="icon">🏪</span>
+            <span>供应商</span>
+        </button>
+    </div>
+
+    <!-- 清单页面 -->
+    <div class="content active" id="checklist-content">
+        <div class="section-title">📋 备婚清单</div>
+        <div class="checklist-filters" id="checklistFilters">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="pending">待完成</button>
+            <button class="filter-btn" data-filter="completed">已完成</button>
+        </div>
+        <div id="checklistItems"></div>
+    </div>
+
+    <!-- 预算页面 -->
+    <div class="content" id="budget-content">
+        <div class="section-title">💰 预算管理</div>
+        
+        <div class="budget-summary">
+            <div class="budget-total" id="budgetTotal">¥0</div>
+            <div class="budget-detail">
+                <span>已支出: <span id="budgetSpent">¥0</span></span>
+                <span>剩余: <span id="budgetRemaining">¥0</span></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="budgetProgressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">📊 预算分布</div>
+            <div id="budgetChart"></div>
+        </div>
+
+        <div class="section-title">📝 分类预算</div>
+        <div class="budget-categories" id="budgetCategories"></div>
+    </div>
+
+    <!-- 宾客页面 -->
+    <div class="content" id="guests-content">
+        <div class="section-title">👥 宾客名单</div>
+        
+        <div class="guest-stats">
+            <div class="guest-stat">
+                <div class="guest-stat-value" id="guestTotal">0</div>
+                <div class="guest-stat-label">总人数</div>
+            </div>
+            <div class="guest-stat">
+                <div class="guest-stat-value" id="guestConfirmed">0</div>
+                <div class="guest-stat-label">已确认</div>
+            </div>
+            <div class="guest-stat">
+                <div class="guest-stat-value" id="guestPending">0</div>
+                <div class="guest-stat-label">待确认</div>
+            </div>
+        </div>
+
+        <div class="checklist-filters" id="guestFilters">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="新郎家人">新郎方</button>
+            <button class="filter-btn" data-filter="新娘家人">新娘方</button>
+            <button class="filter-btn" data-filter="朋友">朋友</button>
+            <button class="filter-btn" data-filter="同事">同事</button>
+        </div>
+
+        <div id="guestList"></div>
+    </div>
+
+    <!-- 供应商页面 -->
+    <div class="content" id="vendors-content">
+        <div class="section-title">🏪 供应商推荐</div>
+        
+        <div class="vip-card">
+            <div class="vip-card-header">
+                <div class="vip-title">💎 会员特权</div>
+                <div class="vip-price">¥29<span>/月</span></div>
+            </div>
+            <div class="vip-features">
+                200+备婚清单 | 供应商对接 | 高级图表分析
+            </div>
+            <button class="vip-btn" onclick="showToast('会员功能开发中，敬请期待！')">立即开通</button>
+        </div>
+
+        <div class="vendor-filters" id="vendorFilters">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="婚庆策划">婚庆</button>
+            <button class="filter-btn" data-filter="婚纱摄影">摄影</button>
+            <button class="filter-btn" data-filter="婚礼酒店">酒店</button>
+            <button class="filter-btn" data-filter="婚纱礼服">礼服</button>
+            <button class="filter-btn" data-filter="珠宝首饰">珠宝</button>
+        </div>
+
+        <div id="vendorList"></div>
+    </div>
+
+    <!-- 添加按钮 -->
+    <button class="add-btn" id="addBtn" onclick="showAddModal()">+</button>
+
+    <!-- 清单模态框 -->
+    <div class="modal-overlay" id="checklistModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">添加备婚事项</div>
+                <button class="modal-close" onclick="closeModal('checklistModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">事项名称 *</label>
+                    <input type="text" class="form-input" id="itemTitle" placeholder="例如：预订婚宴酒店">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">分类</label>
+                        <select class="form-select" id="itemCategory">
+                            <option value="前期准备">前期准备</option>
+                            <option value="场地预订">场地预订</option>
+                            <option value="婚庆服务">婚庆服务</option>
+                            <option value="摄影摄像">摄影摄像</option>
+                            <option value="婚纱礼服">婚纱礼服</option>
+                            <option value="珠宝首饰">珠宝首饰</option>
+                            <option value="宾客邀请">宾客邀请</option>
+                            <option value="婚礼用品">婚礼用品</option>
+                            <option value="婚礼当天">婚礼当天</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">优先级</label>
+                        <select class="form-select" id="itemPriority">
+                            <option value="high">高</option>
+                            <option value="medium" selected>中</option>
+                            <option value="low">低</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="submit-btn" onclick="addChecklistItem()">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 宾客模态框 -->
+    <div class="modal-overlay" id="guestModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">添加宾客</div>
+                <button class="modal-close" onclick="closeModal('guestModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">姓名 *</label>
+                    <input type="text" class="form-input" id="guestName" placeholder="宾客姓名">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">关系</label>
+                        <input type="text" class="form-input" id="guestRelation" placeholder="如：大学同学">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">桌号</label>
+                        <input type="number" class="form-input" id="guestTable" placeholder="如：3">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类</label>
+                    <select class="form-select" id="guestCategory">
+                        <option value="新郎家人">新郎家人</option>
+                        <option value="新郎亲戚">新郎亲戚</option>
+                        <option value="新郎朋友">新郎朋友</option>
+                        <option value="新娘家人">新娘家人</option>
+                        <option value="新娘亲戚">新娘亲戚</option>
+                        <option value="新娘朋友">新娘朋友</option>
+                        <option value="同事">同事/同学</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">联系方式</label>
+                    <input type="tel" class="form-input" id="guestPhone" placeholder="手机号码">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">出席状态</label>
+                    <select class="form-select" id="guestStatus">
+                        <option value="待确认">待确认</option>
+                        <option value="出席">出席</option>
+                        <option value="缺席">缺席</option>
+                    </select>
+                </div>
+                <button class="submit-btn" onclick="addGuest()">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 支出模态框 -->
+    <div class="modal-overlay" id="expenseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">添加支出</div>
+                <button class="modal-close" onclick="closeModal('expenseModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">选择分类</label>
+                    <select class="form-select" id="expenseCategory"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">支出金额 (¥)</label>
+                    <input type="number" class="form-input" id="expenseAmount" placeholder="输入金额">
+                </div>
+                <button class="submit-btn" onclick="addExpense()">添加支出</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 日期模态框 -->
+    <div class="modal-overlay" id="dateModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">设置婚礼日期</div>
+                <button class="modal-close" onclick="closeModal('dateModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">婚礼日期</label>
+                    <input type="date" class="form-input" id="weddingDate">
+                </div>
+                <button class="submit-btn" onclick="saveWeddingDate()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============ 全局数据 ============
+        let checklistData = { items: [] };
+        let budgetData = { categories: [] };
+        let guestsData = { guests: [] };
+        let vendorsData = { vendors: [] };
+        let settings = { wedding_date: '', total_budget: 100000 };
+        let currentFilter = { checklist: 'all', guests: 'all', vendors: 'all' };
+        let budgetChart = null;
+
+        // ============ 初始化 ============
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadAllData();
+            renderChecklist();
+            renderBudget();
+            renderGuests();
+            renderVendors();
+            updateDashboard();
+            initFilters();
+        });
+
+        async function loadAllData() {
+            try {
+                const [checklistRes, budgetRes, guestsRes, vendorsRes, settingsRes, dashboardRes] = await Promise.all([
+                    fetch('/api/checklist'),
+                    fetch('/api/budget'),
+                    fetch('/api/guests'),
+                    fetch('/api/vendors'),
+                    fetch('/api/settings'),
+                    fetch('/api/dashboard')
+                ]);
+                
+                checklistData = await checklistRes.json();
+                budgetData = await budgetRes.json();
+                guestsData = await guestsRes.json();
+                vendorsData = await vendorsRes.json();
+                settings = await settingsRes.json();
+                const dashboard = await dashboardRes.json();
+                
+                // 更新倒计时
+                updateCountdown(dashboard);
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                showToast('数据加载失败，请刷新重试');
+            }
+        }
+
+        // ============ 导航切换 ============
+        function switchTab(tab) {
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(tab === 'checklist' ? '清单' : tab === 'budget' ? '预算' : tab === 'guests' ? '宾客' : '供应商')) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 找到对应按钮并激活
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // 切换内容
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tab}-content`).classList.add('active');
+
+            // 调整添加按钮位置
+            const addBtn = document.getElementById('addBtn');
+            if (tab === 'checklist') {
+                addBtn.onclick = () => showModal('checklistModal');
+                addBtn.style.display = 'block';
+            } else if (tab === 'budget') {
+                addBtn.onclick = () => showModal('expenseModal');
+                addBtn.style.display = 'block';
+            } else if (tab === 'guests') {
+                addBtn.onclick = () => showModal('guestModal');
+                addBtn.style.display = 'block';
+            } else {
+                addBtn.style.display = 'none';
+            }
+        }
+
+        // ============ 模态框 ============
+        function showModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function showAddModal() {
+            const activeContent = document.querySelector('.content.active').id;
+            if (activeContent === 'checklist-content') {
+                showModal('checklistModal');
+            } else if (activeContent === 'budget-content') {
+                showModal('expenseModal');
+            } else if (activeContent === 'guests-content') {
+                showModal('guestModal');
+            }
+        }
+
+        // ============ 清单功能 ============
+        function renderChecklist() {
+            const container = document.getElementById('checklistItems');
+            let items = checklistData.items;
+
+            // 应用过滤
+            if (currentFilter.checklist === 'pending') {
+                items = items.filter(i => !i.completed);
+            } else if (currentFilter.checklist === 'completed') {
+                items = items.filter(i => i.completed);
+            }
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📋</div>
+                        <div>暂无备婚事项</div>
+                        <div>点击下方 + 按钮添加</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="checklist-item ${item.completed ? 'completed' : ''}">
+                    <div class="checkbox ${item.completed ? 'checked' : ''}" onclick="toggleItem(${item.id})">
+                        ${item.completed ? '✓' : ''}
+                    </div>
+                    <div class="item-content">
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-meta">
+                            <span class="item-category">${item.category}</span>
+                            <span class="item-priority priority-${item.priority}">${item.priority === 'high' ? '高优' : item.priority === 'medium' ? '中优' : '低优'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function toggleItem(id) {
+            const item = checklistData.items.find(i => i.id === id);
+            if (item) {
+                item.completed = !item.completed;
+                await fetch('/api/checklist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ update: item })
+                });
+                renderChecklist();
+                updateDashboard();
+            }
+        }
+
+        async function addChecklistItem() {
+            const title = document.getElementById('itemTitle').value.trim();
+            const category = document.getElementById('itemCategory').value;
+            const priority = document.getElementById('itemPriority').value;
+
+            if (!title) {
+                showToast('请输入事项名称');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/checklist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        add: { title, category, priority }
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    checklistData.items.push(result.item);
+                    renderChecklist();
+                    updateDashboard();
+                    closeModal('checklistModal');
+                    document.getElementById('itemTitle').value = '';
+                    showToast('添加成功！');
+                }
+            } catch (error) {
+                showToast('添加失败');
+            }
+        }
+
+        // ============ 预算功能 ============
+        function renderBudget() {
+            const container = document.getElementById('budgetCategories');
+            const total = budgetData.categories.reduce((sum, c) => sum + c.budget, 0);
+            const spent = budgetData.categories.reduce((sum, c) => sum + c.spent, 0);
+
+            document.getElementById('budgetTotal').textContent = `¥${total.toLocaleString()}`;
+            document.getElementById('budgetSpent').textContent = `¥${spent.toLocaleString()}`;
+            document.getElementById('budgetRemaining').textContent = `¥${(total - spent).toLocaleString()}`;
+            
+            const progress = total > 0 ? (spent / total * 100) : 0;
+            document.getElementById('budgetProgressBar').style.width = `${Math.min(progress, 100)}%`;
+            document.getElementById('budgetProgressBar').parentElement.style.background = 
+                progress > 90 ? 'rgba(255,77,79,0.3)' : progress > 75 ? 'rgba(250,173,20,0.3)' : 'rgba(255,255,255,0.3)';
+
+            container.innerHTML = budgetData.categories.map(cat => {
+                const percent = cat.budget > 0 ? (cat.spent / cat.budget * 100) : 0;
+                let barClass = 'normal';
+                if (percent > 100) barClass = 'danger';
+                else if (percent > 80) barClass = 'warning';
+
+                return `
+                    <div class="budget-category" onclick="showExpenseModal(${cat.id})">
+                        <div class="budget-cat-header">
+                            <div class="budget-cat-name">
+                                <span>${cat.icon}</span>
+                                <span>${cat.name}</span>
+                            </div>
+                            <div class="budget-cat-amount">¥${cat.spent.toLocaleString()} / ¥${cat.budget.toLocaleString()}</div>
+                        </div>
+                        <div class="budget-bar">
+                            <div class="budget-bar-fill ${barClass}" style="width: ${Math.min(percent, 100)}%"></div>
+                        </div>
+                        <div class="budget-cat-footer">
+                            <span>已支出 ¥${cat.spent.toLocaleString()}</span>
+                            <span>剩余 ¥${Math.max(cat.budget - cat.spent, 0).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            renderBudgetChart();
+        }
+
+        function renderBudgetChart() {
+            const chartDom = document.getElementById('budgetChart');
+            if (!chartDom) return;
+
+            if (!budgetChart) {
+                budgetChart = echarts.init(chartDom);
+            }
+
+            const data = budgetData.categories.map(c => ({
+                name: c.name,
+                value: c.budget,
+                icon: c.icon
+            }));
+
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: ¥{c}'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 'center',
+                    textStyle: { fontSize: 11 }
+                },
+                series: [{
+                    type: 'pie',
+                    radius: ['45%', '70%'],
+                    center: ['35%', '50%'],
+                    avoidLabelOverlap: false,
+                    label: { show: false },
+                    emphasis: {
+                        label: { show: true, fontSize: 14, fontWeight: 'bold' }
+                    },
+                    data: data,
+                    color: ['#e84c5a', '#4a90a4', '#f5a623', '#9b59b6', '#3498db', '#2ecc71', '#e74c3c', '#95a5a6']
+                }]
+            };
+
+            budgetChart.setOption(option);
+        }
+
+        function showExpenseModal(categoryId) {
+            const select = document.getElementById('expenseCategory');
+            select.innerHTML = budgetData.categories.map(c => 
+                `<option value="${c.id}" ${c.id === categoryId ? 'selected' : ''}>${c.icon} ${c.name}</option>`
+            ).join('');
+            showModal('expenseModal');
+        }
+
+        async function addExpense() {
+            const categoryId = parseInt(document.getElementById('expenseCategory').value);
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+
+            if (!amount || amount <= 0) {
+                showToast('请输入有效金额');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/budget', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        addExpense: { categoryId, amount }
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    budgetData = result.data;
+                    renderBudget();
+                    updateDashboard();
+                    closeModal('expenseModal');
+                    document.getElementById('expenseAmount').value = '';
+                    showToast('支出已记录！');
+                }
+            } catch (error) {
+                showToast('添加失败');
+            }
+        }
+
+        // ============ 宾客功能 ============
+        function renderGuests() {
+            const container = document.getElementById('guestList');
+            let guests = guestsData.guests;
+
+            // 应用过滤
+            if (currentFilter.guests !== 'all') {
+                guests = guests.filter(g => g.category.includes(currentFilter.guests));
+            }
+
+            // 更新统计
+            const total = guestsData.guests.length;
+            const confirmed = guestsData.guests.filter(g => g.status === '出席').length;
+            const pending = guestsData.guests.filter(g => g.status === '待确认').length;
+            
+            document.getElementById('guestTotal').textContent = total;
+            document.getElementById('guestConfirmed').textContent = confirmed;
+            document.getElementById('guestPending').textContent = pending;
+
+            if (guests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">👥</div>
+                        <div>暂无宾客信息</div>
+                        <div>点击下方 + 按钮添加</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = guests.map(guest => `
+                <div class="guest-item">
+                    <div class="guest-header">
+                        <div>
+                            <div class="guest-name">${guest.name}</div>
+                            <div class="guest-relation">${guest.relation || '未填写关系'}</div>
+                        </div>
+                        <div class="guest-tag status ${guest.status === '出席' ? 'confirmed' : ''}">${guest.status}</div>
+                    </div>
+                    <div class="guest-info">
+                        <span class="guest-tag category">${guest.category}</span>
+                        ${guest.tableNo > 0 ? `<span class="guest-tag table">桌号 ${guest.tableNo}</span>` : ''}
+                        ${guest.phone ? `<span class="guest-tag">📞 ${guest.phone}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function addGuest() {
+            const name = document.getElementById('guestName').value.trim();
+            const relation = document.getElementById('guestRelation').value.trim();
+            const category = document.getElementById('guestCategory').value;
+            const phone = document.getElementById('guestPhone').value.trim();
+            const status = document.getElementById('guestStatus').value;
+            const tableNo = parseInt(document.getElementById('guestTable').value) || 0;
+
+            if (!name) {
+                showToast('请输入宾客姓名');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/guests', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        add: { name, relation, category, phone, status, tableNo }
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    guestsData.guests.push(result.guest);
+                    renderGuests();
+                    updateDashboard();
+                    closeModal('guestModal');
+                    // 清空表单
+                    document.getElementById('guestName').value = '';
+                    document.getElementById('guestRelation').value = '';
+                    document.getElementById('guestPhone').value = '';
+                    document.getElementById('guestTable').value = '';
+                    showToast('宾客添加成功！');
+                }
+            } catch (error) {
+                showToast('添加失败');
+            }
+        }
+
+        // ============ 供应商功能 ============
+        function renderVendors() {
+            const container = document.getElementById('vendorList');
+            let vendors = vendorsData.vendors;
+
+            // 应用过滤
+            if (currentFilter.vendors !== 'all') {
+                vendors = vendors.filter(v => v.category.includes(currentFilter.vendors));
+            }
+
+            if (vendors.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🏪</div>
+                        <div>暂无相关供应商</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = vendors.map(vendor => `
+                <div class="vendor-item">
+                    <div class="vendor-header">
+                        <div>
+                            <div class="vendor-name">${vendor.name}</div>
+                            <div class="vendor-price">${vendor.priceRange}</div>
+                        </div>
+                        <div class="vendor-rating">
+                            <span>⭐</span>
+                            <span>${vendor.rating}</span>
+                        </div>
+                    </div>
+                    <div class="vendor-tags">
+                        ${vendor.tags.map(tag => `<span class="vendor-tag">${tag}</span>`).join('')}
+                        <span class="vendor-tag" style="background: var(--bg); color: var(--text-light);">${vendor.category}</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 8px;">${vendor.description}</p>
+                    <div class="vendor-contact">
+                        <button class="vendor-contact-btn phone" onclick="callVendor('${vendor.contact}')">📞 联系商家</button>
+                        <button class="vendor-contact-btn map" onclick="showToast('地图功能开发中')">📍 查看位置</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function callVendor(phone) {
+            showToast(`拨打电话: ${phone}`);
+            // 实际项目中可使用 window.location.href = `tel:${phone}`;
+        }
+
+        // ============ 过滤功能 ============
+        function initFilters() {
+            // 清单过滤
+            document.querySelectorAll('#checklistFilters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#checklistFilters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter.checklist = btn.dataset.filter;
+                    renderChecklist();
+                });
+            });
+
+            // 宾客过滤
+            document.querySelectorAll('#guestFilters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#guestFilters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter.guests = btn.dataset.filter;
+                    renderGuests();
+                });
+            });
+
+            // 供应商过滤
+            document.querySelectorAll('#vendorFilters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#vendorFilters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter.vendors = btn.dataset.filter;
+                    renderVendors();
+                });
+            });
+        }
+
+        // ============ 倒计时 ============
+        function updateCountdown(dashboard) {
+            const daysEl = document.getElementById('countdownDays');
+            const dateEl = document.getElementById('weddingDateDisplay');
+
+            if (dashboard.countdown_days !== null && dashboard.countdown_days >= 0) {
+                daysEl.textContent = dashboard.countdown_days;
+                if (dashboard.countdown_days === 0) {
+                    daysEl.textContent = '今天';
+                    daysEl.style.fontSize = '2rem';
+                } else if (dashboard.countdown_days < 0) {
+                    daysEl.textContent = '已结束';
+                    daysEl.style.fontSize = '2rem';
+                } else {
+                    daysEl.style.fontSize = '3.5rem';
+                }
+                dateEl.innerHTML = `<span>📅 ${dashboard.wedding_date}</span>`;
+            }
+        }
+
+        function showDateModal() {
+            document.getElementById('weddingDate').value = settings.wedding_date || '';
+            showModal('dateModal');
+        }
+
+        async function saveWeddingDate() {
+            const date = document.getElementById('weddingDate').value;
+            if (!date) {
+                showToast('请选择日期');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wedding_date: date, total_budget: settings.total_budget || 100000 })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    settings.wedding_date = date;
+                    closeModal('dateModal');
+                    
+                    // 更新倒计时
+                    const weddingDate = new Date(date);
+                    const today = new Date();
+                    const diffTime = weddingDate - today;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    updateCountdown({ countdown_days: diffDays, wedding_date: date });
+                    showToast('婚礼日期已保存！');
+                }
+            } catch (error) {
+                showToast('保存失败');
+            }
+        }
+
+        // ============ 仪表盘更新 ============
+        function updateDashboard() {
+            const total = checklistData.items.length;
+            const completed = checklistData.items.filter(i => i.completed).length;
+            const progress = total > 0 ? Math.round(completed / total * 100) : 0;
+            document.getElementById('checklistProgress').textContent = `${progress}%`;
+
+            const budgetTotal = budgetData.categories.reduce((sum, c) => sum + c.budget, 0);
+            const budgetSpent = budgetData.categories.reduce((sum, c) => sum + c.spent, 0);
+            const budgetProgress = budgetTotal > 0 ? Math.round(budgetSpent / budgetTotal * 100) : 0;
+            document.getElementById('budgetProgress').textContent = `${budgetProgress}%`;
+
+            document.getElementById('guestCount').textContent = guestsData.guests.length;
+        }
+
+        // ============ Toast提示 ============
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 窗口调整时重绘图表
+        window.addEventListener('resize', () => {
+            if (budgetChart) {
+                budgetChart.resize();
+            }
+        });
+    </script>
+</body>
+</html>

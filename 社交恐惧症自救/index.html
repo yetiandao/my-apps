@@ -1,0 +1,2684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社交恐惧症自救 - 陪你走出社恐</title>
+    <style>
+        /* ==================== 全局样式 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --primary-light: #818CF8;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --bg-main: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --text-light: #94A3B8;
+            --border: #E2E8F0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ==================== 顶部导航 ==================== */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .vip-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vip-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .vip-btn.active {
+            background: #F59E0B;
+            border-color: #F59E0B;
+        }
+
+        /* ==================== 底部导航 ==================== */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 16px;
+            color: var(--text-light);
+            font-size: 11px;
+            cursor: pointer;
+            transition: color 0.3s;
+            border: none;
+            background: none;
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+        }
+
+        .tab-item .icon {
+            font-size: 22px;
+            margin-bottom: 2px;
+        }
+
+        /* ==================== 主容器 ==================== */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        /* ==================== 页面视图 ==================== */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== 首页 ==================== */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius-lg);
+            padding: 30px 24px;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .hero-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .hero-slogan {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .action-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .action-icon.test { background: #EEF2FF; }
+        .action-icon.scene { background: #ECFDF5; }
+        .action-icon.tips { background: #FEF3C7; }
+        .action-icon.exercise { background: #FEE2E2; }
+
+        .action-info h4 {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .action-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 每日提示 */
+        .daily-tip {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .daily-tip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .daily-tip-header .tag {
+            background: var(--secondary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .daily-tip-content {
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .daily-tip-footer {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .streak {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--warning);
+        }
+
+        /* ==================== 自测页面 ==================== */
+        .test-progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            min-width: 50px;
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 17px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary-light);
+            background: #F5F7FF;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background: #EEF2FF;
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .option-item.selected .option-radio::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        .option-text {
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-primary:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        /* 结果页面 */
+        .result-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+        }
+
+        .result-level {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .result-level.mild { color: var(--secondary); }
+        .result-level.moderate { color: var(--warning); }
+        .result-level.severe { color: #F97316; }
+        .result-level.critical { color: var(--danger); }
+
+        .result-percentage {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .result-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .result-suggestions {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-suggestions h4 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-icon {
+            width: 24px;
+            height: 24px;
+            background: #ECFDF5;
+            color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .suggestion-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* ==================== 场景模拟页面 ==================== */
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .scene-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .scene-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .scene-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .scene-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .scene-category {
+            font-size: 12px;
+            color: var(--primary);
+            background: #EEF2FF;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .scene-difficulty {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .scene-difficulty.easy { background: #ECFDF5; color: var(--secondary); }
+        .scene-difficulty.medium { background: #FEF3C7; color: var(--warning); }
+        .scene-difficulty.hard { background: #FEE2E2; color: var(--danger); }
+
+        .scene-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .scene-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* 场景详情 */
+        .scene-detail {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .scene-detail-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 24px;
+        }
+
+        .scene-detail-category {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .scene-detail-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .scene-detail-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .scene-detail-content {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            margin-bottom: 24px;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .tip-bullet {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin-top: 7px;
+            flex-shrink: 0;
+        }
+
+        .script-list {
+            margin-bottom: 24px;
+        }
+
+        .script-item {
+            background: var(--bg-main);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+
+        .script-situation {
+            font-size: 12px;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .script-text {
+            font-size: 15px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .script-purpose {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* 对话模拟 */
+        .dialogue-area {
+            background: var(--bg-main);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dialogue-item {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dialogue-item.ai {
+            align-items: flex-start;
+        }
+
+        .dialogue-item.user {
+            align-items: flex-end;
+        }
+
+        .dialogue-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .dialogue-item.ai .dialogue-bubble {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+        }
+
+        .dialogue-item.user .dialogue-bubble {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .dialogue-item.user .dialogue-bubble.input-mode {
+            background: var(--bg-card);
+            color: var(--text-light);
+            border: 1px dashed var(--border);
+        }
+
+        .dialogue-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dialogue-input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .dialogue-input:focus {
+            border-color: var(--primary);
+        }
+
+        .dialogue-send-btn {
+            padding: 14px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* ==================== 话术建议页面 ==================== */
+        .tips-category {
+            margin-bottom: 20px;
+        }
+
+        .tips-category-header {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .tips-category-header:hover {
+            background: #F5F7FF;
+        }
+
+        .tips-category-header h3 {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-category-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-main);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tips-category-content {
+            display: none;
+            padding: 0 16px 16px;
+        }
+
+        .tips-category-content.show {
+            display: block;
+        }
+
+        .tip-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .tip-situation {
+            font-size: 13px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .tip-example {
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            padding: 12px;
+            background: var(--bg-main);
+            border-radius: 8px;
+        }
+
+        .tip-analysis {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ==================== 暴露练习页面 ==================== */
+        .exercise-level-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .level-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .level-tab.active {
+            border-color: var(--primary);
+            background: #EEF2FF;
+        }
+
+        .level-tab h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .level-tab p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .exercise-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .exercise-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .exercise-badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .exercise-badge.level-1 { background: #ECFDF5; color: var(--secondary); }
+        .exercise-badge.level-2 { background: #FEF3C7; color: var(--warning); }
+        .exercise-badge.level-3 { background: #FEE2E2; color: var(--danger); }
+
+        .exercise-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .exercise-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .exercise-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .exercise-detail-content {
+            padding: 20px;
+        }
+
+        .exercise-steps {
+            counter-reset: step;
+            margin-bottom: 24px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .progress-questions {
+            background: var(--bg-main);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .progress-questions h4 {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .progress-question {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .progress-question:last-child {
+            border-bottom: none;
+        }
+
+        .record-form {
+            margin-top: 16px;
+        }
+
+        .record-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .record-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* ==================== 社区页面 ==================== */
+        .community-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .community-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .post-btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .post-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .post-author {
+            flex: 1;
+        }
+
+        .post-author-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .post-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .post-tag {
+            font-size: 12px;
+            padding: 4px 10px;
+            background: var(--bg-main);
+            color: var(--primary);
+            border-radius: 20px;
+        }
+
+        .post-footer {
+            display: flex;
+            gap: 20px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .post-action:hover {
+            color: var(--primary);
+        }
+
+        /* 帖子详情 */
+        .post-detail-header {
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--primary);
+            cursor: pointer;
+            margin-bottom: 16px;
+            background: none;
+            border: none;
+        }
+
+        .post-detail-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .post-detail-body {
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .comments-section {
+            margin-top: 24px;
+        }
+
+        .comments-header {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comment-list {
+            margin-bottom: 20px;
+        }
+
+        .comment-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .comment-author {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .comment-content {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-left: 42px;
+        }
+
+        .comment-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            resize: none;
+        }
+
+        .comment-submit {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+
+        /* 发帖弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-main);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            resize: vertical;
+            min-height: 150px;
+            font-family: inherit;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .tag-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-option {
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tag-option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ==================== VIP页面 ==================== */
+        .vip-hero {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: var(--radius-lg);
+            padding: 30px 24px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .vip-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .vip-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+        }
+
+        .vip-period {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .vip-benefits {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .vip-benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .vip-benefit-item:last-child {
+            border-bottom: none;
+        }
+
+        .benefit-icon {
+            width: 40px;
+            height: 40px;
+            background: #FEF3C7;
+            color: var(--warning);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .benefit-text h4 {
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+
+        .benefit-text p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .vip-testimonials {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-item {
+            padding: 16px;
+            background: var(--bg-main);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+        }
+
+        .testimonial-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .testimonial-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .purchase-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .purchase-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        /* ==================== 加载状态 ==================== */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== Toast提示 ==================== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--text-primary);
+            color: white;
+            padding: 14px 24px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--secondary);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 20px;
+            }
+            
+            .result-percentage {
+                font-size: 40px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🌱</div>
+                <span class="logo-text">社交恐惧症自救</span>
+            </div>
+            <button class="vip-btn" onclick="showPage('vip')">月卡 ¥19</button>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <main class="container">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="hero-section">
+                <h1 class="hero-title">🌱 陪你走出社恐</h1>
+                <p class="hero-subtitle">科学方法 + 循序渐进练习 = 改变从这里开始</p>
+                <div class="hero-slogan">
+                    💪 "社交能力不是天赋，而是可以训练的技能"
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="action-card" onclick="showPage('test')">
+                    <div class="action-icon test">📝</div>
+                    <div class="action-info">
+                        <h4>社恐自测</h4>
+                        <p>了解你的社恐程度</p>
+                    </div>
+                </div>
+                <div class="action-card" onclick="showPage('scenes')">
+                    <div class="action-icon scene">🎭</div>
+                    <div class="action-info">
+                        <h4>场景模拟</h4>
+                        <p>模拟真实社交场景</p>
+                    </div>
+                </div>
+                <div class="action-card" onclick="showPage('tips')">
+                    <div class="action-icon tips">💬</div>
+                    <div class="action-info">
+                        <h4>话术建议</h4>
+                        <p>不知道怎么开口？</p>
+                    </div>
+                </div>
+                <div class="action-card" onclick="showPage('exercises')">
+                    <div class="action-icon exercise">🏃</div>
+                    <div class="action-info">
+                        <h4>暴露练习</h4>
+                        <p>循序渐进的训练</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="daily-tip">
+                <div class="daily-tip-header">
+                    <span class="tag">每日心理暗示</span>
+                </div>
+                <p class="daily-tip-content" id="daily-tip-content">
+                    "我不需要完美无缺的表现，真实就够了。每个人都有自己的社交节奏，慢慢来。"
+                </p>
+                <div class="daily-tip-footer">
+                    <div class="streak">
+                        🔥 已坚持练习 3 天
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 自测页面 -->
+        <div id="page-test" class="page">
+            <div class="test-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="test-progress-fill" style="width: 0%"></div>
+                </div>
+                <span class="progress-text" id="test-progress-text">0/10</span>
+            </div>
+
+            <div id="test-content">
+                <!-- 动态加载测试题目 -->
+            </div>
+        </div>
+
+        <!-- 场景模拟页面 -->
+        <div id="page-scenes" class="page">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-category="all">全部</button>
+                <button class="filter-tab" data-category="职场">职场</button>
+                <button class="filter-tab" data-category="日常">日常</button>
+                <button class="filter-tab" data-category="社交">社交</button>
+            </div>
+
+            <div class="scene-list" id="scene-list">
+                <!-- 动态加载场景列表 -->
+            </div>
+        </div>
+
+        <!-- 话术建议页面 -->
+        <div id="page-tips" class="page">
+            <div id="tips-content">
+                <!-- 动态加载话术建议 -->
+            </div>
+        </div>
+
+        <!-- 暴露练习页面 -->
+        <div id="page-exercises" class="page">
+            <div class="exercise-level-tabs">
+                <div class="level-tab active" data-level="1">
+                    <h4>基础训练</h4>
+                    <p>入门级练习</p>
+                </div>
+                <div class="level-tab" data-level="2">
+                    <h4>进阶训练</h4>
+                    <p>有基础后挑战</p>
+                </div>
+                <div class="level-tab" data-level="3">
+                    <h4>挑战训练</h4>
+                    <p>高级社交场景</p>
+                </div>
+            </div>
+
+            <div id="exercise-list">
+                <!-- 动态加载练习列表 -->
+            </div>
+        </div>
+
+        <!-- 社区页面 -->
+        <div id="page-community" class="page">
+            <div class="community-header">
+                <h2 class="community-title">温暖社区</h2>
+                <button class="post-btn" onclick="showPostModal()">
+                    <span>+</span> 发帖
+                </button>
+            </div>
+
+            <div class="post-list" id="post-list">
+                <!-- 动态加载帖子列表 -->
+            </div>
+        </div>
+
+        <!-- VIP页面 -->
+        <div id="page-vip" class="page">
+            <div class="vip-hero">
+                <div class="vip-icon">👑</div>
+                <h2 class="vip-title">开通月卡会员</h2>
+                <div class="vip-price">¥19 <span>/月</span></div>
+                <p class="vip-period">一次购买，畅享30天完整服务</p>
+            </div>
+
+            <div class="vip-benefits">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">会员特权</h3>
+                <div class="vip-benefit-item">
+                    <div class="benefit-icon">📚</div>
+                    <div class="benefit-text">
+                        <h4>完整课程学习</h4>
+                        <p>解锁全部付费课程内容</p>
+                    </div>
+                </div>
+                <div class="vip-benefit-item">
+                    <div class="benefit-icon">💬</div>
+                    <div class="benefit-text">
+                        <h4>一对一辅导</h4>
+                        <p>专业心理咨询师在线指导</p>
+                    </div>
+                </div>
+                <div class="vip-benefit-item">
+                    <div class="benefit-icon">📋</div>
+                    <div class="benefit-text">
+                        <h4>专属练习计划</h4>
+                        <p>根据你的情况定制训练方案</p>
+                    </div>
+                </div>
+                <div class="vip-benefit-item">
+                    <div class="benefit-icon">🎯</div>
+                    <div class="benefit-text">
+                        <h4>优先人工客服</h4>
+                        <p>遇到问题随时咨询</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vip-testimonials">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">会员评价</h3>
+                <div class="testimonial-item">
+                    <p class="testimonial-text">"一对一辅导真的帮了我很多，老师很有耐心，现在我已经敢主动和同事聊天了！"</p>
+                    <p class="testimonial-author">— 匿名小熊（北京）</p>
+                </div>
+                <div class="testimonial-item">
+                    <p class="testimonial-text">"课程内容很实用，每天跟着练习，一个月后明显感觉自信多了。物超所值！"</p>
+                    <p class="testimonial-author">— 匿名企鹅（上海）</p>
+                </div>
+            </div>
+
+            <button class="purchase-btn" onclick="purchaseVip()">
+                立即开通 ¥19/月
+            </button>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="tab-bar">
+        <button class="tab-item active" data-page="home">
+            <span class="icon">🏠</span>
+            <span>首页</span>
+        </button>
+        <button class="tab-item" data-page="test">
+            <span class="icon">📝</span>
+            <span>自测</span>
+        </button>
+        <button class="tab-item" data-page="scenes">
+            <span class="icon">🎭</span>
+            <span>场景</span>
+        </button>
+        <button class="tab-item" data-page="tips">
+            <span class="icon">💬</span>
+            <span>话术</span>
+        </button>
+        <button class="tab-item" data-page="community">
+            <span class="icon">👥</span>
+            <span>社区</span>
+        </button>
+    </nav>
+
+    <!-- 发帖弹窗 -->
+    <div class="modal-overlay" id="post-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">发布帖子</h3>
+                <button class="modal-close" onclick="closePostModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">标题</label>
+                    <input type="text" class="form-input" id="post-title" placeholder="分享你的故事或困惑...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">内容</label>
+                    <textarea class="form-textarea" id="post-content" placeholder="在这里写下你的想法..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">选择标签</label>
+                    <div class="tag-selector">
+                        <span class="tag-option" data-tag="突破自我">突破自我</span>
+                        <span class="tag-option" data-tag="情绪倾诉">情绪倾诉</span>
+                        <span class="tag-option" data-tag="技巧分享">技巧分享</span>
+                        <span class="tag-option" data-tag="经验交流">经验交流</span>
+                        <span class="tag-option" data-tag="求助">求助</span>
+                        <span class="tag-option" data-tag="日常记录">日常记录</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="submitPost()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let currentPage = 'home';
+        let testCurrentQuestion = 0;
+        let testAnswers = [];
+        let currentScenes = [];
+        let currentPosts = [];
+        let currentExercises = [];
+        let selectedTags = [];
+
+        // API基础URL（开发环境）
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // ==================== 每日提示语 ====================
+        const DAILY_TIPS = [
+            "我不需要完美无缺的表现，真实就够了。每个人都有自己的社交节奏，慢慢来。",
+            "社交恐惧不是我的错，但改变是我的责任。相信自己有能力突破。",
+            "今天的每一次尝试，都是在靠近更好的自己。哪怕只进步一点点，也值得骄傲。",
+            "别人的目光并不如我想象的那么重要，我值得被尊重和理解。",
+            "紧张是身体在为我加油，而不是在阻止我。深呼吸，微笑，继续前进。",
+            "我正在学习用新的方式看待社交，每一次练习都是宝贵的经验。",
+            "不需要和任何人比较，只和昨天的自己比。每天进步一点点。",
+            "我接纳自己的不完美，也相信自己的成长潜力。改变需要时间，我愿意等待。",
+            "即使感到害怕，我也可以迈出这一步。勇气不是没有恐惧，而是带着恐惧前进。",
+            "我值得被听见，我的声音很重要。不要害怕表达真实的自己。"
+        ];
+
+        // ==================== 页面导航 ====================
+        function showPage(page) {
+            currentPage = page;
+            
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // 显示目标页面
+            document.getElementById(`page-${page}`).classList.add('active');
+            
+            // 更新底部导航
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.page === page);
+            });
+
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+
+            // 加载页面数据
+            switch(page) {
+                case 'test':
+                    if (testAnswers.length === 0) {
+                        loadSelfTestQuestions();
+                    }
+                    break;
+                case 'scenes':
+                    loadScenes();
+                    break;
+                case 'tips':
+                    loadTips();
+                    break;
+                case 'exercises':
+                    loadExercises(1);
+                    break;
+                case 'community':
+                    loadPosts();
+                    break;
+            }
+        }
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // 设置每日提示
+            const randomTip = DAILY_TIPS[Math.floor(Math.random() * DAILY_TIPS.length)];
+            document.getElementById('daily-tip-content').textContent = `"${randomTip}"`;
+
+            // 底部导航点击
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    showPage(tab.dataset.page);
+                });
+            });
+
+            // 场景筛选标签
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    loadScenes(tab.dataset.category);
+                });
+            });
+
+            // 练习级别标签
+            document.querySelectorAll('.level-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    loadExercises(parseInt(tab.dataset.level));
+                });
+            });
+
+            // 标签选择
+            document.querySelectorAll('.tag-option').forEach(tag => {
+                tag.addEventListener('click', () => {
+                    tag.classList.toggle('selected');
+                    const tagName = tag.dataset.tag;
+                    if (selectedTags.includes(tagName)) {
+                        selectedTags = selectedTags.filter(t => t !== tagName);
+                    } else {
+                        selectedTags.push(tagName);
+                    }
+                });
+            });
+
+            // 默认加载首页
+            showPage('home');
+        });
+
+        // ==================== Toast提示 ====================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // ==================== 社恐自测 ====================
+        async function loadSelfTestQuestions() {
+            const content = document.getElementById('test-content');
+            content.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/self-test/questions`);
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    testCurrentQuestion = 0;
+                    testAnswers = [];
+                    renderQuestion(data.data);
+                }
+            } catch (error) {
+                // 使用本地数据作为后备
+                const localQuestions = [
+                    {id: 1, question: "在陌生人聚会的场合，你会感到不自在吗？", options: [
+                        {text: "完全不会", score: 1},
+                        {text: "偶尔会", score: 2},
+                        {text: "经常会的", score: 3},
+                        {text: "总是会，而且想逃离", score: 4}
+                    ]},
+                    {id: 2, question: "当需要主动与陌生人交谈时，你的反应通常是？", options: [
+                        {text: "很自然地开口", score: 1},
+                        {text: "需要做一些心理准备", score: 2},
+                        {text: "能躲就躲，躲不了就硬着头皮上", score: 3},
+                        {text: "完全无法开口，会找借口离开", score: 4}
+                    ]},
+                    {id: 3, question: "在公众场合发言时，你会感到紧张吗？", options: [
+                        {text: "不会，我很享受表达", score: 1},
+                        {text: "有点紧张，但能控制", score: 2},
+                        {text: "很紧张，声音会发抖", score: 3},
+                        {text: "极度恐惧，尽量避免", score: 4}
+                    ]},
+                    {id: 4, question: "与不熟悉的人通电话时，你会？", options: [
+                        {text: "正常交流，毫无压力", score: 1},
+                        {text: "稍微有点不自在", score: 2},
+                        {text: "提前准备要说的话", score: 3},
+                        {text: "能发文字就绝不打电话", score: 4}
+                    ]},
+                    {id: 5, question: "在餐厅点餐时，如果服务员听不清，你会？", options: [
+                        {text: "大声重复，直到对方听清", score: 1},
+                        {text: "提高音量再说一次", score: 2},
+                        {text: "降低要求，随便点一个", score: 3},
+                        {text: "直接离开，不吃了", score: 4}
+                    ]},
+                    {id: 6, question: "参加同事/同学的聚餐时，你通常？", options: [
+                        {text: "主动参与聊天，享受氛围", score: 1},
+                        {text: "偶尔插话，但多数时候倾听", score: 2},
+                        {text: "主要和认识的人小声聊天", score: 3},
+                        {text: "坐在角落，假装看手机", score: 4}
+                    ]},
+                    {id: 7, question: "当有人盯着你看时，你会？", options: [
+                        {text: "若无其事，该干嘛干嘛", score: 1},
+                        {text: "稍微有点不自在", score: 2},
+                        {text: "很不自在，想要躲避", score: 3},
+                        {text: "非常恐慌，觉得自己做错了什么", score: 4}
+                    ]},
+                    {id: 8, question: "在网上发帖或评论时，你会担心？", options: [
+                        {text: "不担心，自由表达", score: 1},
+                        {text: "偶尔会考虑措辞", score: 2},
+                        {text: "经常担心被人嘲笑或批评", score: 3},
+                        {text: "从不发帖，怕被骂", score: 4}
+                    ]},
+                    {id: 9, question: "遇到认识但不太熟的人打招呼，你会？", options: [
+                        {text: "热情回应，主动聊天", score: 1},
+                        {text: "礼貌回应，简短交谈", score: 2},
+                        {text: "假装没看见，快速走过", score: 3},
+                        {text: "躲起来，等对方走了再出来", score: 4}
+                    ]},
+                    {id: 10, question: "当众接受表扬或赞美时，你会？", options: [
+                        {text: "坦然接受，表示感谢", score: 1},
+                        {text: "有点不好意思，但还是接受", score: 2},
+                        {text: "非常尴尬，想找个地缝钻", score: 3},
+                        {text: "当场否认，觉得他们在讽刺", score: 4}
+                    ]}
+                ];
+                testCurrentQuestion = 0;
+                testAnswers = [];
+                renderQuestion(localQuestions);
+            }
+        }
+
+        function renderQuestion(questions) {
+            if (testCurrentQuestion >= questions.length) {
+                submitTest();
+                return;
+            }
+
+            const q = questions[testCurrentQuestion];
+            const total = questions.length;
+            const progress = (testCurrentQuestion / total) * 100;
+
+            document.getElementById('test-progress-fill').style.width = `${progress}%`;
+            document.getElementById('test-progress-text').textContent = `${testCurrentQuestion + 1}/${total}`;
+
+            const content = document.getElementById('test-content');
+            content.innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">问题 ${testCurrentQuestion + 1}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options-list">
+                        ${q.options.map((opt, index) => `
+                            <div class="option-item" onclick="selectOption(${index}, ${opt.score})">
+                                <div class="option-radio"></div>
+                                <span class="option-text">${opt.text}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <button class="btn-primary" id="next-btn" disabled onclick="nextQuestion()">
+                    ${testCurrentQuestion === total - 1 ? '查看结果' : '下一题'}
+                </button>
+                ${testCurrentQuestion > 0 ? '<button class="btn-secondary" onclick="prevQuestion()">上一题</button>' : ''}
+            `;
+        }
+
+        function selectOption(index, score) {
+            document.querySelectorAll('.option-item').forEach((item, i) => {
+                item.classList.toggle('selected', i === index);
+            });
+            
+            testAnswers[testCurrentQuestion] = { questionId: testCurrentQuestion + 1, score: score };
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            const questions = [
+                {id: 1, question: "在陌生人聚会的场合，你会感到不自在吗？", options: [
+                    {text: "完全不会", score: 1}, {text: "偶尔会", score: 2}, {text: "经常会的", score: 3}, {text: "总是会，而且想逃离", score: 4}
+                ]},
+                {id: 2, question: "当需要主动与陌生人交谈时，你的反应通常是？", options: [
+                    {text: "很自然地开口", score: 1}, {text: "需要做一些心理准备", score: 2}, {text: "能躲就躲，躲不了就硬着头皮上", score: 3}, {text: "完全无法开口，会找借口离开", score: 4}
+                ]},
+                {id: 3, question: "在公众场合发言时，你会感到紧张吗？", options: [
+                    {text: "不会，我很享受表达", score: 1}, {text: "有点紧张，但能控制", score: 2}, {text: "很紧张，声音会发抖", score: 3}, {text: "极度恐惧，尽量避免", score: 4}
+                ]},
+                {id: 4, question: "与不熟悉的人通电话时，你会？", options: [
+                    {text: "正常交流，毫无压力", score: 1}, {text: "稍微有点不自在", score: 2}, {text: "提前准备要说的话", score: 3}, {text: "能发文字就绝不打电话", score: 4}
+                ]},
+                {id: 5, question: "在餐厅点餐时，如果服务员听不清，你会？", options: [
+                    {text: "大声重复，直到对方听清", score: 1}, {text: "提高音量再说一次", score: 2}, {text: "降低要求，随便点一个", score: 3}, {text: "直接离开，不吃了", score: 4}
+                ]},
+                {id: 6, question: "参加同事/同学的聚餐时，你通常？", options: [
+                    {text: "主动参与聊天，享受氛围", score: 1}, {text: "偶尔插话，但多数时候倾听", score: 2}, {text: "主要和认识的人小声聊天", score: 3}, {text: "坐在角落，假装看手机", score: 4}
+                ]},
+                {id: 7, question: "当有人盯着你看时，你会？", options: [
+                    {text: "若无其事，该干嘛干嘛", score: 1}, {text: "稍微有点不自在", score: 2}, {text: "很不自在，想要躲避", score: 3}, {text: "非常恐慌，觉得自己做错了什么", score: 4}
+                ]},
+                {id: 8, question: "在网上发帖或评论时，你会担心？", options: [
+                    {text: "不担心，自由表达", score: 1}, {text: "偶尔会考虑措辞", score: 2}, {text: "经常担心被人嘲笑或批评", score: 3}, {text: "从不发帖，怕被骂", score: 4}
+                ]},
+                {id: 9, question: "遇到认识但不太熟的人打招呼，你会？", options: [
+                    {text: "热情回应，主动聊天", score: 1}, {text: "礼貌回应，简短交谈", score: 2}, {text: "假装没看见，快速走过", score: 3}, {text: "躲起来，等对方走了再出来", score: 4}
+                ]},
+                {id: 10, question: "当众接受表扬或赞美时，你会？", options: [
+                    {text: "坦然接受，表示感谢", score: 1}, {text: "有点不好意思，但还是接受", score: 2}, {text: "非常尴尬，想找个地缝钻", score: 3}, {text: "当场否认，觉得他们在讽刺", score: 4}
+                ]}
+            ];
+            
+            testCurrentQuestion++;
+            renderQuestion(questions);
+        }
+
+        function prevQuestion() {
+            if (testCurrentQuestion > 0) {
+                const questions = [{}]; // 占位
+                testCurrentQuestion--;
+                renderQuestion(questions);
+            }
+        }
+
+        async function submitTest() {
+            const totalScore = testAnswers.reduce((sum, a) => sum + a.score, 0);
+            
+            // 计算结果
+            let result;
+            if (totalScore <= 16) {
+                result = {
+                    level: "轻度社恐",
+                    level_code: "mild",
+                    description: "你的社交焦虑水平较低，大部分社交场合你都能应对自如。偶尔在特定场合会感到不自在，但这属于正常范围内的社交紧张。",
+                    suggestions: [
+                        "保持现有的社交习惯，不必刻意改变",
+                        "可以尝试拓展社交圈，发现更多社交乐趣",
+                        "偶尔的不自在感可以通过深呼吸来缓解"
+                    ],
+                    percentage: Math.max(0, 100 - (totalScore - 10) * 5)
+                };
+            } else if (totalScore <= 26) {
+                result = {
+                    level: "中度社恐",
+                    level_code: "moderate",
+                    description: "你在某些社交场合会感到明显的不安和紧张。这可能会影响你的社交体验和职业发展，但通过练习可以逐步改善。",
+                    suggestions: [
+                        "从低压力的社交活动开始练习",
+                        "学习一些实用的社交技巧，如开场白技巧",
+                        "尝试"暴露练习"，逐步面对让你焦虑的场景",
+                        "记录每次社交后的感受，发现进步"
+                    ],
+                    percentage: Math.max(0, 100 - (totalScore - 16) * 5)
+                };
+            } else if (totalScore <= 34) {
+                result = {
+                    level: "较严重社恐",
+                    level_code: "severe",
+                    description: "社交焦虑对你的日常生活产生了明显影响。你可能会因为恐惧而回避很多社交场合，这可能限制了你的个人发展和生活质量。",
+                    suggestions: [
+                        "建议考虑寻求专业心理咨询师的帮助",
+                        "可以从"安全"的练习场景开始，逐步建立信心",
+                        "加入支持小组，与有类似困扰的人交流经验",
+                        "学习认知行为疗法的基本技巧"
+                    ],
+                    percentage: Math.max(0, 100 - (totalScore - 26) * 5)
+                };
+            } else {
+                result = {
+                    level: "严重社恐",
+                    level_code: "critical",
+                    description: "社交焦虑已经对你的生活产生了严重影响。建议尽快寻求专业的心理帮助，包括心理咨询或治疗。记住，寻求帮助是勇敢的表现。",
+                    suggestions: [
+                        "强烈建议联系专业心理咨询师",
+                        "不要独自承担，专业人士可以提供有效帮助",
+                        "可以先从线上匿名支持社区开始",
+                        "记住：你不是一个人，很多人都面临类似挑战"
+                    ],
+                    percentage: Math.max(0, 100 - (totalScore - 34) * 5)
+                };
+            }
+
+            renderResult(totalScore, result);
+        }
+
+        function renderResult(totalScore, result) {
+            document.getElementById('test-progress-fill').style.width = '100%';
+            document.getElementById('test-progress-text').textContent = '已完成';
+
+            const content = document.getElementById('test-content');
+            content.innerHTML = `
+                <div class="result-header">
+                    <div class="result-level ${result.level_code}">${result.level}</div>
+                    <div class="result-percentage">${result.percentage}%</div>
+                    <p class="result-desc">${result.description}</p>
+                </div>
+                
+                <div class="result-suggestions">
+                    <h4>💡 改善建议</h4>
+                    ${result.suggestions.map(s => `
+                        <div class="suggestion-item">
+                            <div class="suggestion-icon">✓</div>
+                            <p class="suggestion-text">${s}</p>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="result-suggestions" style="background: linear-gradient(135deg, #EEF2FF 0%, #F5F7FF 100%);">
+                    <h4>🚀 推荐行动</h4>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+                        <div class="action-card" onclick="showPage('scenes')">
+                            <div class="action-icon scene">🎭</div>
+                            <div class="action-info">
+                                <h4>开始场景模拟练习</h4>
+                                <p>在安全环境中练习社交</p>
+                            </div>
+                        </div>
+                        <div class="action-card" onclick="showPage('exercises')">
+                            <div class="action-icon exercise">🏃</div>
+                            <div class="action-info">
+                                <h4>加入暴露练习计划</h4>
+                                <p>循序渐进战胜恐惧</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="resetTest()" style="margin-top: 20px;">
+                    重新测试
+                </button>
+            `;
+        }
+
+        function resetTest() {
+            testCurrentQuestion = 0;
+            testAnswers = [];
+            loadSelfTestQuestions();
+        }
+
+        // ==================== 场景模拟 ====================
+        async function loadScenes(category = 'all') {
+            const list = document.getElementById('scene-list');
+            list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            const scenes = [
+                {id: 1, category: "职场", title: "电梯里遇到老板", description: "你独自在电梯里，老板进来了并和你在同一层下。你需要在这个尴尬的电梯时间中与老板交流。", difficulty: "easy"},
+                {id: 2, category: "职场", title: "会议中发言", description: "在部门会议中，你有一个重要的想法需要分享，但会议室里有十几位同事，包括几位领导。", difficulty: "medium"},
+                {id: 3, category: "日常", title: "餐厅服务员点餐", description: "你独自一人在餐厅，服务员过来为你点餐。你需要大声说出自己的选择。", difficulty: "easy"},
+                {id: 4, category: "社交", title: "相亲/相亲局", description: "经人介绍，你与一位相亲对象第一次见面。你需要在咖啡厅里进行一场尴尬的初次对话。", difficulty: "hard"},
+                {id: 5, category: "社交", title: "被邀请加入聊天", description: "你和几位同事在休息室，两位你不太熟悉的同事加入，你们需要一起聊天。", difficulty: "medium"},
+                {id: 6, category: "日常", title: "问路/寻求帮助", description: "你在商场里迷路了，需要向路人问路或者寻求帮助。", difficulty: "easy"}
+            ];
+
+            currentScenes = scenes;
+            
+            const filteredScenes = category === 'all' 
+                ? scenes 
+                : scenes.filter(s => s.category === category);
+
+            list.innerHTML = filteredScenes.map(scene => `
+                <div class="scene-card" onclick="showSceneDetail(${scene.id})">
+                    <div class="scene-header">
+                        <span class="scene-category">${scene.category}</span>
+                        <span class="scene-difficulty ${scene.difficulty}">
+                            ${scene.difficulty === 'easy' ? '简单' : scene.difficulty === 'medium' ? '中等' : '困难'}
+                        </span>
+                    </div>
+                    <h3 class="scene-title">${scene.title}</h3>
+                    <p class="scene-desc">${scene.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function showSceneDetail(sceneId) {
+            const scene = currentScenes.find(s => s.id === sceneId);
+            if (!scene) return;
+
+            const difficultyLabels = { easy: '简单', medium: '中等', hard: '困难' };
+            
+            const scenePage = document.getElementById('page-scenes');
+            scenePage.innerHTML = `
+                <button class="back-btn" onclick="showPage('scenes')">← 返回场景列表</button>
+                
+                <div class="scene-detail">
+                    <div class="scene-detail-header">
+                        <div class="scene-detail-category">${scene.category}</div>
+                        <h2 class="scene-detail-title">${scene.title}</h2>
+                        <p class="scene-detail-desc">${scene.description}</p>
+                    </div>
+                    
+                    <div class="scene-detail-content">
+                        <h3 class="section-title">💡 小贴士</h3>
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <div class="tip-bullet"></div>
+                                <span>微笑问好是第一步</span>
+                            </div>
+                            <div class="tip-item">
+                                <div class="tip-bullet"></div>
+                                <span>可以从相关话题切入</span>
+                            </div>
+                            <div class="tip-item">
+                                <div class="tip-bullet"></div>
+                                <span>不必追求完美，自然就好</span>
+                            </div>
+                        </div>
+
+                        <h3 class="section-title">📝 推荐话术</h3>
+                        <div class="script-list">
+                            <div class="script-item">
+                                <div class="script-situation">开场</div>
+                                <div class="script-text">早上好/下午好！</div>
+                                <div class="script-purpose">问候破冰</div>
+                            </div>
+                            <div class="script-item">
+                                <div class="script-situation">延续话题</div>
+                                <div class="script-text">今天气色不错，最近忙吗？</div>
+                                <div class="script-purpose">寻找共同话题</div>
+                            </div>
+                            <div class="script-item">
+                                <div class="script-situation">告别</div>
+                                <div class="script-text">那先这样，回见！</div>
+                                <div class="script-purpose">自然结束</div>
+                            </div>
+                        </div>
+
+                        <h3 class="section-title">🎭 场景模拟对话</h3>
+                        <div class="dialogue-area" id="dialogue-area">
+                            <div class="dialogue-item ai">
+                                <div class="dialogue-bubble">你好啊，今天怎么样？</div>
+                            </div>
+                        </div>
+                        <div class="dialogue-input-area">
+                            <input type="text" class="dialogue-input" id="dialogue-input" placeholder="输入你的回应..." onkeypress="handleDialogueKeypress(event, ${scene.id})">
+                            <button class="dialogue-send-btn" onclick="sendDialogue(${scene.id})">发送</button>
+                        </div>
+
+                        <button class="btn-primary" style="margin-top: 20px;" onclick="showToast('太棒了！完成了一次场景练习！', 'success')">
+                            完成练习
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function sendDialogue(sceneId) {
+            const input = document.getElementById('dialogue-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const dialogueArea = document.getElementById('dialogue-area');
+            
+            // 添加用户消息
+            dialogueArea.innerHTML += `
+                <div class="dialogue-item user">
+                    <div class="dialogue-bubble">${message}</div>
+                </div>
+            `;
+
+            // 模拟AI回复
+            const responses = [
+                "（微笑点头）嗯，这个回答不错！👍",
+                "（认真倾听）我理解你的意思了...",
+                "好的，那接下来呢？",
+                "（鼓励地）继续保持，很好！"
+            ];
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+
+            setTimeout(() => {
+                dialogueArea.innerHTML += `
+                    <div class="dialogue-item ai">
+                        <div class="dialogue-bubble">${randomResponse}</div>
+                    </div>
+                `;
+                dialogueArea.scrollTop = dialogueArea.scrollHeight;
+            }, 500);
+
+            input.value = '';
+            dialogueArea.scrollTop = dialogueArea.scrollHeight;
+        }
+
+        function handleDialogueKeypress(event, sceneId) {
+            if (event.key === 'Enter') {
+                sendDialogue(sceneId);
+            }
+        }
+
+        // ==================== 话术建议 ====================
+        async function loadTips() {
+            const tipsData = {
+                "开场破冰": [
+                    {situation: "和陌生人打招呼", example: "你好，我是XXX，很高兴认识你！", analysis: "简单直接的自我介绍，降低双方的压力"},
+                    {situation: "延续对话", example: "你今天看起来心情不错，是有什么好事吗？", analysis: "用开放式问题开启话题，让对方有话可说"},
+                    {situation: "打破沉默", example: "这家店的装修挺有特色的，你经常来吗？", analysis: "用环境细节作为话题切入点，自然不刻意"}
+                ],
+                "拒绝技巧": [
+                    {situation: "不想参加活动", example: "谢谢你的邀请，这次我正好有其他安排，下次一定参加！", analysis: "先表达感谢，再给出合理理由，给对方面子"},
+                    {situation: "被要求帮忙", example: "我很想帮你，但我现在手头工作比较紧，可能帮不了你，抱歉。", analysis: "表达意愿+说明原因+真诚道歉，不伤和气"}
+                ],
+                "化解尴尬": [
+                    {situation: "叫错名字", example: "不好意思，我脑子突然卡壳了，你的名字是...?", analysis: "承认失误但不过度道歉，用幽默化解"},
+                    {situation: "冷场时", example: "对了，你平时有什么爱好吗？", analysis: "用通用话题重启对话，避免尴尬蔓延"}
+                ],
+                "表达赞美": [
+                    {situation: "夸赞外表", example: "你这件衣服很衬你，在哪买的？", analysis: "赞美+提问，让对方有机会分享"},
+                    {situation: "夸赞能力", example: "你刚才那个发言逻辑特别清晰，学到了！", analysis: "具体夸赞而不是泛泛之词，显得真诚"}
+                ],
+                "电话沟通": [
+                    {situation: "接电话紧张", example: "喂，你好，请问有什么事吗？（深呼吸后）", analysis: "给自己几秒缓冲时间，调整状态再开口"},
+                    {situation: "没听清时", example: "不好意思，刚才信号不太好，你能再说一遍吗？", analysis: "用客观原因解释，避免显得不专心"}
+                ]
+            };
+
+            const content = document.getElementById('tips-content');
+            content.innerHTML = Object.entries(tipsData).map(([category, tips], index) => `
+                <div class="tips-category">
+                    <div class="tips-category-header" onclick="toggleTipsCategory(${index})">
+                        <h3>${category}</h3>
+                        <span>▼</span>
+                    </div>
+                    <div class="tips-category-content ${index === 0 ? 'show' : ''}" id="tips-content-${index}">
+                        ${tips.map(tip => `
+                            <div class="tip-card">
+                                <div class="tip-situation">场景：${tip.situation}</div>
+                                <div class="tip-example">"${tip.example}"</div>
+                                <div class="tip-analysis">💡 ${tip.analysis}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTipsCategory(index) {
+            const content = document.getElementById(`tips-content-${index}`);
+            content.classList.toggle('show');
+        }
+
+        // ==================== 暴露练习 ====================
+        async function loadExercises(level) {
+            const list = document.getElementById('exercise-list');
+            list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            const exercises = [
+                {id: 1, name: "眼神接触练习", category: "基础训练", description: "每天与3个陌生人进行2-3秒的眼神接触", duration: "7天", level: 1, steps: ["从熟悉的人开始（家人、朋友）", "逐渐过渡到不太熟悉的人（同事、邻居）", "最后挑战陌生人（店员、路人）", "从2秒开始，逐渐延长到5秒"], progress_questions: ["今天和多少人进行了眼神接触？", "最长的一次坚持了几秒？", "过程中有什么感受？"]},
+                {id: 2, name: "主动问候练习", category: "基础训练", description: "每天主动向5个认识的人问好", duration: "7天", level: 1, steps: ["从"你好"开始，不需要多余的话", "一周后尝试加一句简短的寒暄", "如"今天天气真好"", "再逐渐增加话题深度"], progress_questions: ["今天问候了几个人？", "有没有人回应了你的问候？", "最让你紧张的是哪一次？"]},
+                {id: 3, name: "小憩聊天练习", category: "进阶训练", description: "在咖啡店/奶茶店与店员进行简短的闲聊", duration: "14天", level: 2, steps: ["第一天：点单时说"谢谢"", "第二天：尝试"你今天忙吗？"", "第三天：问问店里的推荐", "之后：每天尝试一个不同的话题"], progress_questions: ["今天和店员聊了什么话题？", "对方反应如何？", "你觉得哪次对话最自然？"]},
+                {id: 4, name: "电话勇气练习", category: "进阶训练", description: "每天打一个之前不敢打的电话", duration: "14天", level: 2, steps: ["第一天：给家人打电话", "第二天：给朋友打电话", "第三天：给外卖/快递打电话确认", "之后：尝试预约、咨询等电话"], progress_questions: ["今天打的电话是什么目的？", "通话过程中紧张吗？", "打完后的感受是什么？"]},
+                {id: 5, name: "聚会参与练习", category: "挑战训练", description: "参加小型聚会，并在聚会上与不认识的人交谈", duration: "21天", level: 3, steps: ["第一次：参加2-3人的小聚", "第二次：尝试主动和一个新人说话", "第三次：在聚会上发表一次意见", "逐渐参与人数更多的聚会"], progress_questions: ["聚会有几个人？", "你和谁聊了？聊了什么？", "这次聚会有没有交到新朋友？"]}
+            ];
+
+            currentExercises = exercises.filter(e => e.level === level);
+
+            list.innerHTML = currentExercises.map(exercise => `
+                <div class="exercise-card" onclick="showExerciseDetail(${exercise.id})">
+                    <div class="exercise-header">
+                        <h3 class="exercise-name">${exercise.name}</h3>
+                        <span class="exercise-badge level-${exercise.level}">${exercise.category}</span>
+                    </div>
+                    <p class="exercise-desc">${exercise.description}</p>
+                    <div class="exercise-meta">
+                        <span>⏱️ ${exercise.duration}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showExerciseDetail(exerciseId) {
+            const exercise = currentExercises.find(e => e.id === exerciseId);
+            if (!exercise) return;
+
+            const exercisesPage = document.getElementById('page-exercises');
+            exercisesPage.innerHTML = `
+                <button class="back-btn" onclick="showPage('exercises')">← 返回练习列表</button>
+                
+                <div class="exercise-card" style="cursor: default;">
+                    <div class="exercise-header">
+                        <h2 class="exercise-name">${exercise.name}</h2>
+                        <span class="exercise-badge level-${exercise.level}">${exercise.category}</span>
+                    </div>
+                    <p class="exercise-desc">${exercise.description}</p>
+                    <div class="exercise-meta">
+                        <span>⏱️ ${exercise.duration}</span>
+                    </div>
+                </div>
+
+                <div class="result-suggestions">
+                    <h4>📋 练习步骤</h4>
+                    <div class="exercise-steps">
+                        ${exercise.steps.map((step, index) => `
+                            <div class="step-item">
+                                <div class="step-number">${index + 1}</div>
+                                <div class="step-content">${step}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="progress-questions">
+                        <h4>📝 每日反思问题</h4>
+                        ${exercise.progress_questions.map(q => `
+                            <div class="progress-question">• ${q}</div>
+                        `).join('')}
+                    </div>
+
+                    <div class="record-form">
+                        <h4 style="margin-top: 20px; margin-bottom: 12px;">✏️ 记录今日练习</h4>
+                        <textarea class="record-input" id="exercise-record" placeholder="写下你今天的练习感受和收获..."></textarea>
+                        <button class="btn-primary" onclick="saveExerciseRecord()">保存记录</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function saveExerciseRecord() {
+            const record = document.getElementById('exercise-record').value;
+            if (!record.trim()) {
+                showToast('请先记录你的练习感受', 'error');
+                return;
+            }
+            showToast('记录已保存，继续加油！💪', 'success');
+            document.getElementById('exercise-record').value = '';
+        }
+
+        // ==================== 社区 ====================
+        async function loadPosts() {
+            const list = document.getElementById('post-list');
+            list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            const posts = [
+                {id: 1, author: "匿名小鸟", time: "2小时前", title: "今天终于在会议上发言了！", content: "鼓起勇气在部门会议上说了自己的想法，虽然声音有点抖，但同事们都认真听了，领导还说想法不错！感觉自己又进步了一点点~和大家分享一下我的喜悦！", likes: 128, comments: 23, tags: ["突破自我", "职场成长", "小确幸"]},
+                {id: 2, author: "匿名向日葵", time: "5小时前", title: "在地铁上被人踩了一脚不知道怎么反应", content: "刚才在地铁上被人踩了一脚，对方说了句对不起就完了。我当时想说'没关系'，但是话到嘴边就是说不出来，就那么尴尬地站着。下车的时候心情很糟糕，觉得自己好没用。这种小事都处理不好...", likes: 89, comments: 67, tags: ["日常困扰", "寻求安慰"]},
+                {id: 3, author: "匿名小熊", time: "1天前", title: "给大家分享一个对我有用的技巧", content: "我以前连打电话都不敢，后来心理咨询师教我一个方法：提前把要说的话写下来，练习3遍再去打。亲测有效！现在我已经能自如地接打电话了。建议大家也可以试试这个方法。", likes: 256, comments: 45, tags: ["技巧分享", "经验交流"]},
+                {id: 4, author: "匿名星星", time: "1天前", title: "相亲对象说我太安静了...", content: "昨天去相亲，对方是个挺不错的人。但我全程不知道该说什么，基本都是他在问我在答。结束后媒人说他觉得我太安静了，是不是对他没意思...其实我对他挺有好感的，就是不知道该怎么表达。社恐真的很难搞啊。", likes: 178, comments: 89, tags: ["相亲经历", "感情困惑"]},
+                {id: 5, author: "匿名天空", time: "2天前", title: "坚持暴露练习一个月，我的改变", content: "从上周开始每天按照APP里的暴露练习计划执行，到今天正好一个月。来汇报一下成果：\n1. 眼神接触：从不敢到能坚持5秒\n2. 主动问候：已经能和邻居打招呼了\n3. 点餐：从'这个'到现在能和服务员聊几句\n\n虽然还是很内向，但真的感觉自己在进步！", likes: 345, comments: 56, tags: ["暴露练习", "成长记录", "坚持分享"]},
+                {id: 6, author: "匿名企鹅", time: "2天前", title: "有没有人和我一样，特别怕被夸奖？", content: "每次别人夸我，我就浑身不自在，恨不得找个地缝钻进去。有时候明明是夸奖，听起来却像讽刺。我妈说我这是'不识好歹'，但我真的控制不住啊...这是社恐的表现吗？还是我有什么问题？", likes: 203, comments: 78, tags: ["心理困惑", "寻求理解"]},
+                {id: 7, author: "匿名大树", time: "3天前", title: "推荐一本书《如何克服社交焦虑》", content: "最近在看这本书，感觉很有帮助。作者本身也是曾经的社恐患者，所以特别能理解我们的感受。书里有很多实用的建议，不是那种'你要自信'的废话，而是具体可操作的步骤。有需要的朋友可以看看！", likes: 167, comments: 34, tags: ["好物推荐", "书籍分享"]},
+                {id: 8, author: "匿名月光", time: "3天前", title: "今天被裁员了，不敢告诉家人", content: "今天公司裁员，我被优化了。走出公司的时候整个人都是懵的。不知道怎么和家人说，怕他们失望。更不知道接下来该怎么办，感觉自己好失败。为什么我连好好工作都做不到...", likes: 289, comments: 112, tags: ["职场困境", "情绪倾诉"]}
+            ];
+
+            currentPosts = posts;
+
+            list.innerHTML = posts.map(post => `
+                <div class="post-card" onclick="showPostDetail(${post.id})">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.author.slice(-1)}</div>
+                        <div class="post-author">
+                            <div class="post-author-name">${post.author}</div>
+                            <div class="post-time">${post.time}</div>
+                        </div>
+                    </div>
+                    <h3 class="post-title">${post.title}</h3>
+                    <p class="post-content">${post.content}</p>
+                    <div class="post-tags">
+                        ${post.tags.map(tag => `<span class="post-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="post-footer">
+                        <span class="post-action">❤️ ${post.likes}</span>
+                        <span class="post-action">💬 ${post.comments}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showPostDetail(postId) {
+            const post = currentPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            const communityPage = document.getElementById('page-community');
+            communityPage.innerHTML = `
+                <button class="back-btn" onclick="showPage('community')">← 返回社区</button>
+                
+                <div class="post-detail-header">
+                    <h2 class="post-detail-title">${post.title}</h2>
+                    <div class="post-header">
+                        <div class="post-avatar">${post.author.slice(-1)}</div>
+                        <div class="post-author">
+                            <div class="post-author-name">${post.author}</div>
+                            <div class="post-time">${post.time}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-detail-body">${post.content}</div>
+
+                <div class="post-tags" style="margin-top: 16px;">
+                    ${post.tags.map(tag => `<span class="post-tag">${tag}</span>`).join('')}
+                </div>
+
+                <div class="comments-section">
+                    <div class="comments-header">评论 (${post.comments})</div>
+                    
+                    <div class="comment-list">
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <div class="comment-avatar">🌱</div>
+                                <div>
+                                    <span class="comment-author">匿名小草</span>
+                                    <span class="comment-time"> · 1小时前</span>
+                                </div>
+                            </div>
+                            <div class="comment-content">太棒了！恭喜你！每一次突破都值得庆祝！</div>
+                        </div>
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <div class="comment-avatar">☀️</div>
+                                <div>
+                                    <span class="comment-author">匿名阳光</span>
+                                    <span class="comment-time"> · 1小时前</span>
+                                </div>
+                            </div>
+                            <div class="comment-content">声音抖很正常，我第一次发言直接大脑空白。你已经很勇敢了！</div>
+                        </div>
+                    </div>
+
+                    <div class="comment-input-area">
+                        <textarea class="comment-input" id="comment-input" placeholder="写下你的评论..." rows="2"></textarea>
+                        <button class="comment-submit" onclick="submitComment(${post.id})">发送</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function submitComment(postId) {
+            const input = document.getElementById('comment-input');
+            const content = input.value.trim();
+            
+            if (!content) {
+                showToast('请输入评论内容', 'error');
+                return;
+            }
+
+            showToast('评论成功！感谢你的回复 💬', 'success');
+            input.value = '';
+        }
+
+        function showPostModal() {
+            document.getElementById('post-modal').classList.add('show');
+            selectedTags = [];
+            document.querySelectorAll('.tag-option').forEach(t => t.classList.remove('selected'));
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-content').value = '';
+        }
+
+        function closePostModal() {
+            document.getElementById('post-modal').classList.remove('show');
+        }
+
+        function submitPost() {
+            const title = document.getElementById('post-title').value.trim();
+            const content = document.getElementById('post-content').value.trim();
+
+            if (!title) {
+                showToast('请输入标题', 'error');
+                return;
+            }
+
+            if (!content) {
+                showToast('请输入内容', 'error');
+                return;
+            }
+
+            showToast('发布成功！感谢你的分享 🌟', 'success');
+            closePostModal();
+            loadPosts();
+        }
+
+        // ==================== VIP购买 ====================
+        function purchaseVip() {
+            showToast('跳转到支付页面...', 'success');
+            setTimeout(() => {
+                showToast('支付成功！欢迎成为会员 👑', 'success');
+                document.querySelector('.vip-btn').classList.add('active');
+                document.querySelector('.vip-btn').textContent = '已开通';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

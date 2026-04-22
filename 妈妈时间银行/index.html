@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>妈妈时间银行</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B9D;
+            --primary-light: #FFE4EC;
+            --secondary: #7C4DFF;
+            --success: #00C853;
+            --warning: #FFB300;
+            --danger: #FF5252;
+            --bg: #FFF5F8;
+            --card: #FFFFFF;
+            --text: #333333;
+            --text-light: #666666;
+            --text-lighter: #999999;
+            --border: #F0E0E6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .user-avatar {
+            font-size: 20px;
+        }
+
+        .member-badge {
+            background: #FFD700;
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .free-badge {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        /* 统计卡片 */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        /* 导航栏 */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 4px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 11px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 22px;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 时间分类图标 */
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .category-housework { background: #E3F2FD; }
+        .category-parenting { background: #FCE4EC; }
+        .category-self { background: #E8F5E9; }
+        .category-work { background: #FFF3E0; }
+        .category-other { background: #F3E5F5; }
+
+        /* 时间记录列表 */
+        .time-record {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .time-record:last-child {
+            border-bottom: none;
+        }
+
+        .time-record-info {
+            flex: 1;
+        }
+
+        .time-record-task {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .time-record-meta {
+            font-size: 12px;
+            color: var(--text-lighter);
+        }
+
+        .time-record-duration {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* 添加按钮 */
+        .add-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            font-size: 28px;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            box-shadow: 0 4px 12px rgba(255,107,157,0.4);
+            cursor: pointer;
+            z-index: 99;
+            transition: transform 0.2s;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 家务任务 */
+        .chore-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #FAFAFA;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .chore-checkbox {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .chore-checkbox.completed {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chore-info {
+            flex: 1;
+        }
+
+        .chore-task {
+            font-weight: 500;
+        }
+
+        .chore-meta {
+            font-size: 12px;
+            color: var(--text-lighter);
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .chore-assignee {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .chore-points {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* 自我时间预约 */
+        .booking-card {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--success);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .booking-activity {
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .booking-status {
+            background: var(--success);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .booking-time {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* 情绪日记 */
+        .mood-emoji {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .mood-selector {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 16px;
+        }
+
+        .mood-option {
+            text-align: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .mood-option:hover, .mood-option.selected {
+            background: var(--primary-light);
+        }
+
+        .mood-option .emoji {
+            font-size: 32px;
+            display: block;
+        }
+
+        .mood-option .label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .diary-entry {
+            background: #FAFAFA;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .diary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .diary-mood {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .diary-date {
+            font-size: 12px;
+            color: var(--text-lighter);
+        }
+
+        .diary-content {
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .diary-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .diary-tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        /* 社区帖子 */
+        .post-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .post-author {
+            font-weight: bold;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-lighter);
+        }
+
+        .post-content {
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .post-tag {
+            background: #F0F0F0;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .post-action:hover {
+            color: var(--primary);
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #F0F0F0;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 会员卡片 */
+        .vip-card {
+            background: linear-gradient(135deg, #7C4DFF 0%, #FF6B9D 100%);
+            border-radius: 20px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .vip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .vip-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .vip-price {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .vip-price span {
+            font-size: 14px;
+        }
+
+        .vip-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .vip-feature .icon {
+            color: #FFD700;
+        }
+
+        .upgrade-btn {
+            width: 100%;
+            padding: 14px;
+            background: #FFD700;
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        .upgrade-btn:hover {
+            background: #FFC107;
+        }
+
+        /* 功能列表 */
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .feature-info {
+            flex: 1;
+        }
+
+        .feature-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .feature-desc {
+            font-size: 12px;
+            color: var(--text-lighter);
+        }
+
+        .feature-arrow {
+            color: var(--text-lighter);
+            font-size: 18px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 300;
+            animation: toastIn 0.3s ease;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* 统计图表区域 */
+        .stats-chart {
+            height: 200px;
+            background: #FAFAFA;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 150px;
+        }
+
+        .chart-bar-item {
+            width: 40px;
+            background: linear-gradient(to top, var(--primary), var(--secondary));
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-lighter);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            margin-bottom: 16px;
+        }
+
+        /* 锁定功能提示 */
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+
+        .lock-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .lock-text {
+            color: var(--text-light);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .lock-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-top: 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* 分类选择器 */
+        .category-pills {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .category-pill {
+            padding: 8px 16px;
+            background: #F0F0F0;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-pill.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 时间轴 */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid white;
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: var(--text-lighter);
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            background: #FAFAFA;
+            padding: 12px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-top">
+            <div class="header-title">
+                <span>🏦</span>
+                <span>妈妈时间银行</span>
+            </div>
+            <div class="user-info" onclick="showPage('profile')">
+                <span class="user-avatar" id="userAvatar">🌟</span>
+                <span id="userName">阳光妈妈</span>
+                <span class="member-badge premium-badge" id="memberBadge">VIP</span>
+            </div>
+        </div>
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-value" id="todayMinutes">0</div>
+                <div class="stat-label">今日记录(分钟)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="selfTimeMinutes">0</div>
+                <div class="stat-label">自我时间(分钟)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="familyScore">0</div>
+                <div class="stat-label">家庭积分</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 页面容器 -->
+    <main>
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <div class="card">
+                <div class="card-title">
+                    <span>📊</span>
+                    <span>今日时间分布</span>
+                </div>
+                <div class="category-pills">
+                    <div class="category-pill active" data-category="all">全部</div>
+                    <div class="category-pill" data-category="家务">🏠 家务</div>
+                    <div class="category-pill" data-category="育儿">👶 育儿</div>
+                    <div class="category-pill" data-category="自我">💝 自我</div>
+                    <div class="category-pill" data-category="工作">💼 工作</div>
+                </div>
+                <div id="timeRecordsList">
+                    <!-- 时间记录列表 -->
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>👨‍👩‍👧‍👦</span>
+                    <span>家务分配</span>
+                </div>
+                <div id="choresList">
+                    <!-- 家务列表 -->
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>⏰</span>
+                    <span>自我时间预约</span>
+                </div>
+                <div id="bookingsList">
+                    <!-- 预约列表 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 时间记录页 -->
+        <div class="page" id="page-time">
+            <div class="card">
+                <div class="card-title">
+                    <span>⏱️</span>
+                    <span>时间记录</span>
+                </div>
+                <div class="category-pills" id="timeCategoryPills">
+                    <div class="category-pill active" data-category="all">全部</div>
+                    <div class="category-pill" data-category="家务">🏠 家务</div>
+                    <div class="category-pill" data-category="育儿">👶 育儿</div>
+                    <div class="category-pill" data-category="自我">💝 自我</div>
+                    <div class="category-pill" data-category="工作">💼 工作</div>
+                </div>
+                <div id="fullTimeRecordsList">
+                    <!-- 完整时间记录列表 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 家务分配页 -->
+        <div class="page" id="page-chores">
+            <div class="card">
+                <div class="card-title">
+                    <span>📋</span>
+                    <span>家务任务</span>
+                </div>
+                <div id="fullChoresList">
+                    <!-- 完整家务列表 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 自我时间页 -->
+        <div class="page" id="page-self">
+            <div class="card">
+                <div class="card-title">
+                    <span>🌸</span>
+                    <span>自我时间预约</span>
+                </div>
+                <div id="fullBookingsList">
+                    <!-- 完整预约列表 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 情绪日记页 -->
+        <div class="page" id="page-mood">
+            <div class="card">
+                <div class="card-title">
+                    <span>💭</span>
+                    <span>情绪日记</span>
+                </div>
+                <div id="diaryList">
+                    <!-- 日记列表 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 社区页 -->
+        <div class="page" id="page-community">
+            <div id="postsList">
+                <!-- 帖子列表 -->
+            </div>
+        </div>
+
+        <!-- 我的页 -->
+        <div class="page" id="page-profile">
+            <div class="vip-card" id="vipCard">
+                <div class="vip-header">
+                    <div class="vip-title">🏆 开通会员</div>
+                    <div class="vip-price">¥15<span>/月</span></div>
+                </div>
+                <p style="font-size: 13px; opacity: 0.9;">解锁全部高级功能，让时间管理更高效</p>
+                <div class="vip-features">
+                    <div class="vip-feature"><span class="icon">✓</span> 完整时间分析报表</div>
+                    <div class="vip-feature"><span class="icon">✓</span> 家庭成员数据共享</div>
+                    <div class="vip-feature"><span class="icon">✓</span> 情绪趋势分析</div>
+                    <div class="vip-feature"><span class="icon">✓</span> 无限时间记录</div>
+                    <div class="vip-feature"><span class="icon">✓</span> 优先推荐展示</div>
+                    <div class="vip-feature"><span class="icon">✓</span> 专属客服支持</div>
+                </div>
+                <button class="upgrade-btn" id="upgradeBtn" onclick="upgradeMembership()">立即开通</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>👤</span>
+                    <span>会员信息</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: #E3F2FD;">👩</div>
+                    <div class="feature-info">
+                        <div class="feature-name" id="profileName">阳光妈妈</div>
+                        <div class="feature-desc" id="profileMember">Premium会员</div>
+                    </div>
+                    <span class="feature-arrow">✨</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: #FCE4EC;">👨‍👩‍👧‍👦</div>
+                    <div class="feature-info">
+                        <div class="feature-name">家庭成员</div>
+                        <div class="feature-desc" id="familyCount">4人</div>
+                    </div>
+                    <span class="feature-arrow">›</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span>⚙️</span>
+                    <span>功能设置</span>
+                </div>
+                <div class="feature-item" onclick="showToast('功能开发中...')">
+                    <div class="feature-icon" style="background: #E8F5E9;">🔔</div>
+                    <div class="feature-info">
+                        <div class="feature-name">提醒设置</div>
+                        <div class="feature-desc">定时提醒家务任务</div>
+                    </div>
+                    <span class="feature-arrow">›</span>
+                </div>
+                <div class="feature-item" onclick="showToast('功能开发中...')">
+                    <div class="feature-icon" style="background: #FFF3E0;">📤</div>
+                    <div class="feature-info">
+                        <div class="feature-name">数据导出</div>
+                        <div class="feature-desc">导出时间记录报表</div>
+                    </div>
+                    <span class="feature-arrow">›</span>
+                </div>
+                <div class="feature-item" onclick="showToast('功能开发中...')">
+                    <div class="feature-icon" style="background: #F3E5F5;">👥</div>
+                    <div class="feature-info">
+                        <div class="feature-name">邀请家人</div>
+                        <div class="feature-desc">邀请家人加入时间银行</div>
+                    </div>
+                    <span class="feature-arrow">›</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="nav-bar">
+        <a class="nav-item active" data-page="home" onclick="showPage('home')">
+            <span class="icon">🏠</span>
+            <span>首页</span>
+        </a>
+        <a class="nav-item" data-page="time" onclick="showPage('time')">
+            <span class="icon">⏱️</span>
+            <span>时间</span>
+        </a>
+        <a class="nav-item" data-page="chores" onclick="showPage('chores')">
+            <span class="icon">📋</span>
+            <span>家务</span>
+        </a>
+        <a class="nav-item" data-page="self" onclick="showPage('self')">
+            <span class="icon">💝</span>
+            <span>自我</span>
+        </a>
+        <a class="nav-item" data-page="mood" onclick="showPage('mood')">
+            <span class="icon">💭</span>
+            <span>日记</span>
+        </a>
+        <a class="nav-item" data-page="community" onclick="showPage('community')">
+            <span class="icon">👩</span>
+            <span>社区</span>
+        </a>
+    </nav>
+
+    <!-- 添加按钮 -->
+    <button class="add-btn" onclick="showAddModal()">+</button>
+
+    <!-- 添加模态框 -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">添加记录</span>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let currentUser = null;
+        let currentPage = 'home';
+        let currentCategory = 'all';
+        let isPremium = true;
+
+        // API基础URL
+        const API_BASE = '/api';
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserProfile();
+            await loadAllData();
+        });
+
+        // ==================== API请求 ====================
+        async function apiGet(endpoint) {
+            try {
+                const res = await fetch(`${API_BASE}${endpoint}`);
+                return await res.json();
+            } catch (err) {
+                console.error('API Error:', err);
+                return { code: 500, message: '网络错误' };
+            }
+        }
+
+        async function apiPost(endpoint, data) {
+            try {
+                const res = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                return await res.json();
+            } catch (err) {
+                console.error('API Error:', err);
+                return { code: 500, message: '网络错误' };
+            }
+        }
+
+        async function apiDelete(endpoint) {
+            try {
+                const res = await fetch(`${API_BASE}${endpoint}`, { method: 'DELETE' });
+                return await res.json();
+            } catch (err) {
+                console.error('API Error:', err);
+                return { code: 500, message: '网络错误' };
+            }
+        }
+
+        // ==================== 加载数据 ====================
+        async function loadUserProfile() {
+            const res = await apiGet('/user/profile');
+            if (res.code === 200) {
+                currentUser = res.data;
+                isPremium = currentUser.member_level === 'premium';
+                updateUserUI();
+            }
+        }
+
+        async function loadAllData() {
+            await Promise.all([
+                loadTimeRecords(),
+                loadChores(),
+                loadBookings(),
+                loadMoodDiaries(),
+                loadCommunityPosts()
+            ]);
+            updateStats();
+        }
+
+        async function loadTimeRecords() {
+            const res = await apiGet('/time-records');
+            if (res.code === 200) {
+                renderTimeRecords(res.data);
+            }
+        }
+
+        async function loadChores() {
+            const res = await apiGet('/chores');
+            if (res.code === 200) {
+                renderChores(res.data);
+            }
+        }
+
+        async function loadBookings() {
+            const res = await apiGet('/self-time');
+            if (res.code === 200) {
+                renderBookings(res.data);
+            }
+        }
+
+        async function loadMoodDiaries() {
+            const res = await apiGet('/mood-diary');
+            if (res.code === 200) {
+                renderDiaries(res.data);
+            }
+        }
+
+        async function loadCommunityPosts() {
+            const res = await apiGet('/community/posts');
+            if (res.code === 200) {
+                renderPosts(res.data.posts);
+            }
+        }
+
+        // ==================== 渲染函数 ====================
+        function updateUserUI() {
+            document.getElementById('userAvatar').textContent = currentUser.avatar;
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('familyCount').textContent = `${currentUser.family_members.length}人`;
+            
+            const badge = document.getElementById('memberBadge');
+            if (isPremium) {
+                badge.textContent = 'VIP';
+                badge.className = 'member-badge premium-badge';
+                document.getElementById('profileMember').textContent = 'Premium会员';
+                document.getElementById('upgradeBtn').textContent = '已是VIP会员';
+                document.getElementById('upgradeBtn').disabled = true;
+            } else {
+                badge.textContent = '免费';
+                badge.className = 'member-badge free-badge';
+                document.getElementById('profileMember').textContent = '免费会员';
+            }
+        }
+
+        function updateStats() {
+            const records = document.querySelectorAll('.time-record');
+            let todayMinutes = 0;
+            let selfTimeMinutes = 0;
+            
+            records.forEach(r => {
+                const duration = parseInt(r.dataset.duration || 0);
+                const category = r.dataset.category || '';
+                const date = r.dataset.date || '';
+                
+                if (date === new Date().toISOString().split('T')[0]) {
+                    todayMinutes += duration;
+                }
+                if (category === '自我') {
+                    selfTimeMinutes += duration;
+                }
+            });
+            
+            document.getElementById('todayMinutes').textContent = todayMinutes;
+            document.getElementById('selfTimeMinutes').textContent = selfTimeMinutes;
+            document.getElementById('familyScore').textContent = Math.floor(todayMinutes / 10);
+        }
+
+        function renderTimeRecords(records) {
+            const categoryIcons = {
+                '家务': '🏠',
+                '育儿': '👶',
+                '自我': '💝',
+                '工作': '💼',
+                '其他': '📌'
+            };
+            
+            const filtered = currentCategory === 'all' 
+                ? records 
+                : records.filter(r => r.category === currentCategory);
+            
+            const html = filtered.length === 0 
+                ? `<div class="empty-state"><div class="icon">⏱️</div><p>暂无记录</p></div>`
+                : filtered.map(r => `
+                    <div class="time-record" data-category="${r.category}" data-date="${r.date}" data-duration="${r.duration}">
+                        <div class="category-icon category-${r.category === '家务' ? 'housework' : r.category === '育儿' ? 'parenting' : r.category === '自我' ? 'self' : r.category === '工作' ? 'work' : 'other'}">
+                            ${categoryIcons[r.category] || '📌'}
+                        </div>
+                        <div class="time-record-info">
+                            <div class="time-record-task">${r.task}</div>
+                            <div class="time-record-meta">${r.date} · ${r.category}</div>
+                        </div>
+                        <div class="time-record-duration">${r.duration}分钟</div>
+                    </div>
+                `).join('');
+            
+            document.getElementById('timeRecordsList').innerHTML = html;
+            document.getElementById('fullTimeRecordsList').innerHTML = html;
+        }
+
+        function renderChores(chores) {
+            const memberAvatars = {
+                'self': currentUser?.avatar || '👩',
+                'husband': '👨',
+                'son': '👦',
+                'daughter': '👧'
+            };
+            
+            const html = chores.length === 0
+                ? `<div class="empty-state"><div class="icon">📋</div><p>暂无家务任务</p></div>`
+                : chores.map(c => `
+                    <div class="chore-item" onclick="toggleChore('${c.id}')">
+                        <div class="chore-checkbox ${c.status === 'completed' ? 'completed' : ''}" id="chore-${c.id}">
+                            ${c.status === 'completed' ? '✓' : ''}
+                        </div>
+                        <div class="chore-info">
+                            <div class="chore-task">${c.task}</div>
+                            <div class="chore-meta">
+                                <span class="chore-assignee">${memberAvatars[c.assigned_to] || '👤'} ${c.assigned_to === 'self' ? '我' : c.assigned_to}</span>
+                                <span>${c.frequency}</span>
+                            </div>
+                        </div>
+                        <span class="chore-points">+${c.points}</span>
+                    </div>
+                `).join('');
+            
+            document.getElementById('choresList').innerHTML = html;
+            document.getElementById('fullChoresList').innerHTML = html;
+        }
+
+        function renderBookings(bookings) {
+            const html = bookings.length === 0
+                ? `<div class="empty-state"><div class="icon">⏰</div><p>暂无预约</p></div>`
+                : bookings.map(b => `
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <div class="booking-activity">
+                                <span>🎯</span>
+                                <span>${b.activity}</span>
+                            </div>
+                            <span class="booking-status">${b.status === 'scheduled' ? '已预约' : '已完成'}</span>
+                        </div>
+                        <div class="booking-time">📅 ${b.date} ⏰ ${b.start_time} · ${b.duration}分钟</div>
+                    </div>
+                `).join('');
+            
+            document.getElementById('bookingsList').innerHTML = html;
+            document.getElementById('fullBookingsList').innerHTML = html;
+        }
+
+        function renderDiaries(diaries) {
+            const html = diaries.length === 0
+                ? `<div class="empty-state"><div class="icon">💭</div><p>暂无日记</p></div>`
+                : diaries.map(d => `
+                    <div class="diary-entry">
+                        <div class="diary-header">
+                            <div class="diary-mood">
+                                <span style="font-size: 28px;">${d.mood}</span>
+                                <span style="font-weight: 500;">${d.mood_text}</span>
+                            </div>
+                            <span class="diary-date">${d.date}</span>
+                        </div>
+                        <div class="diary-content">${d.content}</div>
+                        ${d.tags.length > 0 ? `
+                            <div class="diary-tags">
+                                ${d.tags.map(t => `<span class="diary-tag">#${t}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            
+            document.getElementById('diaryList').innerHTML = html;
+        }
+
+        function renderPosts(posts) {
+            const html = posts.map(p => `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">${p.avatar}</div>
+                        <div>
+                            <div class="post-author">${p.author}</div>
+                            <div class="post-time">${p.create_time}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${p.content}</div>
+                    ${p.tags.length > 0 ? `
+                        <div class="post-tags">
+                            ${p.tags.map(t => `<span class="post-tag">#${t}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="post-actions">
+                        <div class="post-action" onclick="likePost('${p.id}')">
+                            <span>❤️</span>
+                            <span>${p.likes}</span>
+                        </div>
+                        <div class="post-action" onclick="showToast('评论功能开发中...')">
+                            <span>💬</span>
+                            <span>${p.comments}</span>
+                        </div>
+                        <div class="post-action" onclick="showToast('已分享')">
+                            <span>📤</span>
+                            <span>分享</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('postsList').innerHTML = html;
+        }
+
+        // ==================== 页面切换 ====================
+        function showPage(page) {
+            currentPage = page;
+            
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // 显示目标页面
+            document.getElementById(`page-${page}`).classList.add('active');
+            
+            // 更新导航
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+            
+            // 特殊页面处理
+            if (page === 'community') {
+                loadCommunityPosts();
+            }
+        }
+
+        // ==================== 模态框 ====================
+        function showAddModal() {
+            const modalBody = document.getElementById('modalBody');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            modalTitle.textContent = '添加记录';
+            modalBody.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label">记录类型</label>
+                    <select class="form-select" id="addType" onchange="toggleAddForm()">
+                        <option value="time">⏱️ 时间记录</option>
+                        <option value="chore">📋 家务任务</option>
+                        <option value="booking">⏰ 自我预约</option>
+                        <option value="diary">💭 情绪日记</option>
+                    </select>
+                </div>
+                
+                <div id="timeForm">
+                    <div class="form-group">
+                        <label class="form-label">类别</label>
+                        <select class="form-select" id="timeCategory">
+                            <option value="家务">🏠 家务</option>
+                            <option value="育儿">👶 育儿</option>
+                            <option value="自我">💝 自我</option>
+                            <option value="工作">💼 工作</option>
+                            <option value="其他">📌 其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">任务名称</label>
+                        <input type="text" class="form-input" id="timeTask" placeholder="例如：做饭、洗碗">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">时长（分钟）</label>
+                        <input type="number" class="form-input" id="timeDuration" placeholder="30" value="30">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">日期</label>
+                        <input type="date" class="form-input" id="timeDate" value="${new Date().toISOString().split('T')[0]}">
+                    </div>
+                </div>
+                
+                <div id="choreForm" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">任务名称</label>
+                        <input type="text" class="form-input" id="choreTask" placeholder="例如：洗碗、倒垃圾">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">分配给</label>
+                        <select class="form-select" id="choreAssignee">
+                            <option value="self">👩 我</option>
+                            <option value="husband">👨 老公</option>
+                            <option value="son">👦 儿子</option>
+                            <option value="daughter">👧 女儿</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">频率</label>
+                        <select class="form-select" id="choreFrequency">
+                            <option value="每天">每天</option>
+                            <option value="每周">每周</option>
+                            <option value="每周2次">每周2次</option>
+                            <option value="每月">每月</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="bookingForm" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">活动名称</label>
+                        <input type="text" class="form-input" id="bookingActivity" placeholder="例如：瑜伽、读书">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">日期</label>
+                        <input type="date" class="form-input" id="bookingDate" value="${new Date().toISOString().split('T')[0]}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">开始时间</label>
+                        <input type="time" class="form-input" id="bookingTime" value="09:00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">时长（分钟）</label>
+                        <input type="number" class="form-input" id="bookingDuration" placeholder="60" value="60">
+                    </div>
+                </div>
+                
+                <div id="diaryForm" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">今日心情</label>
+                        <div class="mood-selector">
+                            <div class="mood-option" onclick="selectMood('😊', '开心', this)">
+                                <span class="emoji">😊</span>
+                                <span class="label">开心</span>
+                            </div>
+                            <div class="mood-option" onclick="selectMood('😌', '平静', this)">
+                                <span class="emoji">😌</span>
+                                <span class="label">平静</span>
+                            </div>
+                            <div class="mood-option" onclick="selectMood('😔', '难过', this)">
+                                <span class="emoji">😔</span>
+                                <span class="label">难过</span>
+                            </div>
+                            <div class="mood-option" onclick="selectMood('😤', '生气', this)">
+                                <span class="emoji">😤</span>
+                                <span class="label">生气</span>
+                            </div>
+                            <div class="mood-option" onclick="selectMood('😴', '疲惫', this)">
+                                <span class="emoji">😴</span>
+                                <span class="label">疲惫</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">日记内容</label>
+                        <textarea class="form-textarea" id="diaryContent" placeholder="写下今天的心情和想法..."></textarea>
+                    </div>
+                </div>
+                
+                <button class="submit-btn" onclick="submitAdd()">保存</button>
+            `;
+            
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        function toggleAddForm() {
+            const type = document.getElementById('addType').value;
+            document.getElementById('timeForm').style.display = type === 'time' ? 'block' : 'none';
+            document.getElementById('choreForm').style.display = type === 'chore' ? 'block' : 'none';
+            document.getElementById('bookingForm').style.display = type === 'booking' ? 'block' : 'none';
+            document.getElementById('diaryForm').style.display = type === 'diary' ? 'block' : 'none';
+        }
+
+        let selectedMood = { emoji: '😊', text: '开心' };
+
+        function selectMood(emoji, text, el) {
+            document.querySelectorAll('.mood-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedMood = { emoji, text };
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        async function submitAdd() {
+            const type = document.getElementById('addType').value;
+            let res;
+            
+            switch(type) {
+                case 'time':
+                    res = await apiPost('/time-records', {
+                        category: document.getElementById('timeCategory').value,
+                        task: document.getElementById('timeTask').value,
+                        duration: parseInt(document.getElementById('timeDuration').value),
+                        date: document.getElementById('timeDate').value
+                    });
+                    break;
+                case 'chore':
+                    res = await apiPost('/chores', {
+                        task: document.getElementById('choreTask').value,
+                        assigned_to: document.getElementById('choreAssignee').value,
+                        frequency: document.getElementById('choreFrequency').value
+                    });
+                    break;
+                case 'booking':
+                    res = await apiPost('/self-time', {
+                        activity: document.getElementById('bookingActivity').value,
+                        date: document.getElementById('bookingDate').value,
+                        start_time: document.getElementById('bookingTime').value,
+                        duration: parseInt(document.getElementById('bookingDuration').value)
+                    });
+                    break;
+                case 'diary':
+                    res = await apiPost('/mood-diary', {
+                        mood: selectedMood.emoji,
+                        mood_text: selectedMood.text,
+                        content: document.getElementById('diaryContent').value,
+                        tags: []
+                    });
+                    break;
+            }
+            
+            if (res.code === 200) {
+                showToast(res.message);
+                closeModal();
+                await loadAllData();
+            } else {
+                showToast(res.message || '操作失败');
+            }
+        }
+
+        // ==================== 操作函数 ====================
+        async function toggleChore(choreId) {
+            const checkbox = document.getElementById(`chore-${choreId}`);
+            const isCompleted = checkbox.classList.contains('completed');
+            const newStatus = isCompleted ? 'pending' : 'completed';
+            
+            const res = await apiPost(`/chores/${choreId}`, { status: newStatus });
+            if (res.code === 200) {
+                if (isCompleted) {
+                    checkbox.classList.remove('completed');
+                    checkbox.textContent = '';
+                } else {
+                    checkbox.classList.add('completed');
+                    checkbox.textContent = '✓';
+                }
+                showToast(newStatus === 'completed' ? '任务完成！+积分' : '已撤销');
+            }
+        }
+
+        async function likePost(postId) {
+            const res = await apiPost(`/community/posts/${postId}/like`);
+            if (res.code === 200) {
+                await loadCommunityPosts();
+            }
+        }
+
+        async function upgradeMembership() {
+            const res = await apiPost('/user/upgrade', {});
+            if (res.code === 200) {
+                isPremium = true;
+                currentUser.member_level = 'premium';
+                updateUserUI();
+                showToast('恭喜！已成为VIP会员');
+            }
+        }
+
+        // ==================== 分类筛选 ====================
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-pill')) {
+                const category = e.target.dataset.category;
+                currentCategory = category;
+                
+                // 更新pill样式
+                e.target.parentElement.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // 重新加载时间记录
+                loadTimeRecords();
+            }
+        });
+
+        // ==================== 工具函数 ====================
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

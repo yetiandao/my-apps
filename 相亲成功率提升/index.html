@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相亲成功率提升 - 让每一次相遇都更有价值</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #e84c5a;
+            --primary-dark: #c93d4a;
+            --secondary: #f8b4b4;
+            --bg: #fff5f5;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-light: #666666;
+            --border: #ffe5e5;
+            --success: #4CAF50;
+            --shadow: 0 4px 20px rgba(232, 76, 90, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 头部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff6b7a 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(232, 76, 90, 0.3);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo::before {
+            content: "🌹";
+            font-size: 1.8rem;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+            color: #8B4513;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vip-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        /* Banner区 */
+        .banner {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff6b7a 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        }
+
+        .banner h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .banner p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        /* 功能模块导航 */
+        .module-nav {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .module-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .module-btn .icon {
+            font-size: 1.6rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .module-btn:hover, .module-btn.active {
+            border-color: var(--primary);
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .module-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff6b7a 100%);
+            color: white;
+        }
+
+        /* 内容卡片 */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(232, 76, 90, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-tag {
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: normal;
+        }
+
+        .card-content {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .card-rating {
+            margin-top: 10px;
+            color: #ffc107;
+            font-size: 0.9rem;
+        }
+
+        /* 话题推荐特殊样式 */
+        .topic-mood {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, #ff6b7a 100%);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .topic-prompt {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border-left: 3px solid var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .random-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff6b7a 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px auto;
+            transition: all 0.3s;
+        }
+
+        .random-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(232, 76, 90, 0.4);
+        }
+
+        /* 心理建设阶段切换 */
+        .phase-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .phase-tab {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            background: var(--card-bg);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .phase-tab:hover, .phase-tab.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 复盘表单 */
+        .reflection-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .reflection-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .reflection-form input,
+        .reflection-form textarea,
+        .reflection-form select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .reflection-form input:focus,
+        .reflection-form textarea:focus,
+        .reflection-form select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .reflection-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: normal;
+        }
+
+        .radio-group input:checked + span {
+            background: var(--primary);
+            color: white;
+        }
+
+        .radio-group input {
+            display: none;
+        }
+
+        .radio-group label:has(input:checked) {
+            border-color: var(--primary);
+            background: var(--secondary);
+            color: var(--primary);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff6b7a 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(232, 76, 90, 0.4);
+        }
+
+        /* 历史复盘 */
+        .history-card {
+            border-left: 4px solid var(--primary);
+        }
+
+        .history-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .history-rating {
+            color: #ffc107;
+        }
+
+        /* VIP弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .modal-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .modal-price span {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .modal-features {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .modal-features li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-features li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: var(--bg);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--border);
+        }
+
+        .modal-buy {
+            background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+            color: #8B4513;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .modal-buy:hover {
+            transform: scale(1.05);
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 8px 16px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 1.4rem;
+        }
+
+        .nav-item span {
+            font-size: 0.75rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .module-nav {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .module-btn {
+                padding: 10px 6px;
+                font-size: 0.75rem;
+            }
+
+            .module-btn .icon {
+                font-size: 1.3rem;
+            }
+
+            .banner h1 {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* 子分类标签 */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .category-tab:hover, .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 技巧评分星星 */
+        .star {
+            color: #ddd;
+            font-size: 0.9rem;
+        }
+
+        .star.filled {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">相亲成功率提升</div>
+            <div class="vip-badge" onclick="showVIPModal()">🌟 开通月卡 ¥19</div>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <main class="container">
+        <!-- Banner -->
+        <div class="banner">
+            <h1>让每一次相遇都更有价值</h1>
+            <p>专业相亲技巧 | 精准话题推荐 | 全方位提升相亲成功率</p>
+        </div>
+
+        <!-- 功能模块 -->
+        <div class="module-nav">
+            <div class="module-btn active" data-section="tips">
+                <span class="icon">📚</span>
+                <span>技巧库</span>
+            </div>
+            <div class="module-btn" data-section="topics">
+                <span class="icon">💬</span>
+                <span>话题推荐</span>
+            </div>
+            <div class="module-btn" data-section="dress">
+                <span class="icon">👔</span>
+                <span>着装建议</span>
+            </div>
+            <div class="module-btn" data-section="mental">
+                <span class="icon">🧠</span>
+                <span>心理建设</span>
+            </div>
+            <div class="module-btn" data-section="reflection">
+                <span class="icon">📝</span>
+                <span>失败复盘</span>
+            </div>
+        </div>
+
+        <!-- 技巧库 -->
+        <section id="tips" class="content-section active">
+            <h2 class="section-title">📚 相亲技巧库</h2>
+            <div class="category-tabs" id="tips-categories">
+                <div class="category-tab active" data-category="all">全部</div>
+                <div class="category-tab" data-category="first_impression">第一印象</div>
+                <div class="category-tab" data-category="conversation">沟通技巧</div>
+                <div class="category-tab" data-category="body_language">肢体语言</div>
+                <div class="category-tab" data-category="ending">完美收尾</div>
+            </div>
+            <div id="tips-content">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 话题推荐 -->
+        <section id="topics" class="content-section">
+            <h2 class="section-title">💬 话题推荐</h2>
+            <button class="random-btn" onclick="getRandomTopic()">
+                <span>🎲</span> 随机获取话题
+            </button>
+            <div id="random-topic" style="display:none;" class="card"></div>
+            
+            <h3 style="margin: 20px 0 12px; color: var(--text);">🌸 安全话题（初次见面推荐）</h3>
+            <div id="safe-topics"></div>
+            
+            <h3 style="margin: 20px 0 12px; color: var(--text);">💝 深度话题（关系进阶后）</h3>
+            <div id="deep-topics"></div>
+        </section>
+
+        <!-- 着装建议 -->
+        <section id="dress" class="content-section">
+            <h2 class="section-title">👔 着装建议</h2>
+            <div class="category-tabs" id="dress-categories">
+                <div class="category-tab active" data-gender="all">通用</div>
+                <div class="category-tab" data-gender="male">男生版</div>
+                <div class="category-tab" data-gender="female">女生版</div>
+            </div>
+            <div id="dress-content"></div>
+        </section>
+
+        <!-- 心理建设 -->
+        <section id="mental" class="content-section">
+            <h2 class="section-title">🧠 心理建设</h2>
+            <div class="phase-tabs">
+                <div class="phase-tab active" data-phase="preparation">见面前的准备</div>
+                <div class="phase-tab" data-phase="during">见面中的调节</div>
+                <div class="phase-tab" data-phase="after">见面后的调整</div>
+            </div>
+            <div id="mental-content"></div>
+        </section>
+
+        <!-- 失败复盘 -->
+        <section id="reflection" class="content-section">
+            <h2 class="section-title">📝 失败复盘</h2>
+            
+            <div class="category-tabs">
+                <div class="phase-tab active" data-view="form">✏️ 新建复盘</div>
+                <div class="phase-tab" data-view="history">📋 历史记录</div>
+            </div>
+
+            <!-- 复盘表单 -->
+            <div id="reflection-form-view">
+                <form class="reflection-form" id="reflectionForm">
+                    <div class="form-group">
+                        <label>📅 相亲日期</label>
+                        <input type="date" name="date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📍 见面地点</label>
+                        <input type="text" name="location" placeholder="如：星巴克咖啡厅" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>⏱️ 见面时长</label>
+                        <select name="duration" required>
+                            <option value="">请选择</option>
+                            <option value="30分钟内">30分钟内</option>
+                            <option value="30-60分钟">30-60分钟</option>
+                            <option value="1-2小时">1-2小时</option>
+                            <option value="2小时以上">2小时以上</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🎯 开场表现如何？</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="opening" value="很好"><span>很好</span></label>
+                            <label><input type="radio" name="opening" value="一般"><span>一般</span></label>
+                            <label><input type="radio" name="opening" value="需要改进"><span>需要改进</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>💬 对话流畅度？</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="flow" value="很流畅"><span>很流畅</span></label>
+                            <label><input type="radio" name="flow" value="有冷场"><span>有冷场</span></label>
+                            <label><input type="radio" name="flow" value="冷场较多"><span>冷场较多</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>👂 倾听做得如何？</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="listening" value="很好"><span>很好</span></label>
+                            <label><input type="radio" name="listening" value="一般"><span>一般</span></label>
+                            <label><input type="radio" name="listening" value="急于表达"><span>急于表达</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>💯 整体表现评分（1-10分）</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="rating" value="1-3"><span>1-3分</span></label>
+                            <label><input type="radio" name="rating" value="4-6"><span>4-6分</span></label>
+                            <label><input type="radio" name="rating" value="7-8"><span>7-8分</span></label>
+                            <label><input type="radio" name="rating" value="9-10"><span>9-10分</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>✅ 做得好的地方</label>
+                        <textarea name="good_parts" placeholder="回顾一下，这次相亲中哪些地方做得好..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>❌ 需要改进的地方</label>
+                        <textarea name="improve_parts" placeholder="思考一下，哪些地方可以做得更好..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>💡 下次可以这样做</label>
+                        <textarea name="action_plan" placeholder="制定一个具体的改进计划..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">💾 保存复盘记录</button>
+                </form>
+            </div>
+
+            <!-- 历史记录 -->
+            <div id="reflection-history-view" style="display:none;">
+                <div id="history-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-section="tips">
+            <span class="icon">📚</span>
+            <span>技巧库</span>
+        </div>
+        <div class="nav-item" data-section="topics">
+            <span class="icon">💬</span>
+            <span>话题</span>
+        </div>
+        <div class="nav-item" data-section="dress">
+            <span class="icon">👔</span>
+            <span>着装</span>
+        </div>
+        <div class="nav-item" data-section="mental">
+            <span class="icon">🧠</span>
+            <span>心理</span>
+        </div>
+        <div class="nav-item" data-section="reflection">
+            <span class="icon">📝</span>
+            <span>复盘</span>
+        </div>
+    </nav>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div style="font-size: 3rem;">🌟</div>
+                <div class="modal-title">开通月卡会员</div>
+                <div class="modal-price">¥19<span>/月</span></div>
+            </div>
+            <ul class="modal-features">
+                <li>解锁全部相亲技巧库</li>
+                <li>一对一专业指导机会</li>
+                <li>无限使用话题推荐</li>
+                <li>专属着装搭配建议</li>
+                <li>失败复盘模板下载</li>
+                <li>心理建设音频课程</li>
+            </ul>
+            <div style="text-align: center;">
+                <button class="modal-close" onclick="closeVIPModal()">稍后再说</button>
+                <button class="modal-buy" onclick="buyVIP()">立即开通</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // 显示/隐藏VIP弹窗
+        function showVIPModal() {
+            document.getElementById('vipModal').classList.add('active');
+        }
+
+        function closeVIPModal() {
+            document.getElementById('vipModal').classList.remove('active');
+        }
+
+        function buyVIP() {
+            showToast('支付功能开发中，请联系客服开通');
+            closeVIPModal();
+        }
+
+        // 导航切换
+        function switchSection(sectionId) {
+            // 切换内容区
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            // 切换导航高亮
+            document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.module-btn[data-section="${sectionId}"]`)?.classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-section="${sectionId}"]`)?.classList.add('active');
+        }
+
+        // 绑定导航事件
+        document.querySelectorAll('.module-btn, .nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const section = btn.dataset.section;
+                switchSection(section);
+            });
+        });
+
+        // 生成星星评分HTML
+        function generateStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<span class="star ${i <= rating ? 'filled' : ''}">★</span>`;
+            }
+            return stars;
+        }
+
+        // ==================== 技巧库 ====================
+        async function loadTips(category = 'all') {
+            const container = document.getElementById('tips-content');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>加载中...</p></div>';
+
+            try {
+                const url = category === 'all' 
+                    ? `${API_BASE}/tips` 
+                    : `${API_BASE}/tips/${category}`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.code === 200) {
+                    let tips = category === 'all' 
+                        ? Object.values(data.data).flat() 
+                        : data.data;
+
+                    if (tips.length === 0) {
+                        container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无数据</p></div>';
+                        return;
+                    }
+
+                    container.innerHTML = tips.map(tip => `
+                        <div class="card">
+                            <div class="card-title">
+                                ${tip.title}
+                                ${tip.tag ? `<span class="card-tag">${tip.tag}</span>` : ''}
+                            </div>
+                            <div class="card-content">${tip.content}</div>
+                            ${tip.rating ? `<div class="card-rating">${generateStars(tip.rating)}</div>` : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                // 使用本地数据
+                container.innerHTML = getLocalTips(category);
+            }
+        }
+
+        function getLocalTips(category) {
+            const tipsData = {
+                first_impression: [
+                    {title: "准时到达", content: "提前10分钟到达约定地点，展现守时品质。", tag: "基础礼仪", rating: 5},
+                    {title: "眼神交流", content: "保持自然的眼神接触，不要盯着看也不要回避。", tag: "沟通技巧", rating: 4},
+                    {title: "微笑法则", content: "真诚的微笑能传递友好和自信，每天对镜练习15分钟。", tag: "表情管理", rating: 5},
+                ],
+                conversation: [
+                    {title: "开放式提问", content: "多用'为什么'、'怎么看'等开放式问题，让对方有话可说。", tag: "话题技巧", rating: 5},
+                    {title: "避免雷区", content: "不要问前任、收入等敏感话题，等关系成熟再聊。", tag: "禁忌事项", rating: 4},
+                    {title: "共情回应", content: "对对方的分享表达理解和共情，如'我能理解你的感受'。", tag: "情感共鸣", rating: 5},
+                ],
+                body_language: [
+                    {title: "坐姿端正", content: "背部挺直，双手自然放置，不要有太多小动作。", tag: "肢体语言", rating: 4},
+                    {title: "适当点头", content: "对方说话时适时点头，表示你在认真倾听。", tag: "肢体语言", rating: 3},
+                ],
+                ending: [
+                    {title: "主动告别", content: "如果感觉良好，可以主动提出下次见面的意向。", tag: "收尾技巧", rating: 5},
+                    {title: "绅士结尾", content: "主动买单或AA制时态度自然，不要斤斤计较。", tag: "礼仪细节", rating: 5},
+                ]
+            };
+
+            let tips = category === 'all' ? Object.values(tipsData).flat() : tipsData[category] || [];
+            
+            return tips.map(tip => `
+                <div class="card">
+                    <div class="card-title">
+                        ${tip.title}
+                        ${tip.tag ? `<span class="card-tag">${tip.tag}</span>` : ''}
+                    </div>
+                    <div class="card-content">${tip.content}</div>
+                    ${tip.rating ? `<div class="card-rating">${generateStars(tip.rating)}</div>` : ''}
+                </div>
+            `).join('') || '<div class="empty-state"><div class="icon">📭</div><p>暂无数据</p></div>';
+        }
+
+        // 技巧库分类切换
+        document.getElementById('tips-categories').addEventListener('click', async (e) => {
+            if (e.target.classList.contains('category-tab')) {
+                document.querySelectorAll('#tips-categories .category-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                await loadTips(e.target.dataset.category);
+            }
+        });
+
+        // ==================== 话题推荐 ====================
+        async function loadTopics() {
+            try {
+                const res = await fetch(`${API_BASE}/topics`);
+                const data = await res.json();
+
+                if (data.code === 200) {
+                    renderTopics(data.data);
+                }
+            } catch (e) {
+                renderTopics(getLocalTopics());
+            }
+        }
+
+        function getLocalTopics() {
+            return {
+                safe_topics: [
+                    {topic: "旅行经历", prompt: "你最近有去哪里旅行吗？有什么推荐的地方吗？", mood: "轻松愉快"},
+                    {topic: "美食探店", prompt: "你平时喜欢吃什么类型的美食？我最近发现了一家很棒的餐厅...", mood: "轻松愉快"},
+                    {topic: "兴趣爱好", prompt: "周末一般怎么度过？有什么兴趣爱好吗？", mood: "了解对方"},
+                    {topic: "电影音乐", prompt: "最近看了什么好电影/听了什么好歌吗？", mood: "轻松愉快"},
+                    {topic: "工作趣事", prompt: "你做什么工作的？工作中有什么有趣的事吗？", mood: "了解对方"},
+                    {topic: "宠物话题", prompt: "你喜欢小动物吗？家里有养宠物吗？", mood: "温暖亲切"},
+                ],
+                deep_topics: [
+                    {topic: "家庭观念", prompt: "你觉得家庭在你生命中占多大比重？", mood: "价值观契合"},
+                    {topic: "婚姻期待", prompt: "你对未来的婚姻生活有什么期待？", mood: "重要话题"},
+                    {topic: "生活态度", prompt: "你觉得什么样的生活算是成功的人生？", mood: "价值观"},
+                ]
+            };
+        }
+
+        function renderTopics(data) {
+            const safeContainer = document.getElementById('safe-topics');
+            const deepContainer = document.getElementById('deep-topics');
+
+            safeContainer.innerHTML = data.safe_topics.map(t => `
+                <div class="card">
+                    <div class="card-title">
+                        ${t.topic}
+                        <span class="topic-mood">${t.mood}</span>
+                    </div>
+                    <div class="topic-prompt">${t.prompt}</div>
+                </div>
+            `).join('');
+
+            deepContainer.innerHTML = data.deep_topics.map(t => `
+                <div class="card">
+                    <div class="card-title">
+                        ${t.topic}
+                        <span class="topic-mood">${t.mood}</span>
+                    </div>
+                    <div class="topic-prompt">${t.prompt}</div>
+                </div>
+            `).join('');
+        }
+
+        async function getRandomTopic() {
+            const container = document.getElementById('random-topic');
+            container.style.display = 'block';
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/topics/random`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    const t = data.data;
+                    container.innerHTML = `
+                        <div class="card-title">
+                            ${t.topic}
+                            <span class="topic-mood">${t.mood}</span>
+                        </div>
+                        <div class="topic-prompt">${t.prompt}</div>
+                    `;
+                }
+            } catch (e) {
+                const allTopics = [...getLocalTopics().safe_topics, ...getLocalTopics().deep_topics];
+                const t = allTopics[Math.floor(Math.random() * allTopics.length)];
+                container.innerHTML = `
+                    <div class="card-title">
+                        ${t.topic}
+                        <span class="topic-mood">${t.mood}</span>
+                    </div>
+                    <div class="topic-prompt">${t.prompt}</div>
+                `;
+            }
+        }
+
+        // ==================== 着装建议 ====================
+        async function loadDress(gender = 'all') {
+            const container = document.getElementById('dress-content');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>加载中...</p></div>';
+
+            try {
+                const url = gender === 'all' ? `${API_BASE}/dress` : `${API_BASE}/dress/${gender}`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.code === 200) {
+                    renderDress(data.data, gender);
+                }
+            } catch (e) {
+                renderDress(getLocalDress(gender), gender);
+            }
+        }
+
+        function getLocalDress(gender) {
+            const all = [
+                {tip: "干净整洁是第一要义", detail: "衣服要洗净熨平，指甲修剪整齐，头发干净清爽。"},
+                {tip: "颜色搭配要协调", detail: "全身上下不要超过3种颜色，保持色调统一。"},
+                {tip: "避免过于暴露或正式", detail: "不要太性感也不要太严肃，介于休闲和商务之间最佳。"},
+                {tip: "鞋子要干净", detail: "鞋子是容易被忽略的细节，一定要保持干净整洁。"},
+            ];
+            const male = [
+                {tip: "商务休闲风格", detail: "一件质感好的polo衫或衬衫搭配休闲裤，简约又得体。"},
+                {tip: "注意尺码合身", detail: "衣服不要太大或太紧，合适的尺码能展现身材优势。"},
+                {tip: "配饰要简约", detail: "手表、袖扣等配饰要低调，不要过于张扬。"},
+                {tip: "香味要淡雅", detail: "使用清淡的香水或不用香水，避免浓烈气味。"},
+            ];
+            const female = [
+                {tip: "连衣裙是万能选择", detail: "一条剪裁得体的连衣裙适合大多数相亲场合。"},
+                {tip: "淡妆提升气色", detail: "化一个清淡自然的妆容，展现精神面貌。"},
+                {tip: "避免浓妆艳抹", detail: "初次见面不宜妆感太重，自然美最吸引人。"},
+                {tip: "高跟鞋要舒适", detail: "选择能舒适走路的低跟鞋，避免崴脚的尴尬。"},
+            ];
+
+            if (gender === 'male') return [...all, ...male];
+            if (gender === 'female') return [...all, ...female];
+            return {general: all, male: male, female: female};
+        }
+
+        function renderDress(data, gender) {
+            const container = document.getElementById('dress-content');
+            let tips = [];
+
+            if (gender === 'all') {
+                tips = [...data.general, ...data.male, ...data.female];
+            } else {
+                tips = [...data.general, ...data[gender]];
+            }
+
+            container.innerHTML = tips.map(t => `
+                <div class="card">
+                    <div class="card-title">✨ ${t.tip}</div>
+                    <div class="card-content">${t.detail}</div>
+                </div>
+            `).join('');
+        }
+
+        // 着装分类切换
+        document.getElementById('dress-categories').addEventListener('click', async (e) => {
+            if (e.target.classList.contains('category-tab')) {
+                document.querySelectorAll('#dress-categories .category-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                await loadDress(e.target.dataset.gender);
+            }
+        });
+
+        // ==================== 心理建设 ====================
+        async function loadMental(phase = 'preparation') {
+            const container = document.getElementById('mental-content');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>加载中...</p></div>';
+
+            try {
+                const url = `${API_BASE}/mental/${phase}`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.code === 200) {
+                    container.innerHTML = data.data.map(item => `
+                        <div class="card">
+                            <div class="card-title">💡 ${item.title}</div>
+                            <div class="card-content">${item.content}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                const localData = getLocalMental(phase);
+                container.innerHTML = localData.map(item => `
+                    <div class="card">
+                        <div class="card-title">💡 ${item.title}</div>
+                        <div class="card-content">${item.content}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function getLocalMental(phase) {
+            const data = {
+                preparation: [
+                    {title: "降低期望值", content: "把相亲当作认识新朋友的机会，而不是必须成功的任务。"},
+                    {title: "接纳不完美", content: "接受自己可能会紧张、会说错话，这是正常的。"},
+                    {title: "积极自我暗示", content: "每天对镜子说'我有魅力，我值得被爱'。"},
+                    {title: "准备备选话题", content: "如果冷场，准备3-5个备选话题化解尴尬。"},
+                ],
+                during: [
+                    {title: "专注当下", content: "不要想'这次能不能成'，而是专注于眼前对话。"},
+                    {title: "呼吸放松法", content: "紧张时深呼吸3次，缓解焦虑情绪。"},
+                    {title: "把对方当普通人", content: "不要神化对方，大家都是普通人，平等交流。"},
+                    {title: "享受过程", content: "即使不成，也是一次社交练习的机会。"},
+                ],
+                after: [
+                    {title: "不纠结结果", content: "无论成功与否，都不要过度复盘或自责。"},
+                    {title: "记录收获", content: "每次相亲后记录一点收获，日积月累会进步。"},
+                    {title: "给自己奖励", content: "无论结果如何，完成相亲就给自己一个小奖励。"},
+                    {title: "保持平常心", content: "缘分天注定，不是努力就能控制结果的。"},
+                ]
+            };
+            return data[phase] || data.preparation;
+        }
+
+        // 心理阶段切换
+        document.querySelectorAll('.phase-tab[data-phase]').forEach(tab => {
+            tab.addEventListener('click', async () => {
+                document.querySelectorAll('.phase-tab[data-phase]').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                await loadMental(tab.dataset.phase);
+            });
+        });
+
+        // ==================== 失败复盘 ====================
+        // 复盘视图切换
+        document.querySelectorAll('.phase-tab[data-view]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.phase-tab[data-view]').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                if (tab.dataset.view === 'form') {
+                    document.getElementById('reflection-form-view').style.display = 'block';
+                    document.getElementById('reflection-history-view').style.display = 'none';
+                } else {
+                    document.getElementById('reflection-form-view').style.display = 'none';
+                    document.getElementById('reflection-history-view').style.display = 'block';
+                    loadHistory();
+                }
+            });
+        });
+
+        // 提交复盘表单
+        document.getElementById('reflectionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const res = await fetch(`${API_BASE}/reflection/save`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    showToast('✅ 复盘记录已保存');
+                    e.target.reset();
+                }
+            } catch (e) {
+                // 本地模拟保存
+                showToast('✅ 复盘记录已保存（本地模式）');
+                e.target.reset();
+            }
+        });
+
+        // 加载历史记录
+        async function loadHistory() {
+            const container = document.getElementById('history-list');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>加载中...</p></div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/reflection/history`);
+                const data = await res.json();
+
+                if (data.code === 200 && data.data.length > 0) {
+                    container.innerHTML = data.data.map(item => `
+                        <div class="card history-card">
+                            <div class="card-title">📅 ${item.date}</div>
+                            <div class="card-content">${item.summary}</div>
+                            <div class="history-meta">
+                                <span>评分: <span class="history-rating">${'★'.repeat(item.rating)}${'☆'.repeat(10-item.rating)}</span></span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无复盘记录</p><p style="font-size:0.85rem;color:var(--text-light)">开始你的第一次复盘吧！</p></div>';
+                }
+            } catch (e) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无复盘记录</p><p style="font-size:0.85rem;color:var(--text-light)">开始你的第一次复盘吧！</p></div>';
+            }
+        }
+
+        // ==================== 初始化 ====================
+        async function init() {
+            await loadTips();
+            await loadTopics();
+            await loadDress();
+            await loadMental();
+        }
+
+        // 设置日期默认值为今天
+        document.querySelector('input[name="date"]').valueAsDate = new Date();
+
+        // 启动
+        init();
+    </script>
+</body>
+</html>

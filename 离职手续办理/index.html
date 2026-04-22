@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>离职手续办理 - 让离职更从容</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #4A90D9;
+            --primary-dark: #3A7BC8;
+            --success: #67C23A;
+            --warning: #E6A23C;
+            --danger: #F56C6C;
+            --info: #909399;
+            --text-primary: #303133;
+            --text-regular: #606266;
+            --text-secondary: #909399;
+            --border: #DCDFE6;
+            --bg-page: #F5F7FA;
+            --bg-card: #FFFFFF;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: calc(70px + var(--safe-bottom));
+            min-height: 100vh;
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #6BA3E8 100%);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .header-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 主容器 */
+        .container {
+            padding: 16px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* 功能卡片 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .feature-card:active {
+            transform: scale(0.98);
+        }
+
+        .feature-card.premium {
+            border: 2px solid var(--warning);
+            position: relative;
+        }
+
+        .feature-card.premium::after {
+            content: 'PRO';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--warning);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .feature-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .feature-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 进度卡片 */
+        .progress-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .progress-value {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-page);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* 页面视图 */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            padding: 8px 0;
+        }
+
+        .back-btn:active {
+            opacity: 0.7;
+        }
+
+        /* 流程图 */
+        .flow-stage {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .flow-stage::before {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 60px;
+            bottom: -12px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), transparent);
+        }
+
+        .flow-stage:last-child::before {
+            display: none;
+        }
+
+        .stage-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .stage-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), #6BA3E8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .stage-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .stage-info span {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stage-steps {
+            padding-left: 56px;
+        }
+
+        .step-item {
+            background: var(--bg-page);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .step-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-item:active {
+            background: #E8EEF5;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .step-title .important {
+            color: var(--danger);
+            font-size: 12px;
+        }
+
+        .step-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .step-tips {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            padding-left: 12px;
+            border-left: 2px solid var(--primary);
+        }
+
+        /* 清单页 */
+        .checklist-category {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            cursor: pointer;
+        }
+
+        .category-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-icon {
+            font-size: 24px;
+        }
+
+        .category-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .category-count {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .category-progress {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .category-items {
+            padding: 0 16px;
+            background: var(--bg-page);
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 2px;
+        }
+
+        .checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-text {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .item-text.checked {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .item-detail {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .critical-tag {
+            font-size: 10px;
+            background: var(--danger);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+        }
+
+        /* 模板页 */
+        .template-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .template-card:active {
+            transform: scale(0.98);
+        }
+
+        .template-card.locked {
+            opacity: 0.7;
+        }
+
+        .template-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .template-icon {
+            font-size: 28px;
+        }
+
+        .template-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .template-category {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .template-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .template-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .premium-tag {
+            font-size: 12px;
+            color: var(--warning);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .use-btn {
+            font-size: 13px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 详情页 */
+        .detail-content {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-icon {
+            font-size: 40px;
+        }
+
+        .detail-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .detail-category {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .detail-body {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-regular);
+            white-space: pre-wrap;
+        }
+
+        .detail-actions {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* 社保页 */
+        .section-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            cursor: pointer;
+        }
+
+        .section-icon {
+            font-size: 28px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .section-arrow {
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: transform 0.2s;
+        }
+
+        .section-card.expanded .section-arrow {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            display: none;
+            padding: 0 16px 16px;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: var(--text-regular);
+        }
+
+        .section-card.expanded .section-content {
+            display: block;
+        }
+
+        /* 权益页 */
+        .rights-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .rights-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .rights-icon {
+            font-size: 32px;
+        }
+
+        .rights-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .rights-body {
+            padding: 0 16px 16px;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            color: var(--text-regular);
+        }
+
+        /* 底部导航 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            padding-bottom: calc(8px + var(--safe-bottom));
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            padding: 4px 12px;
+        }
+
+        .tab-icon {
+            font-size: 22px;
+        }
+
+        .tab-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .tab-item.active .tab-label {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            font-size: 24px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 购买弹窗 */
+        .purchase-modal .modal-body {
+            text-align: center;
+        }
+
+        .purchase-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        .purchase-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .purchase-price {
+            font-size: 36px;
+            color: var(--primary);
+            font-weight: 700;
+            margin: 16px 0;
+        }
+
+        .purchase-price span {
+            font-size: 18px;
+        }
+
+        .purchase-features {
+            text-align: left;
+            margin: 20px 0;
+            padding: 16px;
+            background: var(--bg-page);
+            border-radius: var(--radius);
+        }
+
+        .purchase-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .purchase-guarantee {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 16px;
+        }
+
+        .purchase-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), #6BA3E8);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .purchase-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* 锁图标 */
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+
+        .lock-icon {
+            font-size: 32px;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        /* 工具栏 */
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .toolbar-btn {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .toolbar-btn:active {
+            background: var(--bg-page);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <div class="header">
+        <div class="header-top">
+            <h1>离职手续办理</h1>
+            <span class="header-badge">MVP v1.0</span>
+        </div>
+        <p class="header-desc">让离职更从容，让权益有保障</p>
+    </div>
+
+    <!-- 首页视图 -->
+    <div id="homeView" class="view active">
+        <div class="container">
+            <!-- 进度卡片 -->
+            <div class="progress-card fade-in">
+                <div class="progress-header">
+                    <span class="progress-title">📋 离职进度</span>
+                    <span class="progress-value" id="totalProgress">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- 功能入口 -->
+            <div class="feature-grid">
+                <div class="feature-card fade-in" onclick="showView('flow')" style="animation-delay: 0.1s">
+                    <div class="feature-icon">🗺️</div>
+                    <div class="feature-title">流程指南</div>
+                    <div class="feature-desc">5步走完离职全流程</div>
+                </div>
+                <div class="feature-card fade-in" onclick="showView('checklist')" style="animation-delay: 0.15s">
+                    <div class="feature-icon">✅</div>
+                    <div class="feature-title">手续清单</div>
+                    <div class="feature-desc">分阶段检查不遗漏</div>
+                </div>
+                <div class="feature-card premium fade-in" onclick="showView('templates')" style="animation-delay: 0.2s">
+                    <div class="feature-icon">📄</div>
+                    <div class="feature-title">材料模板</div>
+                    <div class="feature-desc">下载即用的标准模板</div>
+                </div>
+                <div class="feature-card fade-in" onclick="showView('social')" style="animation-delay: 0.25s">
+                    <div class="feature-icon">🏛️</div>
+                    <div class="feature-title">社保公积金</div>
+                    <div class="feature-desc">转移接续不糊涂</div>
+                </div>
+                <div class="feature-card fade-in" onclick="showView('rights')" style="animation-delay: 0.3s">
+                    <div class="feature-icon">⚖️</div>
+                    <div class="feature-title">权益维护</div>
+                    <div class="feature-desc">这些权益不能丢</div>
+                </div>
+                <div class="feature-card premium fade-in" onclick="showPurchaseModal()" style="animation-delay: 0.35s">
+                    <div class="feature-icon">💎</div>
+                    <div class="feature-title">解锁完整版</div>
+                    <div class="feature-desc">¥19.9 全功能解锁</div>
+                </div>
+            </div>
+
+            <!-- 温馨提示 -->
+            <div class="section-card fade-in" style="animation-delay: 0.4s">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">💡</span>
+                    <span class="section-title">离职小贴士</span>
+                    <span class="section-arrow">▼</span>
+                </div>
+                <div class="section-content">
+                    <p>1. <strong>提前规划</strong>：建议提前30天提出离职，给自己留出充足时间。</p>
+                    <p>2. <strong>保持专业</strong>：即使离开，也要站好最后一班岗，好聚好散。</p>
+                    <p>3. <strong>证据留存</strong>：保留好所有签字文件、聊天记录等证据。</p>
+                    <p>4. <strong>社保不断</strong>：离职后尽快找到新工作，或自行续缴社保。</p>
+                    <p>5. <strong>权益不放弃</strong>：年假折算、加班费、经济补偿金，该要的要争取。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 流程指南视图 -->
+    <div id="flowView" class="view">
+        <div class="container">
+            <div class="back-btn" onclick="showView('home')">← 返回首页</div>
+            <div class="page-title">🗺️ 离职流程指南</div>
+            <div id="flowContent"></div>
+        </div>
+    </div>
+
+    <!-- 清单视图 -->
+    <div id="checklistView" class="view">
+        <div class="container">
+            <div class="back-btn" onclick="showView('home')">← 返回首页</div>
+            <div class="page-title">✅ 离职手续清单</div>
+            <div id="checklistContent"></div>
+        </div>
+    </div>
+
+    <!-- 模板视图 -->
+    <div id="templatesView" class="view">
+        <div class="container">
+            <div class="back-btn" onclick="showView('home')">← 返回首页</div>
+            <div class="page-title">📄 材料模板</div>
+            <div id="templatesContent"></div>
+        </div>
+    </div>
+
+    <!-- 社保视图 -->
+    <div id="socialView" class="view">
+        <div class="container">
+            <div class="back-btn" onclick="showView('home')">← 返回首页</div>
+            <div class="page-title">🏛️ 社保公积金指南</div>
+            <div id="socialContent"></div>
+        </div>
+    </div>
+
+    <!-- 权益视图 -->
+    <div id="rightsView" class="view">
+        <div class="container">
+            <div class="back-btn" onclick="showView('home')">← 返回首页</div>
+            <div class="page-title">⚖️ 权益维护指南</div>
+            <div id="rightsContent"></div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="tab-bar">
+        <div class="tab-item active" onclick="switchTab(0)">
+            <span class="tab-icon">🏠</span>
+            <span class="tab-label">首页</span>
+        </div>
+        <div class="tab-item" onclick="switchTab(1)">
+            <span class="tab-icon">🗺️</span>
+            <span class="tab-label">流程</span>
+        </div>
+        <div class="tab-item" onclick="switchTab(2)">
+            <span class="tab-icon">✅</span>
+            <span class="tab-label">清单</span>
+        </div>
+        <div class="tab-item" onclick="switchTab(3)">
+            <span class="tab-icon">📄</span>
+            <span class="tab-label">模板</span>
+        </div>
+        <div class="tab-item" onclick="switchTab(4)">
+            <span class="tab-icon">💎</span>
+            <span class="tab-label">权益</span>
+        </div>
+    </div>
+
+    <!-- 购买弹窗 -->
+    <div class="modal-overlay purchase-modal" id="purchaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">解锁完整版</span>
+                <span class="modal-close" onclick="closeModal()">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="purchase-icon">💎</div>
+                <div class="purchase-title">离职手续办理 · 完整版</div>
+                <div class="purchase-price"><span>¥</span>19.9</div>
+                <div class="purchase-features">
+                    <div class="purchase-feature">✓ 全部模板无限制下载</div>
+                    <div class="purchase-feature">✓ 完整版离职流程详解</div>
+                    <div class="purchase-feature">✓ 社保公积金深度指南</div>
+                    <div class="purchase-feature">✓ 权益维护完整手册</div>
+                    <div class="purchase-feature">✓ 持续更新最新政策</div>
+                </div>
+                <div class="purchase-guarantee">7天无理由退款 · 支付安全有保障</div>
+                <button class="purchase-btn" onclick="processPurchase()">
+                    立即解锁 · ¥19.9
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模板详情弹窗 -->
+    <div class="modal-overlay" id="templateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="templateModalTitle">模板详情</span>
+                <span class="modal-close" onclick="closeTemplateModal()">×</span>
+            </div>
+            <div class="modal-body">
+                <div id="templateDetailContent"></div>
+                <div class="detail-actions" id="templateActions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 全局状态
+        const state = {
+            isUnlocked: false,
+            flowData: null,
+            checklistData: null,
+            templatesData: null,
+            socialData: null,
+            rightsData: null,
+            purchaseData: null,
+            checklistStatus: {} // 存储清单勾选状态
+        };
+
+        // API基础路径
+        const API_BASE = '/api';
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadAllData();
+            loadChecklistStatus();
+            renderHomeView();
+            updateProgress();
+        });
+
+        // 加载所有数据
+        async function loadAllData() {
+            try {
+                const [flow, checklist, templates, social, rights, purchase] = await Promise.all([
+                    fetchAPI('/flow'),
+                    fetchAPI('/checklist'),
+                    fetchAPI('/templates'),
+                    fetchAPI('/social-security'),
+                    fetchAPI('/rights'),
+                    fetchAPI('/purchase')
+                ]);
+                
+                state.flowData = flow.data;
+                state.checklistData = checklist.data;
+                state.templatesData = templates.data;
+                state.socialData = social.data;
+                state.rightsData = rights.data;
+                state.purchaseData = purchase.data;
+                
+                // 检查解锁状态
+                checkUnlockStatus();
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                showToast('数据加载失败，请刷新重试');
+            }
+        }
+
+        // API请求封装
+        async function fetchAPI(endpoint, options = {}) {
+            try {
+                const response = await fetch(API_BASE + endpoint, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('API请求失败:', error);
+                throw error;
+            }
+        }
+
+        // 检查解锁状态
+        function checkUnlockStatus() {
+            const saved = localStorage.getItem('quit_app_unlocked');
+            if (saved === 'true') {
+                state.isUnlocked = true;
+            }
+        }
+
+        // 保存清单状态
+        function saveChecklistStatus() {
+            localStorage.setItem('quit_app_checklist', JSON.stringify(state.checklistStatus));
+        }
+
+        // 加载清单状态
+        function loadChecklistStatus() {
+            const saved = localStorage.getItem('quit_app_checklist');
+            if (saved) {
+                state.checklistStatus = JSON.parse(saved);
+            }
+        }
+
+        // 切换视图
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewName + 'View').classList.add('active');
+            
+            // 渲染对应视图
+            switch(viewName) {
+                case 'flow':
+                    renderFlowView();
+                    break;
+                case 'checklist':
+                    renderChecklistView();
+                    break;
+                case 'templates':
+                    renderTemplatesView();
+                    break;
+                case 'social':
+                    renderSocialView();
+                    break;
+                case 'rights':
+                    renderRightsView();
+                    break;
+                case 'home':
+                    updateProgress();
+                    break;
+            }
+            
+            window.scrollTo(0, 0);
+        }
+
+        // 切换标签页
+        function switchTab(index) {
+            const views = ['home', 'flow', 'checklist', 'templates', 'rights'];
+            document.querySelectorAll('.tab-item').forEach((t, i) => {
+                t.classList.toggle('active', i === index);
+            });
+            showView(views[index]);
+        }
+
+        // 渲染首页
+        function renderHomeView() {
+            // 首页由静态HTML渲染
+        }
+
+        // 渲染流程视图
+        function renderFlowView() {
+            const container = document.getElementById('flowContent');
+            if (!state.flowData) return;
+
+            let html = '';
+            state.flowData.stages.forEach((stage, sIndex) => {
+                html += `
+                    <div class="flow-stage fade-in" style="animation-delay: ${sIndex * 0.1}s">
+                        <div class="stage-header">
+                            <div class="stage-icon">${stage.icon}</div>
+                            <div class="stage-info">
+                                <h3>${stage.title}</h3>
+                                <span>⏱️ ${stage.duration}</span>
+                            </div>
+                        </div>
+                        <div class="stage-steps">
+                            ${stage.steps.map((step, stepIndex) => `
+                                <div class="step-item" onclick="showStepDetail('${stage.id}', '${step.id}')">
+                                    <div class="step-title">
+                                        ${step.title}
+                                        ${step.important ? '<span class="important">⚠️重要</span>' : ''}
+                                    </div>
+                                    <div class="step-desc">${step.desc}</div>
+                                    ${step.tips && step.tips.length > 0 ? `
+                                        <div class="step-tips">
+                                            💡 ${step.tips[0]}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 显示步骤详情
+        function showStepDetail(stageId, stepId) {
+            const stage = state.flowData.stages.find(s => s.id == stageId);
+            const step = stage.steps.find(s => s.id === stepId);
+            
+            let content = `<div class="detail-header">
+                <span class="detail-icon">${stage.icon}</span>
+                <div>
+                    <div class="detail-title">${step.title}</div>
+                    <div class="detail-category">${stage.title} · ${stage.duration}</div>
+                </div>
+            </div>
+            <div class="detail-body">
+                <p><strong>📝 说明：</strong></p>
+                <p>${step.desc}</p>
+                ${step.important ? '\n<p style="color: var(--danger);">⚠️ 这是重要步骤，请认真对待！</p>' : ''}
+                ${step.tips && step.tips.length > 0 ? `
+                    <p style="margin-top: 16px;"><strong>💡 温馨提示：</strong></p>
+                    <p>${step.tips.map(t => '• ' + t).join('\n')}</p>
+                ` : ''}
+                ${step.template_id ? `
+                    <p style="margin-top: 16px;"><strong>📄 相关模板：</strong></p>
+                    <p>可在"材料模板"页面下载使用</p>
+                ` : ''}
+            </div>`;
+
+            showTemplateModal(step.title, content, false);
+        }
+
+        // 渲染清单视图
+        function renderChecklistView() {
+            const container = document.getElementById('checklistContent');
+            if (!state.checklistData) return;
+
+            let html = '';
+            state.checklistData.categories.forEach((cat, cIndex) => {
+                const checkedCount = cat.items.filter(item => state.checklistStatus[item.id]).length;
+                const total = cat.items.length;
+                
+                html += `
+                    <div class="checklist-category fade-in" style="animation-delay: ${cIndex * 0.1}s">
+                        <div class="category-header">
+                            <div class="category-left">
+                                <span class="category-icon">${cat.icon}</span>
+                                <div>
+                                    <div class="category-title">${cat.title}</div>
+                                    <div class="category-count">${total}项待办</div>
+                                </div>
+                            </div>
+                            <span class="category-progress" style="color: ${cat.color}">${checkedCount}/${total}</span>
+                        </div>
+                        <div class="category-items">
+                            ${cat.items.map(item => `
+                                <div class="checklist-item">
+                                    <div class="checkbox ${state.checklistStatus[item.id] ? 'checked' : ''}" 
+                                         onclick="toggleChecklist('${item.id}', event)"
+                                         style="border-color: ${cat.color}">
+                                    </div>
+                                    <div class="item-content">
+                                        <div class="item-text ${state.checklistStatus[item.id] ? 'checked' : ''}">
+                                            ${item.text}
+                                            ${item.critical ? '<span class="critical-tag">必办</span>' : ''}
+                                        </div>
+                                        <div class="item-detail">${item.detail}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 切换清单项
+        function toggleChecklist(itemId, event) {
+            event.stopPropagation();
+            state.checklistStatus[itemId] = !state.checklistStatus[itemId];
+            saveChecklistStatus();
+            renderChecklistView();
+            updateProgress();
+        }
+
+        // 更新进度
+        function updateProgress() {
+            if (!state.checklistData) return;
+            
+            const total = state.checklistData.categories.reduce((sum, cat) => sum + cat.items.length, 0);
+            const checked = Object.values(state.checklistStatus).filter(v => v).length;
+            const percent = Math.round((checked / total) * 100);
+            
+            document.getElementById('totalProgress').textContent = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        // 渲染模板视图
+        function renderTemplatesView() {
+            const container = document.getElementById('templatesContent');
+            if (!state.templatesData) return;
+
+            let html = '';
+            state.templatesData.templates.forEach((tmpl, index) => {
+                const isLocked = tmpl.is_premium && !state.isUnlocked;
+                
+                html += `
+                    <div class="template-card ${isLocked ? 'locked' : ''} fade-in" 
+                         style="animation-delay: ${index * 0.1}s"
+                         ${isLocked ? 'onclick="showPurchaseModal()"' : `onclick="showTemplateDetail('${tmpl.id}')"`}>
+                        <div class="template-header">
+                            <span class="template-icon">${tmpl.icon}</span>
+                            <div>
+                                <div class="template-title">${tmpl.name}</div>
+                                <div class="template-category">${tmpl.category}</div>
+                            </div>
+                        </div>
+                        <div class="template-desc">${tmpl.desc}</div>
+                        <div class="template-footer">
+                            ${tmpl.is_premium ? `
+                                <span class="premium-tag">
+                                    ${isLocked ? '🔒' : '👑'} 
+                                    ${isLocked ? '解锁后可用' : '已解锁'}
+                                </span>
+                            ` : '<span style="color: var(--success); font-size: 12px;">✓ 免费</span>'}
+                            <span class="use-btn">
+                                ${isLocked ? '点击解锁' : '查看详情 →'}
+                            </span>
+                        </div>
+                        ${isLocked ? `
+                            <div class="lock-overlay">
+                                <span class="lock-icon">🔒</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 显示模板详情
+        async function showTemplateDetail(templateId) {
+            const tmpl = state.templatesData.templates.find(t => t.id === templateId);
+            if (!tmpl) return;
+
+            const isLocked = tmpl.is_premium && !state.isUnlocked;
+            
+            let content = `<div class="detail-header">
+                <span class="detail-icon">${tmpl.icon}</span>
+                <div>
+                    <div class="detail-title">${tmpl.name}</div>
+                    <div class="detail-category">${tmpl.category}</div>
+                </div>
+            </div>
+            <div class="detail-body">${isLocked ? '🔒 请先解锁完整版查看全部内容' : tmpl.content}</div>`;
+
+            let actions = '';
+            if (!isLocked) {
+                actions = `
+                    <button class="purchase-btn" onclick="copyTemplate('${tmpl.id}')">📋 复制模板内容</button>
+                `;
+            }
+            
+            showTemplateModal(tmpl.name, content, true, actions);
+        }
+
+        // 复制模板
+        function copyTemplate(templateId) {
+            const tmpl = state.templatesData.templates.find(t => t.id === templateId);
+            if (!tmpl) return;
+
+            navigator.clipboard.writeText(tmpl.content).then(() => {
+                showToast('模板已复制到剪贴板');
+            }).catch(() => {
+                showToast('复制失败，请手动选择复制');
+            });
+        }
+
+        // 显示模板弹窗
+        function showTemplateModal(title, content, showClose = true, actions = '') {
+            document.getElementById('templateModalTitle').textContent = title;
+            document.getElementById('templateDetailContent').innerHTML = content;
+            document.getElementById('templateActions').innerHTML = actions;
+            document.getElementById('templateModal').classList.add('active');
+        }
+
+        // 关闭模板弹窗
+        function closeTemplateModal() {
+            document.getElementById('templateModal').classList.remove('active');
+        }
+
+        // 渲染社保视图
+        function renderSocialView() {
+            const container = document.getElementById('socialContent');
+            if (!state.socialData) return;
+
+            let html = '';
+            state.socialData.sections.forEach((section, index) => {
+                html += `
+                    <div class="section-card fade-in" style="animation-delay: ${index * 0.1}s">
+                        <div class="section-header" onclick="toggleSection(this.parentElement)">
+                            <span class="section-icon">${section.icon}</span>
+                            <span class="section-title">${section.title}</span>
+                            <span class="section-arrow">▼</span>
+                        </div>
+                        <div class="section-content">
+                            ${section.content}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 渲染权益视图
+        function renderRightsView() {
+            const container = document.getElementById('rightsContent');
+            if (!state.rightsData) return;
+
+            let html = '';
+            state.rightsData.sections.forEach((section, index) => {
+                html += `
+                    <div class="rights-card fade-in" style="animation-delay: ${index * 0.1}s">
+                        <div class="rights-header">
+                            <span class="rights-icon">${section.icon}</span>
+                            <span class="rights-title">${section.title}</span>
+                        </div>
+                        <div class="rights-body">
+                            ${section.content}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 切换章节展开
+        function toggleSection(element) {
+            element.classList.toggle('expanded');
+        }
+
+        // 显示购买弹窗
+        function showPurchaseModal() {
+            document.getElementById('purchaseModal').classList.add('active');
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('purchaseModal').classList.remove('active');
+            document.getElementById('templateModal').classList.remove('active');
+        }
+
+        // 处理购买
+        async function processPurchase() {
+            try {
+                // 模拟支付成功
+                const response = await fetchAPI('/purchase', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        product_id: 'quit_app_full',
+                        price: 19.9
+                    })
+                });
+
+                if (response.code === 200) {
+                    state.isUnlocked = true;
+                    localStorage.setItem('quit_app_unlocked', 'true');
+                    closeModal();
+                    showToast('解锁成功！欢迎使用完整版');
+                    renderTemplatesView();
+                } else {
+                    showToast('购买失败，请重试');
+                }
+            } catch (error) {
+                // 模拟成功（演示用）
+                state.isUnlocked = true;
+                localStorage.setItem('quit_app_unlocked', 'true');
+                closeModal();
+                showToast('解锁成功！欢迎使用完整版');
+                renderTemplatesView();
+            }
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 点击模态框背景关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // 阻止弹窗内容点击冒泡
+        document.querySelectorAll('.modal-content').forEach(content => {
+            content.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
+    </script>
+</body>
+</html>

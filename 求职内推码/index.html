@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>求职内推码 - 让求职更简单</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #f8fafc;
+            --bg-white: #ffffff;
+            --border: #e5e7eb;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 头部导航 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
+        }
+
+        .header-logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-logo span {
+            font-size: 24px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 主内容区 */
+        .main {
+            padding-top: 56px;
+            padding-bottom: 70px;
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 首页 */
+        .home-banner {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 24px 16px;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .banner-search {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .banner-search input {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .banner-search button {
+            padding: 12px 20px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .section {
+            padding: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-more {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 热门企业 */
+        .company-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .company-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .company-card {
+            flex-shrink: 0;
+            width: 100px;
+            padding: 16px;
+            background: var(--bg-white);
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .company-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .company-logo {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .company-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .company-tag {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 2px 8px;
+            background: #fef3c7;
+            color: #d97706;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        /* 内推码卡片 */
+        .referral-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .referral-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .referral-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .referral-company {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .referral-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .referral-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .referral-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .vip-tag {
+            padding: 4px 8px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .referral-code {
+            background: var(--bg-primary);
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .code-text {
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .code-copy {
+            padding: 4px 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .referral-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            background: #e0e7ff;
+            color: var(--primary);
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .tag.salary {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .tag.location {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .referral-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .referral-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .apply-btn {
+            padding: 8px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 底部导航 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-white);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 6px 16px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+        }
+
+        .tab-item span:first-child {
+            font-size: 22px;
+        }
+
+        .tab-item span:last-child {
+            font-size: 11px;
+        }
+
+        /* 面经列表 */
+        .interview-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        .interview-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .interview-avatar {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .interview-meta {
+            flex: 1;
+        }
+
+        .interview-company {
+            font-size: 12px;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .interview-title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .interview-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .interview-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .interview-stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        /* 社区 */
+        .post-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .post-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .post-author {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .post-type {
+            margin-left: auto;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .post-type.discussion {
+            background: #e0e7ff;
+            color: var(--primary);
+        }
+
+        .post-type.share {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .post-type.question {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .post-type.notice {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .post-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .post-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* 投递追踪 */
+        .track-header {
+            padding: 16px;
+            background: var(--bg-white);
+            margin-bottom: 12px;
+        }
+
+        .track-tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .track-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .track-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .application-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 0 16px 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .app-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .app-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .app-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .app-status.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .app-status.interview {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .app-status.accepted {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .app-status.rejected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .app-progress {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        .progress-step:last-child::before {
+            display: none;
+        }
+
+        .progress-step.completed::before {
+            background: var(--success);
+        }
+
+        .step-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            z-index: 1;
+        }
+
+        .progress-step.completed .step-dot {
+            background: var(--success);
+        }
+
+        .progress-step.active .step-dot {
+            background: var(--primary);
+        }
+
+        .step-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .app-notes {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* 详情页 */
+        .detail-page {
+            padding: 16px;
+            padding-top: 70px;
+        }
+
+        .detail-header {
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .detail-company {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .detail-logo {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .detail-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .detail-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .detail-section {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .detail-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .code-box {
+            background: var(--bg-primary);
+            padding: 16px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-box .code {
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+
+        .content-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .content-text h3 {
+            font-size: 15px;
+            margin: 16px 0 8px;
+        }
+
+        .content-text p {
+            margin-bottom: 8px;
+        }
+
+        .content-text pre {
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+
+        /* VIP弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+
+        .vip-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .vip-icon {
+            font-size: 64px;
+            margin-bottom: 12px;
+        }
+
+        .vip-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .vip-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .vip-price span {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .vip-features {
+            margin-bottom: 24px;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .vip-feature:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: #fef3c7;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .feature-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .feature-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .vip-buy-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .vip-desc {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 搜索页 */
+        .search-page {
+            padding: 16px;
+        }
+
+        .search-input-wrap {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .search-input-wrap input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input-wrap input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-btn {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .search-result-section {
+            margin-bottom: 24px;
+        }
+
+        .search-result-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: normal;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        /* 响应式 */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .main {
+                padding-bottom: 80px;
+            }
+            
+            .tab-bar {
+                max-width: 600px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-logo">
+            <span>🎯</span>
+            <span>求职内推码</span>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn" onclick="switchTab('search')">🔍</button>
+            <button class="vip-badge" onclick="showVipModal()">¥29开通VIP</button>
+        </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="home-banner">
+                <div style="font-size: 14px; opacity: 0.9;">让求职更简单</div>
+                <div style="font-size: 20px; font-weight: 700; margin-top: 4px;">发现优质内推机会</div>
+                <div class="banner-search">
+                    <input type="text" placeholder="搜索公司/职位..." id="home-search-input">
+                    <button onclick="goSearch()">搜索</button>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-companies">10+</div>
+                        <div class="stat-label">合作企业</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-referrals">50+</div>
+                        <div class="stat-label">内推码</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-interviews">100+</div>
+                        <div class="stat-label">面经分享</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">🔥 热门企业</span>
+                    <span class="section-more" onclick="switchTab('referrals')">查看全部 →</span>
+                </div>
+                <div class="company-scroll" id="company-list"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-title">✨ 最新内推</span>
+                    <span class="section-more" onclick="switchTab('referrals')">更多内推 →</span>
+                </div>
+                <div class="referral-list" id="referral-list"></div>
+            </div>
+        </div>
+
+        <!-- 内推码页 -->
+        <div id="page-referrals" class="page">
+            <div style="padding: 16px;">
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <span class="section-title">全部内推码</span>
+                    <span class="section-more" onclick="showVipModal()">VIP专属 →</span>
+                </div>
+                <div id="all-referral-list"></div>
+            </div>
+        </div>
+
+        <!-- 面经页 -->
+        <div id="page-interviews" class="page">
+            <div style="padding: 16px;">
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <span class="section-title">面试经验</span>
+                </div>
+                <div id="interview-list"></div>
+            </div>
+        </div>
+
+        <!-- 社区页 -->
+        <div id="page-community" class="page">
+            <div style="padding: 16px;">
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <span class="section-title">求职社区</span>
+                    <button class="apply-btn" style="padding: 8px 16px;" onclick="showPostModal()">发布帖子</button>
+                </div>
+                <div class="track-tabs" style="margin-bottom: 16px;">
+                    <div class="track-tab active" data-type="" onclick="filterPosts('')">全部</div>
+                    <div class="track-tab" data-type="discussion" onclick="filterPosts('discussion')">讨论</div>
+                    <div class="track-tab" data-type="share" onclick="filterPosts('share')">分享</div>
+                    <div class="track-tab" data-type="question" onclick="filterPosts('question')">问答</div>
+                </div>
+                <div id="community-list"></div>
+            </div>
+        </div>
+
+        <!-- 投递追踪页 -->
+        <div id="page-track" class="page">
+            <div class="track-header">
+                <div class="section-title" style="margin-bottom: 12px;">投递追踪</div>
+                <div class="track-tabs">
+                    <div class="track-tab active" data-status="" onclick="filterApplications('')">全部</div>
+                    <div class="track-tab" data-status="待处理" onclick="filterApplications('待处理')">待处理</div>
+                    <div class="track-tab" data-status="面试中" onclick="filterApplications('面试中')">面试中</div>
+                    <div class="track-tab" data-status="已录用" onclick="filterApplications('已录用')">已录用</div>
+                </div>
+            </div>
+            <div id="application-list"></div>
+        </div>
+
+        <!-- 搜索页 -->
+        <div id="page-search" class="page search-page">
+            <div class="search-input-wrap">
+                <input type="text" placeholder="搜索公司、职位、面经..." id="search-input">
+                <button class="search-btn" onclick="performSearch()">搜索</button>
+            </div>
+            <div id="search-results"></div>
+        </div>
+
+        <!-- 内推详情页 -->
+        <div id="page-referral-detail" class="page detail-page">
+            <div class="detail-header">
+                <div class="back-btn" onclick="goBack()">← 返回</div>
+                <div class="detail-company">
+                    <div class="detail-logo" id="detail-logo"></div>
+                    <div>
+                        <div class="detail-title" id="detail-title"></div>
+                        <div class="detail-subtitle" id="detail-subtitle"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="detail-content"></div>
+        </div>
+
+        <!-- 面经详情页 -->
+        <div id="page-interview-detail" class="page detail-page">
+            <div class="detail-header">
+                <div class="back-btn" onclick="goBack()">← 返回</div>
+            </div>
+            <div id="interview-detail-content"></div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="tab-bar">
+        <div class="tab-item active" data-tab="home" onclick="switchTab('home')">
+            <span>🏠</span>
+            <span>首页</span>
+        </div>
+        <div class="tab-item" data-tab="referrals" onclick="switchTab('referrals')">
+            <span>🎫</span>
+            <span>内推码</span>
+        </div>
+        <div class="tab-item" data-tab="interviews" onclick="switchTab('interviews')">
+            <span>📝</span>
+            <span>面经</span>
+        </div>
+        <div class="tab-item" data-tab="community" onclick="switchTab('community')">
+            <span>💬</span>
+            <span>社区</span>
+        </div>
+        <div class="tab-item" data-tab="track" onclick="switchTab('track')">
+            <span>📊</span>
+            <span>追踪</span>
+        </div>
+    </nav>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vip-modal" onclick="hideVipModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-handle"></div>
+            <div class="vip-header">
+                <div class="vip-icon">👑</div>
+                <div class="vip-title">求职VIP会员</div>
+                <div class="vip-price">¥29 <span>/ 月卡</span></div>
+            </div>
+            <div class="vip-features" id="vip-features"></div>
+            <button class="vip-buy-btn" onclick="buyVip()">立即开通</button>
+            <div class="vip-desc">开通即表示同意《VIP会员协议》</div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+        
+        // 公司emoji映射
+        const companyEmojis = {
+            '字节跳动': '🔵',
+            '阿里巴巴': '🐮',
+            '腾讯': '🐧',
+            '美团': '🍔',
+            '京东': '🛒',
+            '华为': '🌟',
+            '小米': '📱',
+            '网易': '🎮',
+            '百度': '🔍',
+            '快手': '🎬'
+        };
+
+        // 页面栈
+        let pageStack = ['home'];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCompanies();
+            loadReferrals();
+            loadInterviews();
+            loadCommunity();
+            loadApplications();
+            loadVipBenefits();
+        });
+
+        // 通用请求
+        async function fetchAPI(url) {
+            try {
+                const res = await fetch(API_BASE + url);
+                const data = await res.json();
+                return data.code === 200 ? data.data : null;
+            } catch (e) {
+                console.error('API Error:', e);
+                // 离线模式使用模拟数据
+                return getMockData(url);
+            }
+        }
+
+        // 模拟数据
+        function getMockData(url) {
+            if (url.includes('companies')) {
+                return [
+                    {id: 1, name: '字节跳动', logo: '🔵', industry: '互联网', hot: true},
+                    {id: 2, name: '阿里巴巴', logo: '🐮', industry: '互联网', hot: true},
+                    {id: 3, name: '腾讯', logo: '🐧', industry: '互联网', hot: true},
+                    {id: 4, name: '美团', logo: '🍔', industry: '本地生活', hot: true},
+                    {id: 5, name: '华为', logo: '🌟', industry: '科技', hot: true},
+                ];
+            }
+            return null;
+        }
+
+        // 加载企业
+        async function loadCompanies() {
+            const data = await fetchAPI('/companies');
+            if (!data) return;
+            
+            const container = document.getElementById('company-list');
+            container.innerHTML = data.slice(0, 6).map(c => `
+                <div class="company-card" onclick="showCompanyReferrals(${c.id}, '${c.name}')">
+                    <div class="company-logo">${c.logo || companyEmojis[c.name] || '🏢'}</div>
+                    <div class="company-name">${c.name}</div>
+                    ${c.hot ? '<span class="company-tag">热招</span>' : ''}
+                </div>
+            `).join('');
+        }
+
+        // 加载内推码
+        async function loadReferrals() {
+            const data = await fetchAPI('/referrals?page_size=10');
+            if (!data) return;
+            
+            const list = data.list || [];
+            
+            // 首页内推
+            const homeList = document.getElementById('referral-list');
+            homeList.innerHTML = list.slice(0, 3).map(r => renderReferralCard(r)).join('');
+            
+            // 全部内推
+            const allList = document.getElementById('all-referral-list');
+            allList.innerHTML = list.map(r => renderReferralCard(r)).join('');
+        }
+
+        // 渲染内推卡片
+        function renderReferralCard(r) {
+            const emoji = companyEmojis[r.company_name] || '🏢';
+            return `
+                <div class="referral-card" onclick="showReferralDetail(${r.id})">
+                    <div class="referral-header">
+                        <div class="referral-company">
+                            <div class="referral-logo">${emoji}</div>
+                            <div class="referral-info">
+                                <h4>${r.company_name}</h4>
+                                <p>${r.position}</p>
+                            </div>
+                        </div>
+                        ${r.vip_only ? '<span class="vip-tag">VIP</span>' : ''}
+                    </div>
+                    <div class="referral-code">
+                        <span class="code-text">${r.code}</span>
+                        <button class="code-copy" onclick="event.stopPropagation(); copyCode('${r.code}')">复制</button>
+                    </div>
+                    <div class="referral-tags">
+                        <span class="tag salary">💰 ${r.salary}</span>
+                        <span class="tag location">📍 ${r.location}</span>
+                        ${r.requirements.slice(0, 2).map(req => `<span class="tag">${req}</span>`).join('')}
+                    </div>
+                    <div class="referral-footer">
+                        <div class="referral-stats">
+                            <span>👁️ ${r.views}</span>
+                            <span>📤 已用${r.used}次</span>
+                        </div>
+                        <button class="apply-btn" onclick="event.stopPropagation(); applyReferral(${r.id})">立即申请</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 加载面经
+        async function loadInterviews() {
+            const data = await fetchAPI('/interviews?page_size=10');
+            if (!data) return;
+            
+            const container = document.getElementById('interview-list');
+            container.innerHTML = (data.list || []).map(e => `
+                <div class="interview-card" onclick="showInterviewDetail(${e.id})">
+                    <div class="interview-header">
+                        <div class="interview-avatar">${e.avatar}</div>
+                        <div class="interview-meta">
+                            <div class="interview-company">${e.company_name} · ${e.position}</div>
+                            <div class="interview-title">${e.title}</div>
+                        </div>
+                    </div>
+                    <div class="interview-tags">
+                        ${e.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                    </div>
+                    <div class="interview-footer">
+                        <div class="interview-stats">
+                            <span>👤 ${e.author}</span>
+                            <span>🕐 ${e.created_at}</span>
+                        </div>
+                        <div class="interview-stats">
+                            <span>👁️ ${e.views}</span>
+                            <span>❤️ ${e.likes}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载社区
+        async function loadCommunity(type = '') {
+            const url = type ? `/community?type=${type}` : '/community';
+            const data = await fetchAPI(url);
+            if (!data) return;
+            
+            const container = document.getElementById('community-list');
+            const typeNames = {discussion: '讨论', share: '分享', question: '问答', notice: '公告'};
+            
+            container.innerHTML = (data.list || []).map(p => `
+                <div class="post-card" onclick="showPostDetail(${p.id})">
+                    <div class="post-header">
+                        <div class="post-avatar">${p.avatar}</div>
+                        <div>
+                            <div class="post-author">${p.author}</div>
+                            <div class="post-time">${p.created_at}</div>
+                        </div>
+                        <span class="post-type ${p.type}">${typeNames[p.type] || '帖子'}</span>
+                    </div>
+                    <div class="post-title">${p.title}</div>
+                    <div class="post-content">${p.content}</div>
+                    <div class="post-footer">
+                        <div class="post-tags">
+                            ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                        </div>
+                        <div class="interview-stats">
+                            <span>👁️ ${p.views}</span>
+                            <span>❤️ ${p.likes}</span>
+                            <span>💬 ${p.replies}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 筛选帖子
+        function filterPosts(type) {
+            document.querySelectorAll('#page-community .track-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.type === type);
+            });
+            loadCommunity(type);
+        }
+
+        // 加载投递
+        async function loadApplications(status = '') {
+            const data = await fetchAPI('/applications');
+            if (!data) return;
+            
+            const list = status ? data.filter(a => a.status === status) : data;
+            const container = document.getElementById('application-list');
+            
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-title">暂无投递记录</div>
+                        <div class="empty-desc">去申请内推，开始你的求职之旅吧～</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const stages = ['简历筛选', '笔试', '一面', '二面', '三面', 'OFFER'];
+            const statusClass = {待处理: 'pending', 面试中: 'interview', 已录用: 'accepted', 已拒绝: 'rejected'};
+            
+            container.innerHTML = list.map(app => {
+                const currentIndex = stages.indexOf(app.stage);
+                return `
+                    <div class="application-card">
+                        <div class="app-header">
+                            <div class="app-info">
+                                <h4>${app.company_name}</h4>
+                                <p>${app.position}</p>
+                            </div>
+                            <span class="app-status ${statusClass[app.status]}">${app.status}</span>
+                        </div>
+                        <div class="app-progress">
+                            ${stages.map((s, i) => `
+                                <div class="progress-step ${i < currentIndex ? 'completed' : i === currentIndex ? 'active' : ''}">
+                                    <div class="step-dot">${i < currentIndex ? '✓' : i + 1}</div>
+                                    <div class="step-label">${s}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="app-notes">📝 ${app.notes}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 筛选投递
+        function filterApplications(status) {
+            document.querySelectorAll('#page-track .track-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.status === status);
+            });
+            loadApplications(status);
+        }
+
+        // 加载VIP权益
+        async function loadVipBenefits() {
+            const data = await fetchAPI('/vip/benefits');
+            if (!data) return;
+            
+            const container = document.getElementById('vip-features');
+            container.innerHTML = data.features.map(f => `
+                <div class="vip-feature">
+                    <div class="feature-icon">${f.icon}</div>
+                    <div class="feature-info">
+                        <h4>${f.name}</h4>
+                        <p>${f.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 切换页面
+        function switchTab(tab) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(`page-${tab}`).classList.add('active');
+            document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+            
+            if (!pageStack.includes(tab)) {
+                pageStack.push(tab);
+            }
+        }
+
+        // 返回
+        function goBack() {
+            if (pageStack.length > 1) {
+                pageStack.pop();
+                const prev = pageStack[pageStack.length - 1];
+                switchTab(prev);
+            }
+        }
+
+        // 搜索
+        function goSearch() {
+            const keyword = document.getElementById('home-search-input').value;
+            if (keyword) {
+                document.getElementById('search-input').value = keyword;
+                switchTab('search');
+                performSearch();
+            }
+        }
+
+        async function performSearch() {
+            const keyword = document.getElementById('search-input').value.trim();
+            if (!keyword) {
+                showToast('请输入搜索关键词');
+                return;
+            }
+            
+            switchTab('search');
+            const data = await fetchAPI(`/search?keyword=${encodeURIComponent(keyword)}`);
+            const container = document.getElementById('search-results');
+            
+            if (!data) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-title">搜索服务暂不可用</div></div>';
+                return;
+            }
+            
+            let html = '';
+            
+            if (data.referrals?.length) {
+                html += `
+                    <div class="search-result-section">
+                        <div class="search-result-title">🎫 内推码 <span class="search-count">${data.referrals.length}个结果</span></div>
+                        ${data.referrals.map(r => `
+                            <div class="referral-card" onclick="showReferralDetail(${r.id})">
+                                <div class="referral-header">
+                                    <div class="referral-company">
+                                        <div class="referral-logo">${companyEmojis[r.company_name] || '🏢'}</div>
+                                        <div class="referral-info">
+                                            <h4>${r.company_name}</h4>
+                                            <p>${r.position}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="referral-code">
+                                    <span class="code-text">${r.code}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            if (data.interviews?.length) {
+                html += `
+                    <div class="search-result-section">
+                        <div class="search-result-title">📝 面经 <span class="search-count">${data.interviews.length}篇</span></div>
+                        ${data.interviews.map(e => `
+                            <div class="interview-card" onclick="showInterviewDetail(${e.id})">
+                                <div class="interview-header">
+                                    <div class="interview-avatar">${e.avatar}</div>
+                                    <div class="interview-meta">
+                                        <div class="interview-company">${e.company_name}</div>
+                                        <div class="interview-title">${e.title}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            if (data.posts?.length) {
+                html += `
+                    <div class="search-result-section">
+                        <div class="search-result-title">💬 社区 <span class="search-count">${data.posts.length}篇</span></div>
+                        ${data.posts.map(p => `
+                            <div class="post-card">
+                                <div class="post-title">${p.title}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            if (!html) {
+                html = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">未找到相关结果</div><div class="empty-desc">换个关键词试试吧～</div></div>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // 显示内推详情
+        async function showReferralDetail(id) {
+            const data = await fetchAPI(`/referrals/${id}`);
+            if (!data) return;
+            
+            pageStack.push('referral-detail');
+            switchTab('referral-detail');
+            
+            const emoji = companyEmojis[data.company_name] || '🏢';
+            document.getElementById('detail-logo').textContent = emoji;
+            document.getElementById('detail-title').textContent = data.position;
+            document.getElementById('detail-subtitle').textContent = `${data.department} · ${data.location}`;
+            
+            document.getElementById('detail-content').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-section-title">🎫 内推码</div>
+                    <div class="code-box">
+                        <span class="code">${data.code}</span>
+                        <button class="code-copy" onclick="copyCode('${data.code}')">复制</button>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">💰 薪资待遇</div>
+                    <div class="content-text">
+                        <p style="font-size: 20px; font-weight: 700; color: var(--success);">${data.salary}</p>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">📋 岗位要求</div>
+                    <div class="referral-tags">
+                        ${data.requirements.map(r => `<span class="tag">${r}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">🎁 福利待遇</div>
+                    <div class="referral-tags">
+                        ${data.benefits.map(b => `<span class="tag salary">${b}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">📅 有效期至 ${data.expiry}</div>
+                    <div class="referral-stats" style="margin-top: 8px;">
+                        <span>👁️ 浏览 ${data.views}</span>
+                        <span>📤 已用 ${data.used} 次</span>
+                    </div>
+                </div>
+                
+                <button class="vip-buy-btn" style="margin-top: 20px; background: var(--primary);" onclick="applyReferral(${data.id})">
+                    立即申请内推
+                </button>
+            `;
+        }
+
+        // 显示面经详情
+        async function showInterviewDetail(id) {
+            const data = await fetchAPI(`/interviews/${id}`);
+            if (!data) return;
+            
+            pageStack.push('interview-detail');
+            switchTab('interview-detail');
+            
+            // 转换Markdown为HTML
+            let contentHtml = data.content
+                .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+                .replace(/^### (.+)$/gm, '<h4 style="margin: 12px 0 6px; font-size: 14px;">$1</h4>')
+                .replace(/^- (.+)$/gm, '<li>$1</li>')
+                .replace(/`([^`]+)`/g, '<code style="background: #f1f1f1; padding: 2px 6px; border-radius: 4px;">$1</code>')
+                .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre>$2</pre>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/^(?!<[hlp])(.+)$/gm, '<p>$1</p>');
+            
+            document.getElementById('interview-detail-content').innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <div style="font-size: 12px; color: var(--primary); margin-bottom: 4px;">${data.company_name} · ${data.position}</div>
+                    <h1 style="font-size: 20px; font-weight: 700; line-height: 1.4;">${data.title}</h1>
+                    <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 13px; color: var(--text-secondary);">
+                        <span>👤 ${data.author}</span>
+                        <span>🕐 ${data.created_at}</span>
+                        <span>👁️ ${data.views}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="interview-tags" style="margin-bottom: 0;">
+                        ${data.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="content-text">${contentHtml}</div>
+                </div>
+            `;
+        }
+
+        // 显示企业内推
+        function showCompanyReferrals(companyId, companyName) {
+            switchTab('referrals');
+            loadReferralsByCompany(companyId);
+        }
+
+        async function loadReferralsByCompany(companyId) {
+            const data = await fetchAPI(`/referrals?company_id=${companyId}`);
+            const container = document.getElementById('all-referral-list');
+            
+            if (!data || !data.list.length) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-title">暂无内推码</div></div>';
+                return;
+            }
+            
+            container.innerHTML = data.list.map(r => renderReferralCard(r)).join('');
+        }
+
+        // 申请内推
+        async function applyReferral(id) {
+            const res = await fetch(API_BASE + `/referrals/${id}/apply`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: 'user_001'})
+            });
+            
+            const data = await res.json();
+            if (data.code === 200) {
+                showToast('✅ 内推申请成功！');
+                loadApplications();
+            } else {
+                showToast(data.message || '申请失败');
+            }
+        }
+
+        // 复制代码
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('✅ 内推码已复制');
+            }).catch(() => {
+                showToast('复制失败，请手动复制');
+            });
+        }
+
+        // 显示VIP弹窗
+        function showVipModal() {
+            document.getElementById('vip-modal').classList.add('show');
+        }
+
+        // 隐藏VIP弹窗
+        function hideVipModal(e) {
+            if (e.target === e.currentTarget) {
+                document.getElementById('vip-modal').classList.remove('show');
+            }
+        }
+
+        // 购买VIP
+        function buyVip() {
+            showToast('💳 支付功能开发中...');
+        }
+
+        // 发布帖子弹窗
+        function showPostModal() {
+            const title = prompt('帖子标题：');
+            if (!title) return;
+            
+            const content = prompt('帖子内容：');
+            if (!content) return;
+            
+            fetch(API_BASE + '/community/post', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    title,
+                    content,
+                    author: '我',
+                    avatar: '👤',
+                    type: 'discussion'
+                })
+            }).then(res => res.json()).then(data => {
+                if (data.code === 200) {
+                    showToast('✅ 发布成功！');
+                    loadCommunity();
+                }
+            });
+        }
+
+        // Toast提示
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // 帖子详情（简化）
+        function showPostDetail(id) {
+            showToast('📄 帖子详情开发中...');
+        }
+    </script>
+</body>
+</html>

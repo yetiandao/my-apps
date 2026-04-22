@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>静心窝 - 专注助眠</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --secondary: #00B894;
+            --bg-dark: #1A1A2E;
+            --bg-card: #16213E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B2BEC3;
+            --accent: #FD79A8;
+            --gradient-night: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-sleep: linear-gradient(135deg, #2C3E50 0%, #3498DB 100%);
+            --gradient-focus: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--gradient-night);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .vip-btn {
+            background: linear-gradient(135deg, #F09819 0%, #EDDE5D 100%);
+            color: #1A1A2E;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .vip-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 70px 16px 100px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* 标签切换 */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .tab {
+            flex-shrink: 0;
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: none;
+            border-radius: 25px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 场景快捷入口 */
+        .scenes-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        .scenes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .scene-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .scene-card:active {
+            transform: scale(0.95);
+        }
+
+        .scene-card.active {
+            border-color: var(--primary);
+            background: rgba(108, 92, 231, 0.2);
+        }
+
+        .scene-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .scene-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 音效列表 */
+        .sounds-section {
+            margin-bottom: 24px;
+        }
+
+        .sounds-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .sound-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .sound-card:active {
+            transform: scale(0.95);
+        }
+
+        .sound-card.playing {
+            border-color: var(--secondary);
+            background: rgba(0, 184, 148, 0.2);
+        }
+
+        .sound-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .sound-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .sound-volume {
+            margin-top: 8px;
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.2);
+            outline: none;
+        }
+
+        .sound-volume::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--secondary);
+            cursor: pointer;
+        }
+
+        /* 播放控制 */
+        .playback-control {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .master-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .control-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-btn {
+            background: var(--gradient-night);
+            color: white;
+            width: 64px;
+            height: 64px;
+        }
+
+        .stop-btn {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .control-btn:active {
+            transform: scale(0.9);
+        }
+
+        .now-playing {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .now-playing span {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        /* 番茄钟 */
+        .pomodoro-section {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .pomodoro-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .timer-display {
+            font-size: 72px;
+            font-weight: 200;
+            font-family: 'SF Mono', 'Menlo', monospace;
+            margin-bottom: 24px;
+            letter-spacing: 4px;
+        }
+
+        .timer-mode {
+            font-size: 14px;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+            padding: 6px 16px;
+            background: rgba(108, 92, 231, 0.2);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .timer-btn {
+            padding: 14px 32px;
+            border-radius: 30px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .start-btn {
+            background: var(--gradient-focus);
+            color: white;
+        }
+
+        .reset-btn {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+        }
+
+        .timer-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 睡眠监测 */
+        .sleep-section {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .sleep-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sleep-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .sleep-toggle {
+            position: relative;
+            width: 60px;
+            height: 32px;
+        }
+
+        .sleep-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 32px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .sleep-toggle input:checked + .toggle-slider {
+            background: var(--primary);
+        }
+
+        .sleep-toggle input:checked + .toggle-slider:before {
+            transform: translateX(28px);
+        }
+
+        .sleep-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .sleep-records {
+            margin-top: 16px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .sleep-record {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 13px;
+        }
+
+        .sleep-record:last-child {
+            border-bottom: none;
+        }
+
+        .sleep-record-date {
+            color: var(--text-secondary);
+        }
+
+        .sleep-record-duration {
+            color: var(--secondary);
+        }
+
+        /* VIP弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 340px;
+            width: 100%;
+            text-align: center;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #F09819;
+            margin-bottom: 8px;
+        }
+
+        .modal-price span {
+            font-size: 16px;
+        }
+
+        .modal-original {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-decoration: line-through;
+            margin-bottom: 24px;
+        }
+
+        .benefits {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .benefit-item span:first-child {
+            color: var(--secondary);
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 30px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #F09819 0%, #EDDE5D 100%);
+            color: #1A1A2E;
+        }
+
+        .close-btn {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(22, 33, 62, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 20px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 999;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 隐藏类 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 活跃播放指示器 */
+        .active-indicator {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="logo">🏠 静心窝</div>
+        <button class="vip-btn" onclick="showVipModal()">开通年卡 ¥59</button>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 标签切换 -->
+        <div class="tabs">
+            <button class="tab active" data-tab="sound">🎵 声音</button>
+            <button class="tab" data-tab="focus">⏱️ 专注</button>
+            <button class="tab" data-tab="sleep">🌙 睡眠</button>
+        </div>
+
+        <!-- 声音页面 -->
+        <section id="sound-tab" class="tab-content">
+            <!-- 场景快捷入口 -->
+            <div class="scenes-section">
+                <div class="section-title">🎯 场景推荐</div>
+                <div class="scenes-grid" id="scenes-grid"></div>
+            </div>
+
+            <!-- 音效列表 -->
+            <div class="sounds-section">
+                <div class="section-title">🌈 音效库</div>
+                <div class="sounds-grid" id="sounds-grid"></div>
+            </div>
+
+            <!-- 播放控制 -->
+            <div class="playback-control">
+                <div class="master-controls">
+                    <button class="control-btn stop-btn" onclick="stopAll()">⏹</button>
+                    <button class="control-btn play-btn" id="master-play" onclick="toggleMasterPlay()">▶</button>
+                </div>
+                <div class="now-playing">
+                    正在播放: <span id="now-playing-text">选择一个音效开始</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 专注页面 -->
+        <section id="focus-tab" class="tab-content hidden">
+            <div class="pomodoro-section">
+                <div class="pomodoro-title">🍅 番茄工作法</div>
+                <div class="timer-mode" id="timer-mode">专注时间</div>
+                <div class="timer-display" id="timer-display">25:00</div>
+                <div class="timer-controls">
+                    <button class="timer-btn reset-btn" onclick="resetTimer()">重置</button>
+                    <button class="timer-btn start-btn" id="timer-start" onclick="toggleTimer()">开始</button>
+                </div>
+            </div>
+
+            <div class="sleep-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-focus-time">0</div>
+                    <div class="stat-label">总专注(分钟)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-sessions">0</div>
+                    <div class="stat-label">完成次数</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 睡眠页面 -->
+        <section id="sleep-tab" class="tab-content hidden">
+            <div class="sleep-section">
+                <div class="sleep-header">
+                    <div class="sleep-title">🌙 睡眠监测</div>
+                    <label class="sleep-toggle">
+                        <input type="checkbox" id="sleep-mode" onchange="toggleSleepMode()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="sleep-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="avg-sleep">--</div>
+                        <div class="stat-label">平均时长(小时)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="sleep-count">0</div>
+                        <div class="stat-label">记录天数</div>
+                    </div>
+                </div>
+                <div class="sleep-records" id="sleep-records">
+                    <div style="text-align: center; color: var(--text-secondary); padding: 20px;">
+                        暂无睡眠记录<br>开启睡眠模式开始监测
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-tab="sound">
+            <span class="nav-icon">🎵</span>
+            <span>声音</span>
+        </div>
+        <div class="nav-item" data-tab="focus">
+            <span class="nav-icon">⏱️</span>
+            <span>专注</span>
+        </div>
+        <div class="nav-item" data-tab="sleep">
+            <span class="nav-icon">🌙</span>
+            <span>睡眠</span>
+        </div>
+    </nav>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vip-modal">
+        <div class="modal">
+            <div class="modal-icon">👑</div>
+            <div class="modal-title">开通静心窝年卡</div>
+            <div class="modal-desc">解锁全部音效、去除广告、专属场景</div>
+            <div class="modal-price">¥59 <span>/年</span></div>
+            <div class="modal-original">原价 ¥199/年</div>
+            <div class="benefits">
+                <div class="benefit-item"><span>✓</span> 全部12+音效免费使用</div>
+                <div class="benefit-item"><span>✓</span> 自定义场景组合</div>
+                <div class="benefit-item"><span>✓</span> 数据云同步</div>
+                <div class="benefit-item"><span>✓</span> 专属睡眠报告</div>
+            </div>
+            <button class="modal-btn buy-btn" onclick="purchaseVip()">立即开通</button>
+            <button class="modal-btn close-btn" onclick="closeVipModal()">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 配置 ====================
+        const API_BASE = 'http://localhost:5000/api';
+        
+        // 音效配置 - 使用免费在线音频源
+        const SOUNDS = [
+            { id: 'rain', name: '雨声', icon: '🌧️', category: '自然', src: 'https://cdn.pixabay.com/audio/2022/05/16/audio_260cb35c96.mp3' },
+            { id: 'thunder', name: '雷声', icon: '⛈️', category: '自然', src: 'https://cdn.pixabay.com/audio/2022/10/30/audio_a5124a1eb2.mp3' },
+            { id: 'ocean', name: '海浪', icon: '🌊', category: '自然', src: 'https://cdn.pixabay.com/audio/2022/06/07/audio_b9bd4170e4.mp3' },
+            { id: 'forest', name: '森林', icon: '🌲', category: '自然', src: 'https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3' },
+            { id: 'wind', name: '微风', icon: '🍃', category: '自然', src: 'https://cdn.pixabay.com/audio/2022/10/18/audio_4b8da60ee0.mp3' },
+            { id: 'fire', name: '篝火', icon: '🔥', category: '环境', src: 'https://cdn.pixabay.com/audio/2021/08/09/audio_a1a0b3b5d3.mp3' },
+            { id: 'birds', name: '鸟鸣', icon: '🐦', category: '自然', src: 'https://cdn.pixabay.com/audio/2022/03/10/audio_4dedf5bf94.mp3' },
+            { id: 'river', name: '溪流', icon: '💧', category: '自然', src: 'https://cdn.pixabay.com/audio/2022/02/07/audio_5d1a93ab26.mp3' },
+            { id: 'cafe', name: '咖啡馆', icon: '☕', category: '环境', src: 'https://cdn.pixabay.com/audio/2024/11/13/audio_e379f0d36c.mp3' },
+            { id: 'night', name: '夜晚', icon: '🌙', category: '环境', src: 'https://cdn.pixabay.com/audio/2022/03/15/audio_2ed3c5d97c.mp3' },
+            { id: 'train', name: '火车', icon: '🚂', category: '环境', src: 'https://cdn.pixabay.com/audio/2024/02/15/audio_8a4f49c6a4.mp3' },
+            { id: 'fan', name: '风扇', icon: '🌀', category: '环境', src: 'https://cdn.pixabay.com/audio/2023/07/30/audio_6d1a2e4c26.mp3' },
+        ];
+
+        const SCENES = [
+            { id: 'focus', name: '专注工作', icon: '💼', sounds: ['cafe', 'rain'] },
+            { id: 'sleep', name: '安睡助眠', icon: '😴', sounds: ['rain', 'thunder'] },
+            { id: 'relax', name: '放松冥想', icon: '🧘', sounds: ['forest', 'wind'] },
+            { id: 'study', name: '学习阅读', icon: '📚', sounds: ['cafe', 'rain'] },
+        ];
+
+        // ==================== 状态管理 ====================
+        let audioContext = null;
+        let activeSounds = {};  // { soundId: { audio, gainNode, source } }
+        let isMasterPlaying = false;
+        let isVip = localStorage.getItem('jingxinwo_vip') === 'true';
+
+        // 番茄钟状态
+        let timerInterval = null;
+        let timerSeconds = 25 * 60;
+        let isTimerRunning = false;
+        let isBreakTime = false;
+
+        // 睡眠监测状态
+        let sleepStartTime = null;
+        let isSleepMode = false;
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initAudio();
+            renderSounds();
+            renderScenes();
+            loadStats();
+            initTabNavigation();
+            checkVipStatus();
+        });
+
+        function initAudio() {
+            // 延迟创建AudioContext直到用户交互（浏览器政策）
+            document.addEventListener('click', initAudioContext, { once: true });
+        }
+
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // ==================== 标签页切换 ====================
+        function initTabNavigation() {
+            document.querySelectorAll('.tab, .nav-item').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.dataset.tab;
+                    switchTab(tabId);
+                });
+            });
+        }
+
+        function switchTab(tabId) {
+            // 更新顶部标签
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabId}"]`)?.classList.add('active');
+
+            // 更新底部导航
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-tab="${tabId}"]`)?.classList.add('active');
+
+            // 切换内容
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`${tabId}-tab`)?.classList.remove('hidden');
+        }
+
+        // ==================== 音效渲染 ====================
+        function renderSounds() {
+            const grid = document.getElementById('sounds-grid');
+            grid.innerHTML = SOUNDS.map(sound => `
+                <div class="sound-card" id="sound-${sound.id}" onclick="toggleSound('${sound.id}')">
+                    <div class="sound-icon">${sound.icon}</div>
+                    <div class="sound-name">${sound.name}</div>
+                    <input type="range" class="sound-volume" min="0" max="100" value="50" 
+                           onchange="setVolume('${sound.id}', this.value)" onclick="event.stopPropagation()">
+                </div>
+            `).join('');
+        }
+
+        function renderScenes() {
+            const grid = document.getElementById('scenes-grid');
+            grid.innerHTML = SCENES.map(scene => `
+                <div class="scene-card" onclick="activateScene('${scene.id}')">
+                    <div class="scene-icon">${scene.icon}</div>
+                    <div class="scene-name">${scene.name}</div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 音效播放控制 ====================
+        function toggleSound(soundId) {
+            initAudioContext();
+            
+            if (activeSounds[soundId]) {
+                stopSound(soundId);
+            } else {
+                playSound(soundId);
+            }
+            updateNowPlaying();
+        }
+
+        function playSound(soundId) {
+            const sound = SOUNDS.find(s => s.id === soundId);
+            if (!sound) return;
+
+            // 创建音频元素
+            const audio = new Audio(sound.src);
+            audio.loop = true;
+            
+            // 创建增益节点用于音量控制
+            const source = audioContext.createMediaElementSource(audio);
+            const gainNode = audioContext.createGain();
+            gainNode.gain.value = 0.5;
+            
+            source.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            // 保存引用
+            activeSounds[soundId] = { audio, gainNode, source };
+            
+            // 播放
+            audio.play().catch(e => {
+                console.warn('播放失败:', e);
+                delete activeSounds[soundId];
+            });
+
+            // 更新UI
+            document.getElementById(`sound-${soundId}`)?.classList.add('playing');
+            
+            // 如果是主播放状态，不需要额外处理
+            if (!isMasterPlaying && Object.keys(activeSounds).length === 1) {
+                isMasterPlaying = true;
+                updateMasterPlayButton();
+            }
+        }
+
+        function stopSound(soundId) {
+            const soundData = activeSounds[soundId];
+            if (soundData) {
+                soundData.audio.pause();
+                soundData.audio.currentTime = 0;
+                delete activeSounds[soundId];
+            }
+            
+            document.getElementById(`sound-${soundId}`)?.classList.remove('playing');
+            
+            if (Object.keys(activeSounds).length === 0) {
+                isMasterPlaying = false;
+                updateMasterPlayButton();
+            }
+            updateNowPlaying();
+        }
+
+        function stopAll() {
+            Object.keys(activeSounds).forEach(soundId => {
+                activeSounds[soundId].audio.pause();
+                delete activeSounds[soundId];
+            });
+            
+            document.querySelectorAll('.sound-card').forEach(card => {
+                card.classList.remove('playing');
+            });
+            
+            isMasterPlaying = false;
+            updateMasterPlayButton();
+            updateNowPlaying();
+        }
+
+        function setVolume(soundId, value) {
+            const soundData = activeSounds[soundId];
+            if (soundData) {
+                soundData.gainNode.gain.value = value / 100;
+            }
+        }
+
+        function toggleMasterPlay() {
+            initAudioContext();
+            
+            if (isMasterPlaying && Object.keys(activeSounds).length > 0) {
+                // 暂停所有
+                Object.values(activeSounds).forEach(s => s.audio.pause());
+            } else {
+                // 恢复所有
+                Object.values(activeSounds).forEach(s => s.audio.play());
+            }
+            isMasterPlaying = !isMasterPlaying;
+            updateMasterPlayButton();
+        }
+
+        function updateMasterPlayButton() {
+            const btn = document.getElementById('master-play');
+            btn.textContent = isMasterPlaying ? '⏸' : '▶';
+        }
+
+        function updateNowPlaying() {
+            const text = document.getElementById('now-playing-text');
+            const count = Object.keys(activeSounds).length;
+            
+            if (count === 0) {
+                text.textContent = '选择一个音效开始';
+            } else {
+                const names = Object.keys(activeSounds)
+                    .map(id => SOUNDS.find(s => s.id === id)?.name)
+                    .filter(Boolean)
+                    .join(' + ');
+                text.textContent = names;
+            }
+        }
+
+        // ==================== 场景激活 ====================
+        function activateScene(sceneId) {
+            const scene = SCENES.find(s => s.id === sceneId);
+            if (!scene) return;
+
+            initAudioContext();
+            stopAll();
+
+            // 延迟播放确保音频上下文已激活
+            setTimeout(() => {
+                scene.sounds.forEach((soundId, index) => {
+                    setTimeout(() => {
+                        playSound(soundId);
+                        const card = document.getElementById(`sound-${soundId}`);
+                        const slider = card?.querySelector('.sound-volume');
+                        if (slider) {
+                            setVolume(soundId, 50 + index * 10);
+                            slider.value = 50 + index * 10;
+                        }
+                    }, index * 200);
+                });
+            }, 100);
+
+            // 更新场景卡片状态
+            document.querySelectorAll('.scene-card').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            showToast(`已切换到「${scene.name}」场景`);
+        }
+
+        // ==================== 番茄钟 ====================
+        function toggleTimer() {
+            if (isTimerRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            isTimerRunning = true;
+            document.getElementById('timer-start').textContent = '暂停';
+            
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                
+                if (timerSeconds <= 0) {
+                    onTimerComplete();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            document.getElementById('timer-start').textContent = '继续';
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            isBreakTime = false;
+            timerSeconds = 25 * 60;
+            document.getElementById('timer-start').textContent = '开始';
+            updateTimerDisplay();
+            updateTimerMode();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerMode() {
+            const mode = document.getElementById('timer-mode');
+            mode.textContent = isBreakTime ? '休息时间' : '专注时间';
+            mode.style.background = isBreakTime ? 
+                'rgba(253, 121, 168, 0.2)' : 
+                'rgba(108, 92, 231, 0.2)';
+        }
+
+        function onTimerComplete() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            
+            if (!isBreakTime) {
+                // 完成一个专注周期
+                const stats = JSON.parse(localStorage.getItem('jingxinwo_stats') || '{"focus_time":0,"sessions":0}');
+                stats.focus_time += 25;
+                stats.sessions += 1;
+                localStorage.setItem('jingxinwo_stats', JSON.stringify(stats));
+                updateStatsDisplay();
+                
+                showToast('🎉 专注完成！休息一下吧');
+                
+                // 切换到休息
+                isBreakTime = true;
+                timerSeconds = 5 * 60;
+            } else {
+                showToast('☕ 休息结束！开始新的专注');
+                
+                // 切换到专注
+                isBreakTime = false;
+                timerSeconds = 25 * 60;
+            }
+            
+            document.getElementById('timer-start').textContent = '开始';
+            updateTimerDisplay();
+            updateTimerMode();
+        }
+
+        // ==================== 睡眠监测 ====================
+        function toggleSleepMode() {
+            const checkbox = document.getElementById('sleep-mode');
+            const isChecked = checkbox.checked;
+            
+            if (isChecked) {
+                // 开始睡眠监测
+                sleepStartTime = Date.now();
+                isSleepMode = true;
+                showToast('🌙 睡眠监测已开启');
+                
+                // 播放助眠音效
+                setTimeout(() => activateScene('sleep'), 100);
+            } else {
+                // 结束睡眠监测
+                if (sleepStartTime) {
+                    const duration = Math.round((Date.now() - sleepStartTime) / 1000 / 60); // 分钟
+                    
+                    if (duration >= 30) { // 至少30分钟才记录
+                        saveSleepRecord(sleepStartTime, duration);
+                    }
+                }
+                
+                isSleepMode = false;
+                sleepStartTime = null;
+                stopAll();
+            }
+        }
+
+        function saveSleepRecord(startTime, durationMinutes) {
+            const records = JSON.parse(localStorage.getItem('jingxinwo_sleep') || '[]');
+            const date = new Date(startTime);
+            
+            records.unshift({
+                date: date.toLocaleDateString('zh-CN'),
+                start: date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+                duration: durationMinutes
+            });
+            
+            // 只保留最近30条
+            if (records.length > 30) records.pop();
+            
+            localStorage.setItem('jingxinwo_sleep', JSON.stringify(records));
+            updateSleepDisplay();
+            
+            showToast(`💤 记录睡眠 ${(durationMinutes / 60).toFixed(1)} 小时`);
+        }
+
+        function updateSleepDisplay() {
+            const records = JSON.parse(localStorage.getItem('jingxinwo_sleep') || '[]');
+            
+            document.getElementById('sleep-count').textContent = records.length;
+            
+            if (records.length > 0) {
+                const avgMinutes = records.reduce((sum, r) => sum + r.duration, 0) / records.length;
+                document.getElementById('avg-sleep').textContent = (avgMinutes / 60).toFixed(1);
+            }
+            
+            const recordsContainer = document.getElementById('sleep-records');
+            if (records.length === 0) {
+                recordsContainer.innerHTML = `
+                    <div style="text-align: center; color: var(--text-secondary); padding: 20px;">
+                        暂无睡眠记录<br>开启睡眠模式开始监测
+                    </div>
+                `;
+            } else {
+                recordsContainer.innerHTML = records.slice(0, 7).map(r => `
+                    <div class="sleep-record">
+                        <span class="sleep-record-date">${r.date} ${r.start}</span>
+                        <span class="sleep-record-duration">${(r.duration / 60).toFixed(1)}小时</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ==================== 统计数据 ====================
+        function loadStats() {
+            updateStatsDisplay();
+            updateSleepDisplay();
+        }
+
+        function updateStatsDisplay() {
+            const stats = JSON.parse(localStorage.getItem('jingxinwo_stats') || '{"focus_time":0,"sessions":0}');
+            document.getElementById('total-focus-time').textContent = stats.focus_time;
+            document.getElementById('total-sessions').textContent = stats.sessions;
+        }
+
+        // ==================== VIP ====================
+        function checkVipStatus() {
+            isVip = localStorage.getItem('jingxinwo_vip') === 'true';
+            updateVipButton();
+        }
+
+        function updateVipButton() {
+            const btn = document.querySelector('.vip-btn');
+            if (isVip) {
+                btn.textContent = '👑 年卡会员';
+                btn.style.background = 'linear-gradient(135deg, #F09819 0%, #EDDE5D 100%)';
+            }
+        }
+
+        function showVipModal() {
+            document.getElementById('vip-modal').classList.add('show');
+        }
+
+        function closeVipModal() {
+            document.getElementById('vip-modal').classList.remove('show');
+        }
+
+        function purchaseVip() {
+            // 模拟支付流程
+            showToast('正在唤起支付...');
+            
+            setTimeout(() => {
+                localStorage.setItem('jingxinwo_vip', 'true');
+                isVip = true;
+                updateVipButton();
+                closeVipModal();
+                showToast('🎉 恭喜成为年卡会员！');
+            }, 1000);
+        }
+
+        // ==================== Toast ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 点击弹窗外关闭
+        document.getElementById('vip-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'vip-modal') {
+                closeVipModal();
+            }
+        });
+    </script>
+</body>
+</html>

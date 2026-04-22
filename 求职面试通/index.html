@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>求职面试通 - 让面试不再难</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --primary-dark: #3730A3;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .vip-badge:hover {
+            transform: scale(1.05);
+        }
+
+        /* 主内容区 */
+        .main {
+            padding-top: 56px;
+            padding-bottom: 70px;
+            min-height: 100vh;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            padding: 16px;
+            max-width: 100%;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 首页 */
+        .hero {
+            background: linear-gradient(135deg, var(--primary), #6366F1);
+            border-radius: var(--radius);
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* 功能卡片 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .feature-icon.blue { background: #EFF6FF; color: var(--primary); }
+        .feature-icon.green { background: #ECFDF5; color: var(--success); }
+        .feature-icon.orange { background: #FFF7ED; color: var(--warning); }
+        .feature-icon.purple { background: #F5F3FF; color: #8B5CF6; }
+        .feature-icon.red { background: #FEF2F2; color: var(--danger); }
+        .feature-icon.teal { background: #F0FDFA; color: #14B8A6; }
+
+        .feature-card h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .feature-card p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* 快捷入口 */
+        .quick-links {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .quick-links h3 {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: var(--gray-700);
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+            cursor: pointer;
+        }
+
+        .link-item:last-child {
+            border-bottom: none;
+        }
+
+        .link-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .link-text {
+            flex: 1;
+        }
+
+        .link-text h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .link-text p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .link-arrow {
+            color: var(--gray-400);
+        }
+
+        /* 题库页 */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            padding: 8px 16px;
+            background: white;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--gray-200);
+        }
+
+        .tab-item.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .sub-tab {
+            padding: 6px 14px;
+            background: var(--gray-100);
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sub-tab.active {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        .question-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .question-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .question-card.expanded {
+            background: var(--gray-50);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .question-num {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .question-content {
+            flex: 1;
+        }
+
+        .question-text {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .answer-section {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .question-card.expanded .answer-section {
+            display: block;
+        }
+
+        .answer-label {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .answer-text {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .tips-section {
+            background: #FEF3C7;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .tips-label {
+            font-size: 12px;
+            color: #92400E;
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tips-text {
+            font-size: 12px;
+            color: #78350F;
+        }
+
+        /* 模拟面试页 */
+        .interview-hero {
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: var(--radius);
+            padding: 24px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .interview-hero h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .interview-config {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .config-row {
+            margin-bottom: 16px;
+        }
+
+        .config-label {
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-bottom: 8px;
+        }
+
+        .config-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .config-option {
+            padding: 8px 16px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .config-option.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), #6366F1);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .interview-active {
+            display: none;
+        }
+
+        .interview-active.show {
+            display: block;
+        }
+
+        .question-display {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .question-number {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: 12px;
+        }
+
+        .question-main {
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .thinking-area {
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .thinking-area textarea {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .thinking-area textarea::placeholder {
+            color: var(--gray-400);
+        }
+
+        .interview-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-btn.secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .control-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 技巧文章页 */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .article-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .article-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .article-tag {
+            padding: 4px 8px;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .article-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .article-meta {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* 文章详情 */
+        .article-detail {
+            display: none;
+            padding: 16px;
+        }
+
+        .article-detail.show {
+            display: block;
+        }
+
+        .article-detail h1 {
+            font-size: 22px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .article-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .article-content h2 {
+            font-size: 16px;
+            color: var(--primary);
+            margin: 20px 0 12px 0;
+        }
+
+        .article-content p {
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            color: var(--primary);
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        /* 薪资谈判页 */
+        .salary-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .salary-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .salary-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .salary-card p {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        .salary-content {
+            display: none;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            margin-top: 12px;
+        }
+
+        .salary-card.expanded .salary-content {
+            display: block;
+        }
+
+        .salary-content pre {
+            white-space: pre-wrap;
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--gray-700);
+            font-family: inherit;
+        }
+
+        /* 复盘页 */
+        .reflection-form {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--gray-700);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .form-textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .save-reflection-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* VIP弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .vip-features {
+            margin-bottom: 20px;
+        }
+
+        .vip-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .vip-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: #FEF3C7;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vip-feature-text {
+            flex: 1;
+        }
+
+        .vip-feature-text h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .vip-feature-text p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            padding: 16px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .price-tag .price {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .price-tag .period {
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 底部导航 */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 8px 16px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--gray-800);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 响应式 */
+        @media (min-width: 768px) {
+            .main {
+                max-width: 480px;
+                margin: 0 auto;
+            }
+            
+            .page {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">📋</div>
+            <span>求职面试通</span>
+        </div>
+        <div class="vip-badge" onclick="showVipModal()">开通会员</div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="hero">
+                <h1>让面试不再难 🤝</h1>
+                <p>500+ 精选面试题库 · AI模拟面试 · 专业技巧指导</p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value">500+</div>
+                        <div class="stat-label">面试题目</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">用户提升</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">10K+</div>
+                        <div class="stat-label">求职用户</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card" onclick="navigateTo('questions')">
+                    <div class="feature-icon blue">📚</div>
+                    <h3>面试题库</h3>
+                    <p>分行业岗位精选</p>
+                </div>
+                <div class="feature-card" onclick="startQuickInterview()">
+                    <div class="feature-icon green">🎯</div>
+                    <h3>模拟面试</h3>
+                    <p>AI智能陪练</p>
+                </div>
+                <div class="feature-card" onclick="navigateTo('articles')">
+                    <div class="feature-icon orange">📝</div>
+                    <h3>面试技巧</h3>
+                    <p>实战经验分享</p>
+                </div>
+                <div class="feature-card" onclick="navigateTo('salary')">
+                    <div class="feature-icon purple">💰</div>
+                    <h3>薪资谈判</h3>
+                    <p>多拿3000技巧</p>
+                </div>
+            </div>
+
+            <div class="quick-links">
+                <h3>🔥 热门专题</h3>
+                <div class="link-item" onclick="loadCategory('技术', 'Java开发')">
+                    <div class="link-icon">☕</div>
+                    <div class="link-text">
+                        <h4>Java面试高频题</h4>
+                        <p>HashMap、JVM、Spring必问题</p>
+                    </div>
+                    <div class="link-arrow">›</div>
+                </div>
+                <div class="link-item" onclick="loadCategory('产品', '产品经理')">
+                    <div class="link-icon">📱</div>
+                    <div class="link-text">
+                        <h4>产品经理面试</h4>
+                        <p>需求分析、竞品研究方法</p>
+                    </div>
+                    <div class="link-arrow">›</div>
+                </div>
+                <div class="link-item" onclick="navigateTo('salary')">
+                    <div class="link-icon">💵</div>
+                    <div class="link-text">
+                        <h4>薪资谈判指南</h4>
+                        <p>拿到满意offer的秘诀</p>
+                    </div>
+                    <div class="link-arrow">›</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 题库页 -->
+        <div id="page-questions" class="page">
+            <div class="category-tabs" id="mainTabs"></div>
+            <div class="sub-tabs" id="subTabs"></div>
+            <div class="question-list" id="questionList">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- 模拟面试页 -->
+        <div id="page-interview" class="page">
+            <div class="interview-hero">
+                <h2>🎯 模拟面试</h2>
+                <p>AI陪练，助你自信面对真实面试</p>
+            </div>
+
+            <div class="interview-config" id="interviewConfig">
+                <div class="config-row">
+                    <div class="config-label">选择面试类型</div>
+                    <div class="config-options">
+                        <div class="config-option active" data-type="general">通用面试</div>
+                        <div class="config-option" data-type="technical">技术面试</div>
+                    </div>
+                </div>
+                <div class="config-row">
+                    <div class="config-label">题目数量</div>
+                    <div class="config-options">
+                        <div class="config-option" data-count="5">5题</div>
+                        <div class="config-option active" data-count="10">10题</div>
+                        <div class="config-option" data-count="15">15题</div>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="startInterview()">开始模拟面试</button>
+            </div>
+
+            <div class="interview-active" id="interviewActive">
+                <div class="question-display">
+                    <div class="question-number" id="questionNum">问题 1/10</div>
+                    <div class="question-main" id="questionMain">请做一个2分钟的自我介绍</div>
+                </div>
+                <div class="thinking-area">
+                    <textarea id="answerInput" placeholder="在这里记录你的回答要点（面试时可打开此页面思考）..." rows="6"></textarea>
+                </div>
+                <div class="interview-controls">
+                    <button class="control-btn secondary" onclick="prevQuestion()">上一题</button>
+                    <button class="control-btn primary" onclick="nextQuestion()">下一题</button>
+                </div>
+                <button class="control-btn secondary" style="width: 100%; margin-top: 12px;" onclick="endInterview()">结束面试</button>
+            </div>
+        </div>
+
+        <!-- 面试技巧页 -->
+        <div id="page-articles" class="page">
+            <div id="articleList" class="article-list">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+            <div id="articleDetail" class="article-detail"></div>
+        </div>
+
+        <!-- 薪资谈判页 -->
+        <div id="page-salary" class="page">
+            <div id="salaryGuide"></div>
+        </div>
+
+        <!-- 面试复盘页 -->
+        <div id="page-reflection" class="page">
+            <div class="reflection-form">
+                <h2 style="font-size: 18px; margin-bottom: 20px;">📝 面试复盘</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">面试公司</label>
+                    <input type="text" class="form-input" id="company" placeholder="例如：字节跳动">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">面试岗位</label>
+                    <input type="text" class="form-input" id="position" placeholder="例如：高级前端开发">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">面试日期</label>
+                    <input type="date" class="form-input" id="interviewDate">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">做得好的地方</label>
+                    <textarea class="form-textarea" id="strengths" placeholder="记录这次面试中表现好的地方..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">需要改进的地方</label>
+                    <textarea class="form-textarea" id="improvements" placeholder="反思这次面试中需要改进的地方..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">关键问题回顾</label>
+                    <textarea class="form-textarea" id="questionsReview" placeholder="记录面试中被问到的问题和你当时如何回答的..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">总体评分 (1-5星)</label>
+                    <div class="config-options" style="justify-content: flex-start;">
+                        <div class="config-option rating" data-rating="1">⭐</div>
+                        <div class="config-option rating" data-rating="2">⭐⭐</div>
+                        <div class="config-option rating" data-rating="3">⭐⭐⭐</div>
+                        <div class="config-option rating active" data-rating="4">⭐⭐⭐⭐</div>
+                        <div class="config-option rating" data-rating="5">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+                
+                <button class="save-reflection-btn" onclick="saveReflection()">保存复盘</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="nav-bar">
+        <div class="nav-item active" onclick="switchTab('home')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('questions')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg>
+            <span>题库</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('interview')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1 1.93c-3.94-.49-7-3.85-7-7.93h2c0 3.31 2.69 6 6 6s6-2.69 6-6h2c0 4.08-3.06 7.44-7 7.93V19h4v2H8v-2h4v-3.07z"/></svg>
+            <span>面试</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('articles')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <span>技巧</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('reflection')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg>
+            <span>复盘</span>
+        </div>
+    </nav>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">🚀 开通会员</div>
+                <div class="modal-close" onclick="closeVipModal()">✕</div>
+            </div>
+            <div class="vip-features">
+                <div class="vip-feature-item">
+                    <div class="vip-feature-icon">📚</div>
+                    <div class="vip-feature-text">
+                        <h4>完整题库访问</h4>
+                        <p>解锁所有行业、所有岗位的面试题</p>
+                    </div>
+                </div>
+                <div class="vip-feature-item">
+                    <div class="vip-feature-icon">🎯</div>
+                    <div class="vip-feature-text">
+                        <h4>无限次模拟面试</h4>
+                        <p>想练多久就练多久</p>
+                    </div>
+                </div>
+                <div class="vip-feature-item">
+                    <div class="vip-feature-icon">💡</div>
+                    <div class="vip-feature-text">
+                        <h4>AI答案点评</h4>
+                        <p>专业导师给出改进建议</p>
+                    </div>
+                </div>
+                <div class="vip-feature-item">
+                    <div class="vip-feature-icon">📊</div>
+                    <div class="vip-feature-text">
+                        <h4>面试数据报告</h4>
+                        <p>了解自己的面试能力水平</p>
+                    </div>
+                </div>
+            </div>
+            <div class="price-tag">
+                <div class="price">¥19</div>
+                <div class="period">/ 月</div>
+            </div>
+            <button class="buy-btn" onclick="handleBuy()">立即开通</button>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://localhost:5000/api';
+
+        // 全局状态
+        let state = {
+            currentTab: 'home',
+            categories: [],
+            questions: [],
+            articles: [],
+            currentCategory: '',
+            currentSubcategory: '',
+            interviewType: 'general',
+            questionCount: 10,
+            interviewQuestions: [],
+            currentQuestionIndex: 0,
+            reflectionRating: 4
+        };
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadArticles();
+            initInterviewConfig();
+            initReflectionRating();
+        });
+
+        // 切换Tab
+        function switchTab(tab) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // 显示目标页面
+            document.getElementById(`page-${tab}`).classList.add('active');
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            state.currentTab = tab;
+            
+            // 如果是题库页且有选中分类，加载题目
+            if (tab === 'questions' && state.currentCategory) {
+                loadQuestions();
+            }
+        }
+
+        // 导航到指定页面
+        function navigateTo(page) {
+            switchTab(page);
+            // 模拟点击对应导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.onclick && item.onclick.toString().includes(page)) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // 加载分类
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${API_BASE}/categories`);
+                const data = await res.json();
+                state.categories = data.data;
+                renderMainTabs();
+            } catch (e) {
+                console.error('加载分类失败:', e);
+                // 使用默认分类
+                state.categories = [
+                    {name: '技术', subcategories: ['Java开发', 'Python开发', '前端开发']},
+                    {name: '产品', subcategories: ['产品经理']},
+                    {name: '运营', subcategories: ['用户运营', '内容运营']},
+                    {name: '市场', subcategories: ['市场营销']}
+                ];
+                renderMainTabs();
+            }
+        }
+
+        // 渲染主分类Tab
+        function renderMainTabs() {
+            const container = document.getElementById('mainTabs');
+            container.innerHTML = state.categories.map((cat, i) => 
+                `<div class="tab-item ${i === 0 ? 'active' : ''}" data-category="${cat.name}">${cat.name}</div>`
+            ).join('');
+            
+            container.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    container.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    state.currentCategory = tab.dataset.category;
+                    renderSubTabs();
+                    loadQuestions();
+                });
+            });
+
+            // 默认加载第一个分类
+            if (state.categories.length > 0) {
+                state.currentCategory = state.categories[0].name;
+                renderSubTabs();
+                loadQuestions();
+            }
+        }
+
+        // 渲染子分类Tab
+        function renderSubTabs() {
+            const container = document.getElementById('subTabs');
+            const category = state.categories.find(c => c.name === state.currentCategory);
+            if (!category) return;
+            
+            container.innerHTML = category.subcategories.map((sub, i) => 
+                `<div class="sub-tab ${i === 0 ? 'active' : ''}" data-subcategory="${sub}">${sub}</div>`
+            ).join('');
+            
+            container.querySelectorAll('.sub-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    container.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    state.currentSubcategory = tab.dataset.subcategory;
+                    loadQuestions();
+                });
+            });
+
+            state.currentSubcategory = category.subcategories[0];
+        }
+
+        // 加载题目
+        async function loadQuestions() {
+            const container = document.getElementById('questionList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            
+            try {
+                const res = await fetch(`${API_BASE}/questions?category=${state.currentCategory}&subcategory=${state.currentSubcategory}`);
+                const data = await res.json();
+                state.questions = data.data;
+                renderQuestions();
+            } catch (e) {
+                console.error('加载题目失败:', e);
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">加载失败</div><div class="empty-desc">请检查网络连接后重试</div></div>';
+            }
+        }
+
+        // 渲染题目列表
+        function renderQuestions() {
+            const container = document.getElementById('questionList');
+            
+            if (state.questions.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">暂无题目</div><div class="empty-desc">该分类下暂无面试题</div></div>';
+                return;
+            }
+            
+            container.innerHTML = state.questions.map((q, i) => `
+                <div class="question-card" onclick="toggleQuestion(this)">
+                    <div class="question-header">
+                        <div class="question-num">${i + 1}</div>
+                        <div class="question-content">
+                            <div class="question-text">${q.question}</div>
+                            <div class="answer-section">
+                                <div class="answer-label">💡 参考答案</div>
+                                <div class="answer-text">${q.answer}</div>
+                                ${q.tips ? `
+                                    <div class="tips-section">
+                                        <div class="tips-label">💬 面试官提示</div>
+                                        <div class="tips-text">${q.tips}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 展开/收起题目
+        function toggleQuestion(card) {
+            card.classList.toggle('expanded');
+        }
+
+        // 加载分类（从首页快捷入口）
+        function loadCategory(category, subcategory) {
+            state.currentCategory = category;
+            state.currentSubcategory = subcategory;
+            navigateTo('questions');
+            
+            // 更新Tab状态
+            setTimeout(() => {
+                document.querySelectorAll('.tab-item').forEach(t => {
+                    t.classList.toggle('active', t.dataset.category === category);
+                });
+                renderSubTabs();
+                loadQuestions();
+            }, 100);
+        }
+
+        // 加载文章列表
+        async function loadArticles() {
+            try {
+                const res = await fetch(`${API_BASE}/articles`);
+                const data = await res.json();
+                state.articles = data.data;
+                renderArticles();
+                renderSalaryGuide();
+            } catch (e) {
+                console.error('加载文章失败:', e);
+            }
+        }
+
+        // 渲染文章列表
+        function renderArticles() {
+            const container = document.getElementById('articleList');
+            container.innerHTML = state.articles.map(a => `
+                <div class="article-card" onclick="showArticle('${a.id}')">
+                    <div class="article-header">
+                        <span class="article-tag">${a.category}</span>
+                    </div>
+                    <div class="article-title">${a.title}</div>
+                    <div class="article-meta">👁 ${a.views} 阅读</div>
+                </div>
+            `).join('');
+        }
+
+        // 显示文章详情
+        async function showArticle(id) {
+            try {
+                const res = await fetch(`${API_BASE}/article/${id}`);
+                const data = await res.json();
+                const article = data.data;
+                
+                document.getElementById('articleList').style.display = 'none';
+                const detail = document.getElementById('articleDetail');
+                detail.classList.add('show');
+                detail.innerHTML = `
+                    <div class="back-btn" onclick="backToList()">← 返回列表</div>
+                    <h1>${article.title}</h1>
+                    <div class="article-content">${formatArticleContent(article.content)}</div>
+                `;
+            } catch (e) {
+                showToast('加载文章失败');
+            }
+        }
+
+        // 返回文章列表
+        function backToList() {
+            document.getElementById('articleList').style.display = 'block';
+            document.getElementById('articleDetail').classList.remove('show');
+        }
+
+        // 格式化文章内容
+        function formatArticleContent(content) {
+            return content
+                .replace(/^# (.+)$/gm, '<h1 style="font-size:22px;margin:20px 0 12px;">$1</h1>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^### (.+)$/gm, '<h3 style="font-size:15px;color:var(--gray-700);margin:16px 0 8px;">$1</h3>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/^- (.+)$/gm, '<p style="margin:8px 0 8px 16px;">• $1</p>')
+                .replace(/^(\d+\..+)$/gm, '<p style="margin:8px 0;">$1</p>')
+                .replace(/\n\n/g, '<br><br>');
+        }
+
+        // 渲染薪资谈判指南
+        function renderSalaryGuide() {
+            const container = document.getElementById('salaryGuide');
+            container.innerHTML = `
+                <div class="interview-hero" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                    <h2>💰 薪资谈判指南</h2>
+                    <p>学会谈薪，多拿3000甚至更多！</p>
+                </div>
+                <div class="salary-card" onclick="toggleSalaryCard(this)">
+                    <h3>📊 市场薪资调研 <span style="font-size:12px;color:var(--gray-500);font-weight:normal;">必读</span></h3>
+                    <p>谈判前必须做足的功课，了解自己的市场价值</p>
+                    <div class="salary-content"><pre>• 查询行业报告（智联、Boss直聘、猎聘）
+• 了解岗位薪资范围（低/中/高）
+• 考虑城市差异（一线vs新一线）
+• 评估自身竞争力（经验、技能、项目）
+
+推荐查询网站：
+• 职友集：真实薪资数据
+• 脉脉：员工匿名薪资
+• OfferMax：留学生求职薪资数据库</pre></div>
+                </div>
+                <div class="salary-card" onclick="toggleSalaryCard(this)">
+                    <h3>⏰ 最佳谈判时机</h3>
+                    <p>选对时机，让你的谈判更加顺利</p>
+                    <div class="salary-content"><pre>✅ 谈判时机选择：
+• 收到正式Offer后
+• HR主动询问期望薪资时
+• 面试流程最后一轮
+• 你有多个Offer在手时
+
+❌ 避免时机：
+• 第一轮面试就谈薪资
+• 还没展示自身价值时
+• 公司只有你一个候选人时
+• 紧急需要这份工作时</pre></div>
+                </div>
+                <div class="salary-card" onclick="toggleSalaryCard(this)">
+                    <h3>🎯 谈判策略</h3>
+                    <p>掌握这些策略，让HR无法拒绝你</p>
+                    <div class="salary-content"><pre>核心策略：
+1. 先问对方预算范围
+2. 给出区间而非具体数字（留余地）
+3. 强调综合回报（Base+奖金+期权+福利）
+4. 用市场数据和自身价值支撑
+5. 准备多个方案（薪资/职级/签字费/股票）
+
+话术示例：
+「基于我的经验和市场行情，我的期望是XX-XXK，当然我也希望了解贵司对这个岗位的整体薪酬方案。」</pre></div>
+                </div>
+                <div class="salary-card" onclick="toggleSalaryCard(this)">
+                    <h3>🔄 被拒绝后的应对</h3>
+                    <p>即使被拒绝，也有争取的空间</p>
+                    <div class="salary-content"><pre>被拒绝时的应对：
+1. 保持专业和感激
+2. 询问能否争取其他福利（培训名额、额外假期）
+3. 了解未来调薪机会和时间节点
+4. 确认绩效目标和考核标准
+5. 表达长期合作意愿
+
+注意：避免威胁跳槽（除非真的想走）</pre></div>
+                </div>
+            `;
+        }
+
+        // 展开/收起薪资卡片
+        function toggleSalaryCard(card) {
+            card.classList.toggle('expanded');
+        }
+
+        // 初始化面试配置
+        function initInterviewConfig() {
+            document.querySelectorAll('#interviewConfig .config-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const parent = opt.parentElement;
+                    parent.querySelectorAll('.config-option').forEach(o => o.classList.remove('active'));
+                    opt.classList.add('active');
+                    
+                    if (opt.dataset.type) {
+                        state.interviewType = opt.dataset.type;
+                    }
+                    if (opt.dataset.count) {
+                        state.questionCount = parseInt(opt.dataset.count);
+                    }
+                });
+            });
+        }
+
+        // 开始面试
+        async function startInterview() {
+            try {
+                const res = await fetch(`${API_BASE}/interview/start?type=${state.interviewType}&count=${state.questionCount}`);
+                const data = await res.json();
+                state.interviewQuestions = data.data.questions;
+                state.currentQuestionIndex = 0;
+                
+                document.getElementById('interviewConfig').style.display = 'none';
+                document.getElementById('interviewActive').classList.add('show');
+                
+                updateQuestionDisplay();
+            } catch (e) {
+                // 离线模式，使用本地数据
+                const defaultQuestions = [
+                    '请做一个2分钟的自我介绍',
+                    '你为什么离开上一家公司？',
+                    '你的职业规划是什么？',
+                    '你最大的优点和缺点是什么？',
+                    '描述一次你解决困难问题的经历'
+                ];
+                state.interviewQuestions = defaultQuestions;
+                state.currentQuestionIndex = 0;
+                
+                document.getElementById('interviewConfig').style.display = 'none';
+                document.getElementById('interviewActive').classList.add('show');
+                
+                updateQuestionDisplay();
+            }
+        }
+
+        // 更新题目显示
+        function updateQuestionDisplay() {
+            const q = state.interviewQuestions[state.currentQuestionIndex];
+            document.getElementById('questionNum').textContent = 
+                `问题 ${state.currentQuestionIndex + 1}/${state.interviewQuestions.length}`;
+            document.getElementById('questionMain').textContent = q;
+        }
+
+        // 上一题
+        function prevQuestion() {
+            if (state.currentQuestionIndex > 0) {
+                state.currentQuestionIndex--;
+                updateQuestionDisplay();
+            } else {
+                showToast('已经是第一题了');
+            }
+        }
+
+        // 下一题
+        function nextQuestion() {
+            if (state.currentQuestionIndex < state.interviewQuestions.length - 1) {
+                state.currentQuestionIndex++;
+                updateQuestionDisplay();
+            } else {
+                showToast('面试已完成！');
+            }
+        }
+
+        // 结束面试
+        function endInterview() {
+            document.getElementById('interviewConfig').style.display = 'block';
+            document.getElementById('interviewActive').classList.remove('show');
+            document.getElementById('answerInput').value = '';
+            showToast(`面试练习完成！共${state.interviewQuestions.length}题`);
+        }
+
+        // 快速开始面试
+        function startQuickInterview() {
+            navigateTo('interview');
+        }
+
+        // 初始化复盘评分
+        function initReflectionRating() {
+            document.querySelectorAll('.rating').forEach(r => {
+                r.addEventListener('click', () => {
+                    document.querySelectorAll('.rating').forEach(r => r.classList.remove('active'));
+                    r.classList.add('active');
+                    state.reflectionRating = parseInt(r.dataset.rating);
+                });
+            });
+        }
+
+        // 保存复盘
+        async function saveReflection() {
+            const reflection = {
+                company: document.getElementById('company').value,
+                position: document.getElementById('position').value,
+                date: document.getElementById('interviewDate').value,
+                strengths: document.getElementById('strengths').value,
+                improvements: document.getElementById('improvements').value,
+                questionsReview: document.getElementById('questionsReview').value,
+                rating: state.reflectionRating
+            };
+
+            if (!reflection.company || !reflection.position) {
+                showToast('请填写公司和岗位信息');
+                return;
+            }
+
+            try {
+                await fetch(`${API_BASE}/save_reflection`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(reflection)
+                });
+            } catch (e) {
+                // 离线模式也保存
+            }
+
+            showToast('复盘已保存！');
+            
+            // 清空表单
+            document.getElementById('company').value = '';
+            document.getElementById('position').value = '';
+            document.getElementById('interviewDate').value = '';
+            document.getElementById('strengths').value = '';
+            document.getElementById('improvements').value = '';
+            document.getElementById('questionsReview').value = '';
+        }
+
+        // 显示VIP弹窗
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('show');
+        }
+
+        // 关闭VIP弹窗
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.remove('show');
+        }
+
+        // 处理购买
+        function handleBuy() {
+            showToast('会员功能开发中，敬请期待！');
+            closeVipModal();
+        }
+
+        // 显示Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 点击弹窗外部关闭
+        document.getElementById('vipModal').addEventListener('click', (e) => {
+            if (e.target.id === 'vipModal') {
+                closeVipModal();
+            }
+        });
+    </script>
+</body>
+</html>

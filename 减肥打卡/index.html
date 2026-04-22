@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>减肥打卡 - 每天进步一点点</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --primary-light: #FFE3E3;
+            --secondary: #4ECDC4;
+            --warning: #FFA502;
+            --success: #26DE81;
+            --dark: #2F3542;
+            --gray: #747d8c;
+            --light: #F1F2F6;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #FF8E8E);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .vip-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255, 165, 0, 0.4);
+        }
+
+        .vip-btn.active {
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+        }
+
+        /* 用户信息卡片 */
+        .user-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px 8px;
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .stat-value.negative {
+            color: #90EE90;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        /* 导航标签 */
+        .nav-tabs {
+            display: flex;
+            background: var(--white);
+            padding: 10px 15px;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            position: sticky;
+            top: 76px;
+            z-index: 99;
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tab {
+            flex-shrink: 0;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--light);
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 内容区域 */
+        .content {
+            padding: 15px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        /* 快速打卡按钮 */
+        .quick-checkin {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .checkin-btn {
+            background: var(--white);
+            border: 2px solid var(--light);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkin-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .checkin-btn .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 10px;
+        }
+
+        .checkin-btn .label {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .checkin-btn .desc {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            font-size: 16px;
+            background: var(--white);
+            cursor: pointer;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #FF8E8E);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        /* 打卡记录列表 */
+        .record-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .record-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .record-item:last-child {
+            border-bottom: none;
+        }
+
+        .record-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .record-info {
+            flex: 1;
+        }
+
+        .record-title {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .record-meta {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .record-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            background: var(--light);
+            border-radius: 12px;
+        }
+
+        /* 环形进度 */
+        .progress-ring-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 12;
+        }
+
+        .progress-ring .bg {
+            stroke: var(--light);
+        }
+
+        .progress-ring .progress {
+            stroke: var(--primary);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* 社区动态 */
+        .post-item {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), #7BED9F);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .post-user {
+            font-weight: 600;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .post-tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        /* Modal 样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--light);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* VIP 弹窗 */
+        .vip-modal-content {
+            text-align: center;
+        }
+
+        .vip-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 20px;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+        }
+
+        .vip-features {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .vip-feature:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature .check {
+            color: var(--success);
+            font-size: 18px;
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--dark);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* 打卡成功动画 */
+        @keyframes checkmark {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-animation {
+            animation: checkmark 0.5s ease-out;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 16px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item .label {
+            font-size: 11px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 360px) {
+            .user-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .stat-value {
+                font-size: 20px;
+            }
+        }
+
+        /* 模拟图表 */
+        .simple-chart {
+            width: 100%;
+            height: 200px;
+            position: relative;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 160px;
+            padding: 0 10px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .chart-bar {
+            width: 8%;
+            background: linear-gradient(to top, var(--primary), #FF8E8E);
+            border-radius: 4px 4px 0 0;
+            min-height: 10px;
+            transition: height 0.3s;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 10px 0;
+            font-size: 10px;
+            color: var(--gray);
+        }
+
+        /* 饮食类型选择 */
+        .meal-type-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .meal-type-btn {
+            padding: 12px 8px;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            background: var(--white);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .meal-type-btn.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .meal-type-btn .icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .meal-type-btn .label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* 食物推荐 */
+        .food-suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .food-tag {
+            background: var(--light);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .food-tag:hover {
+            background: var(--primary-light);
+        }
+
+        /* 热量计算器 */
+        .calorie-calc {
+            background: linear-gradient(135deg, var(--secondary), #7BED9F);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            margin-top: 16px;
+        }
+
+        .calorie-calc h4 {
+            margin-bottom: 12px;
+        }
+
+        .calorie-stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .calorie-stat {
+            padding: 10px;
+        }
+
+        .calorie-stat .value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .calorie-stat .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* 每日目标 */
+        .daily-goals {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .goal-item {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .goal-item .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .goal-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .goal-item .label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* 个人设置 */
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-title {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 12px;
+            padding-left: 4px;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--white);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .settings-item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-item .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* 开关样式 */
+        .switch {
+            width: 50px;
+            height: 28px;
+            background: var(--light);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .switch.active {
+            background: var(--success);
+        }
+
+        .switch::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .switch.active::after {
+            transform: translateX(22px);
+        }
+
+        /* 成就徽章 */
+        .achievements {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .achievement-badge {
+            flex-shrink: 0;
+            width: 70px;
+            text-align: center;
+        }
+
+        .achievement-badge .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 6px;
+            background: var(--light);
+        }
+
+        .achievement-badge.unlocked .icon {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        .achievement-badge .label {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        .achievement-badge.unlocked .label {
+            color: var(--dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">
+                <div class="logo-icon">🏃</div>
+                <span>减肥打卡</span>
+            </div>
+            <button class="vip-btn" id="vipBtn" onclick="showVipModal()">开通VIP</button>
+        </div>
+        <div class="user-card">
+            <div class="user-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="currentWeight">--</div>
+                    <div class="stat-label">当前体重(kg)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value negative" id="weightChange">--</div>
+                    <div class="stat-label">已减(kg)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="consecutiveDays">0</div>
+                    <div class="stat-label">连续打卡(天)</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 导航标签 -->
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-page="home">🏠 首页</button>
+        <button class="nav-tab" data-page="weight">⚖️ 体重</button>
+        <button class="nav-tab" data-page="diet">🍽️ 饮食</button>
+        <button class="nav-tab" data-page="exercise">💪 运动</button>
+        <button class="nav-tab" data-page="community">👥 社区</button>
+        <button class="nav-tab" data-page="stats">📊 数据</button>
+    </nav>
+
+    <!-- 内容区域 -->
+    <main class="content">
+        <!-- 首页 -->
+        <section class="page active" id="page-home">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: var(--primary-light); color: var(--primary);">🎯</span>
+                    今日目标
+                </div>
+                <div class="daily-goals">
+                    <div class="goal-item">
+                        <div class="icon">🍱</div>
+                        <div class="value" id="todayCalories">0</div>
+                        <div class="label">今日摄入(千卡)</div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="icon">🔥</div>
+                        <div class="value" id="todayBurned">0</div>
+                        <div class="label">今日消耗(千卡)</div>
+                    </div>
+                </div>
+                <div class="calorie-calc">
+                    <h4>🥗 每日建议</h4>
+                    <div class="calorie-stats">
+                        <div class="calorie-stat">
+                            <div class="value" id="suggestedIntake">1500</div>
+                            <div class="label">建议摄入</div>
+                        </div>
+                        <div class="calorie-stat">
+                            <div class="value" id="remainingCalories">1500</div>
+                            <div class="label">剩余可用</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #E8F5E9; color: #4CAF50;">⚡</span>
+                    快速打卡
+                </div>
+                <div class="quick-checkin">
+                    <div class="checkin-btn" onclick="openModal('weightModal')">
+                        <div class="icon" style="background: var(--primary-light); color: var(--primary);">⚖️</div>
+                        <div class="label">记录体重</div>
+                        <div class="desc">每日一次</div>
+                    </div>
+                    <div class="checkin-btn" onclick="openModal('mealModal')">
+                        <div class="icon" style="background: #FFF3E0; color: #FF9800;">🍽️</div>
+                        <div class="label">饮食打卡</div>
+                        <div class="desc">记录热量</div>
+                    </div>
+                    <div class="checkin-btn" onclick="openModal('exerciseModal')">
+                        <div class="icon" style="background: #E3F2FD; color: #2196F3;">🏋️</div>
+                        <div class="label">运动打卡</div>
+                        <div class="desc">记录运动</div>
+                    </div>
+                    <div class="checkin-btn" onclick="openPostModal()">
+                        <div class="icon" style="background: #F3E5F5; color: #9C27B0;">📝</div>
+                        <div class="label">发个动态</div>
+                        <div class="desc">分享打卡</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #FFF8E1; color: #FFC107;">🏆</span>
+                    已获成就
+                </div>
+                <div class="achievements">
+                    <div class="achievement-badge unlocked">
+                        <div class="icon">🌟</div>
+                        <div class="label">初次打卡</div>
+                    </div>
+                    <div class="achievement-badge" id="ach7days">
+                        <div class="icon">📅</div>
+                        <div class="label">坚持7天</div>
+                    </div>
+                    <div class="achievement-badge" id="ach30days">
+                        <div class="icon">💎</div>
+                        <div class="label">坚持30天</div>
+                    </div>
+                    <div class="achievement-badge" id="ach5kg">
+                        <div class="icon">🎯</div>
+                        <div class="label">减重5kg</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 体重页面 -->
+        <section class="page" id="page-weight">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: var(--primary-light); color: var(--primary);">⚖️</span>
+                    记录体重
+                </div>
+                <div class="progress-ring-container">
+                    <div class="progress-ring">
+                        <svg width="150" height="150">
+                            <circle class="bg" cx="75" cy="75" r="63"></circle>
+                            <circle class="progress" cx="75" cy="75" r="63" 
+                                stroke-dasharray="396" stroke-dashoffset="396" id="weightProgress"></circle>
+                        </svg>
+                        <div class="progress-text">
+                            <div class="progress-value" id="progressPercent">0%</div>
+                            <div class="progress-label">目标进度</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <p>目标: <span id="targetWeight">60</span>kg | 
+                       已减: <span id="lostWeight">0</span>kg | 
+                       共需减: <span id="totalToLose">10</span>kg</p>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('weightModal')">
+                    📝 记录今日体重
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #E8F5E9; color: #4CAF50;">📈</span>
+                    体重趋势
+                </div>
+                <div class="simple-chart">
+                    <div class="chart-bars" id="weightChartBars"></div>
+                    <div class="chart-labels" id="weightChartLabels"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #E3F2FD; color: #2196F3;">📋</span>
+                    记录历史
+                </div>
+                <div class="record-list" id="weightRecords">
+                    <div class="empty-state">
+                        <div class="icon">📝</div>
+                        <p>暂无记录，开始记录你的第一条体重吧！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 饮食页面 -->
+        <section class="page" id="page-diet">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #FFF3E0; color: #FF9800;">🍽️</span>
+                    饮食打卡
+                </div>
+                <div class="calorie-calc">
+                    <div class="calorie-stats">
+                        <div class="calorie-stat">
+                            <div class="value" id="dietTodayCal">0</div>
+                            <div class="label">今日摄入</div>
+                        </div>
+                        <div class="calorie-stat">
+                            <div class="value" id="dietGoalCal">1500</div>
+                            <div class="label">目标摄入</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 16px;" onclick="openModal('mealModal')">
+                    ➕ 添加饮食记录
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #F3E5F5; color: #9C27B0;">💡</span>
+                    食物热量参考
+                </div>
+                <div class="food-suggestions" id="foodSuggestions">
+                    <span class="food-tag" onclick="quickAddFood('米饭', 116)">🍚 米饭(116kcal)</span>
+                    <span class="food-tag" onclick="quickAddFood('鸡蛋', 78)">🥚 鸡蛋(78kcal)</span>
+                    <span class="food-tag" onclick="quickAddFood('苹果', 52)">🍎 苹果(52kcal)</span>
+                    <span class="food-tag" onclick="quickAddFood('鸡胸肉', 133)">🍗 鸡胸肉(133kcal)</span>
+                    <span class="food-tag" onclick="quickAddFood('西兰花', 34)">🥦 西兰花(34kcal)</span>
+                    <span class="food-tag" onclick="quickAddFood('全麦面包', 65)">🍞 全麦面包(65kcal)</span>
+                    <span class="food-tag" onclick="quickAddFood('牛奶', 42)">🥛 牛奶(42kcal)</span>
+                    <span class="food-tag" onclick="quickAddFood('香蕉', 89)">🍌 香蕉(89kcal)</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #E8F5E9; color: #4CAF50;">📋</span>
+                    今日饮食记录
+                </div>
+                <div class="record-list" id="mealRecords">
+                    <div class="empty-state">
+                        <div class="icon">🍽️</div>
+                        <p>还没有饮食记录，快去打卡吧！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 运动页面 -->
+        <section class="page" id="page-exercise">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #E3F2FD; color: #2196F3;">🏋️</span>
+                    运动打卡
+                </div>
+                <div class="calorie-calc" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                    <div class="calorie-stats">
+                        <div class="calorie-stat">
+                            <div class="value" id="exerciseTodayCal">0</div>
+                            <div class="label">今日消耗</div>
+                        </div>
+                        <div class="calorie-stat">
+                            <div class="value" id="exerciseWeekCal">0</div>
+                            <div class="label">本周消耗</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 16px;" onclick="openModal('exerciseModal')">
+                    ➕ 添加运动记录
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #FFEBEE; color: #F44336;">🔥</span>
+                    热门运动消耗
+                </div>
+                <div class="food-suggestions">
+                    <span class="food-tag" onclick="quickAddExercise('快走', 300)">🚶 快走30分钟(300kcal)</span>
+                    <span class="food-tag" onclick="quickAddExercise('慢跑', 400)">🏃 慢跑30分钟(400kcal)</span>
+                    <span class="food-tag" onclick="quickAddExercise('游泳', 350)">🏊 游泳30分钟(350kcal)</span>
+                    <span class="food-tag" onclick="quickAddExercise('瑜伽', 150)">🧘 瑜伽30分钟(150kcal)</span>
+                    <span class="food-tag" onclick="quickAddExercise('HIIT', 450)">💨 HIIT20分钟(450kcal)</span>
+                    <span class="food-tag" onclick="quickAddExercise('力量训练', 300)">🏋️ 力量训练(300kcal)</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #E8F5E9; color: #4CAF50;">📋</span>
+                    运动记录
+                </div>
+                <div class="record-list" id="exerciseRecords">
+                    <div class="empty-state">
+                        <div class="icon">🏋️</div>
+                        <p>还没有运动记录，动起来吧！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 社区页面 -->
+        <section class="page" id="page-community">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #F3E5F5; color: #9C27B0;">👥</span>
+                    打卡动态
+                </div>
+                <button class="btn btn-primary" onclick="openPostModal()">
+                    📝 发布动态
+                </button>
+            </div>
+
+            <div id="communityPosts">
+                <div class="empty-state">
+                    <div class="icon">👥</div>
+                    <p>还没有动态，快去发布第一条吧！</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数据页面 -->
+        <section class="page" id="page-stats">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: var(--primary-light); color: var(--primary);">📊</span>
+                    数据分析
+                </div>
+                <div class="user-stats" style="margin-bottom: 20px;">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalMeals">0</div>
+                        <div class="stat-label">饮食打卡(次)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalExercises">0</div>
+                        <div class="stat-label">运动打卡(次)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalCalBurned">0</div>
+                        <div class="stat-label">累计消耗(kcal)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #FFF3E0; color: #FF9800;">🍽️</span>
+                    热量摄入趋势
+                </div>
+                <div class="simple-chart">
+                    <div class="chart-bars" id="calorieChartBars" style="background: linear-gradient(to top, #FF9800, #FFB74D);"></div>
+                    <div class="chart-labels" id="calorieChartLabels"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #E3F2FD; color: #2196F3;">🔥</span>
+                    运动消耗趋势
+                </div>
+                <div class="simple-chart">
+                    <div class="chart-bars" id="exerciseChartBars" style="background: linear-gradient(to top, #2196F3, #64B5F6);"></div>
+                    <div class="chart-labels" id="exerciseChartLabels"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon" style="background: #E8F5E9; color: #4CAF50;">⚙️</span>
+                    设置
+                </div>
+                <div class="settings-group">
+                    <div class="settings-title">个人信息</div>
+                    <div class="settings-item" onclick="openModal('profileModal')">
+                        <div class="left">
+                            <div class="icon" style="background: var(--primary-light);">👤</div>
+                            <span>修改目标</span>
+                        </div>
+                        <span>›</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home">
+            <span class="icon">🏠</span>
+            <span class="label">首页</span>
+        </div>
+        <div class="nav-item" data-page="weight">
+            <span class="icon">⚖️</span>
+            <span class="label">体重</span>
+        </div>
+        <div class="nav-item" data-page="diet">
+            <span class="icon">🍽️</span>
+            <span class="label">饮食</span>
+        </div>
+        <div class="nav-item" data-page="exercise">
+            <span class="icon">💪</span>
+            <span class="label">运动</span>
+        </div>
+        <div class="nav-item" data-page="community">
+            <span class="icon">👥</span>
+            <span class="label">社区</span>
+        </div>
+    </nav>
+
+    <!-- 体重记录弹窗 -->
+    <div class="modal-overlay" id="weightModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">⚖️ 记录体重</h3>
+                <button class="modal-close" onclick="closeModal('weightModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">当前体重 (kg)</label>
+                <input type="number" class="form-input" id="weightInput" placeholder="例如: 65.5" step="0.1" min="30" max="200">
+            </div>
+            <button class="btn btn-primary" onclick="submitWeight()">保存记录</button>
+        </div>
+    </div>
+
+    <!-- 饮食记录弹窗 -->
+    <div class="modal-overlay" id="mealModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">🍽️ 饮食打卡</h3>
+                <button class="modal-close" onclick="closeModal('mealModal')">×</button>
+            </div>
+            <div class="meal-type-grid">
+                <div class="meal-type-btn selected" data-type="breakfast" onclick="selectMealType(this)">
+                    <div class="icon">🌅</div>
+                    <div class="label">早餐</div>
+                </div>
+                <div class="meal-type-btn" data-type="lunch" onclick="selectMealType(this)">
+                    <div class="icon">☀️</div>
+                    <div class="label">午餐</div>
+                </div>
+                <div class="meal-type-btn" data-type="dinner" onclick="selectMealType(this)">
+                    <div class="icon">🌙</div>
+                    <div class="label">晚餐</div>
+                </div>
+                <div class="meal-type-btn" data-type="snack" onclick="selectMealType(this)">
+                    <div class="icon">🍪</div>
+                    <div class="label">加餐</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">食物名称</label>
+                <input type="text" class="form-input" id="foodName" placeholder="例如: 鸡胸肉沙拉">
+            </div>
+            <div class="form-group">
+                <label class="form-label">热量 (千卡)</label>
+                <input type="number" class="form-input" id="foodCalories" placeholder="例如: 300">
+            </div>
+            <button class="btn btn-primary" onclick="submitMeal()">保存记录</button>
+        </div>
+    </div>
+
+    <!-- 运动记录弹窗 -->
+    <div class="modal-overlay" id="exerciseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">🏋️ 运动打卡</h3>
+                <button class="modal-close" onclick="closeModal('exerciseModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">运动类型</label>
+                <select class="form-select" id="exerciseType">
+                    <option value="running">🏃 跑步</option>
+                    <option value="walking">🚶 快走</option>
+                    <option value="swimming">🏊 游泳</option>
+                    <option value="cycling">🚴 骑行</option>
+                    <option value="yoga">🧘 瑜伽</option>
+                    <option value="gym">🏋️ 健身房</option>
+                    <option value="hiit">💨 HIIT</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">时长 (分钟)</label>
+                <input type="number" class="form-input" id="exerciseDuration" placeholder="例如: 30">
+            </div>
+            <div class="form-group">
+                <label class="form-label">消耗热量 (千卡)</label>
+                <input type="number" class="form-input" id="exerciseCalories" placeholder="例如: 300">
+            </div>
+            <button class="btn btn-primary" onclick="submitExercise()">保存记录</button>
+        </div>
+    </div>
+
+    <!-- 发布动态弹窗 -->
+    <div class="modal-overlay" id="postModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">📝 发布动态</h3>
+                <button class="modal-close" onclick="closeModal('postModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">分享内容</label>
+                <textarea class="form-input" id="postContent" rows="4" placeholder="今天完成了运动打卡，感觉很棒！💪"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">选择标签</label>
+                <select class="form-select" id="postTag">
+                    <option value="运动打卡">🏃 运动打卡</option>
+                    <option value="饮食控制">🍽️ 饮食控制</option>
+                    <option value="减重成果">🎉 减重成果</option>
+                    <option value="日常分享">💬 日常分享</option>
+                    <option value="求助提问">❓ 求助提问</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="submitPost()">发布</button>
+        </div>
+    </div>
+
+    <!-- 个人设置弹窗 -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ 设置目标</h3>
+                <button class="modal-close" onclick="closeModal('profileModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">起始体重 (kg)</label>
+                <input type="number" class="form-input" id="startWeight" placeholder="例如: 75">
+            </div>
+            <div class="form-group">
+                <label class="form-label">目标体重 (kg)</label>
+                <input type="number" class="form-input" id="targetWeightInput" placeholder="例如: 60">
+            </div>
+            <button class="btn btn-primary" onclick="saveProfile()">保存设置</button>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">💎 开通VIP会员</h3>
+                <button class="modal-close" onclick="closeModal('vipModal')">×</button>
+            </div>
+            <div class="vip-modal-content">
+                <div class="vip-icon">👑</div>
+                <h2>尊享VIP会员</h2>
+                <div class="vip-price">¥12 <span>/月</span></div>
+                <div class="vip-features">
+                    <div class="vip-feature">
+                        <span class="check">✓</span>
+                        <span>完整数据分析报告</span>
+                    </div>
+                    <div class="vip-feature">
+                        <span class="check">✓</span>
+                        <span>AI智能减肥计划定制</span>
+                    </div>
+                    <div class="vip-feature">
+                        <span class="check">✓</span>
+                        <span>专属营养师指导</span>
+                    </div>
+                    <div class="vip-feature">
+                        <span class="check">✓</span>
+                        <span>去除广告干扰</span>
+                    </div>
+                    <div class="vip-feature">
+                        <span class="check">✓</span>
+                        <span>优先体验新功能</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="activateVip()">立即开通</button>
+                <p style="font-size: 12px; color: var(--gray); margin-top: 12px;">* 支付¥12解锁30天VIP权限</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 配置
+        const API_BASE = '/api';
+        const USER_ID = 'user_001'; // 本地测试用户ID
+        
+        let currentMealType = 'breakfast';
+        let isVip = false;
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initNavigation();
+            loadUserData();
+            loadCommunityPosts();
+        });
+
+        // 初始化导航
+        function initNavigation() {
+            // 顶部标签切换
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    switchPage(page);
+                });
+            });
+
+            // 底部导航切换
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    switchPage(page);
+                });
+            });
+        }
+
+        // 切换页面
+        function switchPage(page) {
+            // 更新标签
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.nav-tab[data-page="${page}"]`)?.classList.add('active');
+            
+            // 更新底部导航
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+            
+            // 更新页面显示
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${page}`)?.classList.add('active');
+        }
+
+        // 加载用户数据
+        async function loadUserData() {
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}`);
+                const result = await response.json();
+                
+                if (result.code === 0) {
+                    const data = result.data;
+                    updateUI(data);
+                    await loadStats();
+                }
+            } catch (error) {
+                console.error('加载用户数据失败:', error);
+                showToast('数据加载失败，请刷新重试');
+            }
+        }
+
+        // 更新UI
+        function updateUI(data) {
+            const profile = data.profile;
+            
+            // 更新VIP状态
+            isVip = profile.vip || false;
+            updateVipButton();
+            
+            // 更新个人设置
+            document.getElementById('startWeight').value = profile.start_weight || 70;
+            document.getElementById('targetWeightInput').value = profile.target_weight || 60;
+            document.getElementById('targetWeight').textContent = profile.target_weight || 60;
+            
+            // 计算总需减重
+            const startWeight = profile.start_weight || 70;
+            const targetWeight = profile.target_weight || 60;
+            document.getElementById('totalToLose').textContent = (startWeight - targetWeight).toFixed(1);
+            
+            // 更新记录列表
+            updateWeightRecords(data.weight_records);
+            updateMealRecords(data.meal_records);
+            updateExerciseRecords(data.exercise_records);
+            updateWeightChart(data.weight_records);
+        }
+
+        // 加载统计数据
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}/stats`);
+                const result = await response.json();
+                
+                if (result.code === 0) {
+                    const stats = result.data;
+                    
+                    // 更新首页统计
+                    document.getElementById('currentWeight').textContent = stats.latest_weight || '--';
+                    document.getElementById('weightChange').textContent = stats.weight_change > 0 ? `-${stats.weight_change.toFixed(1)}` : stats.weight_change.toFixed(1);
+                    document.getElementById('consecutiveDays').textContent = stats.consecutive_days || 0;
+                    
+                    // 更新目标进度
+                    updateWeightProgress(stats);
+                    
+                    // 更新今日热量
+                    document.getElementById('todayCalories').textContent = stats.week_calories || 0;
+                    document.getElementById('todayBurned').textContent = stats.total_exercise_calories || 0;
+                    
+                    // 计算剩余热量
+                    const remaining = 1500 - (stats.week_calories || 0) + (stats.total_exercise_calories || 0);
+                    document.getElementById('remainingCalories').textContent = Math.max(0, remaining);
+                    
+                    // 更新饮食页面
+                    document.getElementById('dietTodayCal').textContent = stats.week_calories || 0;
+                    document.getElementById('dietGoalCal').textContent = 1500;
+                    
+                    // 更新运动页面
+                    document.getElementById('exerciseTodayCal').textContent = '0';
+                    document.getElementById('exerciseWeekCal').textContent = stats.total_exercise_calories || 0;
+                    
+                    // 更新数据页面
+                    document.getElementById('totalMeals').textContent = stats.total_meals || 0;
+                    document.getElementById('totalExercises').textContent = stats.total_exercises || 0;
+                    document.getElementById('totalCalBurned').textContent = stats.total_exercise_calories || 0;
+                    
+                    // 更新成就
+                    updateAchievements(stats);
+                }
+            } catch (error) {
+                console.error('加载统计数据失败:', error);
+            }
+        }
+
+        // 更新体重进度环
+        function updateWeightProgress(stats) {
+            const startWeight = stats.start_weight || 70;
+            const currentWeight = stats.latest_weight || startWeight;
+            const targetWeight = stats.target_weight || 60;
+            const totalToLose = startWeight - targetWeight;
+            const alreadyLost = startWeight - currentWeight;
+            
+            const progress = totalToLose > 0 ? Math.min(100, Math.max(0, (alreadyLost / totalToLose) * 100)) : 0;
+            
+            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+            document.getElementById('lostWeight').textContent = alreadyLost.toFixed(1);
+            
+            // 更新进度环
+            const circle = document.getElementById('weightProgress');
+            const circumference = 2 * Math.PI * 63;
+            const offset = circumference - (progress / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+        }
+
+        // 更新成就徽章
+        function updateAchievements(stats) {
+            const consecutiveDays = stats.consecutive_days || 0;
+            const weightChange = stats.weight_change || 0;
+            
+            // 7天成就
+            if (consecutiveDays >= 7) {
+                document.getElementById('ach7days')?.classList.add('unlocked');
+            }
+            
+            // 30天成就
+            if (consecutiveDays >= 30) {
+                document.getElementById('ach30days')?.classList.add('unlocked');
+            }
+            
+            // 减重5kg成就
+            if (weightChange >= 5) {
+                document.getElementById('ach5kg')?.classList.add('unlocked');
+            }
+        }
+
+        // 更新体重记录列表
+        function updateWeightRecords(records) {
+            const container = document.getElementById('weightRecords');
+            if (!records || records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📝</div>
+                        <p>暂无记录，开始记录你的第一条体重吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const html = records.slice(-10).reverse().map(r => `
+                <div class="record-item">
+                    <div class="record-icon" style="background: var(--primary-light); color: var(--primary);">⚖️</div>
+                    <div class="record-info">
+                        <div class="record-title">${r.weight} kg</div>
+                        <div class="record-meta">${r.date || '未知日期'}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // 更新饮食记录列表
+        function updateMealRecords(records) {
+            const container = document.getElementById('mealRecords');
+            if (!records || records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🍽️</div>
+                        <p>还没有饮食记录，快去打卡吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayRecords = records.filter(r => r.date === today);
+            
+            const html = todayRecords.reverse().map(r => `
+                <div class="record-item">
+                    <div class="record-icon" style="background: #FFF3E0; color: #FF9800;">${getMealEmoji(r.meal_type)}</div>
+                    <div class="record-info">
+                        <div class="record-title">${r.food_name || '未命名'}</div>
+                        <div class="record-meta">${getMealTypeName(r.meal_type)} · ${r.time || ''}</div>
+                    </div>
+                    <div class="record-value">${r.calories} kcal</div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html || `
+                <div class="empty-state">
+                    <div class="icon">🍽️</div>
+                    <p>今日还没有饮食记录</p>
+                </div>
+            `;
+        }
+
+        // 更新运动记录列表
+        function updateExerciseRecords(records) {
+            const container = document.getElementById('exerciseRecords');
+            if (!records || records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🏋️</div>
+                        <p>还没有运动记录，动起来吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todayRecords = records.filter(r => r.date === today);
+            
+            const html = todayRecords.reverse().map(r => `
+                <div class="record-item">
+                    <div class="record-icon" style="background: #E3F2FD; color: #2196F3;">${getExerciseEmoji(r.exercise_type)}</div>
+                    <div class="record-info">
+                        <div class="record-title">${getExerciseName(r.exercise_type)}</div>
+                        <div class="record-meta">${r.duration || 0}分钟</div>
+                    </div>
+                    <div class="record-value">-${r.calories} kcal</div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html || `
+                <div class="empty-state">
+                    <div class="icon">🏋️</div>
+                    <p>今日还没有运动记录</p>
+                </div>
+            `;
+        }
+
+        // 更新体重图表
+        function updateWeightChart(records) {
+            if (!records || records.length === 0) return;
+            
+            const recentRecords = records.slice(-14);
+            const barsContainer = document.getElementById('weightChartBars');
+            const labelsContainer = document.getElementById('weightChartLabels');
+            
+            const weights = recentRecords.map(r => r.weight);
+            const maxWeight = Math.max(...weights) + 2;
+            const minWeight = Math.min(...weights) - 2;
+            const range = maxWeight - minWeight || 1;
+            
+            const barsHtml = recentRecords.map(r => {
+                const height = ((r.weight - minWeight) / range) * 140 + 20;
+                return `<div class="chart-bar" style="height: ${height}px;"></div>`;
+            }).join('');
+            
+            const labelsHtml = recentRecords.map((r, i) => {
+                if (i === 0 || i === recentRecords.length - 1 || i % 3 === 0) {
+                    return `<span>${r.date?.slice(5) || ''}</span>`;
+                }
+                return '<span></span>';
+            }).join('');
+            
+            barsContainer.innerHTML = barsHtml;
+            labelsContainer.innerHTML = labelsHtml;
+        }
+
+        // 加载社区动态
+        async function loadCommunityPosts() {
+            try {
+                const response = await fetch(`${API_BASE}/community`);
+                const result = await response.json();
+                
+                if (result.code === 0 && result.data.length > 0) {
+                    updateCommunityPosts(result.data);
+                }
+            } catch (error) {
+                console.error('加载社区动态失败:', error);
+            }
+        }
+
+        // 更新社区动态
+        function updateCommunityPosts(posts) {
+            const container = document.getElementById('communityPosts');
+            
+            const html = posts.slice(0, 20).map(post => `
+                <div class="post-item">
+                    <div class="post-header">
+                        <div class="post-avatar">${(post.user_name || '匿名').charAt(0)}</div>
+                        <div>
+                            <div class="post-user">${post.user_name || '匿名用户'}</div>
+                            <div class="post-time">${formatTime(post.timestamp)}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.content || ''}</div>
+                    <div class="post-tags">
+                        <span class="post-tag">${post.tag || '日常分享'}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+
+        // 模态框操作
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showVipModal() {
+            if (isVip) {
+                showToast('您已是VIP会员');
+                return;
+            }
+            openModal('vipModal');
+        }
+
+        // 选择餐食类型
+        function selectMealType(btn) {
+            document.querySelectorAll('.meal-type-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            currentMealType = btn.dataset.type;
+        }
+
+        // 提交体重记录
+        async function submitWeight() {
+            const weight = document.getElementById('weightInput').value;
+            
+            if (!weight || weight < 30 || weight > 200) {
+                showToast('请输入有效的体重值(30-200kg)');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}/weight`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ weight: parseFloat(weight) })
+                });
+                
+                const result = await response.json();
+                if (result.code === 0) {
+                    showToast('体重记录成功！🎉');
+                    closeModal('weightModal');
+                    document.getElementById('weightInput').value = '';
+                    loadUserData();
+                }
+            } catch (error) {
+                showToast('记录失败，请重试');
+            }
+        }
+
+        // 提交饮食记录
+        async function submitMeal() {
+            const foodName = document.getElementById('foodName').value;
+            const calories = document.getElementById('foodCalories').value;
+            
+            if (!foodName || !calories) {
+                showToast('请填写完整的饮食信息');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}/meal`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        food_name: foodName,
+                        calories: parseInt(calories),
+                        meal_type: currentMealType,
+                        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.code === 0) {
+                    showToast('饮食打卡成功！🍽️');
+                    closeModal('mealModal');
+                    document.getElementById('foodName').value = '';
+                    document.getElementById('foodCalories').value = '';
+                    loadUserData();
+                }
+            } catch (error) {
+                showToast('打卡失败，请重试');
+            }
+        }
+
+        // 快速添加食物
+        async function quickAddFood(name, calories) {
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}/meal`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        food_name: name,
+                        calories: calories,
+                        meal_type: 'snack',
+                        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.code === 0) {
+                    showToast(`${name}已添加！`);
+                    loadUserData();
+                }
+            } catch (error) {
+                showToast('添加失败，请重试');
+            }
+        }
+
+        // 快速添加运动
+        async function quickAddExercise(name, calories) {
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}/exercise`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        exercise_type: 'other',
+                        exercise_name: name,
+                        duration: 30,
+                        calories: calories
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.code === 0) {
+                    showToast(`${name}已记录！💪`);
+                    loadUserData();
+                }
+            } catch (error) {
+                showToast('记录失败，请重试');
+            }
+        }
+
+        // 提交运动记录
+        async function submitExercise() {
+            const exerciseType = document.getElementById('exerciseType').value;
+            const duration = document.getElementById('exerciseDuration').value;
+            const calories = document.getElementById('exerciseCalories').value;
+            
+            if (!duration || !calories) {
+                showToast('请填写完整的运动信息');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}/exercise`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        exercise_type: exerciseType,
+                        duration: parseInt(duration),
+                        calories: parseInt(calories)
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.code === 0) {
+                    showToast('运动打卡成功！🏋️');
+                    closeModal('exerciseModal');
+                    document.getElementById('exerciseDuration').value = '';
+                    document.getElementById('exerciseCalories').value = '';
+                    loadUserData();
+                }
+            } catch (error) {
+                showToast('打卡失败，请重试');
+            }
+        }
+
+        // 发布动态
+        async function submitPost() {
+            const content = document.getElementById('postContent').value;
+            const tag = document.getElementById('postTag').value;
+            
+            if (!content) {
+                showToast('请输入分享内容');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}/community`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: content,
+                        tag: tag,
+                        user_name: '减肥er'
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.code === 0) {
+                    showToast('发布成功！📝');
+                    closeModal('postModal');
+                    document.getElementById('postContent').value = '';
+                    loadCommunityPosts();
+                }
+            } catch (error) {
+                showToast('发布失败，请重试');
+            }
+        }
+
+        // 打开发布动态弹窗
+        function openPostModal() {
+            openModal('postModal');
+        }
+
+        // 保存个人设置
+        async function saveProfile() {
+            const startWeight = document.getElementById('startWeight').value;
+            const targetWeight = document.getElementById('targetWeightInput').value;
+            
+            if (!startWeight || !targetWeight) {
+                showToast('请填写完整的设置');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/user/${USER_ID}/profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        start_weight: parseFloat(startWeight),
+                        target_weight: parseFloat(targetWeight)
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.code === 0) {
+                    showToast('设置已保存！');
+                    closeModal('profileModal');
+                    loadUserData();
+                }
+            } catch (error) {
+                showToast('保存失败，请重试');
+            }
+        }
+
+        // 激活VIP
+        async function activateVip() {
+            // 模拟支付流程
+            showToast('正在跳转支付...');
+            
+            setTimeout(async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/user/${USER_ID}/vip/activate`, {
+                        method: 'POST'
+                    });
+                    
+                    const result = await response.json();
+                    if (result.code === 0) {
+                        isVip = true;
+                        updateVipButton();
+                        closeModal('vipModal');
+                        showToast('VIP开通成功！👑');
+                    }
+                } catch (error) {
+                    showToast('VIP开通失败，请重试');
+                }
+            }, 1000);
+        }
+
+        // 更新VIP按钮状态
+        function updateVipButton() {
+            const btn = document.getElementById('vipBtn');
+            if (isVip) {
+                btn.textContent = 'VIP会员';
+                btn.classList.add('active');
+            }
+        }
+
+        // 显示Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 辅助函数
+        function getMealEmoji(type) {
+            const emojis = {
+                breakfast: '🌅',
+                lunch: '☀️',
+                dinner: '🌙',
+                snack: '🍪'
+            };
+            return emojis[type] || '🍽️';
+        }
+
+        function getMealTypeName(type) {
+            const names = {
+                breakfast: '早餐',
+                lunch: '午餐',
+                dinner: '晚餐',
+                snack: '加餐'
+            };
+            return names[type] || '未知';
+        }
+
+        function getExerciseEmoji(type) {
+            const emojis = {
+                running: '🏃',
+                walking: '🚶',
+                swimming: '🏊',
+                cycling: '🚴',
+                yoga: '🧘',
+                gym: '🏋️',
+                hiit: '💨',
+                other: '⚡'
+            };
+            return emojis[type] || '🏃';
+        }
+
+        function getExerciseName(type) {
+            const names = {
+                running: '跑步',
+                walking: '快走',
+                swimming: '游泳',
+                cycling: '骑行',
+                yoga: '瑜伽',
+                gym: '健身房训练',
+                hiit: 'HIIT训练',
+                other: '其他运动'
+            };
+            return names[type] || '运动';
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
+            if (diff < 604800000) return `${Math.floor(diff / 86400000)}天前`;
+            
+            return date.toLocaleDateString('zh-CN');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>快充伴 - 新能源车充电助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00D4AA;
+            --primary-dark: #00B894;
+            --secondary: #0984E3;
+            --warning: #FDCB6E;
+            --danger: #E17055;
+            --bg: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --border: #E9ECEF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .vip-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .vip-badge.active {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+        }
+
+        .battery-status {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .battery-icon {
+            width: 50px;
+            height: 26px;
+            border: 2px solid white;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .battery-icon::before {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 12px;
+            background: white;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .battery-level {
+            height: 100%;
+            background: #4CD964;
+            transition: width 0.3s;
+        }
+
+        .battery-info {
+            flex: 1;
+        }
+
+        .battery-percent {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .battery-range {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Tab导航 */
+        .tab-nav {
+            display: flex;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            gap: 10px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: var(--bg);
+            border-radius: 25px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-light);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 主内容 */
+        .main-content {
+            padding: 15px;
+        }
+
+        /* 地图区域 */
+        .map-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            height: 280px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #E8F6F3 0%, #D5E8ED 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,212,170,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,170,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .map-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-marker {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .map-marker:hover {
+            transform: translate(-50%, -100%) scale(1.2);
+        }
+
+        .marker-pin {
+            width: 30px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .marker-pin.available {
+            background: #00D4AA;
+        }
+
+        .marker-pin.busy {
+            background: var(--warning);
+        }
+
+        .marker-pin.full {
+            background: var(--danger);
+        }
+
+        .marker-icon {
+            transform: rotate(45deg);
+            font-size: 14px;
+        }
+
+        .user-location {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--secondary);
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(9,132,227,0.5);
+            z-index: 10;
+        }
+
+        .map-legend {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.green { background: #00D4AA; }
+        .legend-dot.yellow { background: #FDCB6E; }
+        .legend-dot.red { background: #E17055; }
+
+        /* 筛选栏 */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 充电站卡片 */
+        .station-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .station-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .station-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .station-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .station-name {
+            font-size: 15px;
+            font-weight: 600;
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .station-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .station-status.available {
+            background: rgba(0,212,170,0.15);
+            color: #00B894;
+        }
+
+        .station-status.busy {
+            background: rgba(253,203,110,0.2);
+            color: #E17000;
+        }
+
+        .station-status.full {
+            background: rgba(225,112,85,0.15);
+            color: #D63031;
+        }
+
+        .station-info {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        .station-info span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .station-distance {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .station-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .price-info {
+            display: flex;
+            gap: 15px;
+        }
+
+        .price-item {
+            text-align: center;
+        }
+
+        .price-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .price-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .station-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .star {
+            color: #FDCB6E;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 20px;
+            color: var(--text-light);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal-overlay.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 24px 24px 0 0;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 201;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 详情页 */
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .port-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .port-item {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .port-item.available {
+            background: rgba(0,212,170,0.1);
+            border: 1px solid var(--primary);
+        }
+
+        .port-item.using {
+            background: rgba(253,203,110,0.1);
+        }
+
+        .port-item.fault {
+            background: rgba(225,112,85,0.1);
+            opacity: 0.6;
+        }
+
+        .port-power {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .port-status-text {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .price-compare {
+            background: var(--bg);
+            border-radius: 16px;
+            padding: 15px;
+        }
+
+        .compare-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .compare-row:last-child {
+            border-bottom: none;
+        }
+
+        /* 按钮 */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,212,170,0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* 预约成功 */
+        .success-content {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(0,212,170,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
+        .reservation-code {
+            background: var(--bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .code-text {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--primary-dark);
+        }
+
+        /* VIP推广 */
+        .vip-banner {
+            background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vip-banner::before {
+            content: '👑';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 60px;
+            opacity: 0.3;
+        }
+
+        .vip-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .vip-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FDCB6E;
+        }
+
+        .vip-price span {
+            font-size: 14px;
+        }
+
+        .vip-benefits {
+            margin-top: 10px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* 路线规划 */
+        .route-result {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .route-stop {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-left: 2px solid var(--border);
+            margin-left: 8px;
+            position: relative;
+        }
+
+        .route-stop:first-child {
+            padding-top: 0;
+        }
+
+        .route-stop::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 18px;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .route-stop.start::before {
+            background: var(--secondary);
+        }
+
+        .route-stop.end::before {
+            background: var(--danger);
+        }
+
+        .route-stop.charging::before {
+            background: var(--warning);
+        }
+
+        .stop-icon {
+            font-size: 20px;
+        }
+
+        .stop-info h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .stop-info p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 页面隐藏 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 费用对比表 */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .compare-table th {
+            background: var(--bg);
+            font-weight: 600;
+        }
+
+        .compare-table .highlight {
+            background: rgba(0,212,170,0.1);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .best-price {
+            color: var(--primary-dark);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <div class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span>快充伴</span>
+            </div>
+            <div class="vip-badge active" onclick="showVipModal()">
+                👑 年卡会员
+            </div>
+        </div>
+        <div class="battery-status">
+            <div class="battery-icon">
+                <div class="battery-level" style="width: 68%;"></div>
+            </div>
+            <div class="battery-info">
+                <div class="battery-percent">68%</div>
+                <div class="battery-range">约可行驶 280km</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab导航 -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('map')">🗺️ 地图</button>
+        <button class="tab-btn" onclick="switchTab('stations')">⚡ 充电站</button>
+        <button class="tab-btn" onclick="switchTab('route')">🛣️ 路线</button>
+        <button class="tab-btn" onclick="switchTab('compare')">📊 对比</button>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <!-- 地图页面 -->
+        <div id="map-page" class="page active">
+            <div class="map-container">
+                <div class="map-placeholder">
+                    <div class="map-grid"></div>
+                    <div class="map-markers" id="mapMarkers">
+                        <!-- 动态生成 -->
+                    </div>
+                    <div class="user-location" style="left: 50%; top: 50%;"></div>
+                </div>
+                <div class="map-legend">
+                    <div class="legend-item"><div class="legend-dot green"></div>空闲</div>
+                    <div class="legend-item"><div class="legend-dot yellow"></div>使用中</div>
+                    <div class="legend-item"><div class="legend-dot red"></div>已满</div>
+                </div>
+            </div>
+            <div class="filter-bar">
+                <div class="filter-chip active" onclick="filterStations('all')">全部</div>
+                <div class="filter-chip" onclick="filterStations('available')">🚗 有空位</div>
+                <div class="filter-chip" onclick="filterStations('fast')">⚡ 快充</div>
+                <div class="filter-chip" onclick="filterStations('cheap')">💰 便宜</div>
+                <div class="filter-chip" onclick="filterStations('24h')">🕐 24小时</div>
+            </div>
+            <div class="station-list" id="stationListMap">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+
+        <!-- 充电站列表页面 -->
+        <div id="stations-page" class="page">
+            <div class="filter-bar">
+                <div class="filter-chip active" onclick="filterStations('all')">全部</div>
+                <div class="filter-chip" onclick="filterStations('available')">🚗 有空位</div>
+                <div class="filter-chip" onclick="filterStations('fast')">⚡ 快充</div>
+                <div class="filter-chip" onclick="filterStations('cheap')">💰 便宜</div>
+            </div>
+            <div class="station-list" id="stationListFull">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+
+        <!-- 路线规划页面 -->
+        <div id="route-page" class="page">
+            <div class="vip-banner" onclick="showVipModal()">
+                <div class="vip-title">智能路线规划</div>
+                <div class="vip-price">¥29.9 <span>/ 年</span></div>
+                <div class="vip-benefits">VIP会员专享 | 含充电点路线规划</div>
+            </div>
+            <div class="route-result" id="routeResult">
+                <p style="text-align: center; color: var(--text-light); padding: 40px 0;">
+                    输入起点和终点，规划含充电点的路线
+                </p>
+            </div>
+            <button class="btn btn-primary" onclick="planRoute()">
+                🛣️ 规划充电路线
+            </button>
+        </div>
+
+        <!-- 费用对比页面 -->
+        <div id="compare-page" class="page">
+            <div class="station-list" id="compareList">
+                <!-- 选择要对比的站点 -->
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="clearCompare()">清空选择</button>
+                <button class="btn btn-primary" onclick="doCompare()">开始对比</button>
+            </div>
+            <div id="compareResult" style="margin-top: 20px; display: none;">
+                <!-- 对比结果 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('map')">
+            <span class="nav-icon">🗺️</span>
+            <span class="nav-label">地图</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('stations')">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-label">充电站</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('route')">
+            <span class="nav-icon">🛣️</span>
+            <span class="nav-label">路线</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('compare')">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">对比</span>
+        </div>
+    </div>
+
+    <!-- 站点详情弹窗 -->
+    <div class="modal-overlay" id="stationModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">充电站详情</div>
+                <div class="modal-close" onclick="closeModal()">✕</div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">开通VIP会员</div>
+                <div class="modal-close" onclick="closeVipModal()">✕</div>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="font-size: 60px; margin-bottom: 15px;">👑</div>
+                    <h3 style="font-size: 22px; margin-bottom: 10px;">快充伴年卡会员</h3>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">畅享所有尊贵特权</p>
+                    <div style="font-size: 42px; font-weight: bold; color: var(--primary-dark);">
+                        ¥29.9 <span style="font-size: 16px; color: var(--text-light);">/ 年</span>
+                    </div>
+                </div>
+                
+                <div style="background: var(--bg); border-radius: 12px; padding: 15px; margin: 20px 0;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                        <span style="color: var(--primary);">✓</span>
+                        <span>去广告干扰，体验更流畅</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                        <span style="color: var(--primary);">✓</span>
+                        <span>优先预约热门桩位</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                        <span style="color: var(--primary);">✓</span>
+                        <span>充电积分双倍赠送</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                        <span style="color: var(--primary);">✓</span>
+                        <span>专属客服响应更快</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                        <span style="color: var(--primary);">✓</span>
+                        <span>智能路线规划（价值¥99/年）</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="purchaseVip()">
+                    立即开通 ¥29.9/年
+                </button>
+                <p style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-light);">
+                    已帮助 1,268 位车主解决充电难题
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 全局数据
+        let stations = [];
+        let selectedStations = [];
+        let currentFilter = 'all';
+
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStations();
+        });
+
+        // 加载充电站数据
+        async function loadStations() {
+            try {
+                const response = await fetch(`${API_BASE}/stations/nearby?lat=31.2304&lng=121.5069&radius=20`);
+                const result = await response.json();
+                if (result.code === 200) {
+                    stations = result.data.stations;
+                    renderStationList();
+                    renderMapMarkers();
+                }
+            } catch (error) {
+                console.log('使用模拟数据');
+                // 使用模拟数据
+                stations = getMockStations();
+                renderStationList();
+                renderMapMarkers();
+            }
+        }
+
+        // 模拟数据
+        function getMockStations() {
+            return [
+                {
+                    id: 'CS001',
+                    name: '国家电网充电站(世纪公园站)',
+                    address: '浦东新区芳甸路1198号',
+                    lat: 31.2154,
+                    lng: 121.5432,
+                    total_ports: 10,
+                    available_ports: 6,
+                    fast_charge_price: 1.2,
+                    slow_charge_price: 0.8,
+                    parking_fee: 5,
+                    rating: 4.5,
+                    operator: '国家电网',
+                    distance: 2.3,
+                    eta_minutes: 8,
+                    ports: [
+                        {port_id: 'P1', status: 'available', type: 'fast', power: 60},
+                        {port_id: 'P2', status: 'available', type: 'fast', power: 60},
+                        {port_id: 'P3', status: 'using', type: 'fast', power: 60},
+                        {port_id: 'P4', status: 'available', type: 'fast', power: 120},
+                        {port_id: 'P5', status: 'fault', type: 'fast', power: 60},
+                        {port_id: 'P6', status: 'available', type: 'slow', power: 7},
+                    ]
+                },
+                {
+                    id: 'CS002',
+                    name: '特来电充电站(陆家嘴站)',
+                    address: '浦东新区陆家嘴环路1000号',
+                    lat: 31.2304,
+                    lng: 121.5069,
+                    total_ports: 8,
+                    available_ports: 3,
+                    fast_charge_price: 1.5,
+                    slow_charge_price: 0.9,
+                    parking_fee: 15,
+                    rating: 4.2,
+                    operator: '特来电',
+                    distance: 0.8,
+                    eta_minutes: 3,
+                    ports: [
+                        {port_id: 'T1', status: 'available', type: 'fast', power: 120},
+                        {port_id: 'T2', status: 'using', type: 'fast', power: 120},
+                        {port_id: 'T3', status: 'available', type: 'fast', power: 60},
+                        {port_id: 'T4', status: 'using', type: 'fast', power: 60},
+                    ]
+                },
+                {
+                    id: 'CS003',
+                    name: '星星充电站(张江站)',
+                    address: '浦东新区张江高科技园区',
+                    lat: 31.2034,
+                    lng: 121.5634,
+                    total_ports: 12,
+                    available_ports: 8,
+                    fast_charge_price: 1.3,
+                    slow_charge_price: 0.85,
+                    parking_fee: 0,
+                    rating: 4.7,
+                    operator: '星星充电',
+                    distance: 4.2,
+                    eta_minutes: 15,
+                    ports: [
+                        {port_id: 'X1', status: 'available', type: 'fast', power: 60},
+                        {port_id: 'X2', status: 'available', type: 'fast', power: 60},
+                        {port_id: 'X3', status: 'available', type: 'fast', power: 120},
+                        {port_id: 'X4', status: 'available', type: 'fast', power: 120},
+                    ]
+                },
+                {
+                    id: 'CS004',
+                    name: '小桔充电站(静安寺站)',
+                    address: '静安区南京西路1688号',
+                    lat: 31.2254,
+                    lng: 121.4472,
+                    total_ports: 6,
+                    available_ports: 2,
+                    fast_charge_price: 1.4,
+                    slow_charge_price: 0.8,
+                    parking_fee: 10,
+                    rating: 4.0,
+                    operator: '小桔充电',
+                    distance: 5.8,
+                    eta_minutes: 20,
+                    ports: [
+                        {port_id: 'J1', status: 'available', type: 'fast', power: 60},
+                        {port_id: 'J2', status: 'using', type: 'fast', power: 60},
+                        {port_id: 'J3', status: 'using', type: 'fast', power: 120},
+                    ]
+                },
+                {
+                    id: 'CS005',
+                    name: '云快充站(徐家汇站)',
+                    address: '徐汇区漕溪北路331号',
+                    lat: 31.2084,
+                    lng: 121.4372,
+                    total_ports: 10,
+                    available_ports: 5,
+                    fast_charge_price: 1.25,
+                    slow_charge_price: 0.75,
+                    parking_fee: 8,
+                    rating: 4.3,
+                    operator: '云快充',
+                    distance: 6.5,
+                    eta_minutes: 22,
+                    ports: [
+                        {port_id: 'Y1', status: 'available', type: 'fast', power: 60},
+                        {port_id: 'Y2', status: 'available', type: 'fast', power: 60},
+                        {port_id: 'Y3', status: 'using', type: 'fast', power: 60},
+                        {port_id: 'Y4', status: 'available', type: 'fast', power: 120},
+                    ]
+                }
+            ];
+        }
+
+        // 渲染充电站列表
+        function renderStationList() {
+            const filtered = filterStationsData();
+            const mapList = document.getElementById('stationListMap');
+            const fullList = document.getElementById('stationListFull');
+            
+            const html = filtered.map(station => createStationCard(station)).join('');
+            
+            if (mapList) mapList.innerHTML = html;
+            if (fullList) fullList.innerHTML = html;
+        }
+
+        // 创建充电站卡片HTML
+        function createStationCard(station, showCheckbox = false) {
+            const statusClass = station.available_ports > 3 ? 'available' : 
+                               station.available_ports > 0 ? 'busy' : 'full';
+            const statusText = station.available_ports > 3 ? '空闲' : 
+                              station.available_ports > 0 ? '使用中' : '已满';
+            
+            const fastPorts = station.ports ? station.ports.filter(p => p.type === 'fast').length : 0;
+            
+            return `
+                <div class="station-card" onclick="showStationDetail('${station.id}')">
+                    <div class="station-header">
+                        <div class="station-name">${station.name}</div>
+                        <div class="station-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="station-info">
+                        <span class="station-distance">📍 ${station.distance}km</span>
+                        <span>⏱️ 约${station.eta_minutes}分钟</span>
+                        <span>⚡${fastPorts}个快充</span>
+                    </div>
+                    <div class="station-details">
+                        <div class="price-info">
+                            <div class="price-item">
+                                <div class="price-value">¥${station.fast_charge_price}</div>
+                                <div class="price-label">快充(元/度)</div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-value">¥${station.slow_charge_price}</div>
+                                <div class="price-label">慢充(元/度)</div>
+                            </div>
+                        </div>
+                        <div class="station-rating">
+                            <span class="star">★</span>
+                            <span>${station.rating}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 筛选站点
+        function filterStations(type) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.textContent.includes(
+                    type === 'all' ? '全部' : 
+                    type === 'available' ? '有空位' :
+                    type === 'fast' ? '快充' :
+                    type === 'cheap' ? '便宜' : '24小时'
+                ));
+            });
+            renderStationList();
+        }
+
+        function filterStationsData() {
+            switch(currentFilter) {
+                case 'available':
+                    return stations.filter(s => s.available_ports > 0);
+                case 'fast':
+                    return stations.filter(s => s.ports && s.ports.some(p => p.type === 'fast' && p.status === 'available'));
+                case 'cheap':
+                    return [...stations].sort((a, b) => a.fast_charge_price - b.fast_charge_price);
+                case '24h':
+                    return stations; // 模拟数据都支持24小时
+                default:
+                    return stations;
+            }
+        }
+
+        // 渲染地图标记
+        function renderMapMarkers() {
+            const container = document.getElementById('mapMarkers');
+            if (!container) return;
+            
+            // 模拟地图位置（相对于容器的百分比位置）
+            const positions = [
+                {x: 55, y: 35},
+                {x: 48, y: 48},
+                {x: 65, y: 60},
+                {x: 30, y: 45},
+                {x: 25, y: 65}
+            ];
+            
+            container.innerHTML = stations.map((station, i) => {
+                const pos = positions[i] || {x: 50, y: 50};
+                const statusClass = station.available_ports > 3 ? 'available' : 
+                                   station.available_ports > 0 ? 'busy' : 'full';
+                return `
+                    <div class="map-marker" style="left: ${pos.x}%; top: ${pos.y}%;" onclick="showStationDetail('${station.id}')">
+                        <div class="marker-pin ${statusClass}">
+                            <span class="marker-icon">⚡</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 切换Tab
+        function switchTab(tab) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`${tab}-page`).classList.add('active');
+            
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', 
+                    (tab === 'map' && i === 0) ||
+                    (tab === 'stations' && i === 1) ||
+                    (tab === 'route' && i === 2) ||
+                    (tab === 'compare' && i === 3)
+                );
+            });
+            
+            document.querySelectorAll('.nav-item').forEach((item, i) => {
+                item.classList.toggle('active',
+                    (tab === 'map' && i === 0) ||
+                    (tab === 'stations' && i === 1) ||
+                    (tab === 'route' && i === 2) ||
+                    (tab === 'compare' && i === 3)
+                );
+            });
+            
+            if (tab === 'compare') {
+                renderCompareList();
+            }
+        }
+
+        // 显示站点详情
+        function showStationDetail(stationId) {
+            const station = stations.find(s => s.id === stationId);
+            if (!station) return;
+            
+            document.getElementById('modalTitle').textContent = station.name;
+            
+            const fastPorts = station.ports.filter(p => p.type === 'fast');
+            const slowPorts = station.ports.filter(p => p.type === 'slow');
+            
+            document.getElementById('modalBody').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-label">📍 地址</div>
+                    <p>${station.address}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-label">⚡ 快充桩 (${fastPorts.length}个)</div>
+                    <div class="port-grid">
+                        ${fastPorts.map(p => `
+                            <div class="port-item ${p.status}">
+                                <div class="port-power">${p.power}kW</div>
+                                <div class="port-status-text">${p.status === 'available' ? '空闲' : p.status === 'using' ? '使用中' : '故障'}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-label">🔌 慢充桩 (${slowPorts.length}个)</div>
+                    <div class="port-grid">
+                        ${slowPorts.map(p => `
+                            <div class="port-item ${p.status}">
+                                <div class="port-power">${p.power}kW</div>
+                                <div class="port-status-text">${p.status === 'available' ? '空闲' : p.status === 'using' ? '使用中' : '故障'}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-label">💰 费用信息</div>
+                    <div class="price-compare">
+                        <div class="compare-row">
+                            <span>快充费用</span>
+                            <span class="best-price">¥${station.fast_charge_price}/度</span>
+                        </div>
+                        <div class="compare-row">
+                            <span>慢充费用</span>
+                            <span>¥${station.slow_charge_price}/度</span>
+                        </div>
+                        <div class="compare-row">
+                            <span>停车费</span>
+                            <span>¥${station.parking_fee}/小时</span>
+                        </div>
+                        <div class="compare-row">
+                            <span>运营商</span>
+                            <span>${station.operator}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="navigateToStation()">
+                        🧭 导航到这
+                    </button>
+                    <button class="btn btn-primary" onclick="reservePort('${station.id}')">
+                        📅 预约桩位
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('stationModal').classList.add('show');
+        }
+
+        // 预约桩位
+        async function reservePort(stationId) {
+            const station = stations.find(s => s.id === stationId);
+            const availablePort = station.ports.find(p => p.status === 'available');
+            
+            if (!availablePort) {
+                showToast('暂无可用桩位');
+                return;
+            }
+            
+            // 模拟预约
+            const reservationId = 'RES' + Date.now();
+            
+            document.getElementById('modalBody').innerHTML = `
+                <div class="success-content">
+                    <div class="success-icon">✓</div>
+                    <h3>预约成功!</h3>
+                    <p style="color: var(--text-light); margin-top: 10px;">
+                        请在15分钟内到达充电站
+                    </p>
+                    <div class="reservation-code">
+                        <div class="detail-label">预约码</div>
+                        <div class="code-text">${reservationId}</div>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-light);">
+                        桩位: ${availablePort.port_id} | ${availablePort.power}kW ${availablePort.type === 'fast' ? '快充' : '慢充'}
+                    </p>
+                </div>
+                <button class="btn btn-primary" onclick="closeModal()">
+                    知道了
+                </button>
+            `;
+            
+            showToast('预约成功!');
+        }
+
+        // 导航到站点
+        function navigateToStation() {
+            showToast('正在打开导航...');
+            // 实际会调起地图导航
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('stationModal').classList.remove('show');
+        }
+
+        // 显示VIP弹窗
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('show');
+        }
+
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.remove('show');
+        }
+
+        // 购买VIP
+        function purchaseVip() {
+            showToast('功能开发中，敬请期待!');
+        }
+
+        // 路线规划
+        async function planRoute() {
+            const routeResult = document.getElementById('routeResult');
+            routeResult.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            
+            // 模拟路线规划
+            setTimeout(() => {
+                routeResult.innerHTML = `
+                    <div class="route-stop start">
+                        <span class="stop-icon">🏠</span>
+                        <div class="stop-info">
+                            <h4>当前位置</h4>
+                            <p>浦东新区陆家嘴</p>
+                        </div>
+                    </div>
+                    <div class="route-stop charging">
+                        <span class="stop-icon">⚡</span>
+                        <div class="stop-info">
+                            <h4>建议充电点 - 星星充电(张江站)</h4>
+                            <p>距起点 4.2km | 约15分钟</p>
+                            <p style="color: var(--primary);">8个空闲桩位 | ¥1.3/度</p>
+                        </div>
+                    </div>
+                    <div class="route-stop end">
+                        <span class="stop-icon">🏁</span>
+                        <div class="stop-info">
+                            <h4>目的地</h4>
+                            <p>徐家汇商圈</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                        <p style="color: var(--warning);">⚠️ 当前电量68%，建议中途补电确保顺利到达</p>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // 费用对比
+        function renderCompareList() {
+            const container = document.getElementById('compareList');
+            container.innerHTML = stations.map(s => `
+                <div class="station-card" onclick="toggleCompare('${s.id}')" id="compare-${s.id}">
+                    <div class="station-header">
+                        <div class="station-name">${s.name}</div>
+                        <div class="station-status ${selectedStations.includes(s.id) ? 'available' : ''}">
+                            ${selectedStations.includes(s.id) ? '✓ 已选' : '点击选择'}
+                        </div>
+                    </div>
+                    <div class="station-details">
+                        <div class="price-info">
+                            <div class="price-item">
+                                <div class="price-value">¥${s.fast_charge_price}</div>
+                                <div class="price-label">快充</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-light);">
+                            ${s.available_ports}个空闲
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCompare(stationId) {
+            const idx = selectedStations.indexOf(stationId);
+            if (idx > -1) {
+                selectedStations.splice(idx, 1);
+            } else if (selectedStations.length < 3) {
+                selectedStations.push(stationId);
+            } else {
+                showToast('最多选择3个站点对比');
+                return;
+            }
+            renderCompareList();
+        }
+
+        function clearCompare() {
+            selectedStations = [];
+            renderCompareList();
+            document.getElementById('compareResult').style.display = 'none';
+        }
+
+        function doCompare() {
+            if (selectedStations.length < 2) {
+                showToast('请至少选择2个站点');
+                return;
+            }
+            
+            const selected = stations.filter(s => selectedStations.includes(s.id));
+            const minFastPrice = Math.min(...selected.map(s => s.fast_charge_price));
+            const minSlowPrice = Math.min(...selected.map(s => s.slow_charge_price));
+            const maxAvailable = Math.max(...selected.map(s => s.available_ports));
+            
+            document.getElementById('compareResult').innerHTML = `
+                <div class="detail-label">📊 费用对比结果</div>
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>站点</th>
+                            <th>快充</th>
+                            <th>慢充</th>
+                            <th>停车</th>
+                            <th>空闲</th>
+                            <th>评分</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${selected.map(s => `
+                            <tr>
+                                <td style="text-align: left; max-width: 100px; overflow: hidden; text-overflow: ellipsis;">
+                                    ${s.name.split('(')[0]}
+                                </td>
+                                <td class="${s.fast_charge_price === minFastPrice ? 'highlight' : ''}">
+                                    ¥${s.fast_charge_price}
+                                </td>
+                                <td class="${s.slow_charge_price === minSlowPrice ? 'highlight' : ''}">
+                                    ¥${s.slow_charge_price}
+                                </td>
+                                <td>¥${s.parking_fee}/h</td>
+                                <td class="${s.available_ports === maxAvailable ? 'highlight' : ''}">
+                                    ${s.available_ports}个
+                                </td>
+                                <td>★ ${s.rating}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div style="margin-top: 15px; padding: 12px; background: rgba(0,212,170,0.1); border-radius: 8px;">
+                    <p style="font-size: 13px;">
+                        💡 <strong>推荐:</strong> 
+                        ${selected.find(s => s.fast_charge_price === minFastPrice)?.name.split('(')[0]} 
+                        快充价格最低
+                    </p>
+                </div>
+            `;
+            document.getElementById('compareResult').style.display = 'block';
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // 点击弹窗背景关闭
+        document.getElementById('stationModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('vipModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeVipModal();
+            }
+        });
+    </script>
+</body>
+</html>

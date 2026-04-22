@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>面试题库 - 助你斩获心仪offer</title>
+    <style>
+        /* ==================== 基础样式 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        /* ==================== 头部导航 ==================== */
+        .header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .vip-btn {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .vip-btn.active {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .stat-item span {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* ==================== 主容器 ==================== */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        /* ==================== 底部导航 ==================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--gray-500);
+            text-decoration: none;
+            border: none;
+            background: none;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-item .icon {
+            font-size: 24px;
+        }
+
+        .nav-item .label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* ==================== 页面视图 ==================== */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== 首页 - 每日一练 ==================== */
+        .daily-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .daily-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .daily-date {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .daily-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .daily-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .daily-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .daily-btn {
+            width: 100%;
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .daily-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ==================== 题库分类 ==================== */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--gray-900);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .category-card:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .category-count {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* ==================== 快捷入口 ==================== */
+        .quick-entry {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .quick-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .quick-item:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .quick-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .quick-label {
+            font-size: 12px;
+            color: var(--gray-700);
+        }
+
+        /* ==================== 模拟面试 ==================== */
+        .simulate-card {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .simulate-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .simulate-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .simulate-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .simulate-option {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .simulate-option.selected {
+            background: white;
+            color: var(--success);
+        }
+
+        .simulate-btn {
+            width: 100%;
+            background: white;
+            color: var(--success);
+            border: none;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        /* ==================== 题目列表 ==================== */
+        .question-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .question-item:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .question-difficulty {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .difficulty-easy {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .difficulty-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .difficulty-hard {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .question-type {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .question-text {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.5;
+        }
+
+        /* ==================== 答题页面 ==================== */
+        .quiz-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            min-height: calc(100vh - 120px);
+        }
+
+        .quiz-progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #8b5cf6);
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--gray-500);
+            min-width: 50px;
+        }
+
+        .quiz-question-type {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .quiz-question-text {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--gray-900);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .quiz-option.wrong .option-letter {
+            background: var(--danger);
+            color: white;
+        }
+
+        .quiz-explanation {
+            margin-top: 20px;
+            padding: 16px;
+            background: #fffbeb;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--warning);
+        }
+
+        .explanation-title {
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .explanation-text {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .quiz-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .quiz-btn.primary {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+        }
+
+        .quiz-btn.secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .quiz-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ==================== 错题本 & 收藏 ==================== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .list-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .list-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn.study {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        /* ==================== 模拟面试结果 ==================== */
+        .result-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            text-align: center;
+        }
+
+        .result-score {
+            font-size: 72px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .result-grade {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin: 24px 0;
+            padding: 16px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .result-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .result-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .result-btn.primary {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+        }
+
+        .result-btn.secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        /* ==================== 会员弹窗 ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            display: none;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 360px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-200);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .vip-card {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: var(--radius);
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .vip-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: 800;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+        }
+
+        .vip-features {
+            list-style: none;
+            margin-top: 16px;
+        }
+
+        .vip-features li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .vip-features li::before {
+            content: '✓';
+            font-weight: bold;
+        }
+
+        .buy-vip-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .vip-tip {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 12px;
+        }
+
+        /* ==================== 加载状态 ==================== */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== Toast提示 ==================== */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 360px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-entry {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== 头部导航 ==================== -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">📚</div>
+            <span class="app-title">面试题库</span>
+        </div>
+        <div class="header-right">
+            <button class="vip-btn" id="vipBtn" onclick="showVipModal()">
+                <span>👑</span>
+                <span>开通会员</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ==================== 统计数据栏 ==================== -->
+    <div class="stats-bar" id="statsBar">
+        <div class="stat-item">
+            <span>📖</span>
+            <span id="totalQuestions">0</span> 道题
+        </div>
+        <div class="stat-item">
+            <span>📝</span>
+            <span id="wrongCount">0</span> 错题
+        </div>
+        <div class="stat-item">
+            <span>⭐</span>
+            <span id="favoriteCount">0</span> 收藏
+        </div>
+    </div>
+
+    <!-- ==================== 主容器 ==================== -->
+    <div class="container">
+        <!-- 首页视图 -->
+        <div class="view active" id="homeView">
+            <!-- 每日一练 -->
+            <div class="daily-card">
+                <div class="daily-header">
+                    <span class="daily-date" id="dailyDate"></span>
+                    <span class="daily-badge">每日更新</span>
+                </div>
+                <h2 class="daily-title">📝 每日一练</h2>
+                <p class="daily-desc">精选5道面试高频题，助你保持状态</p>
+                <button class="daily-btn" onclick="startDailyPractice()">
+                    开始今日练习 →
+                </button>
+            </div>
+
+            <!-- 快捷入口 -->
+            <div class="quick-entry">
+                <div class="quick-item" onclick="switchView('wrongView')">
+                    <div class="quick-icon">📝</div>
+                    <div class="quick-label">错题本</div>
+                </div>
+                <div class="quick-item" onclick="switchView('favoriteView')">
+                    <div class="quick-icon">⭐</div>
+                    <div class="quick-label">我的收藏</div>
+                </div>
+                <div class="quick-item" onclick="switchView('simulateView')">
+                    <div class="quick-icon">🎯</div>
+                    <div class="quick-label">面试模拟</div>
+                </div>
+            </div>
+
+            <!-- 题库分类 -->
+            <h3 class="section-title" style="margin-top: 24px;">🏢 题库分类</h3>
+            <div class="category-grid" id="categoryGrid"></div>
+        </div>
+
+        <!-- 题库列表视图 -->
+        <div class="view" id="categoryView">
+            <h2 class="section-title" id="categoryTitle">题库列表</h2>
+            <div class="question-list" id="questionList"></div>
+        </div>
+
+        <!-- 答题视图 -->
+        <div class="view" id="quizView">
+            <div class="quiz-container" id="quizContainer"></div>
+        </div>
+
+        <!-- 错题本视图 -->
+        <div class="view" id="wrongView">
+            <h2 class="section-title">📝 错题本</h2>
+            <div id="wrongList"></div>
+        </div>
+
+        <!-- 收藏视图 -->
+        <div class="view" id="favoriteView">
+            <h2 class="section-title">⭐ 我的收藏</h2>
+            <div id="favoriteList"></div>
+        </div>
+
+        <!-- 面试模拟视图 -->
+        <div class="view" id="simulateView">
+            <div class="simulate-card">
+                <h2 class="simulate-title">🎯 面试模拟</h2>
+                <p class="simulate-desc">模拟真实面试场景，限时答题，评估你的面试表现</p>
+                
+                <div class="simulate-options">
+                    <div class="simulate-option selected" data-count="5">5题速测</div>
+                    <div class="simulate-option" data-count="10">10题标准</div>
+                    <div class="simulate-option" data-count="15">15题强化</div>
+                </div>
+                
+                <div class="simulate-options" style="margin-top: 12px;">
+                    <div class="simulate-option difficulty-option selected" data-difficulty="all">全部难度</div>
+                    <div class="simulate-option difficulty-option" data-difficulty="easy">简单</div>
+                    <div class="simulate-option difficulty-option" data-difficulty="medium">中等</div>
+                    <div class="simulate-option difficulty-option" data-difficulty="hard">困难</div>
+                </div>
+                
+                <button class="simulate-btn" onclick="startSimulation()">
+                    开始模拟面试 →
+                </button>
+            </div>
+
+            <!-- 历史记录 -->
+            <h3 class="section-title" style="margin-top: 24px;">📊 练习历史</h3>
+            <div id="historyList">
+                <div class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <div class="empty-title">暂无练习记录</div>
+                    <div class="empty-desc">完成模拟面试后会显示在这里</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模拟结果视图 -->
+        <div class="view" id="resultView">
+            <div class="result-card" id="resultCard"></div>
+        </div>
+    </div>
+
+    <!-- ==================== 底部导航 ==================== -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchView('homeView')">
+            <span class="icon">🏠</span>
+            <span class="label">首页</span>
+        </button>
+        <button class="nav-item" onclick="switchView('categoryView'); loadCategories();">
+            <span class="icon">📚</span>
+            <span class="label">题库</span>
+        </button>
+        <button class="nav-item" onclick="switchView('simulateView')">
+            <span class="icon">🎯</span>
+            <span class="label">模拟</span>
+        </button>
+        <button class="nav-item" onclick="switchView('wrongView')">
+            <span class="icon">📝</span>
+            <span class="label">错题</span>
+        </button>
+        <button class="nav-item" onclick="switchView('favoriteView')">
+            <span class="icon">⭐</span>
+            <span class="label">收藏</span>
+        </button>
+    </nav>
+
+    <!-- ==================== 会员弹窗 ==================== -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeVipModal()">×</button>
+                <h3 class="modal-title">👑 开通会员</h3>
+            </div>
+            <div class="modal-body">
+                <div class="vip-card">
+                    <div class="vip-badge">限时特惠</div>
+                    <div class="vip-price">¥19<span>/月</span></div>
+                </div>
+                <ul class="vip-features">
+                    <li>解锁全部题库题目</li>
+                    <li>查看完整答案解析</li>
+                    <li>无限收藏题目</li>
+                    <li>面试模拟无限练</li>
+                    <li>每日一练完整版</li>
+                </ul>
+                <button class="buy-vip-btn" onclick="buyVip()">
+                    立即开通会员
+                </button>
+                <p class="vip-tip">支付成功后会员立即生效</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Toast提示 ==================== -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 全局变量 ====================
+        const API_BASE = '/api';
+        let currentView = 'homeView';
+        let categories = [];
+        let currentQuestions = [];
+        let currentQuizIndex = 0;
+        let currentAnswers = [];
+        let simulationConfig = { count: 5, difficulty: 'all' };
+        let isVip = false;
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadStats();
+            updateDailyDate();
+            initSimulateOptions();
+        });
+
+        // ==================== API请求 ====================
+        async function api(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-Id': 'user_' + Date.now(),
+                        ...options.headers
+                    }
+                });
+                const data = await response.json();
+                if (data.code !== 0) {
+                    showToast(data.message || '请求失败');
+                    return null;
+                }
+                return data.data;
+            } catch (error) {
+                console.error('API Error:', error);
+                showToast('网络请求失败');
+                return null;
+            }
+        }
+
+        // ==================== 视图切换 ====================
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const navMap = {
+                'homeView': 0,
+                'categoryView': 1,
+                'simulateView': 2,
+                'wrongView': 3,
+                'favoriteView': 4
+            };
+            if (navMap[viewId] !== undefined) {
+                document.querySelectorAll('.nav-item')[navMap[viewId]].classList.add('active');
+            }
+            
+            currentView = viewId;
+        }
+
+        // ==================== 加载题库分类 ====================
+        async function loadCategories() {
+            const data = await api('/categories');
+            if (data) {
+                categories = data;
+                renderCategories(data);
+            }
+        }
+
+        function renderCategories(data) {
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = data.map(cat => `
+                <div class="category-card" onclick="loadCategoryQuestions('${cat.id}', '${cat.name}')">
+                    <div class="category-icon">${cat.icon}</div>
+                    <div class="category-name">${cat.name}</div>
+                    <div class="category-count">${cat.questionCount} 道题目</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('totalQuestions').textContent = data.reduce((sum, c) => sum + c.questionCount, 0);
+        }
+
+        // ==================== 加载题目列表 ====================
+        async function loadCategoryQuestions(categoryId, categoryName) {
+            const data = await api(`/questions/${categoryId}`);
+            if (data) {
+                currentQuestions = data.questions;
+                document.getElementById('categoryTitle').textContent = `${data.categoryName} - 题目列表`;
+                renderQuestionList(currentQuestions);
+                switchView('categoryView');
+            }
+        }
+
+        function renderQuestionList(questions) {
+            const list = document.getElementById('questionList');
+            list.innerHTML = questions.map((q, i) => `
+                <div class="question-item" onclick="startQuizFromList(${i})">
+                    <div class="question-header">
+                        <span class="question-difficulty difficulty-${q.difficulty}">${getDifficultyText(q.difficulty)}</span>
+                        <span class="question-type">${q.type === 'single' ? '单选题' : '多选题'}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 每日一练 ====================
+        function updateDailyDate() {
+            const now = new Date();
+            const dateStr = `${now.getMonth() + 1}月${now.getDate()}日`;
+            document.getElementById('dailyDate').textContent = dateStr;
+        }
+
+        async function startDailyPractice() {
+            const data = await api('/daily');
+            if (data) {
+                currentQuestions = data.questions;
+                currentAnswers = [];
+                currentQuizIndex = 0;
+                renderQuiz();
+                switchView('quizView');
+            }
+        }
+
+        // ==================== 答题流程 ====================
+        function startQuizFromList(index) {
+            currentQuestions = [currentQuestions[index]];
+            currentAnswers = [];
+            currentQuizIndex = 0;
+            renderQuiz();
+            switchView('quizView');
+        }
+
+        function renderQuiz() {
+            if (currentQuizIndex >= currentQuestions.length) {
+                showQuizComplete();
+                return;
+            }
+
+            const q = currentQuestions[currentQuizIndex];
+            const total = currentQuestions.length;
+            const progress = ((currentQuizIndex) / total) * 100;
+
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = `
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <span class="progress-text">${currentQuizIndex + 1}/${total}</span>
+                </div>
+                
+                <span class="quiz-question-type">${q.type === 'single' ? '单选题' : '多选题'}</span>
+                <div class="quiz-question-text">${q.question}</div>
+                
+                <div class="quiz-options">
+                    ${q.options.map((opt, i) => `
+                        <div class="quiz-option" data-index="${i}" onclick="selectOption(${i})">
+                            <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div id="explanationArea"></div>
+                
+                <div class="quiz-actions">
+                    <button class="quiz-btn primary" id="nextBtn" onclick="nextQuestion()" disabled>
+                        ${currentQuizIndex === currentQuestions.length - 1 ? '查看结果' : '下一题'}
+                    </button>
+                </div>
+            `;
+
+            // 保存当前题目答案信息
+            container.dataset.selectedIndex = '';
+        }
+
+        function selectOption(index) {
+            const q = currentQuestions[currentQuizIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            // 多选题：可以选中多个
+            if (q.type === 'multiple') {
+                options[index].classList.toggle('selected');
+                const selected = Array.from(options).filter(o => o.classList.contains('selected'));
+                document.getElementById('nextBtn').disabled = selected.length === 0;
+                return;
+            }
+            
+            // 单选题：只能选中一个
+            options.forEach(o => o.classList.remove('selected'));
+            options[index].classList.add('selected');
+            document.getElementById('nextBtn').disabled = false;
+            
+            // 保存用户答案
+            const userAnswer = String.fromCharCode(65 + index);
+            currentAnswers[currentQuizIndex] = {
+                questionId: q.id,
+                userAnswer: userAnswer
+            };
+        }
+
+        function nextQuestion() {
+            const q = currentQuestions[currentQuizIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            const selectedOptions = Array.from(options).filter(o => o.classList.contains('selected'));
+            
+            // 获取用户选择的答案
+            let userAnswer = '';
+            if (q.type === 'multiple') {
+                userAnswer = selectedOptions.map(o => String.fromCharCode(65 + parseInt(o.dataset.index))).join('');
+            } else {
+                const idx = parseInt(selectedOptions[0]?.dataset.index || 0);
+                userAnswer = String.fromCharCode(65 + idx);
+            }
+            
+            // 保存答案
+            currentAnswers[currentQuizIndex] = {
+                questionId: q.id,
+                userAnswer: userAnswer
+            };
+            
+            // 检查答案并显示解析
+            const isCorrect = userAnswer.toUpperCase() === q.answer.toUpperCase();
+            
+            // 如果答错，记录到错题本
+            if (!isCorrect) {
+                api('/wrong-answers', {
+                    method: 'POST',
+                    body: JSON.stringify({ questionId: q.id })
+                });
+            }
+            
+            // 显示正确答案和解析
+            options.forEach((opt, i) => {
+                const letter = String.fromCharCode(65 + i);
+                if (q.answer.toUpperCase().includes(letter)) {
+                    opt.classList.add('correct');
+                } else if (opt.classList.contains('selected')) {
+                    opt.classList.add('wrong');
+                }
+                opt.onclick = null; // 禁用选择
+            });
+            
+            // 显示解析
+            document.getElementById('explanationArea').innerHTML = `
+                <div class="quiz-explanation">
+                    <div class="explanation-title">💡 答案解析</div>
+                    <div class="explanation-text">${q.explanation}</div>
+                </div>
+            `;
+            
+            // 隐藏下一题按钮，显示继续按钮
+            document.getElementById('nextBtn').textContent = 
+                currentQuizIndex === currentQuestions.length - 1 ? '完成练习' : '继续';
+            document.getElementById('nextBtn').onclick = () => {
+                currentQuizIndex++;
+                renderQuiz();
+            };
+            
+            // 添加收藏按钮
+            const actions = document.querySelector('.quiz-actions');
+            actions.insertAdjacentHTML('beforebegin', `
+                <button class="quiz-btn secondary" onclick="toggleFavorite('${q.id}')" style="margin-bottom: 12px;">
+                    ⭐ ${isVip ? '收藏此题' : '收藏此题 (VIP)'}
+                </button>
+            `);
+        }
+
+        async function toggleFavorite(questionId) {
+            const data = await api('/favorites');
+            if (data) {
+                const isFavorited = data.some(q => q.id === questionId);
+                if (isFavorited) {
+                    await api('/favorites', {
+                        method: 'DELETE',
+                        body: JSON.stringify({ questionId })
+                    });
+                    showToast('已取消收藏');
+                } else {
+                    await api('/favorites', {
+                        method: 'POST',
+                        body: JSON.stringify({ questionId })
+                    });
+                    showToast('已添加收藏');
+                }
+                loadStats();
+            }
+        }
+
+        function showQuizComplete() {
+            const correct = currentAnswers.filter((ans, i) => {
+                const q = currentQuestions[i];
+                return ans.userAnswer.toUpperCase() === q.answer.toUpperCase();
+            }).length;
+            
+            const total = currentQuestions.length;
+            const score = Math.round((correct / total) * 100);
+            
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = `
+                <div class="result-card">
+                    <div class="result-score">${score}</div>
+                    <div class="result-grade">${getGradeText(score)}</div>
+                    <div class="result-stats">
+                        <div class="stat-box">
+                            <div class="stat-value" style="color: var(--success)">${correct}</div>
+                            <div class="stat-label">答对</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" style="color: var(--danger)">${total - correct}</div>
+                            <div class="stat-label">答错</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">${total}</div>
+                            <div class="stat-label">总计</div>
+                        </div>
+                    </div>
+                    <div class="result-actions">
+                        <button class="result-btn primary" onclick="goHome()">返回首页</button>
+                        <button class="result-btn secondary" onclick="loadWrongAnswers()">查看错题</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function goHome() {
+            loadStats();
+            switchView('homeView');
+        }
+
+        // ==================== 面试模拟 ====================
+        function initSimulateOptions() {
+            document.querySelectorAll('.simulate-option:not(.difficulty-option)').forEach(opt => {
+                opt.onclick = () => {
+                    document.querySelectorAll('.simulate-option:not(.difficulty-option)').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    simulationConfig.count = parseInt(opt.dataset.count);
+                };
+            });
+            
+            document.querySelectorAll('.difficulty-option').forEach(opt => {
+                opt.onclick = () => {
+                    document.querySelectorAll('.difficulty-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    simulationConfig.difficulty = opt.dataset.difficulty;
+                };
+            });
+        }
+
+        async function startSimulation() {
+            const data = await api('/simulate/start', {
+                method: 'POST',
+                body: JSON.stringify({
+                    categoryId: null,
+                    difficulty: simulationConfig.difficulty,
+                    count: simulationConfig.count
+                })
+            });
+            
+            if (data) {
+                currentQuestions = data.questions;
+                currentAnswers = [];
+                currentQuizIndex = 0;
+                renderQuiz();
+                switchView('quizView');
+            }
+        }
+
+        // ==================== 错题本 ====================
+        async function loadWrongAnswers() {
+            const data = await api('/wrong-answers');
+            renderWrongList(data || []);
+            switchView('wrongView');
+        }
+
+        function renderWrongList(questions) {
+            const list = document.getElementById('wrongList');
+            if (questions.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🎉</div>
+                        <div class="empty-title">太棒了！暂无错题</div>
+                        <div class="empty-desc">继续保持，做过的题目都掌握了</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = questions.map(q => `
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <span class="question-difficulty difficulty-${q.difficulty}">${getDifficultyText(q.difficulty)}</span>
+                        <div class="list-item-actions">
+                            <button class="action-btn study" onclick="studyQuestion('${q.id}')">复习</button>
+                            <button class="action-btn delete" onclick="removeWrong('${q.id}')">移除</button>
+                        </div>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                </div>
+            `).join('');
+        }
+
+        async function studyQuestion(questionId) {
+            // 从所有分类中查找该题目
+            for (const cat of categories) {
+                const data = await api(`/questions/${cat.id}`);
+                if (data) {
+                    const q = data.questions.find(q => q.id === questionId);
+                    if (q) {
+                        currentQuestions = [q];
+                        currentAnswers = [];
+                        currentQuizIndex = 0;
+                        renderQuiz();
+                        switchView('quizView');
+                        return;
+                    }
+                }
+            }
+        }
+
+        async function removeWrong(questionId) {
+            await api('/wrong-answers', {
+                method: 'DELETE',
+                body: JSON.stringify({ questionId })
+            });
+            showToast('已从错题本移除');
+            loadWrongAnswers();
+            loadStats();
+        }
+
+        // ==================== 收藏 ====================
+        async function loadFavorites() {
+            const data = await api('/favorites');
+            renderFavoriteList(data || []);
+        }
+
+        function renderFavoriteList(questions) {
+            const list = document.getElementById('favoriteList');
+            if (questions.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⭐</div>
+                        <div class="empty-title">暂无收藏</div>
+                        <div class="empty-desc">收藏感兴趣的题目，方便复习</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = questions.map(q => `
+                <div class="list-item">
+                    <div class="list-item-header">
+                        <span class="question-difficulty difficulty-${q.difficulty}">${getDifficultyText(q.difficulty)}</span>
+                        <div class="list-item-actions">
+                            <button class="action-btn study" onclick="studyQuestion('${q.id}')">复习</button>
+                            <button class="action-btn delete" onclick="removeFavorite('${q.id}')">取消</button>
+                        </div>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                </div>
+            `).join('');
+        }
+
+        async function removeFavorite(questionId) {
+            await api('/favorites', {
+                method: 'DELETE',
+                body: JSON.stringify({ questionId })
+            });
+            showToast('已取消收藏');
+            loadFavorites();
+            loadStats();
+        }
+
+        // ==================== 统计数据 ====================
+        async function loadStats() {
+            const data = await api('/stats');
+            if (data) {
+                document.getElementById('wrongCount').textContent = data.wrongCount;
+                document.getElementById('favoriteCount').textContent = data.favoriteCount;
+                
+                isVip = data.isVip;
+                const vipBtn = document.getElementById('vipBtn');
+                if (isVip) {
+                    vipBtn.classList.add('active');
+                    vipBtn.innerHTML = '<span>👑</span><span>VIP会员</span>';
+                }
+            }
+        }
+
+        // ==================== 会员 ====================
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('show');
+        }
+
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.remove('show');
+        }
+
+        async function buyVip() {
+            // 模拟支付
+            const data = await api('/membership', {
+                method: 'POST',
+                body: JSON.stringify({ plan: 'monthly' })
+            });
+            
+            if (data) {
+                showToast('会员开通成功！');
+                closeVipModal();
+                loadStats();
+            }
+        }
+
+        // ==================== 工具函数 ====================
+        function getDifficultyText(difficulty) {
+            const map = {
+                'easy': '简单',
+                'medium': '中等',
+                'hard': '困难'
+            };
+            return map[difficulty] || difficulty;
+        }
+
+        function getGradeText(score) {
+            if (score >= 90) return '优秀！👍';
+            if (score >= 70) return '良好！💪';
+            if (score >= 60) return '及格 😊';
+            return '继续加油 💪';
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // 页面切换时刷新数据
+        const observer = new MutationObserver(() => {
+            if (currentView === 'wrongView') loadWrongAnswers();
+            if (currentView === 'favoriteView') loadFavorites();
+        });
+    </script>
+</body>
+</html>

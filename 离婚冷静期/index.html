@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>离婚冷静期 - 给自己和婚姻一个机会</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #e8a87c;
+            --primary-dark: #d4845c;
+            --secondary: #c38d9e;
+            --accent: #41b3a3;
+            --danger: #e27d60;
+            --success: #85cdca;
+            --dark: #3d3d3d;
+            --light: #f8f4f3;
+            --white: #ffffff;
+            --gray: #888;
+            --border: #e5e5e5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* 底部导航 */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.75rem;
+            padding: 5px 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 3px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 20px;
+            padding-bottom: 80px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+
+        /* 冷静期倒计时 */
+        .countdown-hero {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .countdown-number {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .countdown-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .countdown-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .countdown-progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* 心情选择 */
+        .mood-selector {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .mood-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .mood-option:hover {
+            background: var(--light);
+        }
+
+        .mood-option.selected {
+            background: rgba(232, 168, 124, 0.2);
+        }
+
+        .mood-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .mood-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        /* 评估问卷 */
+        .question-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .question-number {
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            padding: 14px 18px;
+            background: var(--light);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary);
+        }
+
+        .option-item.selected {
+            background: rgba(232, 168, 124, 0.15);
+            border-color: var(--primary);
+        }
+
+        /* 文章列表 */
+        .article-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid var(--primary);
+        }
+
+        .article-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .article-category {
+            background: var(--light);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: var(--primary);
+        }
+
+        .article-premium {
+            color: var(--danger);
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .article-summary {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        /* 咨询师卡片 */
+        .counselor-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .counselor-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .counselor-info {
+            flex: 1;
+        }
+
+        .counselor-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .counselor-title {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .counselor-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .counselor-tag {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            background: var(--light);
+            border-radius: 4px;
+            color: var(--secondary);
+        }
+
+        .counselor-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .counselor-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .counselor-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .counselor-status.available {
+            background: rgba(65, 179, 163, 0.1);
+            color: var(--accent);
+        }
+
+        .counselor-status.unavailable {
+            background: rgba(136, 136, 136, 0.1);
+            color: var(--gray);
+        }
+
+        /* 日记 */
+        .diary-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .diary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .diary-mood {
+            font-size: 1.5rem;
+        }
+
+        .diary-date {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .diary-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .diary-content {
+            font-size: 0.95rem;
+            color: var(--dark);
+            line-height: 1.7;
+        }
+
+        /* 会员卡片 */
+        .member-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .member-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .member-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .member-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .member-period {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .member-features {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .member-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .member-feature::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .member-active {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .member-expire {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* 结果展示 */
+        .result-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .result-level {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .result-bar {
+            height: 20px;
+            background: var(--light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .result-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger), var(--primary), var(--success));
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .result-suggestion {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--dark);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 文章详情 */
+        .article-detail {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .article-detail h1 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .article-detail .meta {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .article-detail .content {
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .article-detail .content h2 {
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+            color: var(--primary);
+        }
+
+        .article-detail .content p {
+            margin-bottom: 15px;
+        }
+
+        .article-detail .content ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .article-detail .content li {
+            margin-bottom: 8px;
+        }
+
+        .article-lock {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .article-lock-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .countdown-number {
+                font-size: 3rem;
+            }
+            
+            .modal {
+                padding: 20px;
+            }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-state-text {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* 预约时间选择 */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .time-slot {
+            padding: 10px;
+            background: var(--light);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border: 2px solid transparent;
+        }
+
+        .time-slot:hover {
+            border-color: var(--primary);
+        }
+
+        .time-slot.selected {
+            background: rgba(232, 168, 124, 0.15);
+            border-color: var(--primary);
+        }
+
+        .time-slot.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 日记统计 */
+        .diary-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .diary-stat {
+            text-align: center;
+        }
+
+        .diary-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .diary-stat-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        /* 标签 */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--light);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--secondary);
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .tag-input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 12px;
+            min-height: 50px;
+        }
+
+        .preset-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .preset-tag {
+            padding: 6px 12px;
+            background: var(--light);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .preset-tag:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .preset-tag.selected {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <h1>💑 离婚冷静期</h1>
+        <p>给自己和婚姻一个重新开始的机会</p>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="countdown-hero" id="countdownHero">
+                <div class="countdown-number" id="remainingDays">30</div>
+                <div class="countdown-label">天</div>
+                <div class="countdown-progress">
+                    <div class="countdown-progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+                <p id="countdownStatus">点击下方按钮开始冷静期</p>
+                <button class="btn btn-primary" id="startCountdownBtn" onclick="startCountdown()">
+                    开始冷静期
+                </button>
+            </div>
+
+            <!-- 会员卡片 -->
+            <div class="member-card" id="memberCard">
+                <div class="member-icon">👑</div>
+                <div class="member-title" id="memberTitle">开通月卡会员</div>
+                <div class="member-price" id="memberPrice">¥29</div>
+                <div class="member-period" id="memberPeriod">解锁全部功能</div>
+                <div class="member-features" id="memberFeatures">
+                    <div class="member-feature">完整婚姻评估报告</div>
+                    <div class="member-feature">专家一对一咨询</div>
+                    <div class="member-feature">全部付费文章</div>
+                    <div class="member-feature">日记云端同步</div>
+                </div>
+                <button class="btn btn-secondary btn-full" id="memberBtn" onclick="subscribe()">
+                    立即开通
+                </button>
+            </div>
+
+            <!-- 快速入口 -->
+            <div class="card">
+                <div class="card-title">📝 快速功能</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                    <button class="btn btn-outline" onclick="navigateTo('assessment')">
+                        📋 婚姻评估
+                    </button>
+                    <button class="btn btn-outline" onclick="navigateTo('articles')">
+                        📚 阅读文章
+                    </button>
+                    <button class="btn btn-outline" onclick="navigateTo('counselor')">
+                        💬 咨询专家
+                    </button>
+                    <button class="btn btn-outline" onclick="navigateTo('diary')">
+                        ✏️ 写日记
+                    </button>
+                </div>
+            </div>
+
+            <!-- 今日建议 -->
+            <div class="card">
+                <div class="card-title">💡 今日建议</div>
+                <p id="dailyTip">冷静期不是逃避，而是给自己和伴侣一个理性思考的空间。建议今天和伴侣进行一次不带情绪的深度对话。</p>
+            </div>
+        </div>
+
+        <!-- 冷静期页面 -->
+        <div id="page-countdown" class="page">
+            <div class="countdown-hero" id="countdownDetail">
+                <div class="countdown-number" id="detailDays">30</div>
+                <div class="countdown-label">天剩余</div>
+                <div class="countdown-progress">
+                    <div class="countdown-progress-bar" id="detailProgress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📅 记录今日心情</div>
+                <div class="mood-selector" id="moodSelector">
+                    <div class="mood-option" data-mood="great" onclick="selectMood('great')">
+                        <span class="mood-emoji">😄</span>
+                        <span class="mood-label">很好</span>
+                    </div>
+                    <div class="mood-option" data-mood="good" onclick="selectMood('good')">
+                        <span class="mood-emoji">🙂</span>
+                        <span class="mood-label">不错</span>
+                    </div>
+                    <div class="mood-option" data-mood="neutral" onclick="selectMood('neutral')">
+                        <span class="mood-emoji">😐</span>
+                        <span class="mood-label">一般</span>
+                    </div>
+                    <div class="mood-option" data-mood="bad" onclick="selectMood('bad')">
+                        <span class="mood-emoji">😔</span>
+                        <span class="mood-label">不好</span>
+                    </div>
+                    <div class="mood-option" data-mood="awful" onclick="selectMood('awful')">
+                        <span class="mood-emoji">😢</span>
+                        <span class="mood-label">很糟</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">写点什么（可选）</label>
+                    <textarea class="form-input" id="dailyNote" placeholder="记录今天的心情和想法..."></textarea>
+                </div>
+                <button class="btn btn-secondary btn-full" onclick="saveDailyMood()">
+                    保存今日心情
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 冷静期进度</div>
+                <div id="moodCalendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 评估问卷页面 -->
+        <div id="page-assessment" class="page">
+            <div id="assessmentIntro">
+                <div class="card">
+                    <div style="text-align: center; padding: 20px 0;">
+                        <span style="font-size: 4rem;">📋</span>
+                        <h2 style="margin: 15px 0;">婚姻评估问卷</h2>
+                        <p style="color: var(--gray); margin-bottom: 20px;">
+                            通过科学的问卷评估，帮助您了解当前婚姻状况，发现潜在问题
+                        </p>
+                        <div style="text-align: left; background: var(--light); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                            <p style="margin-bottom: 10px;">📌 评估维度：</p>
+                            <p>• 沟通质量</p>
+                            <p>• 亲密度</p>
+                            <p>• 信任程度</p>
+                            <p>• 经济观念</p>
+                            <p>• 家庭责任</p>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--gray);">共10道题，约需3-5分钟</p>
+                    </div>
+                    <button class="btn btn-secondary btn-full" onclick="startAssessment()">
+                        开始评估
+                    </button>
+                </div>
+            </div>
+
+            <div id="assessmentQuestions" style="display: none;">
+                <!-- 动态生成 -->
+            </div>
+
+            <div id="assessmentResult" style="display: none;">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+
+        <!-- 文章页面 -->
+        <div id="page-articles" class="page">
+            <div class="card">
+                <div class="card-title">📚 沟通技巧文章</div>
+                <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 15px;">
+                    阅读专业咨询师撰写的实用文章，学习修复关系的方法
+                </p>
+            </div>
+            <div id="articlesList">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- 咨询师页面 -->
+        <div id="page-counselor" class="page">
+            <div class="card">
+                <div class="card-title">💬 专业咨询师</div>
+                <p style="color: var(--gray); font-size: 0.9rem;">
+                    预约专业婚姻咨询师，获得一对一指导
+                </p>
+            </div>
+            <div id="counselorsList">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- 日记页面 -->
+        <div id="page-diary" class="page">
+            <div class="diary-stats" id="diaryStats">
+                <div class="diary-stat">
+                    <div class="diary-stat-value" id="totalDiaries">0</div>
+                    <div class="diary-stat-label">日记总数</div>
+                </div>
+                <div class="diary-stat">
+                    <div class="diary-stat-value" id="totalDays">0</div>
+                    <div class="diary-stat-label">记录天数</div>
+                </div>
+                <div class="diary-stat">
+                    <div class="diary-stat-value" id="currentStreak">0</div>
+                    <div class="diary-stat-label">连续天数</div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary btn-full" onclick="showDiaryModal()" style="margin-bottom: 16px;">
+                ✏️ 写日记
+            </button>
+
+            <div id="diaryList">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="nav-bar">
+        <div class="nav-item active" onclick="navigateTo('home')" data-page="home">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('countdown')" data-page="countdown">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            <span>冷静期</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('assessment')" data-page="assessment">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <span>评估</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('articles')" data-page="articles">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+            <span>文章</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('counselor')" data-page="counselor">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <span>咨询</span>
+        </div>
+    </nav>
+
+    <!-- 模态框：写日记 -->
+    <div class="modal-overlay" id="diaryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">✏️ 写日记</span>
+                <button class="modal-close" onclick="closeDiaryModal()">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">日记标题</label>
+                <input type="text" class="form-input" id="diaryTitle" placeholder="给日记起个标题...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">心情</label>
+                <div class="mood-selector" id="diaryMoodSelector">
+                    <div class="mood-option" data-mood="great" onclick="selectDiaryMood('great')">
+                        <span class="mood-emoji">😄</span>
+                    </div>
+                    <div class="mood-option" data-mood="good" onclick="selectDiaryMood('good')">
+                        <span class="mood-emoji">🙂</span>
+                    </div>
+                    <div class="mood-option" data-mood="neutral" onclick="selectDiaryMood('neutral')">
+                        <span class="mood-emoji">😐</span>
+                    </div>
+                    <div class="mood-option" data-mood="bad" onclick="selectDiaryMood('bad')">
+                        <span class="mood-emoji">😔</span>
+                    </div>
+                    <div class="mood-option" data-mood="awful" onclick="selectDiaryMood('awful')">
+                        <span class="mood-emoji">😢</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">日记内容</label>
+                <textarea class="form-input" id="diaryContent" placeholder="写下今天发生的事，你的感受..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">标签（可选）</label>
+                <div class="preset-tags" id="presetTags">
+                    <span class="preset-tag" onclick="toggleTag(this, '沟通')">沟通</span>
+                    <span class="preset-tag" onclick="toggleTag(this, '反思')">反思</span>
+                    <span class="preset-tag" onclick="toggleTag(this, '孩子')">孩子</span>
+                    <span class="preset-tag" onclick="toggleTag(this, '回忆')">回忆</span>
+                    <span class="preset-tag" onclick="toggleTag(this, '期待')">期待</span>
+                    <span class="preset-tag" onclick="toggleTag(this, '困惑')">困惑</span>
+                </div>
+            </div>
+            <button class="btn btn-secondary btn-full" onclick="saveDiary()">
+                保存日记
+            </button>
+        </div>
+    </div>
+
+    <!-- 模态框：预约咨询 -->
+    <div class="modal-overlay" id="appointmentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">📅 预约咨询</span>
+                <button class="modal-close" onclick="closeAppointmentModal()">×</button>
+            </div>
+            <div id="appointmentCounselor">
+                <!-- 动态填充 -->
+            </div>
+            <div class="form-group">
+                <label class="form-label">选择日期</label>
+                <select class="form-input" id="appointmentDate">
+                    <option value="2024-01-15">1月15日（周一）</option>
+                    <option value="2024-01-16">1月16日（周二）</option>
+                    <option value="2024-01-17">1月17日（周三）</option>
+                    <option value="2024-01-18">1月18日（周四）</option>
+                    <option value="2024-01-19">1月19日（周五）</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">选择时间</label>
+                <div class="time-slots" id="timeSlots">
+                    <div class="time-slot" onclick="selectTimeSlot(this, '09:00')">09:00</div>
+                    <div class="time-slot" onclick="selectTimeSlot(this, '10:00')">10:00</div>
+                    <div class="time-slot" onclick="selectTimeSlot(this, '14:00')">14:00</div>
+                    <div class="time-slot" onclick="selectTimeSlot(this, '15:00')">15:00</div>
+                    <div class="time-slot" onclick="selectTimeSlot(this, '16:00')">16:00</div>
+                    <div class="time-slot" onclick="selectTimeSlot(this, '19:00')">19:00</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">问题描述（可选）</label>
+                <textarea class="form-input" id="problemDescription" placeholder="简要描述您想咨询的问题..."></textarea>
+            </div>
+            <button class="btn btn-secondary btn-full" onclick="confirmAppointment()">
+                确认预约
+            </button>
+        </div>
+    </div>
+
+    <!-- 模态框：文章详情 -->
+    <div class="modal-overlay" id="articleModal">
+        <div class="modal" style="max-width: 90%; max-height: 90vh;">
+            <div class="modal-header">
+                <span class="modal-title" id="articleModalTitle">文章详情</span>
+                <button class="modal-close" onclick="closeArticleModal()">×</button>
+            </div>
+            <div id="articleModalContent">
+                <!-- 动态填充 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://localhost:5000/api';
+
+        // 全局状态
+        let state = {
+            isMember: false,
+            countdownStarted: false,
+            currentQuestion: 0,
+            answers: [],
+            selectedMood: null,
+            selectedDiaryMood: 'neutral',
+            selectedTags: [],
+            selectedCounselor: null,
+            selectedTime: null
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadHomeData();
+            await loadArticles();
+            await loadCounselors();
+            await loadDiaries();
+        });
+
+        // 页面导航
+        function navigateTo(page) {
+            // 更新导航高亮
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 切换页面
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+            });
+            document.getElementById(`page-${page}`).classList.add('active');
+
+            // 页面特定加载
+            if (page === 'countdown') {
+                loadCountdownDetail();
+            }
+        }
+
+        // Toast提示
+        function showToast(message, duration = 2000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // API请求封装
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        const data = await response.json();
+                        if (data.requires_membership) {
+                            showToast('此内容需要开通会员');
+                            return null;
+                        }
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API请求失败:', error);
+                showToast('网络请求失败，请检查服务器');
+                return null;
+            }
+        }
+
+        // 加载首页数据
+        async function loadHomeData() {
+            const data = await apiRequest('/home');
+            if (!data) return;
+
+            state.isMember = data.is_member;
+            state.countdownStarted = data.countdown.started;
+
+            // 更新倒计时显示
+            const remaining = data.countdown.remaining_days;
+            document.getElementById('remainingDays').textContent = remaining;
+            const progress = ((30 - remaining) / 30) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            if (data.countdown.started) {
+                document.getElementById('countdownStatus').textContent = 
+                    `冷静期进行中，还剩${remaining}天`;
+                document.getElementById('startCountdownBtn').textContent = '查看详情';
+            }
+
+            // 更新会员状态
+            updateMemberCard();
+        }
+
+        // 更新会员卡片
+        function updateMemberCard() {
+            const title = document.getElementById('memberTitle');
+            const price = document.getElementById('memberPrice');
+            const period = document.getElementById('memberPeriod');
+            const features = document.getElementById('memberFeatures');
+            const btn = document.getElementById('memberBtn');
+
+            if (state.isMember) {
+                title.textContent = '您已是会员';
+                price.textContent = '👑';
+                period.textContent = '享受全部功能';
+                features.style.display = 'none';
+                btn.textContent = '会员有效期至月底';
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+            }
+        }
+
+        // 开始冷静期
+        async function startCountdown() {
+            if (state.countdownStarted) {
+                navigateTo('countdown');
+                return;
+            }
+
+            const result = await apiRequest('/countdown/start', {
+                method: 'POST'
+            });
+
+            if (result) {
+                state.countdownStarted = true;
+                showToast('冷静期已开始！');
+                loadHomeData();
+                navigateTo('countdown');
+            }
+        }
+
+        // 加载冷静期详情
+        async function loadCountdownDetail() {
+            const data = await apiRequest('/countdown');
+            if (!data) return;
+
+            const startDate = new Date(data.start_date);
+            const now = new Date();
+            const elapsed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+            const remaining = Math.max(0, 30 - elapsed);
+
+            document.getElementById('detailDays').textContent = remaining;
+            document.getElementById('detailProgress').style.width = `${(elapsed / 30) * 100}%`;
+
+            // 生成日历
+            generateMoodCalendar(data.daily_moods, elapsed);
+        }
+
+        // 生成心情日历
+        function generateMoodCalendar(moods, elapsed) {
+            const container = document.getElementById('moodCalendar');
+            container.innerHTML = '';
+
+            const moodEmojis = {
+                'great': '😄',
+                'good': '🙂',
+                'neutral': '😐',
+                'bad': '😔',
+                'awful': '😢'
+            };
+
+            for (let i = 0; i < 30; i++) {
+                const dayNum = i + 1;
+                const dayKey = String(i + 1);
+                const mood = moods[dayKey]?.[0]?.mood;
+                
+                const div = document.createElement('div');
+                div.style.cssText = `
+                    aspect-ratio: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: ${i < elapsed ? (mood ? 'var(--primary)' : 'var(--light)') : 'var(--border)'};
+                    border-radius: 8px;
+                    font-size: 0.75rem;
+                    color: ${i < elapsed && mood ? 'white' : 'var(--gray)'};
+                `;
+                
+                if (mood && i < elapsed) {
+                    div.textContent = moodEmojis[mood];
+                } else {
+                    div.textContent = dayNum;
+                }
+                
+                container.appendChild(div);
+            }
+        }
+
+        // 选择心情
+        function selectMood(mood) {
+            state.selectedMood = mood;
+            document.querySelectorAll('#moodSelector .mood-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.mood === mood);
+            });
+        }
+
+        // 保存每日心情
+        async function saveDailyMood() {
+            if (!state.selectedMood) {
+                showToast('请先选择心情');
+                return;
+            }
+
+            const data = await apiRequest('/countdown');
+            if (!data) return;
+
+            const startDate = new Date(data.start_date);
+            const now = new Date();
+            const day = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+            const result = await apiRequest('/countdown/daily', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    day: day,
+                    mood: state.selectedMood,
+                    note: document.getElementById('dailyNote').value
+                })
+            });
+
+            if (result) {
+                showToast('心情已保存');
+                document.getElementById('dailyNote').value = '';
+                loadCountdownDetail();
+            }
+        }
+
+        // ========== 评估问卷 ==========
+        
+        let questions = [];
+
+        async function startAssessment() {
+            questions = await apiRequest('/assessment/questions');
+            if (!questions) return;
+
+            state.currentQuestion = 0;
+            state.answers = [];
+
+            document.getElementById('assessmentIntro').style.display = 'none';
+            document.getElementById('assessmentQuestions').style.display = 'block';
+            document.getElementById('assessmentResult').style.display = 'none';
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const container = document.getElementById('assessmentQuestions');
+            
+            if (state.currentQuestion >= questions.length) {
+                submitAssessment();
+                return;
+            }
+
+            const q = questions[state.currentQuestion];
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">问题 ${state.currentQuestion + 1} / ${questions.length}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="option-list">
+                        ${q.options.map((opt, idx) => `
+                            <div class="option-item" onclick="selectOption(${q.id}, ${opt.score}, this)">
+                                ${opt.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; gap: 10px;">
+                    ${state.currentQuestion > 0 ? 
+                        `<button class="btn btn-outline" onclick="prevQuestion()">上一题</button>` : 
+                        '<div></div>'}
+                    <button class="btn btn-secondary" onclick="nextQuestion()">下一题</button>
+                </div>
+            `;
+        }
+
+        function selectOption(questionId, score, element) {
+            // 移除其他选中
+            element.parentElement.querySelectorAll('.option-item').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+
+            // 记录答案
+            const existingIndex = state.answers.findIndex(a => a.question_id === questionId);
+            if (existingIndex >= 0) {
+                state.answers[existingIndex] = { question_id: questionId, score };
+            } else {
+                state.answers.push({ question_id: questionId, score });
+            }
+        }
+
+        function nextQuestion() {
+            const q = questions[state.currentQuestion];
+            const answered = state.answers.find(a => a.question_id === q.id);
+            
+            if (!answered) {
+                showToast('请选择一个选项');
+                return;
+            }
+
+            state.currentQuestion++;
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (state.currentQuestion > 0) {
+                state.currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        async function submitAssessment() {
+            const result = await apiRequest('/assessment/submit', {
+                method: 'POST',
+                body: JSON.stringify({ answers: state.answers })
+            });
+
+            if (!result) return;
+
+            document.getElementById('assessmentQuestions').style.display = 'none';
+            document.getElementById('assessmentResult').style.display = 'block';
+
+            renderAssessmentResult(result.result);
+        }
+
+        function renderAssessmentResult(result) {
+            const container = document.getElementById('assessmentResult');
+            container.innerHTML = `
+                <div class="result-card">
+                    <div class="result-score">${result.percentage}%</div>
+                    <div class="result-level">${result.level}</div>
+                    <div class="result-bar">
+                        <div class="result-bar-fill" style="width: ${result.percentage}%"></div>
+                    </div>
+                    
+                    <div class="result-suggestion">
+                        <strong>📝 综合建议</strong>
+                        <p style="margin-top: 10px;">${result.suggestion}</p>
+                    </div>
+                    
+                    <div class="result-suggestion">
+                        <strong>💡 推荐行动</strong>
+                        <p style="margin-top: 10px;">${result.recommendation}</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="margin-bottom: 12px;">📊 各维度分析</h4>
+                        ${Object.entries(result.category_scores).map(([cat, score]) => `
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                                <span>${cat}</span>
+                                <span style="color: var(--primary);">${score}分</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <button class="btn btn-outline btn-full" onclick="resetAssessment()" style="margin-top: 16px;">
+                    重新评估
+                </button>
+                
+                <button class="btn btn-secondary btn-full" onclick="navigateTo('counselor')" style="margin-top: 10px;">
+                    预约咨询师
+                </button>
+            `;
+        }
+
+        function resetAssessment() {
+            document.getElementById('assessmentIntro').style.display = 'block';
+            document.getElementById('assessmentQuestions').style.display = 'none';
+            document.getElementById('assessmentResult').style.display = 'none';
+            state.currentQuestion = 0;
+            state.answers = [];
+        }
+
+        // ========== 文章 ==========
+
+        async function loadArticles() {
+            const articles = await apiRequest('/articles');
+            if (!articles) return;
+
+            const container = document.getElementById('articlesList');
+            container.innerHTML = articles.map(article => `
+                <div class="article-card" onclick="viewArticle(${article.id}, ${article.is_premium}, ${article.accessible})">
+                    <div class="article-meta">
+                        <span class="article-category">${article.category}</span>
+                        <span>${article.read_time}分钟阅读</span>
+                        ${article.is_premium ? '<span class="article-premium">👑 会员专属</span>' : ''}
+                    </div>
+                    <div class="article-title">${article.title}</div>
+                    <div class="article-summary">${article.summary}</div>
+                    <div class="article-footer">
+                        <span>${article.author}</span>
+                        <span>${article.accessible ? '点击阅读' : '开通会员阅读'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function viewArticle(id, isPremium, accessible) {
+            if (isPremium && !accessible) {
+                showToast('此文章需要开通会员');
+                return;
+            }
+
+            const article = await apiRequest(`/articles/${id}`);
+            if (!article) return;
+
+            document.getElementById('articleModalTitle').textContent = article.title;
+            
+            // 转换markdown为HTML
+            let contentHtml = article.content
+                .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+                .replace(/^- (.+)$/gm, '<li>$1</li>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+
+            document.getElementById('articleModalContent').innerHTML = `
+                <div class="article-detail">
+                    <div class="meta">
+                        <span>${article.author}</span> · 
+                        <span>${article.read_time}分钟阅读</span> · 
+                        <span>${article.category}</span>
+                    </div>
+                    <div class="content">
+                        <p>${contentHtml}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('articleModal').classList.add('active');
+        }
+
+        function closeArticleModal() {
+            document.getElementById('articleModal').classList.remove('active');
+        }
+
+        // ========== 咨询师 ==========
+
+        async function loadCounselors() {
+            const counselors = await apiRequest('/counselors');
+            if (!counselors) return;
+
+            const container = document.getElementById('counselorsList');
+            container.innerHTML = counselors.map(c => `
+                <div class="counselor-card">
+                    <div class="counselor-avatar">${c.name[0]}</div>
+                    <div class="counselor-info">
+                        <div class="counselor-name">${c.name}</div>
+                        <div class="counselor-title">${c.title}</div>
+                        <div class="counselor-tags">
+                            ${c.specialty.map(s => `<span class="counselor-tag">${s}</span>`).join('')}
+                        </div>
+                        <div class="counselor-stats">
+                            <span>⭐ ${c.rating}</span>
+                            <span>📋 ${c.consultations}次咨询</span>
+                            <span>💼 ${c.experience}年经验</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-size: 1.2rem; font-weight: 600; color: var(--primary);">
+                        ${state.isMember ? '会员免费' : c.price + '元/次'}
+                    </div>
+                    <button class="btn ${c.available ? 'btn-secondary' : 'btn-outline'}" 
+                            onclick="${c.available ? `showAppointmentModal(${c.id}, '${c.name}')` : ''}"
+                            ${!c.available ? 'disabled' : ''}>
+                        ${c.available ? '立即预约' : '暂不可预约'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function showAppointmentModal(counselorId, counselorName) {
+            state.selectedCounselor = counselorId;
+            state.selectedTime = null;
+
+            document.getElementById('appointmentCounselor').innerHTML = `
+                <div style="text-align: center; padding: 15px; background: var(--light); border-radius: 12px; margin-bottom: 20px;">
+                    <strong>预约咨询师：</strong>${counselorName}
+                </div>
+            `;
+
+            // 重置时间选择
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+
+            document.getElementById('appointmentModal').classList.add('active');
+        }
+
+        function closeAppointmentModal() {
+            document.getElementById('appointmentModal').classList.remove('active');
+        }
+
+        function selectTimeSlot(element, time) {
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            state.selectedTime = time;
+        }
+
+        async function confirmAppointment() {
+            if (!state.selectedTime) {
+                showToast('请选择预约时间');
+                return;
+            }
+
+            const date = document.getElementById('appointmentDate').value;
+            const scheduledTime = `${date} ${state.selectedTime}`;
+            const problemDescription = document.getElementById('problemDescription').value;
+
+            const result = await apiRequest('/appointments', {
+                method: 'POST',
+                body: JSON.stringify({
+                    counselor_id: state.selectedCounselor,
+                    scheduled_time: scheduledTime,
+                    problem_description: problemDescription
+                })
+            });
+
+            if (result) {
+                showToast('预约成功！');
+                closeAppointmentModal();
+            }
+        }
+
+        // ========== 日记 ==========
+
+        async function loadDiaries() {
+            const diaries = await apiRequest('/diary');
+            if (!diaries) return;
+
+            // 更新统计
+            document.getElementById('totalDiaries').textContent = diaries.length;
+            
+            const uniqueDays = new Set(diaries.map(d => d.created_at.split('T')[0]));
+            document.getElementById('totalDays').textContent = uniqueDays.size;
+
+            const container = document.getElementById('diaryList');
+
+            if (diaries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📔</div>
+                        <p class="empty-state-text">还没有日记</p>
+                        <p style="font-size: 0.85rem;">记录下你的心情和想法吧</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const moodEmojis = {
+                'great': '😄',
+                'good': '🙂',
+                'neutral': '😐',
+                'bad': '😔',
+                'awful': '😢'
+            };
+
+            container.innerHTML = diaries.map(diary => `
+                <div class="diary-card">
+                    <div class="diary-header">
+                        <span class="diary-mood">${moodEmojis[diary.mood] || '😐'}</span>
+                        <span class="diary-date">${new Date(diary.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <div class="diary-title">${diary.title}</div>
+                    <div class="diary-content">${diary.content.substring(0, 100)}${diary.content.length > 100 ? '...' : ''}</div>
+                    ${diary.tags && diary.tags.length > 0 ? `
+                        <div style="margin-top: 12px;">
+                            ${diary.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    <button class="btn btn-outline btn-full" style="margin-top: 12px;" onclick="deleteDiary('${diary.id}')">
+                        删除
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function showDiaryModal() {
+            state.selectedDiaryMood = 'neutral';
+            state.selectedTags = [];
+
+            document.getElementById('diaryTitle').value = '';
+            document.getElementById('diaryContent').value = '';
+
+            document.querySelectorAll('#diaryMoodSelector .mood-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.querySelector('#diaryMoodSelector .mood-option[data-mood="neutral"]').classList.add('selected');
+
+            document.querySelectorAll('.preset-tag').forEach(tag => {
+                tag.classList.remove('selected');
+            });
+
+            document.getElementById('diaryModal').classList.add('active');
+        }
+
+        function closeDiaryModal() {
+            document.getElementById('diaryModal').classList.remove('active');
+        }
+
+        function selectDiaryMood(mood) {
+            state.selectedDiaryMood = mood;
+            document.querySelectorAll('#diaryMoodSelector .mood-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.mood === mood);
+            });
+        }
+
+        function toggleTag(element, tag) {
+            element.classList.toggle('selected');
+            if (element.classList.contains('selected')) {
+                if (!state.selectedTags.includes(tag)) {
+                    state.selectedTags.push(tag);
+                }
+            } else {
+                state.selectedTags = state.selectedTags.filter(t => t !== tag);
+            }
+        }
+
+        async function saveDiary() {
+            const title = document.getElementById('diaryTitle').value || '无标题';
+            const content = document.getElementById('diaryContent').value;
+
+            if (!content.trim()) {
+                showToast('请输入日记内容');
+                return;
+            }
+
+            const result = await apiRequest('/diary', {
+                method: 'POST',
+                body: JSON.stringify({
+                    title,
+                    content,
+                    mood: state.selectedDiaryMood,
+                    tags: state.selectedTags
+                })
+            });
+
+            if (result) {
+                showToast('日记已保存');
+                closeDiaryModal();
+                loadDiaries();
+            }
+        }
+
+        async function deleteDiary(id) {
+            if (!confirm('确定要删除这篇日记吗？')) return;
+
+            const result = await apiRequest(`/diary/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (result) {
+                showToast('日记已删除');
+                loadDiaries();
+            }
+        }
+
+        // ========== 会员订阅 ==========
+
+        async function subscribe() {
+            if (state.isMember) return;
+
+            // 模拟支付流程
+            const result = await apiRequest('/subscribe', {
+                method: 'POST',
+                body: JSON.stringify({ payment_method: 'mock' })
+            });
+
+            if (result) {
+                state.isMember = true;
+                showToast('会员开通成功！');
+                updateMemberCard();
+                loadCounselors();
+                loadArticles();
+            }
+        }
+
+        // 每日建议
+        const tips = [
+            '冷静期不是逃避，而是给自己和伴侣一个理性思考的空间。建议今天和伴侣进行一次不带情绪的深度对话。',
+            '沟通是婚姻的基石。试着倾听对方的需求，而不是急于表达自己的观点。',
+            '回忆当初相爱的理由，那些美好的时光是否还在？',
+            '给彼此一些空间，但不要封闭自己。适当的独立能让关系更健康。',
+            '今天是写信的好日子，把平时说不出口的话写下来。',
+            '尝试用非暴力沟通的方式表达自己的感受：观察-感受-需求-请求。',
+            '每个人都会犯错，学会原谅是婚姻中最重要的功课。',
+            '有时候，沉默比争吵更有力量。今天试着冷静下来思考。'
+        ];
+
+        document.getElementById('dailyTip').textContent = tips[Math.floor(Math.random() * tips.length)];
+    </script>
+</body>
+</html>

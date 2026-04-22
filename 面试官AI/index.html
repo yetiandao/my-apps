@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>面试官AI - 你的智能面试教练</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* 头部 */
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .vip-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #ffd700, #ffb347);
+            color: #333;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        /* 卡片 */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 按钮 */
+        .btn {
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* 岗位选择 */
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .job-item {
+            padding: 16px 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .job-item:hover {
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+
+        .job-item.active {
+            border-color: var(--primary);
+            background: #eef2ff;
+            color: var(--primary);
+        }
+
+        .job-item .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        /* 职级选择 */
+        .level-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .level-item {
+            padding: 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .level-item:hover {
+            border-color: var(--primary);
+        }
+
+        .level-item.active {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .level-item h4 {
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .level-item p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* 面试官风格 */
+        .style-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .style-item {
+            padding: 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .style-item:hover {
+            border-color: var(--primary);
+        }
+
+        .style-item.active {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .style-item .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .style-item .badge.strict { background: #fee2e2; color: #dc2626; }
+        .style-item .badge.friendly { background: #d1fae5; color: #059669; }
+        .style-item .badge.professional { background: #dbeafe; color: #2563eb; }
+
+        .style-item p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* 面试页面 */
+        .interview-container {
+            display: none;
+        }
+
+        .interview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-info {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #8b5cf6);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .interviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .interviewer-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .interviewer-text h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .interviewer-text p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary);
+        }
+
+        .question-type {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #eef2ff;
+            color: var(--primary);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        .answer-area {
+            margin-top: 20px;
+        }
+
+        .answer-area textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 15px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .answer-area textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .answer-tips {
+            margin-top: 12px;
+            padding: 12px;
+            background: #fef3c7;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #92400e;
+        }
+
+        .answer-tips strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* 录音控制 */
+        .record-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .record-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .record-btn:hover {
+            background: #eef2ff;
+        }
+
+        .record-btn.recording {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* 反馈页面 */
+        .feedback-container {
+            display: none;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+
+        .score-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .score-circle circle {
+            fill: none;
+            stroke-width: 8;
+        }
+
+        .score-circle .bg {
+            stroke: var(--gray-200);
+        }
+
+        .score-circle .progress {
+            stroke: var(--primary);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .score-text .num {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .score-text .label {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .score-breakdown {
+            margin-top: 20px;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .score-item:last-child {
+            border-bottom: none;
+        }
+
+        .score-item .label {
+            font-weight: 500;
+        }
+
+        .score-item .bar {
+            flex: 1;
+            height: 8px;
+            background: var(--gray-100);
+            border-radius: 4px;
+            margin: 0 12px;
+            overflow: hidden;
+        }
+
+        .score-item .bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .score-item .value {
+            font-weight: 600;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .improvement-section {
+            margin-top: 24px;
+        }
+
+        .improvement-list {
+            list-style: none;
+        }
+
+        .improvement-list li {
+            padding: 12px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #166534;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .improvement-list li::before {
+            content: "💡";
+            flex-shrink: 0;
+        }
+
+        /* 总结报告 */
+        .summary-container {
+            display: none;
+        }
+
+        .summary-header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .summary-level {
+            display: inline-block;
+            padding: 8px 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .summary-score {
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .summary-label {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .summary-card {
+            margin: -16px 16px 16px;
+            border-radius: 16px;
+        }
+
+        .stat-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            flex: 1;
+            padding: 16px;
+            background: var(--gray-100);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-item .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        .suggestion-list {
+            list-style: none;
+        }
+
+        .suggestion-list li {
+            padding: 14px;
+            background: #fffbeb;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #92400e;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-500);
+            font-size: 11px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 22px;
+        }
+
+        /* 录音列表 */
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .record-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--gray-100);
+            border-radius: 12px;
+        }
+
+        .record-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .record-info {
+            flex: 1;
+        }
+
+        .record-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .record-info p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .record-play {
+            padding: 8px 16px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .modal h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .modal p {
+            color: var(--gray-500);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .modal .price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .modal .price span {
+            font-size: 16px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--gray-900);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 300;
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 页面显示控制 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 动画 */
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* 计时器 */
+        .timer {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--gray-700);
+            padding: 12px;
+            background: var(--gray-100);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .timer.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .timer.danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面1: 首页 -->
+        <div id="page-home" class="page active">
+            <div class="header">
+                <h1>🤖 面试官AI</h1>
+                <p>智能模拟面试，提升求职成功率</p>
+                <div class="vip-badge">
+                    <span>⭐</span>
+                    <span>VIP会员 有效期至 2026-12-31</span>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-title">📋 选择目标岗位</div>
+                <div class="job-grid" id="job-grid">
+                    <div class="job-item" data-job="技术开发">
+                        <div class="icon">💻</div>
+                        <div>技术开发</div>
+                    </div>
+                    <div class="job-item" data-job="产品经理">
+                        <div class="icon">📱</div>
+                        <div>产品经理</div>
+                    </div>
+                    <div class="job-item" data-job="市场营销">
+                        <div class="icon">📢</div>
+                        <div>市场营销</div>
+                    </div>
+                    <div class="job-item" data-job="行政人事">
+                        <div class="icon">👥</div>
+                        <div>行政人事</div>
+                    </div>
+                    <div class="job-item" data-job="财务会计">
+                        <div class="icon">💰</div>
+                        <div>财务会计</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-title">📊 选择职级</div>
+                <div class="level-list" id="level-list">
+                    <div class="level-item" data-level="beginner">
+                        <h4>🌱 初级（1-3年）</h4>
+                        <p>适合应届生或转行者</p>
+                    </div>
+                    <div class="level-item" data-level="intermediate">
+                        <h4>📈 中级（3-5年）</h4>
+                        <p>有一定工作经验</p>
+                    </div>
+                    <div class="level-item" data-level="senior">
+                        <h4>🎯 高级（5年+）</h4>
+                        <p>资深专业人士</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <div class="card-title">👔 选择面试官风格</div>
+                <div class="style-grid" id="style-grid">
+                    <div class="style-item active" data-style="strict">
+                        <span class="badge strict">严肃型</span>
+                        <h4>严肃型面试官</h4>
+                        <p>问题直接犀利，追问深入</p>
+                    </div>
+                    <div class="style-item" data-style="friendly">
+                        <span class="badge friendly">友好型</span>
+                        <h4>友好型面试官</h4>
+                        <p>氛围轻松，鼓励表达</p>
+                    </div>
+                    <div class="style-item" data-style="professional">
+                        <span class="badge professional">专业型</span>
+                        <h4>专业型面试官</h4>
+                        <p>注重专业能力，考察扎实</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="start-btn" disabled>
+                <span>🚀</span>
+                <span>开始模拟面试</span>
+            </button>
+        </div>
+
+        <!-- 页面2: 面试中 -->
+        <div id="page-interview" class="page">
+            <div class="interview-header">
+                <div>
+                    <div class="progress-info">问题 <span id="current-q">1</span> / <span id="total-q">5</span></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 20%"></div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" id="end-btn" style="width: auto; padding: 8px 16px;">结束面试</button>
+            </div>
+
+            <div class="interviewer-info">
+                <div class="interviewer-avatar">👨‍💼</div>
+                <div class="interviewer-text">
+                    <h4 id="interviewer-name">严肃型面试官</h4>
+                    <p id="interviewer-greeting">你好，我是今天的面试官。我们开始吧。</p>
+                </div>
+            </div>
+
+            <div class="question-card fade-in">
+                <span class="question-type" id="question-type">行为面试</span>
+                <div class="question-text" id="question-text">
+                    请做个简单的自我介绍
+                </div>
+            </div>
+
+            <div class="timer" id="timer">02:00</div>
+
+            <div class="card">
+                <div class="answer-area">
+                    <textarea id="answer-input" placeholder="请输入你的回答...&#10;&#10;💡 建议：使用STAR法则（情境-任务-行动-结果）来组织你的回答"></textarea>
+                </div>
+
+                <div class="record-controls">
+                    <button class="record-btn" id="record-btn">
+                        <span>🎤</span>
+                        <span>开始录音</span>
+                    </button>
+                    <button class="record-btn" id="stop-record-btn" style="display: none;">
+                        <span>⏹</span>
+                        <span>停止录音</span>
+                    </button>
+                </div>
+
+                <div style="margin-top: 16px;">
+                    <button class="btn btn-success" id="submit-answer-btn" disabled>
+                        <span>📤</span>
+                        <span>提交回答</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面3: 反馈 -->
+        <div id="page-feedback" class="page">
+            <div class="card">
+                <div class="card-title">📊 本题得分</div>
+                
+                <div class="score-circle">
+                    <svg width="120" height="120">
+                        <circle class="bg" cx="60" cy="60" r="52"></circle>
+                        <circle class="progress" cx="60" cy="60" r="52" 
+                                stroke-dasharray="326.73" 
+                                stroke-dashoffset="326.73"
+                                id="score-circle"></circle>
+                    </svg>
+                    <div class="score-text">
+                        <div class="num" id="score-num">0</div>
+                        <div class="label">综合得分</div>
+                    </div>
+                </div>
+
+                <div class="score-breakdown" id="score-breakdown">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div class="improvement-section">
+                    <div class="card-title">💡 回答优化建议</div>
+                    <ul class="improvement-list" id="improvement-list">
+                        <!-- 动态生成 -->
+                    </ul>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" id="next-question-btn">
+                        <span>下一题</span>
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面4: 总结 -->
+        <div id="page-summary" class="page">
+            <div class="summary-header">
+                <div class="summary-level" id="summary-level">等级 A</div>
+                <div class="summary-score" id="summary-score">85</div>
+                <div class="summary-label">综合面试评分</div>
+            </div>
+
+            <div class="card summary-card">
+                <div class="stat-row">
+                    <div class="stat-item">
+                        <div class="value" id="stat-total">5</div>
+                        <div class="label">答题数量</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="stat-high">92</div>
+                        <div class="label">最高分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="value" id="stat-low">65</div>
+                        <div class="label">最低分</div>
+                    </div>
+                </div>
+
+                <div class="card-title">📈 各维度得分</div>
+                <div id="type-scores">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <div class="card-title">🎯 提升建议</div>
+                    <ul class="suggestion-list" id="suggestion-list">
+                        <!-- 动态生成 -->
+                    </ul>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <button class="btn btn-secondary" id="replay-btn" style="flex: 1;">
+                        <span>🔄</span>
+                        <span>重新面试</span>
+                    </button>
+                    <button class="btn btn-primary" id="view-recordings-btn" style="flex: 1;">
+                        <span>🎧</span>
+                        <span>查看录音</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面5: 录音列表 -->
+        <div id="page-recordings" class="page">
+            <div class="header">
+                <h1>🎧 录音回放</h1>
+                <p>回顾你的面试表现</p>
+            </div>
+
+            <div class="card">
+                <div class="record-list" id="record-list">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="bottom-nav" id="bottom-nav">
+            <div class="nav-item active" data-page="home">
+                <span class="icon">🏠</span>
+                <span>首页</span>
+            </div>
+            <div class="nav-item" data-page="interview">
+                <span class="icon">📝</span>
+                <span>面试</span>
+            </div>
+            <div class="nav-item" data-page="recordings">
+                <span class="icon">🎧</span>
+                <span>录音</span>
+            </div>
+            <div class="nav-item" data-page="vip">
+                <span class="icon">⭐</span>
+                <span>会员</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">提示信息</div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal" id="vip-modal">
+        <div class="modal-content">
+            <div class="modal-icon">👑</div>
+            <h3>解锁全部功能</h3>
+            <p>升级VIP会员，畅享无限面试模拟</p>
+            <div class="price">¥29<span>/月</span></div>
+            <ul style="text-align: left; margin: 20px 0; font-size: 14px; color: #666;">
+                <li style="margin-bottom: 8px;">✅ 无限次AI模拟面试</li>
+                <li style="margin-bottom: 8px;">✅ 详细面试反馈报告</li>
+                <li style="margin-bottom: 8px;">✅ 岗位问题库完整版</li>
+                <li style="margin-bottom: 8px;">✅ 面试录音云端保存</li>
+                <li>✅ 专业导师1对1点评</li>
+            </ul>
+            <button class="btn btn-primary" onclick="closeModal()">限时优惠，立即开通</button>
+            <p style="margin-top: 12px; font-size: 12px; color: #999;">已有VIP权限，可忽略此提示</p>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        const state = {
+            selectedJob: null,
+            selectedLevel: null,
+            selectedStyle: 'strict',
+            currentQuestionIndex: 0,
+            questions: [],
+            answers: [],
+            isRecording: false,
+            recordingTime: 0,
+            interviewTime: 0,
+            timerInterval: null,
+            recordings: []
+        };
+
+        const API_BASE = '';
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initEventListeners();
+            loadRecordings();
+        });
+
+        function initEventListeners() {
+            // 岗位选择
+            document.querySelectorAll('.job-item').forEach(item => {
+                item.addEventListener('click', () => selectJob(item));
+            });
+
+            // 职级选择
+            document.querySelectorAll('.level-item').forEach(item => {
+                item.addEventListener('click', () => selectLevel(item));
+            });
+
+            // 风格选择
+            document.querySelectorAll('.style-item').forEach(item => {
+                item.addEventListener('click', () => selectStyle(item));
+            });
+
+            // 开始面试
+            document.getElementById('start-btn').addEventListener('click', startInterview);
+
+            // 提交回答
+            document.getElementById('submit-answer-btn').addEventListener('click', submitAnswer);
+
+            // 下一题
+            document.getElementById('next-question-btn').addEventListener('click', goToNextQuestion);
+
+            // 结束面试
+            document.getElementById('end-btn').addEventListener('click', endInterview);
+
+            // 重新面试
+            document.getElementById('replay-btn').addEventListener('click', resetInterview);
+
+            // 查看录音
+            document.getElementById('view-recordings-btn').addEventListener('click', () => {
+                showPage('recordings');
+            });
+
+            // 录音按钮
+            document.getElementById('record-btn').addEventListener('click', toggleRecording);
+
+            // 底部导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    if (page === 'vip') {
+                        showModal();
+                    } else {
+                        showPage(page);
+                    }
+                });
+            });
+
+            // 回答输入监听
+            document.getElementById('answer-input').addEventListener('input', (e) => {
+                const btn = document.getElementById('submit-answer-btn');
+                btn.disabled = e.target.value.trim().length < 10;
+            });
+        }
+
+        // ==================== 选择处理 ====================
+        function selectJob(item) {
+            document.querySelectorAll('.job-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            state.selectedJob = item.dataset.job;
+            updateStartButton();
+        }
+
+        function selectLevel(item) {
+            document.querySelectorAll('.level-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            state.selectedLevel = item.dataset.level;
+            updateStartButton();
+        }
+
+        function selectStyle(item) {
+            document.querySelectorAll('.style-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            state.selectedStyle = item.dataset.style;
+        }
+
+        function updateStartButton() {
+            const btn = document.getElementById('start-btn');
+            btn.disabled = !(state.selectedJob && state.selectedLevel);
+        }
+
+        // ==================== 面试流程 ====================
+        async function startInterview() {
+            // 获取问题
+            try {
+                const response = await fetch(`${API_BASE}/api/questions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job: state.selectedJob,
+                        level: state.selectedLevel
+                    })
+                });
+                const result = await response.json();
+                state.questions = result.data.questions;
+                state.currentQuestionIndex = 0;
+                state.answers = [];
+                
+                showPage('interview');
+                updateQuestion();
+                startTimer();
+            } catch (error) {
+                showToast('加载问题失败，请重试');
+            }
+        }
+
+        function updateQuestion() {
+            const question = state.questions[state.currentQuestionIndex];
+            
+            document.getElementById('current-q').textContent = state.currentQuestionIndex + 1;
+            document.getElementById('total-q').textContent = state.questions.length;
+            document.getElementById('progress-fill').style.width = 
+                ((state.currentQuestionIndex + 1) / state.questions.length * 100) + '%';
+            
+            document.getElementById('question-text').textContent = question.question;
+            
+            const typeMap = {
+                'behavioral': '行为面试',
+                'technical': '技术面试',
+                'motivation': '动机面试',
+                'project': '项目经验',
+                'product': '产品思维',
+                'system': '系统设计',
+                'leadership': '领导力',
+                'conflict': '冲突处理',
+                'skill': '专业技能',
+                'strategy': '战略思维'
+            };
+            document.getElementById('question-type').textContent = typeMap[question.type] || '综合面试';
+            
+            document.getElementById('answer-input').value = '';
+            document.getElementById('submit-answer-btn').disabled = true;
+            
+            // 更新面试官信息
+            const styleNames = {
+                'strict': '严肃型面试官',
+                'friendly': '友好型面试官',
+                'professional': '专业型面试官'
+            };
+            const styleGreetings = {
+                'strict': '你好，我是今天的面试官。我们开始吧。',
+                'friendly': '你好！别紧张，我们就像聊天一样。',
+                'professional': '你好，今天我们会重点考察你的专业能力。'
+            };
+            document.getElementById('interviewer-name').textContent = styleNames[state.selectedStyle];
+            document.getElementById('interviewer-greeting').textContent = styleGreetings[state.selectedStyle];
+            
+            // 更新按钮文字
+            const nextBtn = document.getElementById('next-question-btn');
+            if (state.currentQuestionIndex >= state.questions.length - 1) {
+                nextBtn.innerHTML = '<span>查看总结</span><span>📊</span>';
+            } else {
+                nextBtn.innerHTML = '<span>下一题</span><span>→</span>';
+            }
+        }
+
+        async function submitAnswer() {
+            const answer = document.getElementById('answer-input').value.trim();
+            if (answer.length < 10) {
+                showToast('回答内容太短，请多说一些');
+                return;
+            }
+            
+            const question = state.questions[state.currentQuestionIndex];
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: question.question,
+                        answer: answer,
+                        questionType: question.type
+                    })
+                });
+                const result = await response.json();
+                
+                // 保存答案
+                state.answers.push({
+                    question: question,
+                    answer: answer,
+                    score: result.data.totalScore,
+                    analysis: result.data
+                });
+                
+                // 显示反馈
+                showFeedback(result.data);
+                
+            } catch (error) {
+                showToast('分析失败，请重试');
+            }
+        }
+
+        function showFeedback(data) {
+            showPage('feedback');
+            
+            // 动画分数
+            setTimeout(() => {
+                const circle = document.getElementById('score-circle');
+                const offset = 326.73 - (326.73 * data.totalScore / 100);
+                circle.style.strokeDashoffset = offset;
+                
+                animateNumber('score-num', 0, data.totalScore, 1000);
+            }, 100);
+            
+            // 分数明细
+            const breakdown = document.getElementById('score-breakdown');
+            breakdown.innerHTML = '';
+            for (const [key, value] of Object.entries(data.scores)) {
+                if (key !== 'total') {
+                    const item = document.createElement('div');
+                    item.className = 'score-item';
+                    item.innerHTML = `
+                        <span class="label">${key}</span>
+                        <div class="bar"><div class="bar-fill" style="width: ${value}%"></div></div>
+                        <span class="value">${value}</span>
+                    `;
+                    breakdown.appendChild(item);
+                }
+            }
+            
+            // 改进建议
+            const improvements = document.getElementById('improvement-list');
+            improvements.innerHTML = '';
+            data.improvements.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                improvements.appendChild(li);
+            });
+        }
+
+        function goToNextQuestion() {
+            if (state.currentQuestionIndex >= state.questions.length - 1) {
+                // 生成总结
+                showSummary();
+            } else {
+                state.currentQuestionIndex++;
+                showPage('interview');
+                updateQuestion();
+                resetTimer();
+            }
+        }
+
+        async function showSummary() {
+            try {
+                const response = await fetch(`${API_BASE}/api/summary`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        answers: state.answers.map(a => ({
+                            questionType: a.question.type,
+                            score: a.score
+                        }))
+                    })
+                });
+                const result = await response.json();
+                const data = result.data;
+                
+                showPage('summary');
+                
+                document.getElementById('summary-level').textContent = `等级 ${data.overallLevel.level}`;
+                document.getElementById('summary-level').style.background = data.overallLevel.level === 'A' ? 
+                    'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.2)';
+                document.getElementById('summary-score').textContent = data.avgScore;
+                
+                document.getElementById('stat-total').textContent = data.totalQuestions;
+                document.getElementById('stat-high').textContent = data.highestScore;
+                document.getElementById('stat-low').textContent = data.lowestScore;
+                
+                // 维度得分
+                const typeScores = document.getElementById('type-scores');
+                typeScores.innerHTML = '';
+                data.typeAnalysis.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'score-item';
+                    div.innerHTML = `
+                        <span class="label">${item.name}</span>
+                        <div class="bar"><div class="bar-fill" style="width: ${item.avgScore}%"></div></div>
+                        <span class="value">${item.avgScore}</span>
+                    `;
+                    typeScores.appendChild(div);
+                });
+                
+                // 建议
+                const suggestions = document.getElementById('suggestion-list');
+                suggestions.innerHTML = '';
+                data.suggestions.forEach(s => {
+                    const li = document.createElement('li');
+                    li.textContent = s;
+                    suggestions.appendChild(li);
+                });
+                
+            } catch (error) {
+                showToast('生成总结失败');
+            }
+        }
+
+        function resetInterview() {
+            state.currentQuestionIndex = 0;
+            state.answers = [];
+            state.questions = [];
+            showPage('home');
+        }
+
+        function endInterview() {
+            if (state.answers.length > 0) {
+                showSummary();
+            } else {
+                showToast('请先回答至少一道问题');
+            }
+        }
+
+        // ==================== 计时器 ====================
+        function startTimer() {
+            state.interviewTime = 120; // 2分钟
+            updateTimerDisplay();
+            
+            state.timerInterval = setInterval(() => {
+                state.interviewTime--;
+                updateTimerDisplay();
+                
+                if (state.interviewTime <= 0) {
+                    clearInterval(state.timerInterval);
+                    showToast('时间到！请提交回答');
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(state.timerInterval);
+            startTimer();
+        }
+
+        function updateTimerDisplay() {
+            const timer = document.getElementById('timer');
+            const minutes = Math.floor(state.interviewTime / 60);
+            const seconds = state.interviewTime % 60;
+            timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            timer.classList.remove('warning', 'danger');
+            if (state.interviewTime <= 30) {
+                timer.classList.add('danger');
+            } else if (state.interviewTime <= 60) {
+                timer.classList.add('warning');
+            }
+        }
+
+        // ==================== 录音功能 ====================
+        function toggleRecording() {
+            const recordBtn = document.getElementById('record-btn');
+            const stopBtn = document.getElementById('stop-record-btn');
+            
+            if (state.isRecording) {
+                // 停止录音
+                state.isRecording = false;
+                recordBtn.classList.remove('recording');
+                recordBtn.innerHTML = '<span>🎤</span><span>开始录音</span>';
+                stopBtn.style.display = 'none';
+                showToast('录音已保存');
+            } else {
+                // 开始录音
+                state.isRecording = true;
+                state.recordingTime = 0;
+                recordBtn.classList.add('recording');
+                recordBtn.innerHTML = '<span>🔴</span><span>录音中...</span>';
+                stopBtn.style.display = 'block';
+                
+                // 模拟录音计时
+                state.recordingInterval = setInterval(() => {
+                    state.recordingTime++;
+                    if (state.recordingTime >= 60) {
+                        showToast('录音已满1分钟');
+                    }
+                }, 1000);
+            }
+        }
+
+        // ==================== 录音列表 ====================
+        async function loadRecordings() {
+            try {
+                const response = await fetch(`${API_BASE}/api/recordings`);
+                const result = await response.json();
+                state.recordings = result.data;
+                renderRecordings();
+            } catch (error) {
+                console.log('加载录音失败');
+            }
+        }
+
+        function renderRecordings() {
+            const list = document.getElementById('record-list');
+            
+            if (state.recordings.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🎙️</div>
+                        <p>暂无录音记录</p>
+                        <p style="font-size: 12px; margin-top: 8px;">完成面试后自动保存录音</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = '';
+            state.recordings.forEach(rec => {
+                const item = document.createElement('div');
+                item.className = 'record-item';
+                item.innerHTML = `
+                    <div class="record-icon">🎙️</div>
+                    <div class="record-info">
+                        <h4>${rec.title}</h4>
+                        <p>${rec.job} · ${rec.level} · ${rec.duration} · ${rec.date}</p>
+                    </div>
+                    <button class="record-play">播放</button>
+                `;
+                item.querySelector('.record-play').addEventListener('click', () => {
+                    showToast('播放录音: ' + rec.title);
+                });
+                list.appendChild(item);
+            });
+        }
+
+        // ==================== 页面导航 ====================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
+            
+            // 隐藏底部导航在非首页
+            const bottomNav = document.getElementById('bottom-nav');
+            if (['interview', 'feedback', 'summary'].includes(pageId)) {
+                bottomNav.style.display = 'none';
+            } else {
+                bottomNav.style.display = 'flex';
+            }
+        }
+
+        // ==================== 工具函数 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function showModal() {
+            document.getElementById('vip-modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('vip-modal').classList.remove('show');
+        }
+
+        function animateNumber(elementId, start, end, duration) {
+            const element = document.getElementById(elementId);
+            const range = end - start;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(start + range * easeProgress);
+                element.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+    </script>
+</body>
+</html>

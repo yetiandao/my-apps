@@ -1,0 +1,192 @@
+{
+  "exam_calendar": [
+    {
+      "id": 1,
+      "name": "2026年国家公务员考试",
+      "type": "国考",
+      "registration_start": "2025-10-15",
+      "registration_end": "2025-10-24",
+      "exam_date": "2025-11-24",
+      "status": "即将报名",
+      "description": "笔试包括行政职业能力测验和申论两科"
+    },
+    {
+      "id": 2,
+      "name": "2025年下半年四川省考",
+      "type": "省考",
+      "registration_start": "2025-11-01",
+      "registration_end": "2025-11-10",
+      "exam_date": "2025-12-15",
+      "status": "备考中",
+      "description": "四川省下半年公务员联考"
+    },
+    {
+      "id": 3,
+      "name": "2025年下半年事业单位联考",
+      "type": "事业编",
+      "registration_start": "2025-10-20",
+      "registration_end": "2025-10-30",
+      "exam_date": "2025-11-16",
+      "status": "报名中",
+      "description": "综合应用能力和职业能力倾向测验"
+    },
+    {
+      "id": 4,
+      "name": "2026年多省联考",
+      "type": "省考",
+      "registration_start": "2026-02-01",
+      "registration_end": "2026-02-10",
+      "exam_date": "2026-03-15",
+      "status": "规划中",
+      "description": "多省联考，备考时间充足"
+    },
+    {
+      "id": 5,
+      "name": "2025年教师资格证考试",
+      "type": "教资",
+      "registration_start": "2025-09-01",
+      "registration_end": "2025-09-10",
+      "exam_date": "2025-10-25",
+      "status": "考试中",
+      "description": "综合素质和教育知识与能力"
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "exam_id": 1,
+      "province": "全国",
+      "department": "国家税务总局",
+      "position": "基层税务所科员",
+      "location": "北京",
+      "competition_ratio": 208.5,
+      "pass_score": 120.5,
+      "recruit_number": 2,
+      "register_number": 417,
+      "education": "本科及以上",
+      "major": "不限",
+      "work_experience": "不限"
+    },
+    {
+      "id": 2,
+      "exam_id": 1,
+      "province": "四川",
+      "department": "四川省发展和改革委员会",
+      "position": "综合管理岗",
+      "location": "成都",
+      "competition_ratio": 156.2,
+      "pass_score": 118.3,
+      "recruit_number": 3,
+      "register_number": 468,
+      "education": "本科及以上",
+      "major": "经济学类",
+      "work_experience": "不限"
+    },
+    {
+      "id": 3,
+      "exam_id": 1,
+      "province": "四川",
+      "department": "成都市公安局",
+      "position": "基层执法勤务",
+      "location": "成都",
+      "competition_ratio": 45.8,
+      "pass_score": 105.2,
+      "recruit_number": 15,
+      "register_number": 687,
+      "education": "本科及以上",
+      "major": "不限",
+      "work_experience": "不限"
+    },
+    {
+      "id": 4,
+      "exam_id": 1,
+      "province": "四川",
+      "department": "四川省生态环境厅",
+      "position": "环境管理岗",
+      "location": "成都",
+      "competition_ratio": 89.3,
+      "pass_score": 115.8,
+      "recruit_number": 2,
+      "register_number": 178,
+      "education": "本科及以上",
+      "major": "环境科学与工程类",
+      "work_experience": "不限"
+    },
+    {
+      "id": 5,
+      "exam_id": 1,
+      "province": "四川",
+      "department": "四川省财政厅",
+      "position": "财务管理岗",
+      "location": "成都",
+      "competition_ratio": 132.7,
+      "pass_score": 122.1,
+      "recruit_number": 4,
+      "register_number": 530,
+      "education": "本科及以上",
+      "major": "会计学、财务管理",
+      "work_experience": "2年以上"
+    },
+    {
+      "id": 6,
+      "exam_id": 2,
+      "province": "四川",
+      "department": "成都市锦江区教育局",
+      "position": "教育管理岗",
+      "location": "成都",
+      "competition_ratio": 68.4,
+      "pass_score": 112.5,
+      "recruit_number": 5,
+      "register_number": 342,
+      "education": "本科及以上",
+      "major": "教育学类",
+      "work_experience": "不限"
+    },
+    {
+      "id": 7,
+      "exam_id": 3,
+      "province": "四川",
+      "department": "四川省人民医院",
+      "position": "行政管理岗",
+      "location": "成都",
+      "competition_ratio": 78.9,
+      "pass_score": 108.7,
+      "recruit_number": 3,
+      "register_number": 236,
+      "education": "本科及以上",
+      "major": "管理学类",
+      "work_experience": "不限"
+    },
+    {
+      "id": 8,
+      "exam_id": 3,
+      "province": "四川",
+      "department": "四川大学",
+      "position": "辅导员",
+      "location": "成都",
+      "competition_ratio": 95.2,
+      "pass_score": 115.3,
+      "recruit_number": 8,
+      "register_number": 761,
+      "education": "硕士及以上",
+      "major": "不限",
+      "work_experience": "不限"
+    }
+  ],
+  "vip_plans": [
+    {
+      "id": 1,
+      "name": "月卡",
+      "price": 9.9,
+      "duration": 30,
+      "features": ["每日学习计划", "基础数据分析", "社群答疑"]
+    },
+    {
+      "id": 2,
+      "name": "年卡",
+      "price": 99,
+      "duration": 365,
+      "features": ["智能备考规划", "全功能数据分析", "一对一答疑", "优先更新提醒", "历年真题库"]
+    }
+  ]
+}

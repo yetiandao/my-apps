@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>跑步计划 - 让跑步更科学</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --primary-dark: #E55A2B;
+            --secondary: #004E89;
+            --accent: #00C49A;
+            --bg-light: #F7F8FA;
+            --bg-white: #FFFFFF;
+            --text-dark: #1A1A2E;
+            --text-gray: #666666;
+            --text-light: #999999;
+            --border: #E8E8E8;
+            --success: #52C41A;
+            --warning: #FAAD14;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 70px;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5C 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .user-stats span {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .user-stats .value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .user-stats .label {
+            opacity: 0.8;
+            font-size: 11px;
+        }
+
+        /* 会员标识 */
+        .member-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .non-member {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        /* Tab 导航 */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-white);
+            padding: 0 10px;
+            position: sticky;
+            top: 95px;
+            z-index: 99;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 14px;
+            color: var(--text-gray);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            padding: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* 首页统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .unit {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* 快速开始按钮 */
+        .quick-action {
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5C 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .quick-action .icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .quick-action p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* 跑步记录列表 */
+        .run-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .run-item:last-child {
+            border-bottom: none;
+        }
+
+        .run-date {
+            width: 50px;
+            text-align: center;
+        }
+
+        .run-date .day {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .run-date .month {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .run-info {
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .run-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .run-info .route {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .run-metrics {
+            text-align: right;
+        }
+
+        .run-metrics .distance {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .run-metrics .pace {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        /* 计划卡片 */
+        .plan-card {
+            background: linear-gradient(135deg, var(--bg-white) 0%, #FFF5F0 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .plan-card:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .plan-card .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .plan-card .plan-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .plan-card .plan-duration {
+            font-size: 12px;
+            color: var(--primary);
+            background: rgba(255, 107, 53, 0.1);
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+
+        .plan-card .plan-goal {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .plan-card .plan-preview {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 计划详情 */
+        .plan-detail {
+            display: none;
+        }
+
+        .plan-detail.active {
+            display: block;
+        }
+
+        .week-selector {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-bottom: 15px;
+        }
+
+        .week-btn {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--bg-white);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .week-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .run-schedule {
+            margin-top: 10px;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .schedule-day {
+            width: 70px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .schedule-content {
+            flex: 1;
+        }
+
+        .schedule-content .type {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .schedule-content .desc {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .schedule-stats {
+            text-align: right;
+        }
+
+        .schedule-stats .dist {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .schedule-stats .time {
+            font-size: 11px;
+            color: var(--text-gray);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            color: var(--primary);
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        /* 路线卡片 */
+        .route-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            background: var(--bg-white);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .route-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .route-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .route-info {
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .route-info h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .route-info .tags {
+            display: flex;
+            gap: 6px;
+        }
+
+        .route-info .tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            background: var(--bg-light);
+            color: var(--text-gray);
+        }
+
+        .route-rating {
+            text-align: center;
+        }
+
+        .route-rating .star {
+            color: #FFD700;
+        }
+
+        .route-rating .score {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* 社区帖子 */
+        .post-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5C 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .post-user {
+            margin-left: 10px;
+        }
+
+        .post-user .name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .post-user .time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 30px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .post-action:hover {
+            color: var(--primary);
+        }
+
+        .post-action.liked {
+            color: var(--primary);
+        }
+
+        /* 发布按钮 */
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5C 100%);
+            color: white;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s;
+            z-index: 50;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-white);
+            display: flex;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 22px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            width: 100%;
+            background: var(--bg-white);
+            border-radius: 20px 20px 0 0;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-white);
+        }
+
+        .modal-header h3 {
+            font-size: 17px;
+        }
+
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 表单 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        /* 按钮 */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5C 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* 会员卡片 */
+        .member-card {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .member-card .tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .member-card h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .member-card .price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #FFD700;
+        }
+
+        .member-card .price span {
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .member-features {
+            margin-top: 20px;
+        }
+
+        .member-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .member-feature:last-child {
+            border-bottom: none;
+        }
+
+        .member-feature .icon {
+            font-size: 18px;
+        }
+
+        .member-feature span {
+            font-size: 13px;
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 配速分析 */
+        .pace-chart {
+            background: linear-gradient(135deg, var(--secondary) 0%, #0066B3 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .pace-chart h4 {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .pace-value {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .pace-value span {
+            font-size: 14px;
+            font-weight: normal;
+            opacity: 0.8;
+        }
+
+        .pace-badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .pace-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .suggestion-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* 锁定内容提示 */
+        .locked-overlay {
+            position: relative;
+        }
+
+        .locked-overlay::after {
+            content: '🔒 开通会员查看完整计划';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, var(--bg-white) 60%);
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* 筛选标签 */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+
+        .filter-tab {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 360px) {
+            .user-stats {
+                gap: 12px;
+            }
+            
+            .user-stats .value {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-top">
+            <h1>🏃 跑步计划</h1>
+            <div class="user-info">
+                <div class="user-avatar">🏃</div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 600;" id="userName">跑步达人</div>
+                    <div id="memberBadge" class="member-badge">⭐ 会员</div>
+                </div>
+            </div>
+        </div>
+        <div class="user-stats">
+            <span>
+                <span class="value" id="totalKm">156.8</span>
+                <span class="label">总里程(km)</span>
+            </span>
+            <span>
+                <span class="value" id="totalRuns">12</span>
+                <span class="label">跑步次数</span>
+            </span>
+            <span>
+                <span class="value" id="level">Lv.2</span>
+                <span class="label">等级</span>
+            </span>
+        </div>
+    </header>
+
+    <!-- Tab 导航 -->
+    <nav class="tab-nav">
+        <div class="tab-item active" data-tab="home">
+            <span class="tab-icon">🏠</span>
+            首页
+        </div>
+        <div class="tab-item" data-tab="plan">
+            <span class="tab-icon">📋</span>
+            计划
+        </div>
+        <div class="tab-item" data-tab="record">
+            <span class="tab-icon">📊</span>
+            记录
+        </div>
+        <div class="tab-item" data-tab="route">
+            <span class="tab-icon">🗺️</span>
+            路线
+        </div>
+        <div class="tab-item" data-tab="community">
+            <span class="tab-icon">👥</span>
+            社区
+        </div>
+    </nav>
+
+    <!-- 首页 -->
+    <div class="page active" id="page-home">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">📅</div>
+                <div class="value" id="weekKm">13.5</div>
+                <div class="unit">公里</div>
+                <div class="label">本周里程</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">⏱️</div>
+                <div class="value" id="avgPace">5'45"</div>
+                <div class="unit">分钟/公里</div>
+                <div class="label">平均配速</div>
+            </div>
+        </div>
+
+        <div class="quick-action" onclick="showAddRunModal()">
+            <div class="icon">🏃‍♂️</div>
+            <h3>开始跑步</h3>
+            <p>记录你的每一次进步</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">今日推荐计划</div>
+            <div class="plan-card" onclick="switchTab('plan')">
+                <div class="plan-header">
+                    <span class="plan-name">初学者8周计划</span>
+                    <span class="plan-duration">第3周</span>
+                </div>
+                <div class="plan-goal">目标：完成5公里</div>
+                <div class="plan-preview">今天：慢跑 2.5km / 25分钟</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">最近跑步</div>
+            <div id="recentRuns"></div>
+        </div>
+    </div>
+
+    <!-- 计划页面 -->
+    <div class="page" id="page-plan">
+        <div id="planList">
+            <div class="card-title">选择训练计划</div>
+            <div class="plan-card" onclick="showPlanDetail('beginner')">
+                <div class="plan-header">
+                    <span class="plan-name">🏃 初学者计划</span>
+                    <span class="plan-duration">8周</span>
+                </div>
+                <div class="plan-goal">目标：完成首个5公里</div>
+                <div class="plan-preview">循序渐进，建立跑步习惯</div>
+            </div>
+
+            <div class="plan-card" onclick="showPlanDetail('weight_loss')">
+                <div class="plan-header">
+                    <span class="plan-name">🔥 减肥计划</span>
+                    <span class="plan-duration">12周</span>
+                </div>
+                <div class="plan-goal">目标：健康减脂</div>
+                <div class="plan-preview">结合HIIT，高效燃脂</div>
+            </div>
+
+            <div class="plan-card" onclick="showPlanDetail('5k_improve')">
+                <div class="plan-header">
+                    <span class="plan-name">⚡ 5公里提升</span>
+                    <span class="plan-duration">6周</span>
+                </div>
+                <div class="plan-goal">目标：突破25分钟</div>
+                <div class="plan-preview">节奏跑+间歇训练</div>
+            </div>
+        </div>
+
+        <div class="plan-detail" id="planDetail"></div>
+    </div>
+
+    <!-- 记录页面 -->
+    <div class="page" id="page-record">
+        <div class="card-title">跑步记录</div>
+        <div id="runRecords"></div>
+        
+        <div class="card" style="margin-top: 20px;">
+            <div class="card-title">配速分析</div>
+            <div id="paceAnalysis"></div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="showAddRunModal()" style="margin-top: 15px;">
+            ➕ 添加记录
+        </button>
+    </div>
+
+    <!-- 路线页面 -->
+    <div class="page" id="page-route">
+        <div class="filter-tabs">
+            <div class="filter-tab active" data-filter="all">全部</div>
+            <div class="filter-tab" data-filter="简单">简单</div>
+            <div class="filter-tab" data-filter="中等">中等</div>
+            <div class="filter-tab" data-filter="困难">困难</div>
+        </div>
+        <div id="routeList"></div>
+    </div>
+
+    <!-- 社区页面 -->
+    <div class="page" id="page-community">
+        <div id="communityPosts"></div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-tab="home">
+            <span class="icon">🏠</span>
+            首页
+        </div>
+        <div class="nav-item" data-tab="plan">
+            <span class="icon">📋</span>
+            计划
+        </div>
+        <div class="nav-item" data-tab="record">
+            <span class="icon">📊</span>
+            记录
+        </div>
+        <div class="nav-item" data-tab="route">
+            <span class="icon">🗺️</span>
+            路线
+        </div>
+        <div class="nav-item" data-tab="community">
+            <span class="icon">👥</span>
+            社区
+        </div>
+    </nav>
+
+    <!-- 悬浮发布按钮 -->
+    <div class="fab" onclick="showPostModal()">+</div>
+
+    <!-- 添加跑步记录模态框 -->
+    <div class="modal-overlay" id="addRunModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>🏃 记录跑步</h3>
+                <div class="modal-close" onclick="closeModal('addRunModal')">×</div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">日期</label>
+                    <input type="date" class="form-input" id="runDate" value="">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">距离 (km)</label>
+                        <input type="number" class="form-input" id="runDistance" placeholder="如: 5.2" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">时长 (分钟)</label>
+                        <input type="number" class="form-input" id="runDuration" placeholder="如: 30">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">路线</label>
+                    <input type="text" class="form-input" id="runRoute" placeholder="如: 滨江公园">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">天气</label>
+                    <select class="form-input" id="runWeather">
+                        <option value="晴">☀️ 晴天</option>
+                        <option value="多云">⛅ 多云</option>
+                        <option value="阴">☁️ 阴天</option>
+                        <option value="小雨">🌧️ 小雨</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="submitRun()">保存记录</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发布帖子模态框 -->
+    <div class="modal-overlay" id="postModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📝 发布动态</h3>
+                <div class="modal-close" onclick="closeModal('postModal')">×</div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">分享你的跑步故事</label>
+                    <textarea class="form-input" id="postContent" rows="5" placeholder="说点什么吧..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="submitPost()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 会员模态框 -->
+    <div class="modal-overlay" id="memberModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>💎 开通会员</h3>
+                <div class="modal-close" onclick="closeModal('memberModal')">×</div>
+            </div>
+            <div class="modal-body">
+                <div class="member-card">
+                    <div class="tag">⭐ 特惠推荐</div>
+                    <h3>月度会员</h3>
+                    <div class="price">¥15 <span>/月</span></div>
+                </div>
+                
+                <div class="member-features">
+                    <div class="member-feature">
+                        <span class="icon">✅</span>
+                        <span>完整跑步计划（初学者/减肥/5K提升）</span>
+                    </div>
+                    <div class="member-feature">
+                        <span class="icon">✅</span>
+                        <span>详细配速分析与训练建议</span>
+                    </div>
+                    <div class="member-feature">
+                        <span class="icon">✅</span>
+                        <span>全部跑步路线推荐</span>
+                    </div>
+                    <div class="member-feature">
+                        <span class="icon">✅</span>
+                        <span>社区互动无限制</span>
+                    </div>
+                    <div class="member-feature">
+                        <span class="icon">✅</span>
+                        <span>数据统计与导出</span>
+                    </div>
+                    <div class="member-feature">
+                        <span class="icon">✅</span>
+                        <span>专属教练答疑</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="subscribeMember()" style="margin-top: 20px;">
+                    立即开通 ¥15/月
+                </button>
+                <p style="text-align: center; font-size: 12px; color: #999; margin-top: 12px;">
+                    支付成功即表示同意《会员服务协议》
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API 基础路径
+        const API_BASE = '/api';
+        
+        // 全局数据
+        let userData = null;
+        let runRecords = [];
+        let runningPlans = {};
+        let routes = [];
+        let communityPosts = [];
+        let isMember = true;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTabNav();
+            initFilterTabs();
+            initBottomNav();
+            setDefaultDate();
+            await loadAllData();
+            renderUI();
+        });
+
+        // 设置默认日期
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('runDate').value = today;
+        }
+
+        // 初始化Tab导航
+        function initTabNav() {
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    switchTab(tabName);
+                });
+            });
+        }
+
+        // 初始化底部导航
+        function initBottomNav() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const tabName = item.dataset.tab;
+                    switchTab(tabName);
+                });
+            });
+        }
+
+        // 初始化筛选标签
+        function initFilterTabs() {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    filterRoutes(tab.dataset.filter);
+                });
+            });
+        }
+
+        // 切换Tab
+        function switchTab(tabName) {
+            // 更新Tab导航
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.querySelector(`.tab-item[data-tab="${tabName}"]`)?.classList.add('active');
+            document.querySelector(`.nav-item[data-tab="${tabName}"]`)?.classList.add('active');
+            
+            // 切换页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${tabName}`)?.classList.add('active');
+        }
+
+        // 加载所有数据
+        async function loadAllData() {
+            try {
+                const [userRes, runsRes, plansRes, routesRes, postsRes, statsRes, paceRes] = await Promise.all([
+                    fetch(`${API_BASE}/user/demo_user`),
+                    fetch(`${API_BASE}/runs?user_id=demo_user`),
+                    fetch(`${API_BASE}/plans`),
+                    fetch(`${API_BASE}/routes`),
+                    fetch(`${API_BASE}/community/posts`),
+                    fetch(`${API_BASE}/stats/summary`),
+                    fetch(`${API_BASE}/pace/analyze`)
+                ]);
+
+                const userData = await userRes.json();
+                const runsData = await runsRes.json();
+                const plansData = await plansRes.json();
+                const routesData = await routesRes.json();
+                const postsData = await postsRes.json();
+                const statsData = await statsRes.json();
+                const paceData = await paceRes.json();
+
+                window.userData = userData.data;
+                window.runRecords = runsData.data;
+                window.runningPlans = plansData.data;
+                window.routes = routesData.data;
+                window.communityPosts = postsData.data;
+                window.statsData = statsData.data;
+                window.paceData = paceData.data;
+                window.isMember = userData.data.member;
+
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                showToast('数据加载失败，请刷新重试');
+            }
+        }
+
+        // 渲染UI
+        function renderUI() {
+            renderUserInfo();
+            renderRecentRuns();
+            renderRunRecords();
+            renderPaceAnalysis();
+            renderRoutes();
+            renderCommunityPosts();
+            updateMemberBadge();
+        }
+
+        // 渲染用户信息
+        function renderUserInfo() {
+            const user = window.userData;
+            if (!user) return;
+
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('totalKm').textContent = user.total_km.toFixed(1);
+            document.getElementById('totalRuns').textContent = runRecords.length;
+            document.getElementById('level').textContent = `Lv.${user.level}`;
+            
+            // 更新首页统计
+            if (window.statsData) {
+                document.getElementById('weekKm').textContent = window.statsData.current_week_distance;
+                document.getElementById('avgPace').textContent = formatPace(window.statsData.avg_pace);
+            }
+        }
+
+        // 更新会员标识
+        function updateMemberBadge() {
+            const badge = document.getElementById('memberBadge');
+            if (window.isMember) {
+                badge.className = 'member-badge';
+                badge.textContent = '⭐ 会员';
+            } else {
+                badge.className = 'non-member';
+                badge.textContent = '未开通';
+            }
+        }
+
+        // 渲染最近跑步
+        function renderRecentRuns() {
+            const container = document.getElementById('recentRuns');
+            const recent = runRecords.slice(0, 3);
+            
+            if (recent.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">🏃</div>
+                        <h4>暂无跑步记录</h4>
+                        <p>开始你的第一次跑步吧！</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = recent.map(run => `
+                <div class="run-item">
+                    <div class="run-date">
+                        <div class="day">${new Date(run.date).getDate()}</div>
+                        <div class="month">${new Date(run.date).toLocaleDateString('zh-CN', {month: 'short'})}</div>
+                    </div>
+                    <div class="run-info">
+                        <h4>${run.route}</h4>
+                        <div class="route">${run.weather} · ${formatDuration(run.duration)}</div>
+                    </div>
+                    <div class="run-metrics">
+                        <div class="distance">${run.distance}km</div>
+                        <div class="pace">${formatPace(run.pace)}/km</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染跑步记录
+        function renderRunRecords() {
+            const container = document.getElementById('runRecords');
+            
+            if (runRecords.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📊</div>
+                        <h4>暂无跑步记录</h4>
+                        <p>记录你的每一次进步</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = runRecords.map(run => `
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600;">${run.route}</div>
+                            <div style="font-size: 12px; color: var(--text-gray);">${run.date} · ${run.weather}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 20px; font-weight: 700; color: var(--primary);">${run.distance}km</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 20px; font-size: 13px;">
+                        <div>⏱️ ${formatDuration(run.duration)}</div>
+                        <div>⚡ ${formatPace(run.pace)}/km</div>
+                        <div>🔥 ${run.calories}卡</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染配速分析
+        function renderPaceAnalysis() {
+            const container = document.getElementById('paceAnalysis');
+            const pace = window.paceData;
+            
+            if (!pace || pace.avg_pace === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📈</div>
+                        <h4>配速分析</h4>
+                        <p>记录至少一次跑步后查看分析</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const trendText = pace.trend === 'improving' ? '📈 进步中' : '➡️ 稳定';
+            const trendColor = pace.trend === 'improving' ? 'var(--success)' : 'var(--text-gray)';
+
+            container.innerHTML = `
+                <div class="pace-chart">
+                    <h4>平均配速</h4>
+                    <div class="pace-value">${formatPace(pace.avg_pace)} <span>/km</span></div>
+                    <div class="pace-badges">
+                        <span class="pace-badge">🏆 最佳 ${formatPace(pace.best_pace)}</span>
+                        <span class="pace-badge" style="color: ${trendColor};">${trendText}</span>
+                    </div>
+                </div>
+                
+                <div class="card-title" style="margin-top: 15px;">训练建议</div>
+                ${pace.suggestions.map(s => `
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">💡</div>
+                        <div class="suggestion-text">${s}</div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // 渲染路线
+        function renderRoutes(filter = 'all') {
+            const container = document.getElementById('routeList');
+            const filtered = filter === 'all' ? routes : routes.filter(r => r.difficulty === filter);
+
+            container.innerHTML = filtered.map(route => `
+                <div class="route-item">
+                    <div class="route-icon">${getRouteEmoji(route.difficulty)}</div>
+                    <div class="route-info">
+                        <h4>${route.name}</h4>
+                        <div class="tags">
+                            <span class="tag">${route.distance}km</span>
+                            <span class="tag">${route.difficulty}</span>
+                            <span class="tag">${route.scenery}</span>
+                        </div>
+                    </div>
+                    <div class="route-rating">
+                        <div class="star">⭐</div>
+                        <div class="score">${route.rating}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 筛选路线
+        function filterRoutes(filter) {
+            renderRoutes(filter);
+        }
+
+        // 获取路线图标
+        function getRouteEmoji(difficulty) {
+            switch(difficulty) {
+                case '简单': return '🌳';
+                case '中等': return '🏞️';
+                case '困难': return '⛰️';
+                default: return '🏃';
+            }
+        }
+
+        // 渲染社区帖子
+        function renderCommunityPosts() {
+            const container = document.getElementById('communityPosts');
+            
+            container.innerHTML = communityPosts.map(post => `
+                <div class="card">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.avatar}</div>
+                        <div class="post-user">
+                            <div class="name">${post.user}</div>
+                            <div class="time">${post.time}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-actions">
+                        <div class="post-action" onclick="likePost(${post.id})">
+                            <span>👍</span>
+                            <span>${post.likes}</span>
+                        </div>
+                        <div class="post-action">
+                            <span>💬</span>
+                            <span>${post.comments}</span>
+                        </div>
+                        <div class="post-action">
+                            <span>🔗</span>
+                            <span>分享</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 显示计划详情
+        function showPlanDetail(planType) {
+            const plan = runningPlans[planType];
+            if (!plan) return;
+
+            document.getElementById('planList').style.display = 'none';
+            const detail = document.getElementById('planDetail');
+            
+            let weeksHtml = plan.weeks.map((w, i) => `
+                <div class="week-btn ${i === 0 ? 'active' : ''}" onclick="switchWeek(this, ${i})" data-plan="${planType}" data-week="${i}">
+                    第${w.week}周
+                </div>
+            `).join('');
+
+            let runsHtml = plan.weeks[0].runs.map(run => `
+                <div class="schedule-item">
+                    <div class="schedule-day">${run.day}</div>
+                    <div class="schedule-content">
+                        <div class="type">${run.type} ${run.intensity === '高' ? '🔥' : run.intensity === '中' ? '⚡' : '💚'}</div>
+                        <div class="desc">${run.description}</div>
+                    </div>
+                    <div class="schedule-stats">
+                        <div class="dist">${run.distance}km</div>
+                        <div class="time">${run.duration}分钟</div>
+                    </div>
+                </div>
+            `).join('');
+
+            detail.innerHTML = `
+                <div class="back-btn" onclick="hidePlanDetail()">← 返回计划列表</div>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3 style="font-size: 18px;">${plan.name}</h3>
+                        <span class="plan-duration">${plan.duration}</span>
+                    </div>
+                    <div style="font-size: 14px; color: var(--text-gray); margin-bottom: 15px;">
+                        🎯 ${plan.goal}
+                    </div>
+                </div>
+                
+                <div class="week-selector">${weeksHtml}</div>
+                
+                <div id="weekContent">
+                    <div class="card-title">${plan.weeks[0].title}</div>
+                    <div class="run-schedule">${runsHtml}</div>
+                </div>
+                
+                ${!isMember ? `
+                    <div class="card" style="text-align: center; margin-top: 20px; background: #FFF5E6;">
+                        <div style="font-size: 24px; margin-bottom: 10px;">🔒</div>
+                        <h4 style="margin-bottom: 8px;">解锁完整${plan.duration}计划</h4>
+                        <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 15px;">
+                            开通会员查看全部${plan.weeks.length}周训练内容
+                        </p>
+                        <button class="btn btn-primary" onclick="showMemberModal()">
+                            开通会员 ¥15/月
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+            
+            detail.classList.add('active');
+        }
+
+        // 切换周
+        function switchWeek(btn, weekIndex) {
+            document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const planType = btn.dataset.plan;
+            const plan = runningPlans[planType];
+            const week = plan.weeks[weekIndex];
+            
+            const runsHtml = week.runs.map(run => `
+                <div class="schedule-item">
+                    <div class="schedule-day">${run.day}</div>
+                    <div class="schedule-content">
+                        <div class="type">${run.type} ${run.intensity === '高' ? '🔥' : run.intensity === '中' ? '⚡' : '💚'}</div>
+                        <div class="desc">${run.description}</div>
+                    </div>
+                    <div class="schedule-stats">
+                        <div class="dist">${run.distance}km</div>
+                        <div class="time">${run.duration}分钟</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('weekContent').innerHTML = `
+                <div class="card-title">${week.title}</div>
+                <div class="run-schedule">${runsHtml}</div>
+            `;
+        }
+
+        // 返回计划列表
+        function hidePlanDetail() {
+            document.getElementById('planList').style.display = 'block';
+            document.getElementById('planDetail').classList.remove('active');
+        }
+
+        // 显示添加跑步模态框
+        function showAddRunModal() {
+            setDefaultDate();
+            document.getElementById('runDistance').value = '';
+            document.getElementById('runDuration').value = '';
+            document.getElementById('runRoute').value = '';
+            openModal('addRunModal');
+        }
+
+        // 提交跑步记录
+        async function submitRun() {
+            const date = document.getElementById('runDate').value;
+            const distance = parseFloat(document.getElementById('runDistance').value);
+            const duration = parseInt(document.getElementById('runDuration').value);
+            const route = document.getElementById('runRoute').value;
+            const weather = document.getElementById('runWeather').value;
+
+            if (!distance || !duration) {
+                showToast('请填写距离和时长');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/runs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date, distance, duration, route, weather })
+                });
+                
+                const data = await res.json();
+                if (data.code === 0) {
+                    runRecords.unshift(data.data);
+                    closeModal('addRunModal');
+                    showToast('跑步记录已保存 🏃');
+                    renderUI();
+                }
+            } catch (error) {
+                showToast('保存失败，请重试');
+            }
+        }
+
+        // 显示发布帖子模态框
+        function showPostModal() {
+            document.getElementById('postContent').value = '';
+            openModal('postModal');
+        }
+
+        // 提交帖子
+        async function submitPost() {
+            const content = document.getElementById('postContent').value.trim();
+            
+            if (!content) {
+                showToast('请输入内容');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/community/posts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_name: userData?.name || '匿名用户',
+                        avatar: '🏃',
+                        content
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.code === 0) {
+                    communityPosts.unshift(data.data);
+                    closeModal('postModal');
+                    showToast('发布成功 🎉');
+                    renderCommunityPosts();
+                }
+            } catch (error) {
+                showToast('发布失败，请重试');
+            }
+        }
+
+        // 点赞帖子
+        async function likePost(postId) {
+            try {
+                const res = await fetch(`${API_BASE}/community/posts/${postId}/like`, {
+                    method: 'POST'
+                });
+                
+                const data = await res.json();
+                if (data.code === 0) {
+                    const post = communityPosts.find(p => p.id === postId);
+                    if (post) {
+                        post.likes = data.data.likes;
+                        renderCommunityPosts();
+                    }
+                }
+            } catch (error) {
+                console.error('点赞失败');
+            }
+        }
+
+        // 显示会员模态框
+        function showMemberModal() {
+            openModal('memberModal');
+        }
+
+        // 订阅会员
+        async function subscribeMember() {
+            try {
+                const res = await fetch(`${API_BASE}/member/subscribe`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: 'demo_user' })
+                });
+                
+                const data = await res.json();
+                if (data.code === 0) {
+                    window.isMember = true;
+                    closeModal('memberModal');
+                    showToast('会员开通成功 🎉');
+                    updateMemberBadge();
+                }
+            } catch (error) {
+                showToast('开通失败，请重试');
+            }
+        }
+
+        // 模态框操作
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Toast 提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // 格式化配速
+        function formatPace(pace) {
+            if (!pace || pace === 0) return '--:--';
+            const mins = Math.floor(pace);
+            const secs = Math.round((pace - mins) * 60);
+            return `${mins}'${secs.toString().padStart(2, '0')}"`;
+        }
+
+        // 格式化时长
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            if (mins >= 60) {
+                const hours = Math.floor(mins / 60);
+                const remainingMins = mins % 60;
+                return `${hours}小时${remainingMins}分`;
+            }
+            return `${mins}分${secs}秒`;
+        }
+    </script>
+</body>
+</html>

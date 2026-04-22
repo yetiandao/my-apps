@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简历医生 - AI智能简历优化诊断</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">简历医生</span>
+                <span class="logo-badge">AI</span>
+            </div>
+            <nav class="nav">
+                <a href="#upload" class="nav-link active">简历诊断</a>
+                <a href="#optimize" class="nav-link">一键优化</a>
+                <a href="#templates" class="nav-link">模板中心</a>
+                <a href="#pricing" class="nav-link">价格方案</a>
+            </nav>
+            <div class="header-actions">
+                <button class="btn btn-outline" onclick="showLogin()">登录</button>
+                <button class="btn btn-primary" onclick="showRegister()">免费试用</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主视觉区域 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    让HR <span class="highlight">6秒</span> 爱上看你的简历
+                </h1>
+                <p class="hero-subtitle">
+                    AI智能诊断 + 一键优化 + 专业模板<br>
+                    从投递到面试通过，只需一个"简历医生"
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">50,000+</span>
+                        <span class="stat-label">用户信赖</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">96%</span>
+                        <span class="stat-label">优化通过率</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3秒</span>
+                        <span class="stat-label">极速诊断</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-bg"></div>
+    </section>
+
+    <!-- 核心功能 -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">为什么选择简历医生？</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>智能诊断</h3>
+                    <p>多维度分析简历问题，格式、内容、亮点、ATS适配度全覆盖</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>一键优化</h3>
+                    <p>AI智能重写，量化成果表达，突显核心竞争力</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>专业模板</h3>
+                    <p>10+精选模板，涵盖互联网、金融、技术等各行业</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>ATS适配</h3>
+                    <p>针对HR筛选系统优化，提升简历曝光率300%</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 简历上传与诊断 -->
+    <section id="upload" class="upload-section">
+        <div class="container">
+            <h2 class="section-title">上传简历，3秒获得专业诊断</h2>
+            <p class="section-desc">支持文本粘贴、文件上传（PDF/Word/图片），AI自动识别分析</p>
+            
+            <div class="upload-box">
+                <div class="upload-tabs">
+                    <button class="tab-btn active" data-tab="text">文本输入</button>
+                    <button class="tab-btn" data-tab="file">文件上传</button>
+                </div>
+                
+                <!-- 文本输入模式 -->
+                <div id="text-mode" class="tab-content active">
+                    <textarea id="resume-text" class="resume-input" 
+                        placeholder="请粘贴您的简历内容，例如：
+
+姓名：张三
+电话：138-xxxx-xxxx
+邮箱：zhangsan@email.com
+
+求职意向：产品经理
+
+工作经历：
+xxx公司 | 产品经理 | 2020.06-至今
+• 负责产品规划和设计
+• 提升用户体验
+
+教育背景：
+xx大学 | 计算机专业 | 本科 | 2016-2020"></textarea>
+                </div>
+                
+                <!-- 文件上传模式 -->
+                <div id="file-mode" class="tab-content">
+                    <div class="file-upload-area" id="drop-zone">
+                        <input type="file" id="file-input" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" hidden>
+                        <div class="upload-icon">📎</div>
+                        <p class="upload-text">拖拽文件到此处，或 <span class="upload-link">点击上传</span></p>
+                        <p class="upload-hint">支持 PDF、Word、图片格式</p>
+                    </div>
+                    <div id="file-preview" class="file-preview hidden">
+                        <span class="file-name"></span>
+                        <button class="file-remove" onclick="removeFile()">×</button>
+                    </div>
+                </div>
+                
+                <div class="upload-actions">
+                    <button class="btn btn-primary btn-large" onclick="analyzeResume()">
+                        <span class="btn-icon">🔍</span>
+                        开始智能诊断
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 诊断结果展示 -->
+    <section id="diagnosis-result" class="diagnosis-section hidden">
+        <div class="container">
+            <h2 class="section-title">📊 诊断报告</h2>
+            
+            <div class="diagnosis-grid">
+                <!-- 综合评分 -->
+                <div class="diagnosis-card score-card">
+                    <div class="score-circle" id="score-circle">
+                        <svg viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="54" class="score-bg"/>
+                            <circle cx="60" cy="60" r="54" class="score-progress" id="score-progress"/>
+                        </svg>
+                        <div class="score-value">
+                            <span id="total-score">0</span>
+                            <small>分</small>
+                        </div>
+                    </div>
+                    <div class="score-label" id="score-level">等待分析...</div>
+                    <div class="hr-time">HR阅读时间约 <strong id="hr-time">6</strong> 秒</div>
+                </div>
+                
+                <!-- 分项评分 -->
+                <div class="diagnosis-card detail-card">
+                    <h3>分项评分</h3>
+                    <div class="score-bars" id="score-bars">
+                        <div class="score-bar">
+                            <div class="bar-label">
+                                <span>格式规范</span>
+                                <span class="bar-score" id="format-score">0</span>
+                            </div>
+                            <div class="bar-track">
+                                <div class="bar-fill" id="format-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="bar-issues" id="format-issues"></div>
+                        </div>
+                        <div class="score-bar">
+                            <div class="bar-label">
+                                <span>内容质量</span>
+                                <span class="bar-score" id="content-score">0</span>
+                            </div>
+                            <div class="bar-track">
+                                <div class="bar-fill" id="content-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="bar-issues" id="content-issues"></div>
+                        </div>
+                        <div class="score-bar">
+                            <div class="bar-label">
+                                <span>亮点突出</span>
+                                <span class="bar-score" id="highlight-score">0</span>
+                            </div>
+                            <div class="bar-track">
+                                <div class="bar-fill" id="highlight-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="bar-issues" id="highlight-issues"></div>
+                        </div>
+                        <div class="score-bar">
+                            <div class="bar-label">
+                                <span>ATS适配</span>
+                                <span class="bar-score" id="ats-score">0</span>
+                            </div>
+                            <div class="bar-track">
+                                <div class="bar-fill" id="ats-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="bar-issues" id="ats-issues"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 优化建议 -->
+            <div class="suggestions-section">
+                <h3>💡 优化建议</h3>
+                <div class="suggestions-list" id="suggestions-list">
+                    <!-- 动态填充 -->
+                </div>
+            </div>
+            
+            <div class="diagnosis-actions">
+                <button class="btn btn-primary btn-large" onclick="goToOptimize()">
+                    <span class="btn-icon">✨</span>
+                    一键优化简历
+                </button>
+                <button class="btn btn-outline" onclick="downloadReport()">
+                    <span class="btn-icon">📥</span>
+                    导出诊断报告
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 一键优化 -->
+    <section id="optimize" class="optimize-section hidden">
+        <div class="container">
+            <h2 class="section-title">✨ 一键优化，让简历脱颖而出</h2>
+            
+            <div class="optimize-box">
+                <div class="optimize-form">
+                    <div class="form-group">
+                        <label>目标岗位（选填）</label>
+                        <input type="text" id="target-position" placeholder="例如：产品经理">
+                    </div>
+                    <div class="form-group">
+                        <label>目标行业（选填）</label>
+                        <select id="target-industry">
+                            <option value="">不限制</option>
+                            <option value="互联网">互联网/科技</option>
+                            <option value="金融">金融/银行</option>
+                            <option value="教育">教育培训</option>
+                            <option value="医疗">医疗健康</option>
+                            <option value="制造">制造业</option>
+                            <option value="房地产">房地产</option>
+                            <option value="咨询">咨询/专业服务</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-large optimize-btn" onclick="optimizeResume()">
+                    <span class="btn-icon">⚡</span>
+                    立即优化
+                </button>
+            </div>
+            
+            <!-- 优化结果 -->
+            <div id="optimize-result" class="optimize-result hidden">
+                <div class="optimize-compare">
+                    <div class="compare-card before">
+                        <div class="compare-header">
+                            <span class="compare-label">优化前</span>
+                            <span class="compare-score">评分 <strong id="before-score">0</strong></span>
+                        </div>
+                        <div class="compare-content" id="before-content">
+                            <!-- 原始内容 -->
+                        </div>
+                    </div>
+                    <div class="compare-arrow">→</div>
+                    <div class="compare-card after">
+                        <div class="compare-header">
+                            <span class="compare-label">优化后</span>
+                            <span class="compare-score ats-badge">ATS通过率 <strong>92%</strong></span>
+                        </div>
+                        <div class="compare-content" id="after-content">
+                            <!-- 优化内容 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 优化亮点 -->
+                <div class="optimize-highlights">
+                    <h3>🌟 本次优化亮点</h3>
+                    <ul id="optimize-highlights-list">
+                        <!-- 动态填充 -->
+                    </ul>
+                </div>
+                
+                <div class="optimize-actions">
+                    <button class="btn btn-primary" onclick="copyOptimized()">
+                        <span class="btn-icon">📋</span>
+                        一键复制
+                    </button>
+                    <button class="btn btn-outline" onclick="downloadOptimized()">
+                        <span class="btn-icon">📥</span>
+                        下载简历
+                    </button>
+                    <button class="btn btn-outline" onclick="chooseTemplate()">
+                        <span class="btn-icon">📄</span>
+                        应用模板
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模板中心 -->
+    <section id="templates" class="templates-section hidden">
+        <div class="container">
+            <h2 class="section-title">精选简历模板</h2>
+            <p class="section-desc">10+专业模板，覆盖互联网、金融、技术等各行业</p>
+            
+            <div class="template-filter">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="modern">简约</button>
+                <button class="filter-btn" data-filter="classic">商务</button>
+                <button class="filter-btn" data-filter="creative">创意</button>
+            </div>
+            
+            <div class="templates-grid" id="templates-grid">
+                <!-- 动态加载模板 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 价格方案 -->
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <h2 class="section-title">简单透明的定价</h2>
+            <p class="section-desc">按需选择，灵活付费</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>单次优化</h3>
+                        <div class="price">
+                            <span class="currency">¥</span>
+                            <span class="amount">9.9</span>
+                        </div>
+                        <p class="price-desc">适合临时需求</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ 简历诊断分析</li>
+                        <li>✓ 1次AI优化</li>
+                        <li>✓ 基础模板下载</li>
+                        <li>✓ 诊断报告</li>
+                    </ul>
+                    <button class="btn btn-outline btn-full">立即购买</button>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">热门推荐</div>
+                    <div class="pricing-header">
+                        <h3>月卡会员</h3>
+                        <div class="price">
+                            <span class="currency">¥</span>
+                            <span class="amount">19.9</span>
+                        </div>
+                        <p class="price-desc">无限次优化</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ 无限次诊断</li>
+                        <li>✓ 无限次优化</li>
+                        <li>✓ 全部模板下载</li>
+                        <li>✓ ATS关键词分析</li>
+                        <li>✓ 专属顾问服务</li>
+                    </ul>
+                    <button class="btn btn-primary btn-full">立即开通</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>年卡会员</h3>
+                        <div class="price">
+                            <span class="currency">¥</span>
+                            <span class="amount">99</span>
+                        </div>
+                        <p class="price-desc">平均每天¥0.27</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ 月卡全部权益</li>
+                        <li>✓ 简历深度定制</li>
+                        <li>✓ 面试辅导</li>
+                        <li>✓ 职业规划咨询</li>
+                    </ul>
+                    <button class="btn btn-outline btn-full">立即开通</button>
+                </div>
+            </div>
+            
+            <p class="pricing-note">💡 目标102份销量 = ¥1010，首月营收目标轻松达成</p>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">📋</span>
+                        <span class="logo-text">简历医生</span>
+                    </div>
+                    <p>AI智能简历优化，让求职更简单</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>产品</h4>
+                        <a href="#">功能介绍</a>
+                        <a href="#">模板中心</a>
+                        <a href="#">价格方案</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>支持</h4>
+                        <a href="#">使用帮助</a>
+                        <a href="#">常见问题</a>
+                        <a href="#">意见反馈</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>合作</h4>
+                        <a href="#">企业服务</a>
+                        <a href="#">人才招聘</a>
+                        <a href="#">联系我们</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 简历医生 All Rights Reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 登录弹窗 -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('login-modal')">×</button>
+            <h2>登录简历医生</h2>
+            <form class="auth-form" onsubmit="return handleLogin(event)">
+                <div class="form-group">
+                    <input type="email" placeholder="邮箱" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">登录</button>
+            </form>
+            <p class="auth-switch">还没有账号？<a href="#" onclick="switchModal('login-modal', 'register-modal')">立即注册</a></p>
+        </div>
+    </div>
+
+    <!-- 注册弹窗 -->
+    <div id="register-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('register-modal')">×</button>
+            <h2>注册简历医生</h2>
+            <form class="auth-form" onsubmit="return handleRegister(event)">
+                <div class="form-group">
+                    <input type="text" placeholder="用户名" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="邮箱" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">注册</button>
+            </form>
+            <p class="auth-switch">已有账号？<a href="#" onclick="switchModal('register-modal', 'login-modal')">立即登录</a></p>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>AI正在分析中...</p>
+    </div>
+
+    <script src="static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>体检预约 - 专业体检服务平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1898ff;
+            --primary-dark: #0d7de2;
+            --success: #52c41a;
+            --warning: #faad14;
+            --danger: #ff4d4f;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --bg-light: #f5f5f5;
+            --bg-white: #fff;
+            --border: #e8e8e8;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* 头部导航 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-back {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .header-back:hover {
+            background: var(--bg-light);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-action {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* 主容器 */
+        .container {
+            padding-top: 56px;
+            padding-bottom: 70px;
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* 底部导航 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            height: 60px;
+            background: var(--bg-white);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+        }
+
+        .tab-item .icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .tab-item .text {
+            font-size: 11px;
+        }
+
+        /* 页面 */
+        .page {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 首页 */
+        .search-bar {
+            background: var(--bg-white);
+            border-radius: 24px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            margin-left: 10px;
+            background: transparent;
+        }
+
+        .search-bar .icon {
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        /* 横幅轮播 */
+        .banner {
+            background: linear-gradient(135deg, var(--primary) 0%, #0066cc 100%);
+            border-radius: 12px;
+            padding: 24px 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .banner h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .banner p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .banner-btn {
+            display: inline-block;
+            background: white;
+            color: var(--primary);
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* 快捷入口 */
+        .quick-entry {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .quick-entry-item {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quick-entry-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .quick-entry-item .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .quick-entry-item .text {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 精选机构 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .section-more {
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* 机构卡片 */
+        .institution-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .institution-card:active {
+            transform: scale(0.98);
+        }
+
+        .institution-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .institution-image {
+            width: 100px;
+            height: 75px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .institution-info {
+            flex: 1;
+        }
+
+        .institution-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .featured-tag {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .institution-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .rating-stars {
+            color: #ff9500;
+        }
+
+        .rating-score {
+            color: #ff9500;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .rating-count {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .institution-address {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .institution-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .institution-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .institution-price {
+            color: var(--danger);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .institution-price span {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: normal;
+        }
+
+        .book-btn {
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 套餐列表 */
+        .package-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .package-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .package-sales {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .package-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .package-price {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .price-current {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .price-original {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .package-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .package-highlight {
+            background: #fff7e6;
+            color: #fa8c16;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .package-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* 对比功能 */
+        .compare-bar {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 99;
+        }
+
+        .compare-bar.show {
+            display: flex;
+        }
+
+        .compare-count {
+            font-size: 14px;
+        }
+
+        .compare-btn {
+            background: white;
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .checkbox-wrap {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        /* 机构详情页 */
+        .detail-header {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .detail-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .detail-header-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 16px 16px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+        }
+
+        .detail-name {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .detail-content {
+            background: var(--bg-white);
+            border-radius: 16px 16px 0 0;
+            margin-top: -20px;
+            position: relative;
+            padding: 20px 16px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-info-item {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-info-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .detail-info-content {
+            flex: 1;
+        }
+
+        .detail-info-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .detail-info-value {
+            font-size: 14px;
+        }
+
+        .package-list-item {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .package-list-item:active {
+            transform: scale(0.98);
+        }
+
+        /* 评价列表 */
+        .review-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .review-user {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .review-rating {
+            color: #ff9500;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .review-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .review-service {
+            font-size: 12px;
+            color: var(--primary);
+            margin-top: 8px;
+        }
+
+        /* 预约表单 */
+        .form-section {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .form-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-item {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-row .form-item {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* 日期选择 */
+        .date-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .date-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .date-item {
+            min-width: 60px;
+            padding: 12px 8px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .date-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .date-item .day {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .date-item .weekday {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* 时间选择 */
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .time-item {
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .time-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .time-item.disabled {
+            background: var(--bg-light);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* 提交按钮 */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* 对比页面 */
+        .compare-container {
+            overflow-x: auto;
+        }
+
+        .compare-table {
+            display: table;
+            min-width: 600px;
+            width: 100%;
+        }
+
+        .compare-row {
+            display: table-row;
+        }
+
+        .compare-cell {
+            display: table-cell;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .compare-cell:first-child {
+            width: 100px;
+            text-align: left;
+            font-weight: 500;
+            background: var(--bg-light);
+            position: sticky;
+            left: 0;
+        }
+
+        .compare-cell-item {
+            width: 180px;
+        }
+
+        .compare-value {
+            font-size: 14px;
+        }
+
+        .compare-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .compare-tag {
+            display: inline-block;
+            background: #fff7e6;
+            color: #fa8c16;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        .compare-check {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            font-size: 14px;
+        }
+
+        .compare-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 我的预约 */
+        .booking-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .booking-no {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .booking-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .booking-status.pending {
+            background: #fff7e6;
+            color: #fa8c16;
+        }
+
+        .booking-status.confirmed {
+            background: #e6f7ff;
+            color: var(--primary);
+        }
+
+        .booking-status.completed {
+            background: #f6ffed;
+            color: var(--success);
+        }
+
+        .booking-info {
+            margin-bottom: 12px;
+        }
+
+        .booking-package {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .booking-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .booking-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .booking-price {
+            color: var(--danger);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-white);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 360px;
+            overflow: hidden;
+            animation: modalIn 0.3s;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .modal-icon.success {
+            color: var(--success);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .modal-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* 筛选 */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding: 4px 0;
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-item {
+            padding: 8px 16px;
+            background: var(--bg-white);
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .filter-item.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 加载更多 */
+        .load-more {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 搜索结果页 */
+        .search-results {
+            padding: 0;
+        }
+
+        .search-result-item {
+            background: var(--bg-white);
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .search-result-item:active {
+            background: var(--bg-light);
+        }
+
+        .search-result-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .search-result-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* 套餐详情页 */
+        .package-detail-header {
+            background: var(--bg-white);
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+
+        .package-detail-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .package-detail-price {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .package-detail-current {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .package-detail-original {
+            font-size: 15px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .package-detail-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .package-detail-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 套餐检查项 */
+        .check-items {
+            background: var(--bg-white);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .check-items-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .check-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-item-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-right: 12px;
+        }
+
+        /* 价格明细 */
+        .price-breakdown {
+            background: var(--bg-white);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .price-row.total {
+            border-top: 1px solid var(--border);
+            margin-top: 8px;
+            padding-top: 12px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .price-row.total .value {
+            color: var(--danger);
+        }
+
+        .commission-note {
+            background: #fff7e6;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #fa8c16;
+            margin-top: 12px;
+        }
+
+        /* 移动端适配优化 */
+        @media (max-width: 375px) {
+            .quick-entry {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .time-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-back" id="headerBack" onclick="goBack()">←</div>
+        <div class="header-title" id="headerTitle">体检预约</div>
+        <div class="header-action" id="headerAction" onclick="goHome()">⌂</div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <div class="search-bar" onclick="showSearch()">
+                <span class="icon">🔍</span>
+                <input type="text" placeholder="搜索体检机构或套餐" readonly>
+            </div>
+
+            <div class="banner">
+                <h2>🎉 新年健康特惠</h2>
+                <p>预约体检享8折优惠，平台补贴进行中</p>
+                <span class="banner-btn" onclick="goToPackages()">立即查看</span>
+            </div>
+
+            <div class="quick-entry">
+                <div class="quick-entry-item" onclick="filterByTag('三甲医院合作')">
+                    <div class="icon">🏥</div>
+                    <div class="text">三甲医院</div>
+                </div>
+                <div class="quick-entry-item" onclick="filterByTag('全国连锁')">
+                    <div class="icon">🔗</div>
+                    <div class="text">全国连锁</div>
+                </div>
+                <div class="quick-entry-item" onclick="filterByTag('周六可约')">
+                    <div class="icon">📅</div>
+                    <div class="text">周末可约</div>
+                </div>
+                <div class="quick-entry-item" onclick="goToCompare()">
+                    <div class="icon">⚖️</div>
+                    <div class="text">套餐对比</div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <span class="section-title">🏆 精选机构</span>
+                <span class="section-more" onclick="goToInstitutionList()">更多 ></span>
+            </div>
+            <div id="featuredInstitutions"></div>
+        </div>
+
+        <!-- 机构列表页 -->
+        <div class="page" id="page-institutions">
+            <div class="filter-bar" id="institutionFilters">
+                <span class="filter-item active" onclick="setInstitutionFilter(this, 'all')">综合</span>
+                <span class="filter-item" onclick="setInstitutionFilter(this, 'rating')">评分最高</span>
+                <span class="filter-item" onclick="setInstitutionFilter(this, 'distance')">距离最近</span>
+            </div>
+            <div id="institutionList"></div>
+        </div>
+
+        <!-- 机构详情页 -->
+        <div class="page" id="page-institution-detail">
+            <div class="detail-header" id="detailHeader"></div>
+            <div class="detail-content">
+                <div class="detail-section" id="detailInfo"></div>
+                <div class="detail-section">
+                    <div class="detail-section-title">📋 推荐套餐</div>
+                    <div id="detailPackages"></div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">⭐ 用户评价</div>
+                    <div id="detailReviews"></div>
+                </div>
+            </div>
+            <div style="padding: 0 16px 20px;">
+                <button class="submit-btn" id="detailBookBtn" onclick="quickBook()">立即预约</button>
+            </div>
+        </div>
+
+        <!-- 套餐列表页 -->
+        <div class="page" id="page-packages">
+            <div class="filter-bar" id="packageFilters">
+                <span class="filter-item active" onclick="setPackageFilter(this, 'all')">全部</span>
+                <span class="filter-item" onclick="setPackageFilter(this, 'basic')">基础</span>
+                <span class="filter-item" onclick="setPackageFilter(this, 'comprehensive')">全面</span>
+                <span class="filter-item" onclick="setPackageFilter(this, 'vip')">VIP</span>
+            </div>
+            <div class="filter-bar" style="margin-top: -8px;">
+                <span class="filter-item" onclick="setPriceFilter(this, 'all')">不限价格</span>
+                <span class="filter-item" onclick="setPriceFilter(this, 'low')">500以下</span>
+                <span class="filter-item" onclick="setPriceFilter(this, 'mid')">500-1500</span>
+                <span class="filter-item" onclick="setPriceFilter(this, 'high')">1500以上</span>
+            </div>
+            <div id="packageList"></div>
+        </div>
+
+        <!-- 套餐详情页 -->
+        <div class="page" id="page-package-detail">
+            <div id="packageDetailContent"></div>
+            <div style="padding: 0 16px 20px;">
+                <button class="submit-btn" id="packageBookBtn" onclick="bookPackage()">立即预约</button>
+            </div>
+        </div>
+
+        <!-- 套餐对比页 -->
+        <div class="page" id="page-compare">
+            <div class="section-header">
+                <span class="section-title">⚖️ 套餐对比</span>
+                <span class="section-more" onclick="clearCompare()">清空</span>
+            </div>
+            <div id="compareContent"></div>
+        </div>
+
+        <!-- 预约表单页 -->
+        <div class="page" id="page-booking">
+            <div class="form-section">
+                <div class="form-title">👤 个人信息</div>
+                <div class="form-item">
+                    <label class="form-label">姓名 *</label>
+                    <input type="text" class="form-input" id="bookingName" placeholder="请输入您的姓名">
+                </div>
+                <div class="form-item">
+                    <label class="form-label">手机号 *</label>
+                    <input type="tel" class="form-input" id="bookingPhone" placeholder="请输入手机号">
+                </div>
+                <div class="form-row">
+                    <div class="form-item">
+                        <label class="form-label">性别</label>
+                        <select class="form-input" id="bookingGender">
+                            <option value="">请选择</option>
+                            <option value="male">男</option>
+                            <option value="female">女</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">身份证</label>
+                        <input type="text" class="form-input" id="bookingIdCard" placeholder="选填">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-title">📅 预约时间</div>
+                <div class="date-scroll" id="dateScroll"></div>
+                <div class="form-item" style="margin-top: 16px;">
+                    <label class="form-label">选择时段</label>
+                    <div class="time-grid" id="timeGrid"></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-title">📝 备注</div>
+                <textarea class="form-input" id="bookingNotes" rows="3" placeholder="如有特殊需求请备注"></textarea>
+            </div>
+
+            <div class="form-section" id="bookingSummary"></div>
+
+            <button class="submit-btn" onclick="submitBooking()">确认预约</button>
+        </div>
+
+        <!-- 我的预约页 -->
+        <div class="page" id="page-my-bookings">
+            <div id="myBookingsList"></div>
+        </div>
+
+        <!-- 搜索结果页 -->
+        <div class="page" id="page-search">
+            <div class="section-header">
+                <span class="section-title">搜索结果</span>
+            </div>
+            <div id="searchResults"></div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="tab-bar">
+        <div class="tab-item active" data-page="home" onclick="switchTab('home')">
+            <span class="icon">🏠</span>
+            <span class="text">首页</span>
+        </div>
+        <div class="tab-item" data-page="institutions" onclick="switchTab('institutions')">
+            <span class="icon">🏥</span>
+            <span class="text">机构</span>
+        </div>
+        <div class="tab-item" data-page="packages" onclick="switchTab('packages')">
+            <span class="icon">📋</span>
+            <span class="text">套餐</span>
+        </div>
+        <div class="tab-item" data-page="my-bookings" onclick="switchTab('my-bookings')">
+            <span class="icon">📅</span>
+            <span class="text">我的</span>
+        </div>
+    </nav>
+
+    <!-- 对比栏 -->
+    <div class="compare-bar" id="compareBar">
+        <span class="compare-count">已选择 <span id="compareCount">0</span> 个套餐</span>
+        <button class="compare-btn" onclick="goToCompare()">开始对比</button>
+    </div>
+
+    <!-- 成功弹窗 -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon success">✓</div>
+                <div class="modal-title">预约成功</div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-text" id="modalBookingNo"></div>
+                <div class="modal-text" id="modalCommission"></div>
+                <p style="font-size: 13px; color: var(--text-muted);">请按时到店体检，祝您健康！</p>
+            </div>
+            <button class="modal-btn" onclick="closeModal()">确定</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // 全局状态
+        let currentInstitution = null;
+        let currentPackage = null;
+        let selectedPackages = [];
+        let selectedDate = null;
+        let selectedTime = null;
+        let currentPage = 'home';
+        let pageStack = ['home'];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHomePage();
+        });
+
+        // 显示Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // 页面导航
+        function switchTab(page) {
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.page === page);
+            });
+            
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${page}`).classList.add('active');
+            
+            currentPage = page;
+            pageStack = [page];
+            updateHeader(page);
+            
+            if (page === 'institutions') loadInstitutions();
+            if (page === 'packages') loadPackages();
+            if (page === 'my-bookings') loadMyBookings();
+        }
+
+        function goToPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            pageStack.push(pageId);
+            updateHeader(pageId);
+        }
+
+        function goBack() {
+            if (pageStack.length > 1) {
+                pageStack.pop();
+                const prevPage = pageStack[pageStack.length - 1];
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(`page-${prevPage}`).classList.add('active');
+                updateHeader(prevPage);
+            }
+        }
+
+        function goHome() {
+            switchTab('home');
+        }
+
+        function updateHeader(page) {
+            const title = document.getElementById('headerTitle');
+            const back = document.getElementById('headerBack');
+            const action = document.getElementById('headerAction');
+            
+            back.style.visibility = pageStack.length > 1 ? 'visible' : 'hidden';
+            
+            const titles = {
+                'home': '体检预约',
+                'institutions': '选择机构',
+                'institution-detail': currentInstitution?.name || '机构详情',
+                'packages': '选择套餐',
+                'package-detail': '套餐详情',
+                'compare': '套餐对比',
+                'booking': '确认预约',
+                'my-bookings': '我的预约',
+                'search': '搜索'
+            };
+            
+            title.textContent = titles[page] || '体检预约';
+        }
+
+        // 首页加载
+        async function loadHomePage() {
+            try {
+                const res = await fetch(`${API_BASE}/institutions?sort=rating`);
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    renderFeaturedInstitutions(data.data.filter(i => i.featured).slice(0, 3));
+                }
+            } catch (e) {
+                console.error('加载失败', e);
+                showToast('网络错误，请检查服务是否启动');
+            }
+        }
+
+        function renderFeaturedInstitutions(institutions) {
+            const container = document.getElementById('featuredInstitutions');
+            container.innerHTML = institutions.map(inst => `
+                <div class="institution-card" onclick="goToInstitutionDetail(${inst.id})">
+                    <div class="institution-header">
+                        <img class="institution-image" src="${inst.image}" alt="${inst.name}">
+                        <div class="institution-info">
+                            <div class="institution-name">
+                                ${inst.name}
+                                ${inst.featured ? '<span class="featured-tag">精选</span>' : ''}
+                            </div>
+                            <div class="institution-rating">
+                                <span class="rating-stars">★★★★★</span>
+                                <span class="rating-score">${inst.rating}</span>
+                                <span class="rating-count">(${inst.review_count}条评价)</span>
+                            </div>
+                            <div class="institution-address">📍 ${inst.address}</div>
+                        </div>
+                    </div>
+                    <div class="institution-tags">
+                        ${inst.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="institution-footer">
+                        <div class="institution-price">${inst.distance}</div>
+                        <button class="book-btn">查看详情</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 机构列表
+        async function loadInstitutions(sort = 'rating', keyword = '') {
+            try {
+                const res = await fetch(`${API_BASE}/institutions?sort=${sort}&keyword=${keyword}`);
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    renderInstitutionList(data.data);
+                }
+            } catch (e) {
+                showToast('加载失败');
+            }
+        }
+
+        function renderInstitutionList(institutions) {
+            const container = document.getElementById('institutionList');
+            
+            if (institutions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🏥</div>
+                        <div class="empty-text">暂无符合条件的机构</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = institutions.map(inst => `
+                <div class="institution-card" onclick="goToInstitutionDetail(${inst.id})">
+                    <div class="institution-header">
+                        <img class="institution-image" src="${inst.image}" alt="${inst.name}">
+                        <div class="institution-info">
+                            <div class="institution-name">
+                                ${inst.name}
+                                ${inst.featured ? '<span class="featured-tag">精选</span>' : ''}
+                            </div>
+                            <div class="institution-rating">
+                                <span class="rating-stars">★★★★★</span>
+                                <span class="rating-score">${inst.rating}</span>
+                                <span class="rating-count">(${inst.review_count}条评价)</span>
+                            </div>
+                            <div class="institution-address">📍 ${inst.address}</div>
+                        </div>
+                    </div>
+                    <div class="institution-tags">
+                        ${inst.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="institution-footer">
+                        <div class="institution-price">距离 ${inst.distance}</div>
+                        <button class="book-btn">查看详情</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setInstitutionFilter(el, type) {
+            document.querySelectorAll('#institutionFilters .filter-item').forEach(item => 
+                item.classList.remove('active'));
+            el.classList.add('active');
+            
+            const sortMap = { 'all': 'rating', 'rating': 'rating', 'distance': 'distance' };
+            loadInstitutions(sortMap[type]);
+        }
+
+        function goToInstitutionList() {
+            switchTab('institutions');
+        }
+
+        // 机构详情
+        async function goToInstitutionDetail(id) {
+            try {
+                const res = await fetch(`${API_BASE}/institutions/${id}`);
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    currentInstitution = data.data.institution;
+                    renderInstitutionDetail(data.data);
+                    goToPage('institution-detail');
+                }
+            } catch (e) {
+                showToast('加载失败');
+            }
+        }
+
+        function renderInstitutionDetail(data) {
+            const inst = data.institution;
+            
+            document.getElementById('detailHeader').innerHTML = `
+                <img src="${inst.image}" alt="${inst.name}">
+                <div class="detail-header-overlay">
+                    <div class="detail-name">${inst.name}</div>
+                    <div class="detail-meta">
+                        <span>⭐ ${inst.rating} (${inst.review_count}条)</span>
+                        <span>📍 ${inst.distance}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailInfo').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-section-title">🏥 机构信息</div>
+                    <div class="detail-info-item">
+                        <div class="detail-info-icon">📍</div>
+                        <div class="detail-info-content">
+                            <div class="detail-info-label">地址</div>
+                            <div class="detail-info-value">${inst.address}</div>
+                        </div>
+                    </div>
+                    <div class="detail-info-item">
+                        <div class="detail-info-icon">📞</div>
+                        <div class="detail-info-content">
+                            <div class="detail-info-label">电话</div>
+                            <div class="detail-info-value">${inst.phone}</div>
+                        </div>
+                    </div>
+                    <div class="detail-info-item">
+                        <div class="detail-info-icon">⏰</div>
+                        <div class="detail-info-content">
+                            <div class="detail-info-label">营业时间</div>
+                            <div class="detail-info-value">${inst.open_hours}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="institution-tags" style="margin-top: 12px;">
+                    ${inst.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+            `;
+            
+            document.getElementById('detailPackages').innerHTML = data.packages.map(pkg => `
+                <div class="package-list-item" onclick="goToPackageDetail(${pkg.id})">
+                    <div class="package-header">
+                        <span class="package-name">${pkg.name}</span>
+                        <span class="package-sales">已售${pkg.sales_count}</span>
+                    </div>
+                    <div class="package-price">
+                        <span class="price-current">¥${pkg.price}</span>
+                        <span class="price-original">¥${pkg.original_price}</span>
+                    </div>
+                    <div class="package-tags">
+                        ${pkg.highlights.map(h => `<span class="package-highlight">${h}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('detailReviews').innerHTML = data.reviews.length > 0 
+                ? data.reviews.slice(0, 3).map(review => `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-user">${review.user_name}</span>
+                            <span class="review-rating">${'⭐'.repeat(review.rating)}</span>
+                        </div>
+                        <div class="review-date">${review.date}</div>
+                        <div class="review-content">${review.content}</div>
+                        <div class="review-service">预约项目：${review.service_type}</div>
+                    </div>
+                `).join('')
+                : '<div class="empty-state"><div class="empty-text">暂无评价</div></div>';
+            
+            updateHeader('institution-detail');
+        }
+
+        function quickBook() {
+            if (currentInstitution && currentPackage) {
+                goToPage('booking');
+            } else if (currentInstitution) {
+                // 跳转套餐选择
+                switchTab('packages');
+            }
+        }
+
+        // 套餐列表
+        async function loadPackages(filter = 'all', priceFilter = 'all') {
+            try {
+                let url = `${API_BASE}/packages?sort=sales`;
+                if (priceFilter === 'low') url += '&max_price=500';
+                if (priceFilter === 'mid') url += '&min_price=500&max_price=1500';
+                if (priceFilter === 'high') url += '&min_price=1500';
+                
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    let packages = data.data;
+                    if (filter === 'basic') packages = packages.filter(p => p.price < 600);
+                    if (filter === 'comprehensive') packages = packages.filter(p => p.price >= 600 && p.price <= 2000);
+                    if (filter === 'vip') packages = packages.filter(p => p.price > 2000);
+                    
+                    renderPackageList(packages);
+                }
+            } catch (e) {
+                showToast('加载失败');
+            }
+        }
+
+        function renderPackageList(packages) {
+            const container = document.getElementById('packageList');
+            
+            if (packages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <div class="empty-text">暂无符合条件的套餐</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = packages.map(pkg => `
+                <div class="package-card" onclick="goToPackageDetail(${pkg.id})">
+                    <div class="package-header">
+                        <span class="package-name">${pkg.name}</span>
+                        <span class="package-sales">已售${pkg.sales_count}</span>
+                    </div>
+                    <div class="package-desc">${pkg.description}</div>
+                    <div class="package-price">
+                        <span class="price-current">¥${pkg.price}</span>
+                        <span class="price-original">¥${pkg.original_price}</span>
+                    </div>
+                    <div class="package-tags">
+                        ${pkg.highlights.map(h => `<span class="package-highlight">${h}</span>`).join('')}
+                    </div>
+                    <div class="package-meta">
+                        <span>⏱ ${pkg.duration}</span>
+                        <span>📝 ${pkg.report_time}出报告</span>
+                    </div>
+                    <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; color: var(--text-muted);">适用: ${pkg.suitable_for.join(', ')}</span>
+                        <div class="checkbox-wrap" onclick="event.stopPropagation(); toggleCompare(${pkg.id})">
+                            <div class="checkbox ${selectedPackages.includes(pkg.id) ? 'checked' : ''}" id="compare-check-${pkg.id}"></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setPackageFilter(el, type) {
+            document.querySelectorAll('#packageFilters .filter-item').forEach(item => 
+                item.classList.remove('active'));
+            el.classList.add('active');
+            loadPackages(type);
+        }
+
+        function setPriceFilter(el, type) {
+            document.querySelectorAll('.filter-bar:last-of-type .filter-item').forEach(item => 
+                item.classList.remove('active'));
+            el.classList.add('active');
+            loadPackages();
+        }
+
+        function goToPackages() {
+            switchTab('packages');
+        }
+
+        // 套餐详情
+        async function goToPackageDetail(id) {
+            try {
+                const res = await fetch(`${API_BASE}/packages/${id}`);
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    currentPackage = data.data.package;
+                    currentInstitution = data.data.institution;
+                    renderPackageDetail(data.data);
+                    goToPage('package-detail');
+                }
+            } catch (e) {
+                showToast('加载失败');
+            }
+        }
+
+        function renderPackageDetail(data) {
+            const pkg = data.package;
+            const inst = data.institution;
+            const commission = (pkg.price * 0.05).toFixed(2);
+            
+            document.getElementById('packageDetailContent').innerHTML = `
+                <div class="package-detail-header">
+                    <div class="package-detail-name">${pkg.name}</div>
+                    <div class="package-detail-price">
+                        <span class="package-detail-current">¥${pkg.price}</span>
+                        <span class="package-detail-original">原价 ¥${pkg.original_price}</span>
+                    </div>
+                    <div class="package-detail-meta">
+                        <span>⏱ ${pkg.duration}</span>
+                        <span>📝 ${pkg.report_time}</span>
+                        <span>📍 ${inst.name}</span>
+                    </div>
+                    <div class="package-tags" style="margin-top: 12px;">
+                        ${pkg.highlights.map(h => `<span class="package-highlight">${h}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="check-items">
+                    <div class="check-items-title">📋 体检项目（共${pkg.items.length}项）</div>
+                    ${pkg.items.map(item => `
+                        <div class="check-item">
+                            <span class="check-item-icon">✓</span>
+                            ${item}
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span>套餐价格</span>
+                        <span>¥${pkg.price}</span>
+                    </div>
+                    <div class="price-row">
+                        <span>平台服务费</span>
+                        <span>¥${commission}</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>实付金额</span>
+                        <span class="value">¥${pkg.price}</span>
+                    </div>
+                    <div class="commission-note">
+                        💡 平台将从该订单抽取 ¥${commission} 作为服务费（5%抽成）
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-title">👤 适用人群</div>
+                    <div class="package-tags">
+                        ${pkg.suitable_for.map(s => `<span class="tag">${s}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            updateHeader('package-detail');
+        }
+
+        function bookPackage() {
+            if (!currentPackage) {
+                showToast('请先选择套餐');
+                return;
+            }
+            goToPage('booking');
+        }
+
+        // 套餐对比
+        function toggleCompare(pkgId) {
+            const index = selectedPackages.indexOf(pkgId);
+            const checkEl = document.getElementById(`compare-check-${pkgId}`);
+            
+            if (index > -1) {
+                selectedPackages.splice(index, 1);
+                checkEl.classList.remove('checked');
+            } else {
+                if (selectedPackages.length >= 4) {
+                    showToast('最多对比4个套餐');
+                    return;
+                }
+                selectedPackages.push(pkgId);
+                checkEl.classList.add('checked');
+            }
+            
+            updateCompareBar();
+        }
+
+        function updateCompareBar() {
+            const bar = document.getElementById('compareBar');
+            const count = document.getElementById('compareCount');
+            count.textContent = selectedPackages.length;
+            bar.classList.toggle('show', selectedPackages.length >= 2);
+        }
+
+        async function goToCompare() {
+            if (selectedPackages.length < 2) {
+                showToast('请至少选择2个套餐进行对比');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/packages/compare`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ package_ids: selectedPackages })
+                });
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    renderCompare(data.data);
+                    goToPage('compare');
+                }
+            } catch (e) {
+                showToast('加载失败');
+            }
+        }
+
+        function renderCompare(packages) {
+            const container = document.getElementById('compareContent');
+            
+            // 获取所有检查项
+            const allItems = new Set();
+            packages.forEach(p => p.package.items.forEach(item => allItems.add(item)));
+            
+            container.innerHTML = `
+                <div class="compare-container">
+                    <div class="compare-table">
+                        <div class="compare-row">
+                            <div class="compare-cell">机构</div>
+                            ${packages.map(p => `
+                                <div class="compare-cell compare-cell-item">
+                                    <strong>${p.institution.name}</strong>
+                                    <div class="compare-close" onclick="removeFromCompare(${p.package.id})">×</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-cell">套餐名称</div>
+                            ${packages.map(p => `
+                                <div class="compare-cell compare-cell-item">${p.package.name}</div>
+                            `).join('')}
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-cell">价格</div>
+                            ${packages.map(p => `
+                                <div class="compare-cell compare-cell-item">
+                                    <span class="compare-price">¥${p.package.price}</span>
+                                    <span class="compare-tag">立省¥${p.package.original_price - p.package.price}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-cell">原价</div>
+                            ${packages.map(p => `
+                                <div class="compare-cell compare-cell-item" style="text-decoration: line-through; color: var(--text-muted);">¥${p.package.original_price}</div>
+                            `).join('')}
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-cell">体检时长</div>
+                            ${packages.map(p => `<div class="compare-cell compare-cell-item">${p.package.duration}</div>`).join('')}
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-cell">报告时间</div>
+                            ${packages.map(p => `<div class="compare-cell compare-cell-item">${p.package.report_time}</div>`).join('')}
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-cell">已售</div>
+                            ${packages.map(p => `<div class="compare-cell compare-cell-item">${p.package.sales_count}</div>`).join('')}
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-cell">适用人群</div>
+                            ${packages.map(p => `
+                                <div class="compare-cell compare-cell-item">${p.package.suitable_for.join(', ')}</div>
+                            `).join('')}
+                        </div>
+                        <div class="compare-row">
+                            <div class="compare-cell">体检项目</div>
+                            ${packages.map(p => `
+                                <div class="compare-cell compare-cell-item">${p.package.items.length} 项</div>
+                            `).join('')}
+                        </div>
+                        ${Array.from(allItems).map(item => `
+                            <div class="compare-row">
+                                <div class="compare-cell">${item}</div>
+                                ${packages.map(p => `
+                                    <div class="compare-cell compare-cell-item">
+                                        ${p.package.items.includes(item) 
+                                            ? '<span class="compare-check">✓</span>' 
+                                            : '<span style="color: var(--text-muted);">—</span>'}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <button class="submit-btn" onclick="bookComparedPackage(${packages[0].package.id})" style="margin-top: 20px;">
+                    立即预约第一个套餐
+                </button>
+            `;
+            
+            updateHeader('compare');
+        }
+
+        function removeFromCompare(pkgId) {
+            const index = selectedPackages.indexOf(pkgId);
+            if (index > -1) {
+                selectedPackages.splice(index, 1);
+                document.getElementById(`compare-check-${pkgId}`)?.classList.remove('checked');
+                updateCompareBar();
+                if (selectedPackages.length < 2) {
+                    goToPage('packages');
+                } else {
+                    goToCompare();
+                }
+            }
+        }
+
+        function clearCompare() {
+            selectedPackages.forEach(id => {
+                document.getElementById(`compare-check-${id}`)?.classList.remove('checked');
+            });
+            selectedPackages = [];
+            updateCompareBar();
+            goToPage('packages');
+        }
+
+        function bookComparedPackage(pkgId) {
+            goToPackageDetail(pkgId);
+            setTimeout(() => {
+                goToPage('booking');
+            }, 300);
+        }
+
+        // 预约表单
+        function initBookingForm() {
+            // 生成日期
+            const dateScroll = document.getElementById('dateScroll');
+            const today = new Date();
+            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            
+            let dates = [];
+            for (let i = 0; i < 14; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                dates.push({
+                    date: date.toISOString().split('T')[0],
+                    day: date.getDate(),
+                    weekday: i === 0 ? '今天' : (i === 1 ? '明天' : weekdays[date.getDay()])
+                });
+            }
+            
+            dateScroll.innerHTML = dates.map((d, i) => `
+                <div class="date-item ${i === 0 ? 'active' : ''}" onclick="selectDate(this, '${d.date}')">
+                    <div class="day">${d.day}</div>
+                    <div class="weekday">${d.weekday}</div>
+                </div>
+            `).join('');
+            
+            selectedDate = dates[0].date;
+            
+            // 生成时段
+            const timeGrid = document.getElementById('timeGrid');
+            const times = [];
+            for (let h = 8; h < 12; h++) {
+                times.push(`${h}:00`);
+                times.push(`${h}:30`);
+            }
+            
+            timeGrid.innerHTML = times.map((t, i) => `
+                <div class="time-item ${i === 0 ? 'active' : ''}" onclick="selectTime(this, '${t}')">${t}</div>
+            `).join('');
+            
+            selectedTime = times[0];
+            
+            // 更新摘要
+            updateBookingSummary();
+        }
+
+        function selectDate(el, date) {
+            document.querySelectorAll('.date-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+            selectedDate = date;
+        }
+
+        function selectTime(el, time) {
+            document.querySelectorAll('.time-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+            selectedTime = time;
+        }
+
+        function updateBookingSummary() {
+            if (!currentPackage || !currentInstitution) {
+                showToast('套餐信息不完整');
+                return;
+            }
+            
+            const commission = (currentPackage.price * 0.05).toFixed(2);
+            
+            document.getElementById('bookingSummary').innerHTML = `
+                <div class="form-title">💰 费用明细</div>
+                <div class="price-breakdown" style="background: var(--bg-light);">
+                    <div class="price-row">
+                        <span>套餐</span>
+                        <span>${currentPackage.name}</span>
+                    </div>
+                    <div class="price-row">
+                        <span>机构</span>
+                        <span>${currentInstitution.name}</span>
+                    </div>
+                    <div class="price-row">
+                        <span>预约日期</span>
+                        <span>${selectedDate} ${selectedTime}</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>应付金额</span>
+                        <span class="value">¥${currentPackage.price}</span>
+                    </div>
+                    <div class="commission-note">
+                        💡 平台将抽取 ¥${commission} 作为服务费
+                    </div>
+                </div>
+            `;
+        }
+
+        async function submitBooking() {
+            const name = document.getElementById('bookingName').value.trim();
+            const phone = document.getElementById('bookingPhone').value.trim();
+            const gender = document.getElementById('bookingGender').value;
+            const idCard = document.getElementById('bookingIdCard').value.trim();
+            const notes = document.getElementById('bookingNotes').value.trim();
+            
+            if (!name) {
+                showToast('请输入姓名');
+                return;
+            }
+            if (!phone || !/^1[3-9]\d{9}$/.test(phone)) {
+                showToast('请输入正确的手机号');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/bookings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        phone,
+                        package_id: currentPackage.id,
+                        date: selectedDate,
+                        time_slot: selectedTime,
+                        gender,
+                        id_card: idCard,
+                        notes
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    document.getElementById('modalBookingNo').textContent = `预约号：${data.data.booking_no}`;
+                    document.getElementById('modalCommission').textContent = `平台佣金：¥${data.data.commission}`;
+                    document.getElementById('successModal').classList.add('show');
+                } else {
+                    showToast(data.message || '预约失败');
+                }
+            } catch (e) {
+                showToast('网络错误');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('show');
+            switchTab('my-bookings');
+        }
+
+        // 我的预约
+        async function loadMyBookings() {
+            const phone = localStorage.getItem('booking_phone') || '';
+            
+            try {
+                const url = phone ? `${API_BASE}/bookings?phone=${phone}` : `${API_BASE}/bookings`;
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    renderMyBookings(data.data);
+                }
+            } catch (e) {
+                showToast('加载失败');
+            }
+        }
+
+        function renderMyBookings(bookings) {
+            const container = document.getElementById('myBookingsList');
+            
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📅</div>
+                        <div class="empty-text">暂无预约记录</div>
+                        <p style="color: var(--primary); margin-top: 16px; cursor: pointer;" onclick="switchTab('packages')">去预约</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = bookings.map(b => `
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <span class="booking-no">${b.booking_no}</span>
+                        <span class="booking-status ${b.status}">${getStatusText(b.status)}</span>
+                    </div>
+                    <div class="booking-info">
+                        <div class="booking-package">${b.package_name}</div>
+                        <div class="booking-details">
+                            <div>📍 ${b.institution_name}</div>
+                            <div>📅 ${b.date} ${b.time_slot}</div>
+                            <div>👤 ${b.name} ${b.phone}</div>
+                        </div>
+                    </div>
+                    <div class="booking-footer">
+                        <span class="booking-price">¥${b.price}</span>
+                        ${b.status === 'pending' ? `<button class="book-btn" onclick="cancelBooking(${b.id})">取消</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            const map = {
+                'pending': '待确认',
+                'confirmed': '已确认',
+                'completed': '已完成',
+                'cancelled': '已取消'
+            };
+            return map[status] || status;
+        }
+
+        function cancelBooking(id) {
+            if (confirm('确定要取消这个预约吗？')) {
+                showToast('取消功能开发中');
+            }
+        }
+
+        // 搜索
+        function showSearch() {
+            goToPage('search');
+            document.querySelector('#page-search .search-bar input')?.focus();
+        }
+
+        async function doSearch(keyword) {
+            if (!keyword || keyword.length < 2) {
+                document.getElementById('searchResults').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-text">请输入搜索关键词</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/search?keyword=${encodeURIComponent(keyword)}`);
+                const data = await res.json();
+                
+                if (data.code === 0) {
+                    renderSearchResults(data.data);
+                }
+            } catch (e) {
+                showToast('搜索失败');
+            }
+        }
+
+        function renderSearchResults(data) {
+            const container = document.getElementById('searchResults');
+            const { institutions, packages } = data;
+            
+            let html = '';
+            
+            if (institutions.length > 0) {
+                html += `<div class="section-header"><span class="section-title">🏥 机构</span></div>`;
+                html += institutions.map(inst => `
+                    <div class="institution-card" onclick="goToInstitutionDetail(${inst.id})">
+                        <div class="institution-header">
+                            <img class="institution-image" src="${inst.image}" alt="${inst.name}">
+                            <div class="institution-info">
+                                <div class="institution-name">${inst.name}</div>
+                                <div class="institution-rating">
+                                    <span class="rating-score">⭐ ${inst.rating}</span>
+                                    <span class="rating-count">(${inst.review_count})</span>
+                                </div>
+                                <div class="institution-address">📍 ${inst.address}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            if (packages.length > 0) {
+                html += `<div class="section-header" style="margin-top: 16px;"><span class="section-title">📋 套餐</span></div>`;
+                html += packages.map(pkg => `
+                    <div class="package-card" onclick="goToPackageDetail(${pkg.id})">
+                        <div class="package-header">
+                            <span class="package-name">${pkg.name}</span>
+                        </div>
+                        <div class="package-desc">${pkg.description}</div>
+                        <div class="package-price">
+                            <span class="price-current">¥${pkg.price}</span>
+                            <span class="price-original">¥${pkg.original_price}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            if (institutions.length === 0 && packages.length === 0) {
+                html = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-text">未找到相关结果</div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // 筛选标签
+        function filterByTag(tag) {
+            switchTab('institutions');
+            loadInstitutions('rating', tag);
+        }
+
+        // 页面初始化时设置
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeader('home');
+            initBookingForm();
+        });
+    </script>
+</body>
+</html>

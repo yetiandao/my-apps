@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小微企业助手 - 让经营更简单</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --bg-color: #f8fafc;
+            --card-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 底部导航栏 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            color: var(--gray-500);
+            text-decoration: none;
+            font-size: 11px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+        }
+
+        .tab-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 页面容器 */
+        .page-container {
+            padding-bottom: 70px;
+            max-width: 430px;
+            margin: 0 auto;
+        }
+
+        /* 隐藏页面 */
+        .page {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 首页样式 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px 16px;
+            border-radius: 0 0 24px 24px;
+            margin: -16px -16px 16px -16px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .user-text h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .user-text p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .header-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.85;
+        }
+
+        /* 快捷入口 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .action-item {
+            background: white;
+            padding: 16px 8px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .action-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 8px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .action-item span {
+            font-size: 12px;
+            color: var(--gray-700);
+        }
+
+        /* 卡片通用 */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .card-more {
+            font-size: 12px;
+            color: var(--gray-500);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 政策列表 */
+        .policy-item {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .policy-item:hover {
+            transform: translateX(4px);
+        }
+
+        .policy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .policy-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-900);
+            flex: 1;
+        }
+
+        .match-badge {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .policy-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .policy-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-right: 6px;
+        }
+
+        .tag-tax { background: #dbeafe; color: #1e40af; }
+        .tag-subsidy { background: #d1fae5; color: #065f46; }
+        .tag-loan { background: #fef3c7; color: #92400e; }
+        .tag-exemption { background: #f3e8ff; color: #7c3aed; }
+
+        /* 税务日历 */
+        .calendar-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .calendar-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .calendar-item:last-child {
+            border-bottom: none;
+        }
+
+        .calendar-date {
+            width: 50px;
+            text-align: center;
+            margin-right: 12px;
+        }
+
+        .calendar-day {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .calendar-month {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .calendar-content {
+            flex: 1;
+        }
+
+        .calendar-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .calendar-desc {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .urgent-badge {
+            background: var(--danger);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+
+        /* 文章列表 */
+        .article-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+            cursor: pointer;
+        }
+
+        .article-item:last-child {
+            border-bottom: none;
+        }
+
+        .article-cover {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), #60a5fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .article-cover svg {
+            width: 36px;
+            height: 36px;
+            color: white;
+        }
+
+        .article-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .article-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-900);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        /* 论坛帖子 */
+        .post-item {
+            padding: 14px;
+            border-bottom: 1px solid var(--gray-100);
+            cursor: pointer;
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #60a5fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .post-author {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .post-time {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .post-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .post-preview {
+            font-size: 13px;
+            color: var(--gray-500);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-footer {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .post-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .post-stat svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .category-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+
+        .cat-experience { background: #dbeafe; color: #1e40af; }
+        .cat-question { background: #fef3c7; color: #92400e; }
+        .cat-exchange { background: #d1fae5; color: #065f46; }
+        .cat-news { background: #fce7f3; color: #9d174d; }
+
+        .top-badge {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+
+        /* 详情页 */
+        .detail-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+        }
+
+        .detail-page.active {
+            display: flex;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-200);
+            background: white;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .detail-title {
+            font-size: 17px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .detail-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        /* 表单元素 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* 按钮 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* 筛选标签 */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        .filter-tab {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* 图表区域 */
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .chart-bar {
+            width: 35px;
+            background: linear-gradient(180deg, var(--primary), #60a5fa);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+
+        .chart-bar span {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: var(--gray-500);
+        }
+
+        /* 会员卡片 */
+        .vip-card {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .vip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .vip-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .vip-expire {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .vip-benefits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .vip-benefit {
+            background: rgba(255,255,255,0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .upgrade-card {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+        }
+
+        .upgrade-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .upgrade-price {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .upgrade-price span {
+            font-size: 14px;
+        }
+
+        .upgrade-desc {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 300;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px 16px 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        /* 分类筛选 */
+        .category-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .category-chip {
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .category-chip.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 政策详情 */
+        .policy-detail-header {
+            margin-bottom: 20px;
+        }
+
+        .policy-detail-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .policy-detail-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .policy-detail-section {
+            margin-bottom: 20px;
+        }
+
+        .policy-detail-section h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .policy-detail-section p {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.7;
+        }
+
+        .condition-list {
+            list-style: none;
+        }
+
+        .condition-list li {
+            font-size: 14px;
+            color: var(--gray-700);
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .condition-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* 我的页面 */
+        .profile-header {
+            text-align: center;
+            padding: 30px 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            margin: -16px -16px 16px -16px;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 12px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-company {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .menu-list {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--gray-100);
+            cursor: pointer;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .menu-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .menu-text {
+            flex: 1;
+            font-size: 15px;
+            color: var(--gray-900);
+        }
+
+        .menu-arrow {
+            color: var(--gray-300);
+        }
+
+        /* 发布按钮 */
+        .fab {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            cursor: pointer;
+            z-index: 99;
+        }
+
+        .fab svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* 搜索框 */
+        .search-box {
+            display: flex;
+            background: var(--gray-100);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+        }
+
+        .search-box svg {
+            width: 20px;
+            height: 20px;
+            color: var(--gray-500);
+            margin-right: 8px;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            outline: none;
+        }
+
+        /* 文章详情 */
+        .article-detail-title {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .article-detail-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 20px;
+        }
+
+        .article-detail-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--gray-700);
+        }
+
+        .article-detail-content h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0 12px;
+            color: var(--gray-900);
+        }
+
+        .article-detail-content p {
+            margin-bottom: 12px;
+        }
+
+        .article-detail-content strong {
+            color: var(--gray-900);
+        }
+
+        /* 回复列表 */
+        .reply-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .reply-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #60a5fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .reply-content {
+            flex: 1;
+        }
+
+        .reply-author {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .reply-text {
+            font-size: 14px;
+            color: var(--gray-700);
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        .reply-time {
+            font-size: 11px;
+            color: var(--gray-500);
+            margin-top: 6px;
+        }
+
+        .reply-form {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .reply-form input {
+            flex: 1;
+            border: none;
+            background: white;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .reply-form button {
+            padding: 10px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* 响应式 */
+        @media (max-width: 430px) {
+            .page-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="header">
+                <div class="header-top">
+                    <div class="user-info">
+                        <div class="avatar">👤</div>
+                        <div class="user-text">
+                            <h2 id="user-name">加载中...</h2>
+                            <p id="user-company">小微企业助手</p>
+                        </div>
+                    </div>
+                    <div class="vip-badge">⭐ 年卡会员</div>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="month-revenue">--</div>
+                        <div class="stat-label">本月营收(元)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="profit-rate">--</div>
+                        <div class="stat-label">利润率(%)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="policy-count">--</div>
+                        <div class="stat-label">政策匹配</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="action-item" onclick="showPage('policies')">
+                    <div class="action-icon" style="background: #dbeafe;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <span>政策补贴</span>
+                </div>
+                <div class="action-item" onclick="showPage('calendar')">
+                    <div class="action-icon" style="background: #fef3c7;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    </div>
+                    <span>税务日历</span>
+                </div>
+                <div class="action-item" onclick="showPage('articles')">
+                    <div class="action-icon" style="background: #d1fae5;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </div>
+                    <span>政策解读</span>
+                </div>
+                <div class="action-item" onclick="showPage('forum')">
+                    <div class="action-icon" style="background: #fce7f3;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#9d174d" stroke-width="2"><path d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
+                    </div>
+                    <span>交流区</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📊 营收趋势</span>
+                    <span class="card-more">近6个月</span>
+                </div>
+                <div class="chart-container" id="revenue-chart"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🔥 热门政策</span>
+                    <span class="card-more" onclick="showPage('policies')">查看全部 →</span>
+                </div>
+                <div id="hot-policies"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📅 待办提醒</span>
+                    <span class="card-more" onclick="showPage('calendar')">查看全部 →</span>
+                </div>
+                <div id="upcoming-tasks"></div>
+            </div>
+        </div>
+
+        <!-- 政策页面 -->
+        <div id="page-policies" class="page">
+            <div class="header" style="margin: -16px -16px 16px -16px; border-radius: 0;">
+                <div class="header-top">
+                    <div class="back-btn" onclick="showPage('home')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+                    </div>
+                    <div class="detail-title">政策补贴</div>
+                </div>
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    <input type="text" placeholder="搜索政策关键词..." id="policy-search">
+                </div>
+                <div class="category-filters">
+                    <span class="category-chip active" data-type="all">全部</span>
+                    <span class="category-chip" data-type="tax">税收优惠</span>
+                    <span class="category-chip" data-type="subsidy">补贴申领</span>
+                    <span class="category-chip" data-type="loan">贷款融资</span>
+                </div>
+            </div>
+            <div id="policy-list"></div>
+        </div>
+
+        <!-- 税务日历页面 -->
+        <div id="page-calendar" class="page">
+            <div class="header" style="margin: -16px -16px 16px -16px; border-radius: 0;">
+                <div class="header-top">
+                    <div class="back-btn" onclick="showPage('home')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+                    </div>
+                    <div class="detail-title">税务日历</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📆 1月申报日程</span>
+                </div>
+                <div class="calendar-list" id="calendar-list"></div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📋 月度常规任务</span>
+                </div>
+                <div id="monthly-tasks"></div>
+            </div>
+        </div>
+
+        <!-- 文章页面 -->
+        <div id="page-articles" class="page">
+            <div class="header" style="margin: -16px -16px 16px -16px; border-radius: 0;">
+                <div class="header-top">
+                    <div class="back-btn" onclick="showPage('home')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+                    </div>
+                    <div class="detail-title">政策解读</div>
+                </div>
+                <div class="category-filters">
+                    <span class="category-chip active" data-category="all">全部</span>
+                    <span class="category-chip" data-category="tax">税务</span>
+                    <span class="category-chip" data-category="policy">政策</span>
+                    <span class="category-chip" data-category="finance">融资</span>
+                    <span class="category-chip" data-category="legal">法律</span>
+                </div>
+            </div>
+            <div id="article-list"></div>
+        </div>
+
+        <!-- 交流区页面 -->
+        <div id="page-forum" class="page">
+            <div class="header" style="margin: -16px -16px 16px -16px; border-radius: 0;">
+                <div class="header-top">
+                    <div class="back-btn" onclick="showPage('home')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+                    </div>
+                    <div class="detail-title">交流区</div>
+                </div>
+                <div class="category-filters">
+                    <span class="category-chip active" data-forum="all">全部</span>
+                    <span class="category-chip" data-forum="experience">经验分享</span>
+                    <span class="category-chip" data-forum="question">问答求助</span>
+                    <span class="category-chip" data-forum="exchange">资源交换</span>
+                    <span class="category-chip" data-forum="news">资讯速递</span>
+                </div>
+            </div>
+            <div id="forum-list"></div>
+        </div>
+
+        <!-- 我的页面 -->
+        <div id="page-profile" class="page">
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-name" id="profile-name">加载中...</div>
+                <div class="profile-company" id="profile-company">小微企业助手</div>
+            </div>
+
+            <div class="vip-card">
+                <div class="vip-header">
+                    <div>
+                        <div class="vip-name">⭐ 年卡会员</div>
+                        <div class="vip-expire">有效期至 2025-08-15</div>
+                    </div>
+                </div>
+                <div class="vip-benefits">
+                    <span class="vip-benefit">✓ 政策精准推送</span>
+                    <span class="vip-benefit">✓ 申报代办服务</span>
+                    <span class="vip-benefit">✓ 专属客服咨询</span>
+                </div>
+            </div>
+
+            <div class="upgrade-card">
+                <div class="upgrade-title">升级终身会员</div>
+                <div class="upgrade-price">¥599 <span>原价 ¥1998</span></div>
+                <div class="upgrade-desc">一次付费，终身享用全部功能</div>
+                <button class="btn btn-outline" style="background: white; color: #f97316;">立即升级</button>
+            </div>
+
+            <div class="menu-list" style="margin-top: 16px;">
+                <div class="menu-item">
+                    <div class="menu-icon" style="background: #dbeafe;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
+                    <span class="menu-text">企业信息</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon" style="background: #d1fae5;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    </div>
+                    <span class="menu-text">消息通知</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon" style="background: #fef3c7;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="2"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                    </div>
+                    <span class="menu-text">我的收藏</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon" style="background: #fce7f3;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#9d174d" stroke-width="2"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                    <span class="menu-text">设置</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon" style="background: #e5e7eb;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <span class="menu-text">帮助与反馈</span>
+                    <span class="menu-arrow">›</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <nav class="tab-bar">
+            <div class="tab-item active" onclick="showPage('home')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>首页</span>
+            </div>
+            <div class="tab-item" onclick="showPage('policies')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>政策</span>
+            </div>
+            <div class="tab-item" onclick="showPage('calendar')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span>日历</span>
+            </div>
+            <div class="tab-item" onclick="showPage('articles')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                <span>解读</span>
+            </div>
+            <div class="tab-item" onclick="showPage('profile')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <span>我的</span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- 发布按钮 -->
+    <div class="fab" onclick="openPublishModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v16m8-8H4"/></svg>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 发布弹窗 -->
+    <div class="modal-overlay" id="publish-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">发布帖子</span>
+                <div class="modal-close" onclick="closePublishModal()">✕</div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">标题</label>
+                    <input type="text" class="form-input" id="post-title" placeholder="输入帖子标题...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类</label>
+                    <select class="form-input" id="post-category">
+                        <option value="experience">经验分享</option>
+                        <option value="question">问答求助</option>
+                        <option value="exchange">资源交换</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">内容</label>
+                    <textarea class="form-input" id="post-content" placeholder="输入帖子内容..."></textarea>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="submitPost()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 政策详情页 -->
+    <div class="detail-page" id="policy-detail">
+        <div class="detail-header">
+            <div class="back-btn" onclick="closePolicyDetail()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </div>
+            <div class="detail-title">政策详情</div>
+        </div>
+        <div class="detail-content" id="policy-detail-content"></div>
+    </div>
+
+    <!-- 文章详情页 -->
+    <div class="detail-page" id="article-detail">
+        <div class="detail-header">
+            <div class="back-btn" onclick="closeArticleDetail()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </div>
+            <div class="detail-title">文章详情</div>
+        </div>
+        <div class="detail-content" id="article-detail-content"></div>
+    </div>
+
+    <!-- 帖子详情页 -->
+    <div class="detail-page" id="post-detail">
+        <div class="detail-header">
+            <div class="back-btn" onclick="closePostDetail()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </div>
+            <div class="detail-title">帖子详情</div>
+        </div>
+        <div class="detail-content" id="post-detail-content"></div>
+    </div>
+
+    <script>
+        // ==================== 数据存储 ====================
+        let appData = {
+            policies: [],
+            articles: [],
+            forumPosts: [],
+            taxEvents: [],
+            dashboard: null
+        };
+
+        // ==================== API请求 ====================
+        const API_BASE = 'http://localhost:5000/api';
+
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('API请求失败:', error);
+                showToast('网络请求失败，请检查服务器是否启动');
+                return null;
+            }
+        }
+
+        // ==================== 页面切换 ====================
+        function showPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // 取消所有导航激活
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            
+            // 显示目标页面
+            const page = document.getElementById(`page-${pageName}`);
+            if (page) {
+                page.classList.add('active');
+            }
+            
+            // 激活对应导航
+            const navMap = {
+                'home': 0,
+                'policies': 1,
+                'calendar': 2,
+                'articles': 3,
+                'profile': 4,
+                'forum': 4
+            };
+            const navItems = document.querySelectorAll('.tab-item');
+            if (navItems[navMap[pageName]]) {
+                navItems[navMap[pageName]].classList.add('active');
+            }
+            
+            // 加载对应页面数据
+            if (pageName === 'policies') loadPolicies();
+            if (pageName === 'calendar') loadCalendar();
+            if (pageName === 'articles') loadArticles();
+            if (pageName === 'forum') loadForum();
+        }
+
+        // ==================== 加载数据 ====================
+        async function loadDashboard() {
+            const result = await apiRequest('/dashboard');
+            if (result && result.code === 200) {
+                appData.dashboard = result.data;
+                renderDashboard();
+            }
+        }
+
+        async function loadPolicies() {
+            const result = await apiRequest('/policies');
+            if (result && result.code === 200) {
+                appData.policies = result.data.policies;
+                renderPolicies(appData.policies);
+            }
+        }
+
+        async function loadCalendar() {
+            const result = await apiRequest('/tax-calendar');
+            if (result && result.code === 200) {
+                appData.taxEvents = result.data.events.filter(e => e.date.startsWith('2024-01'));
+                renderCalendar(result.data);
+            }
+        }
+
+        async function loadArticles() {
+            const result = await apiRequest('/articles');
+            if (result && result.code === 200) {
+                appData.articles = result.data.articles;
+                renderArticles(appData.articles);
+            }
+        }
+
+        async function loadForum() {
+            const result = await apiRequest('/forum/posts');
+            if (result && result.code === 200) {
+                appData.forumPosts = result.data.posts;
+                renderForum(appData.forumPosts);
+            }
+        }
+
+        // ==================== 渲染函数 ====================
+        function renderDashboard() {
+            const data = appData.dashboard;
+            if (!data) return;
+
+            // 用户信息
+            document.getElementById('user-name').textContent = data.user_name;
+            document.getElementById('user-company').textContent = data.company;
+            document.getElementById('profile-name').textContent = data.user_name;
+            document.getElementById('profile-company').textContent = data.company;
+
+            // 统计数据
+            document.getElementById('month-revenue').textContent = formatNumber(data.overview.month_revenue);
+            document.getElementById('profit-rate').textContent = data.overview.profit_rate;
+            document.getElementById('policy-count').textContent = data.policy_match_count;
+
+            // 营收图表
+            renderRevenueChart(data.revenue_trend);
+
+            // 热门政策
+            const hotPolicies = appData.policies.slice(0, 3);
+            renderHotPolicies(hotPolicies);
+
+            // 待办任务
+            renderUpcomingTasks(data.upcoming_events);
+        }
+
+        function renderRevenueChart(trend) {
+            const container = document.getElementById('revenue-chart');
+            if (!container || !trend) return;
+
+            const maxValue = Math.max(...trend.map(t => t.value));
+            
+            container.innerHTML = trend.map(item => {
+                const height = (item.value / maxValue * 150) + 20;
+                return `<div class="chart-bar" style="height: ${height}px">
+                    <span>${item.month}</span>
+                </div>`;
+            }).join('');
+        }
+
+        function renderHotPolicies(policies) {
+            const container = document.getElementById('hot-policies');
+            if (!container || !policies.length) {
+                container.innerHTML = '<p style="color: var(--gray-500); text-align: center; padding: 20px;">暂无数据</p>';
+                return;
+            }
+
+            container.innerHTML = policies.map(policy => `
+                <div class="policy-item" onclick="openPolicyDetail(${policy.id})">
+                    <div class="policy-header">
+                        <div class="policy-title">${policy.title}</div>
+                        <span class="match-badge">${policy.match_score}%匹配</span>
+                    </div>
+                    <div class="policy-meta">
+                        <span class="policy-tag ${getPolicyTagClass(policy.type)}">${getPolicyTypeName(policy.type)}</span>
+                        <span>💰 ${policy.amount}</span>
+                        <span>📅 ${policy.deadline}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderUpcomingTasks(tasks) {
+            const container = document.getElementById('upcoming-tasks');
+            if (!container || !tasks || !tasks.length) {
+                container.innerHTML = '<p style="color: var(--gray-500); text-align: center; padding: 20px;">暂无待办</p>';
+                return;
+            }
+
+            container.innerHTML = tasks.map(task => `
+                <div class="calendar-item">
+                    <div class="calendar-date">
+                        <div class="calendar-day">${task.date.split('-')[1]}</div>
+                        <div class="calendar-month">${task.date.split('-')[0]}月</div>
+                    </div>
+                    <div class="calendar-content">
+                        <div class="calendar-title">
+                            ${task.title}
+                            ${task.urgent ? '<span class="urgent-badge">紧急</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPolicies(policies, filter = 'all') {
+            const container = document.getElementById('policy-list');
+            if (!container) return;
+
+            let filtered = policies;
+            if (filter !== 'all') {
+                filtered = policies.filter(p => p.type === filter);
+            }
+
+            if (!filtered.length) {
+                container.innerHTML = '<div class="empty-state"><p>暂无符合条件的政策</p></div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(policy => `
+                <div class="policy-item" onclick="openPolicyDetail(${policy.id})">
+                    <div class="policy-header">
+                        <div class="policy-title">${policy.title}</div>
+                        <span class="match-badge">${policy.match_score}%匹配</span>
+                    </div>
+                    <div class="policy-meta">
+                        <span class="policy-tag ${getPolicyTagClass(policy.type)}">${getPolicyTypeName(policy.type)}</span>
+                        <span>💰 ${policy.amount}</span>
+                        <span>📅 ${policy.deadline}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCalendar(data) {
+            // 渲染日历事件
+            const calendarList = document.getElementById('calendar-list');
+            if (calendarList && data.events) {
+                calendarList.innerHTML = data.events.map(event => `
+                    <div class="calendar-item">
+                        <div class="calendar-date">
+                            <div class="calendar-day">${event.date.split('-')[2]}</div>
+                            <div class="calendar-month">${event.date.split('-')[1]}月</div>
+                        </div>
+                        <div class="calendar-content">
+                            <div class="calendar-title">
+                                ${event.title}
+                                ${event.urgent ? '<span class="urgent-badge">紧急</span>' : ''}
+                            </div>
+                            <div class="calendar-desc">${event.description}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // 渲染月度任务
+            const monthlyTasks = document.getElementById('monthly-tasks');
+            if (monthlyTasks && data.monthly_tasks) {
+                monthlyTasks.innerHTML = data.monthly_tasks.map(task => `
+                    <div class="calendar-item">
+                        <div class="calendar-content">
+                            <div class="calendar-title">📋 ${task.name}</div>
+                            <div class="calendar-desc">${task.deadline} · ${task.description}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderArticles(articles, filter = 'all') {
+            const container = document.getElementById('article-list');
+            if (!container) return;
+
+            let filtered = articles;
+            if (filter !== 'all') {
+                filtered = articles.filter(a => a.category === filter);
+            }
+
+            if (!filtered.length) {
+                container.innerHTML = '<div class="empty-state"><p>暂无相关文章</p></div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(article => `
+                <div class="card">
+                    <div class="article-item" onclick="openArticleDetail(${article.id})">
+                        <div class="article-cover">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <div class="article-info">
+                            <div class="article-title">${article.title}</div>
+                            <div class="article-meta">
+                                <span>${article.author}</span>
+                                <span>${formatNumber(article.read_count)}阅读</span>
+                                <span>${article.publish_date}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderForum(posts, filter = 'all') {
+            const container = document.getElementById('forum-list');
+            if (!container) return;
+
+            let filtered = posts;
+            if (filter !== 'all') {
+                filtered = posts.filter(p => p.category === filter);
+            }
+
+            if (!filtered.length) {
+                container.innerHTML = '<div class="empty-state"><p>暂无帖子</p></div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(post => `
+                <div class="card">
+                    <div class="post-item" onclick="openPostDetail(${post.id})">
+                        <div class="post-header">
+                            <div class="post-avatar">${post.author.charAt(0)}</div>
+                            <span class="post-author">${post.author}</span>
+                            <span class="post-time">${post.publish_date}</span>
+                            <span class="category-tag cat-${post.category}">${getCategoryName(post.category)}</span>
+                            ${post.is_top ? '<span class="top-badge">置顶</span>' : ''}
+                        </div>
+                        <div class="post-title">${post.title}</div>
+                        <div class="post-preview">${post.preview}</div>
+                        <div class="post-footer">
+                            <span class="post-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                ${post.reply_count}
+                            </span>
+                            <span class="post-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                                ${post.like_count}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 详情页 ====================
+        async function openPolicyDetail(policyId) {
+            const policy = appData.policies.find(p => p.id === policyId);
+            if (!policy) return;
+
+            const content = document.getElementById('policy-detail-content');
+            content.innerHTML = `
+                <div class="policy-detail-header">
+                    <div class="policy-detail-tags">
+                        <span class="policy-tag ${getPolicyTagClass(policy.type)}">${getPolicyTypeName(policy.type)}</span>
+                        <span class="match-badge">${policy.match_score}%匹配</span>
+                    </div>
+                </div>
+                <div class="policy-detail-section">
+                    <h3>政策名称</h3>
+                    <p>${policy.title}</p>
+                </div>
+                <div class="policy-detail-section">
+                    <h3>💰 补贴金额</h3>
+                    <p style="font-size: 18px; color: var(--success); font-weight: 600;">${policy.amount}</p>
+                </div>
+                <div class="policy-detail-section">
+                    <h3>📋 政策内容</h3>
+                    <p>${policy.description}</p>
+                </div>
+                <div class="policy-detail-section">
+                    <h3>✅ 申请条件</h3>
+                    <ul class="condition-list">
+                        ${(policy.conditions || []).map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="policy-detail-section">
+                    <h3>📅 截止日期</h3>
+                    <p style="color: var(--danger); font-weight: 500;">${policy.deadline}</p>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="applyPolicy(${policy.id})" style="margin-top: 20px;">
+                    立即申请
+                </button>
+            `;
+
+            document.getElementById('policy-detail').classList.add('active');
+        }
+
+        function closePolicyDetail() {
+            document.getElementById('policy-detail').classList.remove('active');
+        }
+
+        async function openArticleDetail(articleId) {
+            const article = appData.articles.find(a => a.id === articleId);
+            if (!article) return;
+
+            const content = document.getElementById('article-detail-content');
+            content.innerHTML = `
+                <div class="article-detail-title">${article.title}</div>
+                <div class="article-detail-meta">
+                    <span>👤 ${article.author}</span>
+                    <span>📅 ${article.publish_date}</span>
+                    <span>👁 ${formatNumber(article.read_count)}阅读</span>
+                </div>
+                <div class="article-detail-content">
+                    ${article.content || '<p>文章内容加载中...</p>'}
+                </div>
+                <div style="margin-top: 20px;">
+                    <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 8px;">标签</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        ${(article.tags || []).map(tag => `<span class="policy-tag tag-tax">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('article-detail').classList.add('active');
+        }
+
+        function closeArticleDetail() {
+            document.getElementById('article-detail').classList.remove('active');
+        }
+
+        async function openPostDetail(postId) {
+            const result = await apiRequest(`/forum/posts/${postId}`);
+            if (!result || result.code !== 200) return;
+
+            const { post, replies } = result.data;
+            
+            const content = document.getElementById('post-detail-content');
+            content.innerHTML = `
+                <div class="post-header" style="margin-bottom: 16px;">
+                    <div class="post-avatar" style="width: 48px; height: 48px; font-size: 18px;">${post.author.charAt(0)}</div>
+                    <div>
+                        <div class="post-author" style="font-size: 15px;">${post.author}</div>
+                        <div class="post-time">${post.publish_date}</div>
+                    </div>
+                    <span class="category-tag cat-${post.category}">${getCategoryName(post.category)}</span>
+                </div>
+                <div class="post-title" style="font-size: 18px; margin-bottom: 12px;">${post.title}</div>
+                <div class="post-preview" style="font-size: 15px; line-height: 1.8; color: var(--gray-700); -webkit-line-clamp: unset;">
+                    ${post.content || post.preview}
+                </div>
+                <div class="post-footer" style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--gray-200);">
+                    <span class="post-stat">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                        ${post.like_count} 点赞
+                    </span>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <div style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">💬 回复 (${replies ? replies.length : 0})</div>
+                    <div id="replies-container">
+                        ${(replies || []).map(reply => `
+                            <div class="reply-item">
+                                <div class="reply-avatar">${reply.author.charAt(0)}</div>
+                                <div class="reply-content">
+                                    <div class="reply-author">${reply.author}</div>
+                                    <div class="reply-text">${reply.content}</div>
+                                    <div class="reply-time">${reply.publish_date} · 👍 ${reply.like_count}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${(!replies || replies.length === 0) ? '<p style="color: var(--gray-500); text-align: center; padding: 20px;">暂无回复，来抢沙发~</p>' : ''}
+                    </div>
+                </div>
+                
+                <div class="reply-form">
+                    <input type="text" id="reply-input" placeholder="写下你的回复...">
+                    <button onclick="submitReply(${postId})">发送</button>
+                </div>
+            `;
+
+            document.getElementById('post-detail').classList.add('active');
+        }
+
+        function closePostDetail() {
+            document.getElementById('post-detail').classList.remove('active');
+        }
+
+        // ==================== 操作函数 ====================
+        async function applyPolicy(policyId) {
+            const result = await apiRequest('/policies/apply', {
+                method: 'POST',
+                body: JSON.stringify({
+                    policy_id: policyId,
+                    company_name: '杭州智创科技有限公司',
+                    contact: '138****8000',
+                    description: '企业运营正常，符合申请条件'
+                })
+            });
+
+            if (result && result.code === 200) {
+                showToast('申请已提交，请等待审核');
+                closePolicyDetail();
+            }
+        }
+
+        async function submitReply(postId) {
+            const input = document.getElementById('reply-input');
+            const content = input.value.trim();
+            
+            if (!content) {
+                showToast('请输入回复内容');
+                return;
+            }
+
+            const result = await apiRequest(`/forum/posts/${postId}/reply`, {
+                method: 'POST',
+                body: JSON.stringify({ content })
+            });
+
+            if (result && result.code === 200) {
+                showToast('回复成功');
+                input.value = '';
+                // 重新加载帖子详情
+                openPostDetail(postId);
+            }
+        }
+
+        function openPublishModal() {
+            document.getElementById('publish-modal').classList.add('active');
+        }
+
+        function closePublishModal() {
+            document.getElementById('publish-modal').classList.remove('active');
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-content').value = '';
+        }
+
+        async function submitPost() {
+            const title = document.getElementById('post-title').value.trim();
+            const content = document.getElementById('post-content').value.trim();
+            const category = document.getElementById('post-category').value;
+
+            if (!title || !content) {
+                showToast('请填写标题和内容');
+                return;
+            }
+
+            const result = await apiRequest('/forum/posts', {
+                method: 'POST',
+                body: JSON.stringify({ title, content, category })
+            });
+
+            if (result && result.code === 200) {
+                showToast('发布成功');
+                closePublishModal();
+                loadForum();
+            }
+        }
+
+        // ==================== 工具函数 ====================
+        function formatNumber(num) {
+            if (num >= 10000) {
+                return (num / 10000).toFixed(1) + 'w';
+            }
+            return num.toLocaleString();
+        }
+
+        function getPolicyTagClass(type) {
+            const map = {
+                'tax': 'tag-tax',
+                'subsidy': 'tag-subsidy',
+                'loan': 'tag-loan',
+                'exemption': 'tag-exemption'
+            };
+            return map[type] || 'tag-tax';
+        }
+
+        function getPolicyTypeName(type) {
+            const map = {
+                'tax': '税收优惠',
+                'subsidy': '补贴申领',
+                'loan': '贷款融资',
+                'exemption': '减免政策'
+            };
+            return map[type] || type;
+        }
+
+        function getCategoryName(category) {
+            const map = {
+                'experience': '经验分享',
+                'question': '问答求助',
+                'exchange': '资源交换',
+                'news': '资讯速递'
+            };
+            return map[category] || category;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // ==================== 事件绑定 ====================
+        // 政策筛选
+        document.querySelectorAll('[data-type]').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('[data-type]').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                renderPolicies(appData.policies, this.dataset.type);
+            });
+        });
+
+        // 文章筛选
+        document.querySelectorAll('[data-category]').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('[data-category]').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                renderArticles(appData.articles, this.dataset.category);
+            });
+        });
+
+        // 论坛筛选
+        document.querySelectorAll('[data-forum]').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('[data-forum]').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                renderForum(appData.forumPosts, this.dataset.forum);
+            });
+        });
+
+        // ==================== 初始化 ====================
+        async function init() {
+            // 先加载政策数据（用于首页展示）
+            await loadPolicies();
+            // 加载首页数据
+            await loadDashboard();
+            // 加载其他数据
+            await Promise.all([
+                loadCalendar(),
+                loadArticles(),
+                loadForum()
+            ]);
+        }
+
+        // 启动应用
+        init();
+    </script>
+</body>
+</html>

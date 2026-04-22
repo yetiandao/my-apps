@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>恋爱保鲜 - 让爱保持新鲜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B9D;
+            --primary-light: #FFB6C1;
+            --secondary: #C44569;
+            --accent: #FFE66D;
+            --bg: #FFF5F8;
+            --card-bg: #FFFFFF;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --success: #00B894;
+            --warning: #FDCB6E;
+            --gradient: linear-gradient(135deg, #FF6B9D 0%, #C44569 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 头部 */
+        .header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(255, 107, 157, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .vip-badge {
+            background: var(--accent);
+            color: var(--secondary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vip-badge.active {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 导航 */
+        .nav {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+
+        .nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .nav-item.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* 主内容区 */
+        .main {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.15);
+        }
+
+        /* 欢迎卡片 */
+        .welcome-card {
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .welcome-card h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .welcome-card p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .couple-avatars {
+            display: flex;
+            justify-content: center;
+            gap: -10px;
+            margin: 20px 0;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 3px solid white;
+            margin: 0 -10px;
+        }
+
+        .heart-connector {
+            font-size: 24px;
+            color: var(--accent);
+            margin: 0 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* 今日任务 */
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+        }
+
+        .task-item.completed::after {
+            content: '✓ 已完成';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .task-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .task-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .task-points {
+            background: var(--accent);
+            color: var(--secondary);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .task-category {
+            background: var(--primary-light);
+            color: var(--secondary);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .task-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .task-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .task-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* 纪念日 */
+        .anniversary-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #FFF5F8 0%, #FFF0F5 100%);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .anniversary-date {
+            text-align: center;
+            background: var(--gradient);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        .anniversary-date .month {
+            font-size: 12px;
+        }
+
+        .anniversary-date .day {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .anniversary-info {
+            flex: 1;
+        }
+
+        .anniversary-title {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .anniversary-days {
+            font-size: 13px;
+            color: var(--primary);
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--bg);
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            color: var(--primary);
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-style: solid;
+        }
+
+        /* 挑战赛 */
+        .challenge-card {
+            background: linear-gradient(135deg, #FFF5F8 0%, #FFF0F5 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--gradient);
+            opacity: 0.1;
+            border-radius: 0 0 0 100%;
+        }
+
+        .challenge-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .challenge-badge.easy {
+            background: #E8F8F5;
+            color: #00B894;
+        }
+
+        .challenge-badge.medium {
+            background: #FEF9E7;
+            color: #F39C12;
+        }
+
+        .challenge-badge.hard {
+            background: #FDEDEC;
+            color: #E74C3C;
+        }
+
+        .challenge-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .challenge-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .challenge-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 107, 157, 0.2);
+        }
+
+        .challenge-info {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .challenge-reward {
+            font-size: 12px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 文章列表 */
+        .article-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .article-item:hover {
+            background: var(--primary-light);
+        }
+
+        .article-thumb {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            flex-shrink: 0;
+        }
+
+        .article-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-category {
+            font-size: 11px;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .article-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .article-meta {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: auto;
+        }
+
+        /* 文章详情 */
+        .article-detail {
+            padding: 20px;
+        }
+
+        .article-detail h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .article-detail .meta {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .article-detail .content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .article-detail .content h3 {
+            color: var(--primary);
+            margin: 20px 0 10px;
+            font-size: 17px;
+        }
+
+        .article-detail .content p {
+            margin-bottom: 15px;
+        }
+
+        .article-detail .content strong {
+            color: var(--secondary);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg);
+            border: none;
+            border-radius: 20px;
+            color: var(--primary);
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* 问答游戏 */
+        .quiz-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .quiz-progress {
+            margin-bottom: 30px;
+        }
+
+        .quiz-progress-bar {
+            height: 8px;
+            background: var(--bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.3s;
+        }
+
+        .quiz-progress-text {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .quiz-question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .quiz-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--primary-light);
+            border-radius: 12px;
+            font-size: 16px;
+            resize: none;
+            min-height: 120px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .quiz-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .quiz-score {
+            font-size: 80px;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .quiz-comment {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 5px 15px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .nav-btn .icon {
+            font-size: 24px;
+        }
+
+        .nav-btn .text {
+            font-size: 11px;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 360px;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--bg);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* VIP弹窗 */
+        .vip-modal {
+            text-align: center;
+        }
+
+        .vip-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .vip-features {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--bg);
+        }
+
+        .vip-feature:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature .icon {
+            color: var(--success);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--secondary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 加载动画 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--bg);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            margin-bottom: 15px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 380px) {
+            .header {
+                padding: 15px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .main {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span class="logo-icon">💕</span>
+                <span>恋爱保鲜</span>
+            </div>
+            <div class="vip-badge" id="vipBadge" onclick="showVipModal()">
+                VIP月卡
+            </div>
+        </div>
+        <div class="user-stats">
+            <div class="stat-item">
+                <span>🔥</span>
+                <span id="streakDays">0</span>天连续
+            </div>
+            <div class="stat-item">
+                <span>⭐</span>
+                <span id="totalPoints">0</span>积分
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <div class="welcome-card card">
+                <h2 id="welcomeText">💑 今天也要甜甜蜜蜜</h2>
+                <p id="welcomeSub">完成每日任务，让爱情更保鲜</p>
+                <div class="couple-avatars">
+                    <div class="avatar">😊</div>
+                    <span class="heart-connector">❤️</span>
+                    <div class="avatar">😘</div>
+                </div>
+            </div>
+
+            <h3 class="section-title">今日任务</h3>
+            <div id="todayTasks">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    加载中...
+                </div>
+            </div>
+        </div>
+
+        <!-- 纪念日 -->
+        <div class="page" id="page-anniversary">
+            <h3 class="section-title">纪念日提醒</h3>
+            <div id="anniversaryList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    加载中...
+                </div>
+            </div>
+            <button class="add-btn" onclick="showAddAnniversaryModal()">
+                <span>➕</span> 添加纪念日
+            </button>
+        </div>
+
+        <!-- 挑战 -->
+        <div class="page" id="page-challenge">
+            <h3 class="section-title">情侣挑战赛</h3>
+            <div id="challengeList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    加载中...
+                </div>
+            </div>
+        </div>
+
+        <!-- 文章 -->
+        <div class="page" id="page-articles">
+            <h3 class="section-title">恋爱技巧</h3>
+            <div id="articleList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    加载中...
+                </div>
+            </div>
+        </div>
+
+        <!-- 问答游戏 -->
+        <div class="page" id="page-quiz">
+            <div class="card quiz-container">
+                <div id="quizContent">
+                    <div class="quiz-progress">
+                        <div class="quiz-progress-bar">
+                            <div class="quiz-progress-fill" id="quizProgressFill" style="width: 0%"></div>
+                        </div>
+                        <div class="quiz-progress-text">
+                            题目 <span id="quizCurrent">1</span> / <span id="quizTotal">5</span>
+                        </div>
+                    </div>
+                    <div class="quiz-question" id="quizQuestion">
+                        你们第一次约会的地点是？
+                    </div>
+                    <textarea class="quiz-input" id="quizAnswer" placeholder="在这里写下你们的答案..."></textarea>
+                    <button class="quiz-btn" onclick="nextQuestion()">下一题</button>
+                </div>
+                <div id="quizResult" style="display: none;" class="quiz-result">
+                    <div class="quiz-score" id="quizScore">85</div>
+                    <div class="quiz-comment" id="quizComment">默契度很高！继续加油！</div>
+                    <button class="quiz-btn" onclick="restartQuiz()">再来一轮</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文章详情 -->
+        <div class="page" id="page-article-detail">
+            <button class="back-btn" onclick="showArticles()">← 返回列表</button>
+            <div class="card">
+                <div class="article-detail" id="articleContent">
+                    <!-- 文章内容动态加载 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="showPage('home')">
+            <span class="icon">🏠</span>
+            <span class="text">首页</span>
+        </button>
+        <button class="nav-btn" onclick="showPage('anniversary')">
+            <span class="icon">📅</span>
+            <span class="text">纪念日</span>
+        </button>
+        <button class="nav-btn" onclick="showPage('challenge')">
+            <span class="icon">🏆</span>
+            <span class="text">挑战</span>
+        </button>
+        <button class="nav-btn" onclick="showPage('articles')">
+            <span class="icon">📚</span>
+            <span class="text">文章</span>
+        </button>
+        <button class="nav-btn" onclick="showPage('quiz')">
+            <span class="icon">💬</span>
+            <span class="text">问答</span>
+        </button>
+    </nav>
+
+    <!-- 添加纪念日弹窗 -->
+    <div class="modal-overlay" id="anniversaryModal">
+        <div class="modal">
+            <div class="modal-title">添加纪念日</div>
+            <div class="form-group">
+                <label class="form-label">名称</label>
+                <input type="text" class="form-input" id="anniversaryTitle" placeholder="例如：在一起纪念日">
+            </div>
+            <div class="form-group">
+                <label class="form-label">日期</label>
+                <input type="date" class="form-input" id="anniversaryDate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">描述（可选）</label>
+                <input type="text" class="form-input" id="anniversaryDesc" placeholder="一些小备注...">
+            </div>
+            <button class="modal-btn" onclick="addAnniversary()">保存</button>
+            <button class="modal-btn" style="background: #ccc; margin-top: 10px;" onclick="closeModal('anniversaryModal')">取消</button>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal vip-modal">
+            <div class="vip-icon">👑</div>
+            <div class="modal-title">开通VIP月卡</div>
+            <div class="vip-price">¥15 <span>/月</span></div>
+            <div class="vip-features">
+                <div class="vip-feature">
+                    <span class="icon">✓</span>
+                    <span>解锁完整任务库</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="icon">✓</span>
+                    <span>解锁全部挑战赛</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="icon">✓</span>
+                    <span>解锁全部问答题目</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="icon">✓</span>
+                    <span>专属情侣壁纸</span>
+                </div>
+            </div>
+            <button class="modal-btn" onclick="activateVip()">立即开通</button>
+            <button class="modal-btn" style="background: #ccc; margin-top: 10px;" onclick="closeModal('vipModal')">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">操作成功</div>
+
+    <script>
+        // ==================== 配置 ====================
+        const API_BASE = 'http://localhost:5000/api';
+        
+        // 当前用户信息
+        let currentUser = {
+            user_id: localStorage.getItem('user_id') || null,
+            name: '亲爱的',
+            partner_name: 'TA',
+            is_vip: false
+        };
+
+        // 问答游戏状态
+        let quizState = {
+            questions: [],
+            currentIndex: 0,
+            answers: []
+        };
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        async function initApp() {
+            // 尝试加载用户
+            if (!currentUser.user_id) {
+                await registerUser();
+            } else {
+                await loadUserData();
+            }
+            
+            // 加载各页面数据
+            loadTodayTasks();
+            loadAnniversaries();
+            loadChallenges();
+            loadArticles();
+            loadQuizQuestions();
+        }
+
+        async function registerUser() {
+            try {
+                const response = await fetch(`${API_BASE}/user/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: currentUser.name,
+                        partner_name: currentUser.partner_name
+                    })
+                });
+                const data = await response.json();
+                if (data.code === 200) {
+                    currentUser.user_id = data.data.user_id;
+                    localStorage.setItem('user_id', currentUser.user_id);
+                    updateVipStatus(data.data.user_info?.is_vip || false);
+                }
+            } catch (error) {
+                console.log('离线模式，使用本地数据');
+                updateVipStatus(false);
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const response = await fetch(`${API_BASE}/user/profile?user_id=${currentUser.user_id}`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    currentUser.name = data.data.user_info?.name || '亲爱的';
+                    currentUser.partner_name = data.data.user_info?.partner_name || 'TA';
+                    currentUser.is_vip = data.data.is_vip;
+                    updateVipStatus(currentUser.is_vip);
+                    updateStats(data.data.progress);
+                }
+            } catch (error) {
+                console.log('离线模式');
+            }
+        }
+
+        // ==================== 页面导航 ====================
+        function showPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // 显示目标页面
+            const targetPage = document.getElementById(`page-${pageName}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // 更新导航
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const pageIndex = ['home', 'anniversary', 'challenge', 'articles', 'quiz'].indexOf(pageName);
+            if (pageIndex >= 0 && navBtns[pageIndex]) {
+                navBtns[pageIndex].classList.add('active');
+            }
+
+            // 更新欢迎语
+            updateWelcomeText(pageName);
+        }
+
+        function updateWelcomeText(page) {
+            const texts = {
+                home: '💑 今天也要甜甜蜜蜜',
+                anniversary: '📅 记住每一个特别的日子',
+                challenge: '🏆 一起完成挑战吧',
+                articles: '📚 恋爱小技巧',
+                quiz: '💬 测试你们的默契'
+            };
+            document.getElementById('welcomeText').textContent = texts[page] || '💕 恋爱保鲜';
+            document.getElementById('welcomeSub').textContent = page === 'home' ? '完成每日任务，让爱情更保鲜' : '';
+        }
+
+        // ==================== 今日任务 ====================
+        async function loadTodayTasks() {
+            const container = document.getElementById('todayTasks');
+            
+            // 离线数据
+            const offlineTasks = [
+                {id: 1, title: '早安问候', description: '给对方发送一条温暖的早安消息', points: 10, category: '日常'},
+                {id: 2, title: '感恩表达', description: '告诉对方你最喜欢TA的哪一点', points: 20, category: '情感'},
+                {id: 3, title: '拥抱挑战', description: '给对方一个10秒的拥抱', points: 15, category: '亲密'}
+            ];
+
+            try {
+                const response = await fetch(`${API_BASE}/tasks/daily?user_id=${currentUser.user_id}`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    renderTasks(data.data.tasks);
+                }
+            } catch (error) {
+                renderTasks(offlineTasks);
+            }
+        }
+
+        function renderTasks(tasks) {
+            const container = document.getElementById('todayTasks');
+            const taskIcons = {
+                '日常': '💬', '情感': '❤️', '体验': '🎯', '回忆': '📷', 
+                '浪漫': '🌹', '亲密': '🤗', '健康': '💪', '娱乐': '🎵', '挑战': '🔥'
+            };
+
+            container.innerHTML = tasks.map(task => `
+                <div class="task-item" id="task-${task.id}">
+                    <div class="task-icon">${taskIcons[task.category] || '✨'}</div>
+                    <div class="task-content">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-desc">${task.description}</div>
+                        <div class="task-meta">
+                            <span class="task-points">+${task.points}积分</span>
+                            <span class="task-category">${task.category}</span>
+                        </div>
+                    </div>
+                    <button class="task-btn" onclick="completeTask(${task.id})">完成</button>
+                </div>
+            `).join('');
+        }
+
+        async function completeTask(taskId) {
+            const taskElement = document.getElementById(`task-${taskId}`);
+            
+            try {
+                const response = await fetch(`${API_BASE}/tasks/complete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.user_id,
+                        task_id: taskId
+                    })
+                });
+                const data = await response.json();
+                if (data.code === 200) {
+                    showToast(`获得 ${data.data.points_earned} 积分！`);
+                    document.getElementById('totalPoints').textContent = data.data.total_points;
+                    document.getElementById('streakDays').textContent = data.data.streak_days;
+                }
+            } catch (error) {
+                showToast('任务完成！+15积分');
+            }
+
+            taskElement.classList.add('completed');
+            taskElement.querySelector('.task-btn').disabled = true;
+            taskElement.querySelector('.task-btn').textContent = '已完成';
+        }
+
+        // ==================== 纪念日 ====================
+        async function loadAnniversaries() {
+            const container = document.getElementById('anniversaryList');
+
+            try {
+                const response = await fetch(`${API_BASE}/anniversary/list?user_id=${currentUser.user_id}`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    renderAnniversaries(data.data.upcoming);
+                }
+            } catch (error) {
+                renderAnniversaries([]);
+            }
+        }
+
+        function renderAnniversaries(anniversaries) {
+            const container = document.getElementById('anniversaryList');
+
+            if (!anniversaries || anniversaries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📅</div>
+                        <p>还没有纪念日</p>
+                        <p style="font-size: 13px;">点击下方按钮添加你们的第一个纪念日</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = anniversaries.map(ann => {
+                const date = new Date(ann.date);
+                const month = date.toLocaleDateString('zh-CN', {month: 'short'});
+                const day = date.getDate();
+                const daysText = ann.days_until === 0 ? '就是今天！🎉' : 
+                                ann.days_until > 0 ? `${ann.days_until}天后` : `${Math.abs(ann.days_until)}天前`;
+
+                return `
+                    <div class="anniversary-item">
+                        <div class="anniversary-date">
+                            <div class="month">${month}</div>
+                            <div class="day">${day}</div>
+                        </div>
+                        <div class="anniversary-info">
+                            <div class="anniversary-title">${ann.title}</div>
+                            <div class="anniversary-days">${daysText}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showAddAnniversaryModal() {
+            document.getElementById('anniversaryModal').classList.add('show');
+        }
+
+        async function addAnniversary() {
+            const title = document.getElementById('anniversaryTitle').value;
+            const date = document.getElementById('anniversaryDate').value;
+            const desc = document.getElementById('anniversaryDesc').value;
+
+            if (!title || !date) {
+                showToast('请填写名称和日期');
+                return;
+            }
+
+            try {
+                await fetch(`${API_BASE}/anniversary/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.user_id,
+                        title, date, description: desc
+                    })
+                });
+            } catch (error) {}
+
+            closeModal('anniversaryModal');
+            showToast('纪念日添加成功！');
+            loadAnniversaries();
+
+            // 清空表单
+            document.getElementById('anniversaryTitle').value = '';
+            document.getElementById('anniversaryDate').value = '';
+            document.getElementById('anniversaryDesc').value = '';
+        }
+
+        // ==================== 挑战赛 ====================
+        async function loadChallenges() {
+            const container = document.getElementById('challengeList');
+
+            const offlineChallenges = [
+                {id: 101, title: '100天恋爱打卡', description: '连续100天完成每日任务', duration: '100天', points: 500, difficulty: 'hard', reward: '真爱徽章'},
+                {id: 102, title: '甜蜜周末', description: '连续4个周末安排约会', duration: '1个月', points: 200, difficulty: 'medium', reward: '约会达人徽章'},
+                {id: 103, title: '情话大师', description: '连续7天互说情话', duration: '7天', points: 100, difficulty: 'easy', reward: '情话大师徽章'}
+            ];
+
+            try {
+                const response = await fetch(`${API_BASE}/challenge/list?user_id=${currentUser.user_id}`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    renderChallenges(data.data.challenges);
+                }
+            } catch (error) {
+                renderChallenges(offlineChallenges);
+            }
+        }
+
+        function renderChallenges(challenges) {
+            const container = document.getElementById('challengeList');
+
+            container.innerHTML = challenges.map(challenge => `
+                <div class="challenge-card">
+                    <span class="challenge-badge ${challenge.difficulty}">${getDifficultyText(challenge.difficulty)}</span>
+                    <div class="challenge-title">${challenge.title}</div>
+                    <div class="challenge-desc">${challenge.description}</div>
+                    <div class="challenge-meta">
+                        <div class="challenge-info">
+                            <span>⏱️ ${challenge.duration}</span>
+                            <span style="margin-left: 15px;">⭐ ${challenge.points}积分</span>
+                        </div>
+                        <div class="challenge-reward">
+                            🏅 ${challenge.reward}
+                        </div>
+                    </div>
+                    <button class="task-btn" style="width: 100%; margin-top: 15px;" onclick="joinChallenge(${challenge.id})">
+                        参加挑战
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function getDifficultyText(difficulty) {
+            const map = { easy: '简单', medium: '中等', hard: '困难' };
+            return map[difficulty] || difficulty;
+        }
+
+        async function joinChallenge(challengeId) {
+            try {
+                await fetch(`${API_BASE}/challenge/join`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.user_id,
+                        challenge_id: challengeId
+                    })
+                });
+            } catch (error) {}
+            showToast('挑战开始！加油！💪');
+        }
+
+        // ==================== 文章 ====================
+        async function loadArticles() {
+            const container = document.getElementById('articleList');
+
+            try {
+                const response = await fetch(`${API_BASE}/article/list`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    renderArticles(data.data.articles);
+                }
+            } catch (error) {
+                console.log('离线模式');
+            }
+        }
+
+        function renderArticles(articles) {
+            const container = document.getElementById('articleList');
+            const icons = ['💕', '📝', '💬', '🎯', '⚠️'];
+
+            container.innerHTML = articles.map((article, index) => `
+                <div class="article-item" onclick="showArticleDetail(${article.id})">
+                    <div class="article-thumb">${icons[index % icons.length]}</div>
+                    <div class="article-info">
+                        <div class="article-category">${article.category}</div>
+                        <div class="article-title">${article.title}</div>
+                        <div class="article-meta">${article.read_time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function showArticleDetail(articleId) {
+            try {
+                const response = await fetch(`${API_BASE}/article/detail?id=${articleId}`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    showArticlePage(data.data);
+                }
+            } catch (error) {
+                showToast('加载失败，请重试');
+            }
+        }
+
+        function showArticlePage(article) {
+            showPage('article-detail');
+            const container = document.getElementById('articleContent');
+            container.innerHTML = `
+                <h1>${article.title}</h1>
+                <div class="meta">
+                    <span>📂 ${article.category}</span>
+                    <span>⏱️ ${article.read_time}</span>
+                </div>
+                <div class="content">${formatContent(article.content)}</div>
+            `;
+        }
+
+        function formatContent(content) {
+            return content.trim().split('\n\n').map(p => {
+                if (p.startsWith('**') && p.includes('：**')) {
+                    const match = p.match(/\*\*(.+?)\*\*(.+)/);
+                    if (match) {
+                        return `<h3>${match[1]}${match[2]}</h3>`;
+                    }
+                }
+                // 处理粗体
+                p = p.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                // 处理列表项
+                if (p.match(/^\d+\./) || p.match(/^[•\-]/)) {
+                    return `<p>${p}</p>`;
+                }
+                return `<p>${p}</p>`;
+            }).join('');
+        }
+
+        function showArticles() {
+            showPage('articles');
+        }
+
+        // ==================== 问答游戏 ====================
+        async function loadQuizQuestions() {
+            try {
+                const response = await fetch(`${API_BASE}/quiz/questions?user_id=${currentUser.user_id}`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    quizState.questions = data.data.questions;
+                    quizState.currentIndex = 0;
+                    updateQuizUI();
+                }
+            } catch (error) {
+                quizState.questions = [
+                    {id: 1, question: '对方最喜欢的颜色是什么？', category: '了解程度'},
+                    {id: 2, question: '你们第一次约会的地点是？', category: '回忆测试'},
+                    {id: 3, question: '对方最喜欢吃的食物是什么？', category: '了解程度'},
+                    {id: 4, question: '对方的梦想是什么？', category: '了解程度'},
+                    {id: 5, question: '对方生气时会怎么表现？', category: '了解程度'}
+                ];
+                updateQuizUI();
+            }
+        }
+
+        function updateQuizUI() {
+            if (quizState.currentIndex >= quizState.questions.length) {
+                submitQuiz();
+                return;
+            }
+
+            const question = quizState.questions[quizState.currentIndex];
+            document.getElementById('quizQuestion').textContent = question.question;
+            document.getElementById('quizCurrent').textContent = quizState.currentIndex + 1;
+            document.getElementById('quizTotal').textContent = quizState.questions.length;
+            document.getElementById('quizProgressFill').style.width = 
+                `${(quizState.currentIndex / quizState.questions.length) * 100}%`;
+            document.getElementById('quizAnswer').value = '';
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('quizResult').style.display = 'none';
+        }
+
+        function nextQuestion() {
+            const answer = document.getElementById('quizAnswer').value.trim();
+            if (!answer) {
+                showToast('请先写下你们的答案');
+                return;
+            }
+            quizState.answers.push(answer);
+            quizState.currentIndex++;
+            updateQuizUI();
+        }
+
+        async function submitQuiz() {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+
+            // 模拟得分
+            const score = Math.floor(Math.random() * 30) + 70;
+            const comments = {
+                90: '太默契了！天生一对！💕',
+                80: '默契度很高，继续保持！🌟',
+                70: '还不错，继续努力增进了解！💪',
+                60: '还需要更多相处时间哦～😊'
+            };
+            const comment = comments[Object.keys(comments).find(k => score >= parseInt(k))] || comments[60];
+
+            document.getElementById('quizScore').textContent = score;
+            document.getElementById('quizComment').textContent = comment;
+
+            try {
+                await fetch(`${API_BASE}/quiz/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.user_id,
+                        answers: quizState.answers
+                    })
+                });
+            } catch (error) {}
+        }
+
+        function restartQuiz() {
+            quizState.currentIndex = 0;
+            quizState.answers = [];
+            loadQuizQuestions();
+        }
+
+        // ==================== VIP ====================
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('show');
+        }
+
+        async function activateVip() {
+            try {
+                const response = await fetch(`${API_BASE}/vip/activate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUser.user_id })
+                });
+                const data = await response.json();
+                if (data.code === 200) {
+                    showToast('VIP开通成功！🎉');
+                    currentUser.is_vip = true;
+                    updateVipStatus(true);
+                    closeModal('vipModal');
+                    // 重新加载数据
+                    loadTodayTasks();
+                    loadChallenges();
+                    loadQuizQuestions();
+                }
+            } catch (error) {
+                showToast('VIP开通成功！🎉（模拟）');
+                currentUser.is_vip = true;
+                updateVipStatus(true);
+                closeModal('vipModal');
+            }
+        }
+
+        function updateVipStatus(isVip) {
+            const badge = document.getElementById('vipBadge');
+            if (isVip) {
+                badge.classList.add('active');
+                badge.textContent = 'VIP会员';
+            } else {
+                badge.classList.remove('active');
+                badge.textContent = 'VIP月卡';
+            }
+        }
+
+        function updateStats(progress) {
+            if (progress) {
+                document.getElementById('streakDays').textContent = progress.streak_days || 0;
+                document.getElementById('totalPoints').textContent = progress.total_points || 0;
+            }
+        }
+
+        // ==================== 工具函数 ====================
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // 点击弹窗外部关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

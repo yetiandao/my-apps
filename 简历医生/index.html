@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简历医生 - AI智能简历优化</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #f72585;
+            --success-color: #06d6a0;
+            --bg-light: #f8f9fa;
+            --text-dark: #2d3436;
+            --text-muted: #636e72;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            background: var(--bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .section {
+            padding: 40px 0;
+        }
+        
+        .card-custom {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 200px;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 40px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .result-card {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .score-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .issue-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .issue-item.high { border-left-color: #ef4444; }
+        .issue-item.medium { border-left-color: #f59e0b; }
+        .issue-item.low { border-left-color: #10b981; }
+        
+        .keyword-tag {
+            display: inline-block;
+            background: #e0e7ff;
+            color: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 3px;
+            font-size: 0.85rem;
+        }
+        
+        .optimized-resume {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+            border-radius: 10px;
+            padding: 20px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e9ecef;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .pricing-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .price-card {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .price-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        .price-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .qr-item {
+            text-align: center;
+        }
+        
+        .qr-item img {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        
+        .copy-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .alert-success-custom {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1><i class="fas fa-file-medical"></i> 简历医生</h1>
+            <p>AI智能简历优化，提升面试通过率300%</p>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="section">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- 输入区域 -->
+                    <div class="card-custom" id="inputSection">
+                        <h3 class="mb-4"><i class="fas fa-edit text-primary"></i> 粘贴你的简历</h3>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">目标职位（可选）</label>
+                            <input type="text" class="form-control" id="jobTarget" placeholder="例如：产品经理、Java开发工程师">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">简历内容 <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="resumeText" placeholder="请将你的简历内容粘贴到这里...&#10;&#10;支持纯文本格式，建议包含：个人信息、工作经历、项目经验、教育背景、技能特长等"></textarea>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button class="btn btn-primary-custom btn-lg" onclick="analyzeResume()">
+                                <i class="fas fa-magic"></i> AI智能诊断
+                            </button>
+                        </div>
+                        
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle"></i> <strong>提示：</strong>首次诊断免费，详细优化建议和简历改写需要付费。
+                        </div>
+                    </div>
+                    
+                    <!-- 加载中 -->
+                    <div class="loading" id="loadingSection">
+                        <div class="spinner"></div>
+                        <p>AI正在分析你的简历，请稍候...</p>
+                        <p class="text-muted small">通常需要10-30秒</p>
+                    </div>
+                    
+                    <!-- 结果区域 -->
+                    <div class="result-card card-custom" id="resultSection">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3><i class="fas fa-chart-pie text-primary"></i> 诊断结果</h3>
+                            <button class="btn btn-outline-secondary" onclick="resetForm()">
+                                <i class="fas fa-redo"></i> 重新分析
+                            </button>
+                        </div>
+                        
+                        <!-- 总分 -->
+                        <div class="text-center mb-4">
+                            <div class="score-circle">
+                                <span class="score-number" id="scoreValue">--</span>
+                            </div>
+                            <p class="text-muted">简历综合评分</p>
+                        </div>
+                        
+                        <!-- 总体评价 -->
+                        <div class="alert alert-primary" id="summaryBox">
+                            <strong>总体评价：</strong><span id="summaryText"></span>
+                        </div>
+                        
+                        <!-- 格式问题 -->
+                        <div id="formatIssues"></div>
+                        
+                        <!-- 内容问题 -->
+                        <div id="contentIssues"></div>
+                        
+                        <!-- 关键词分析 -->
+                        <div id="keywordAnalysis"></div>
+                        
+                        <!-- ATS评分 -->
+                        <div class="card-custom bg-light">
+                            <h5><i class="fas fa-robot"></i> ATS系统评分</h5>
+                            <div class="progress mt-2" style="height: 20px;">
+                                <div class="progress-bar" id="atsBar" style="width: 0%"></div>
+                            </div>
+                            <p class="mt-2 mb-0"><span id="atsScore">--</span>分 - <span id="atsAdvice"></span></p>
+                        </div>
+                        
+                        <!-- 优化后简历 -->
+                        <div class="mt-4" id="optimizedSection">
+                            <h5><i class="fas fa-file-alt text-success"></i> AI优化后的简历</h5>
+                            <p class="text-muted small">以下为AI根据诊断结果优化后的简历版本</p>
+                            <div class="optimized-resume" id="optimizedResume"></div>
+                        </div>
+                        
+                        <!-- 付费提示 -->
+                        <div class="pricing-section" id="paySection">
+                            <h5><i class="fas fa-crown text-warning"></i> 获取完整诊断报告</h5>
+                            <p class="text-muted">扫码支付后，将简历和支付截图发送至邮箱，24小时内获取详细报告</p>
+                            
+                            <div class="row justify-content-center mt-3">
+                                <div class="col-auto">
+                                    <div class="price-card">
+                                        <div class="price-value">¥9.9</div>
+                                        <div class="text-muted">单次优化</div>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="price-card">
+                                        <div class="price-value">¥39</div>
+                                        <div class="text-muted">月度会员</div>
+                                        <small class="text-success">无限次优化</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="qr-container mt-4">
+                                <div class="qr-item">
+                                    <img src="assets/wechat.png" alt="微信收款">
+                                    <p class="mt-2"><i class="fab fa-weixin text-success"></i> 微信支付</p>
+                                </div>
+                                <div class="qr-item">
+                                    <img src="assets/alipay.jpg" alt="支付宝收款">
+                                    <p class="mt-2"><i class="fab fa-alipay text-primary"></i> 支付宝</p>
+                                </div>
+                            </div>
+                            
+                            <div class="alert-success-custom">
+                                <i class="fas fa-envelope"></i> 支付后发送简历至：<strong>xiaojin@coze.email</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="text-center py-4 text-muted">
+        <p>© 2024 简历医生 - 让每一份简历都闪闪发光</p>
+    </footer>
+    
+    <script>
+        // API 配置
+        const API_URL = 'https://iilgrkbxmpwsaehkdoog.supabase.co/functions/v1/analyze-resume';
+        
+        async function analyzeResume() {
+            const resumeText = document.getElementById('resumeText').value.trim();
+            const jobTarget = document.getElementById('jobTarget').value.trim();
+            
+            if (!resumeText) {
+                alert('请输入简历内容');
+                return;
+            }
+            
+            // 显示加载
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        resume_text: resumeText,
+                        job_target: jobTarget || null
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayResult(result.data);
+                } else {
+                    alert('分析失败：' + (result.error || '未知错误'));
+                    resetForm();
+                }
+            } catch (error) {
+                alert('网络错误，请稍后重试');
+                console.error(error);
+                resetForm();
+            }
+        }
+        
+        function displayResult(data) {
+            const diagnosis = data.diagnosis;
+            
+            // 隐藏加载，显示结果
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // 显示分数
+            const score = diagnosis.score || 60;
+            document.getElementById('scoreValue').textContent = score;
+            
+            // 显示总体评价
+            document.getElementById('summaryText').textContent = diagnosis.summary || '简历整体结构清晰，建议进一步完善细节。';
+            
+            // 显示格式问题
+            if (diagnosis.format_issues && diagnosis.format_issues.length > 0) {
+                let formatHtml = '<h5 class="mt-4"><i class="fas fa-list-ul text-warning"></i> 格式问题</h5>';
+                diagnosis.format_issues.forEach(issue => {
+                    formatHtml += `
+                        <div class="issue-item ${issue.severity}">
+                            <strong>${issue.type}</strong>
+                            <p class="mb-1">${issue.description}</p>
+                            <small class="text-primary"><i class="fas fa-lightbulb"></i> ${issue.suggestion}</small>
+                        </div>
+                    `;
+                });
+                document.getElementById('formatIssues').innerHTML = formatHtml;
+            }
+            
+            // 显示内容问题
+            if (diagnosis.content_issues && diagnosis.content_issues.length > 0) {
+                let contentHtml = '<h5 class="mt-4"><i class="fas fa-file-alt text-danger"></i> 内容问题</h5>';
+                diagnosis.content_issues.forEach(issue => {
+                    contentHtml += `
+                        <div class="issue-item ${issue.severity}">
+                            <strong>${issue.type}</strong>
+                            <p class="mb-1">${issue.description}</p>
+                            <small class="text-primary"><i class="fas fa-lightbulb"></i> ${issue.suggestion}</small>
+                            ${issue.example ? `<br><small class="text-success"><i class="fas fa-check"></i> 示例：${issue.example}</small>` : ''}
+                        </div>
+                    `;
+                });
+                document.getElementById('contentIssues').innerHTML = contentHtml;
+            }
+            
+            // 显示关键词
+            if (diagnosis.keyword_analysis) {
+                const ka = diagnosis.keyword_analysis;
+                let keywordHtml = '<h5 class="mt-4"><i class="fas fa-tags text-info"></i> 关键词分析</h5>';
+                
+                if (ka.missing && ka.missing.length > 0) {
+                    keywordHtml += '<p class="text-danger"><strong>缺少关键词：</strong>';
+                    ka.missing.forEach(k => keywordHtml += `<span class="keyword-tag">${k}</span>`);
+                    keywordHtml += '</p>';
+                }
+                
+                if (ka.suggested && ka.suggested.length > 0) {
+                    keywordHtml += '<p class="text-success"><strong>建议添加：</strong>';
+                    ka.suggested.forEach(k => keywordHtml += `<span class="keyword-tag">${k}</span>`);
+                    keywordHtml += '</p>';
+                }
+                
+                document.getElementById('keywordAnalysis').innerHTML = keywordHtml;
+            }
+            
+            // ATS评分
+            const atsScore = diagnosis.ats_score || 65;
+            document.getElementById('atsScore').textContent = atsScore;
+            document.getElementById('atsBar').style.width = atsScore + '%';
+            
+            let atsAdvice = '';
+            if (atsScore >= 80) atsAdvice = '优秀，通过率高';
+            else if (atsScore >= 60) atsAdvice = '良好，建议优化关键词';
+            else atsAdvice = '需要改进，建议增加行业关键词';
+            document.getElementById('atsAdvice').textContent = atsAdvice;
+            
+            // 显示优化后简历
+            if (diagnosis.optimized_resume) {
+                document.getElementById('optimizedResume').textContent = diagnosis.optimized_resume;
+            } else {
+                document.getElementById('optimizedSection').style.display = 'none';
+            }
+        }
+        
+        function resetForm() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

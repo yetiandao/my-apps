@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>外卖比价 - 聪明点餐不吃亏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --primary-light: #FFF0EC;
+            --secondary: #4A90D9;
+            --success: #52C41A;
+            --warning: #FAAD14;
+            --text-primary: #1A1A1A;
+            --text-secondary: #666666;
+            --text-tertiary: #999999;
+            --border: #E8E8E8;
+            --background: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #FF8F66);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title::before {
+            content: "🍜";
+            font-size: 24px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #8B4513;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* 搜索区域 */
+        .search-section {
+            background: var(--primary);
+            padding: 0 20px 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .search-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        /* 功能卡片 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 14px 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:active {
+            transform: scale(0.95);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .feature-name {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* 分类标签 */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 菜单卡片 */
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 14px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+
+        .menu-image {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #FFE4D6, #FFD4C4);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+        }
+
+        .menu-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .menu-category {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+
+        .menu-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .menu-price::before {
+            content: "¥";
+            font-size: 14px;
+        }
+
+        .menu-compare-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* 比价弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-overlay.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 20px 20px 0 0;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--background);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        /* 比价结果卡片 */
+        .compare-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .compare-card.best {
+            border-color: var(--success);
+            background: linear-gradient(135deg, #F6FFED, #FFFFFF);
+        }
+
+        .compare-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .platform-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .platform-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .platform-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .best-badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .compare-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--background);
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .detail-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .detail-value.highlight {
+            color: var(--primary);
+        }
+
+        .total-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: linear-gradient(135deg, #FFF5F0, #FFFFFF);
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+
+        .total-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .total-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* 优惠券区域 */
+        .coupon-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .coupon-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .coupon-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .coupon-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: linear-gradient(135deg, #FFF0F0, #FFF5F5);
+            border-radius: 10px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .coupon-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .coupon-info {
+            flex: 1;
+        }
+
+        .coupon-type {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .coupon-condition {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .coupon-platform {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            background: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        /* VIP推广 */
+        .vip-promo {
+            background: linear-gradient(135deg, #1A1A1A, #333333);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 16px;
+            color: white;
+        }
+
+        .vip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .vip-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .vip-price {
+            font-size: 14px;
+            color: #FFD700;
+        }
+
+        .vip-price strong {
+            font-size: 24px;
+        }
+
+        .vip-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #CCCCCC;
+        }
+
+        .vip-feature::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .vip-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1A1A1A;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 16px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 15px;
+            color: var(--text-tertiary);
+        }
+
+        /* 页面切换 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 评价汇总样式 */
+        .rating-summary {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .rating-big {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--warning);
+        }
+
+        .rating-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast提示 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-title">
+            外卖比价
+            <span class="vip-badge">月卡¥9.9</span>
+        </div>
+    </header>
+
+    <!-- 搜索区域 -->
+    <div class="search-section">
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索想吃的美食...">
+            <button class="search-btn" onclick="handleSearch()">搜索</button>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 功能入口 -->
+        <div class="feature-grid">
+            <div class="feature-card" onclick="switchTab('home')">
+                <div class="feature-icon">🏠</div>
+                <div class="feature-name">首页</div>
+            </div>
+            <div class="feature-card" onclick="showCoupons()">
+                <div class="feature-icon">🎫</div>
+                <div class="feature-name">优惠券</div>
+            </div>
+            <div class="feature-card" onclick="switchTab('history')">
+                <div class="feature-icon">📋</div>
+                <div class="feature-name">历史</div>
+            </div>
+            <div class="feature-card" onclick="showVipPromo()">
+                <div class="feature-icon">👑</div>
+                <div class="feature-name">VIP</div>
+            </div>
+        </div>
+
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <!-- 分类标签 -->
+            <div class="category-tabs" id="categoryTabs">
+                <div class="category-tab active" data-category="全部">全部</div>
+            </div>
+
+            <!-- 菜单列表 -->
+            <div class="menu-list" id="menuList">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- 历史页面 -->
+        <div id="page-history" class="page">
+            <div class="empty-state" id="historyEmpty">
+                <div class="empty-icon">📋</div>
+                <div class="empty-text">暂无历史记录</div>
+            </div>
+            <div class="menu-list" id="historyList"></div>
+        </div>
+
+        <!-- 优惠券页面 -->
+        <div id="page-coupons" class="page">
+            <div id="couponsContainer"></div>
+        </div>
+    </main>
+
+    <!-- 比价弹窗 -->
+    <div class="modal-overlay" id="compareModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">比价结果</div>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-tab="home" onclick="switchTab('home')">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">首页</div>
+        </div>
+        <div class="nav-item" data-tab="history" onclick="switchTab('history')">
+            <div class="nav-icon">📋</div>
+            <div class="nav-label">历史</div>
+        </div>
+        <div class="nav-item" data-tab="coupons" onclick="switchTab('coupons')">
+            <div class="nav-icon">🎫</div>
+            <div class="nav-label">优惠券</div>
+        </div>
+        <div class="nav-item" data-tab="vip" onclick="switchTab('vip')">
+            <div class="nav-icon">👑</div>
+            <div class="nav-label">VIP</div>
+        </div>
+    </nav>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://localhost:5000/api';
+
+        // 菜品emoji映射
+        const FOOD_EMOJIS = {
+            '宫保鸡丁': '🍗',
+            '黄焖鸡': '🍖',
+            '酸菜鱼': '🐟',
+            '拉面': '🍜',
+            '麦当劳': '🍔',
+            '肯德基': '🍗',
+            '麻辣香锅': '🌶️',
+            '煲仔饭': '🍚',
+            '寿司': '🍣',
+            '炸鸡': '🍗'
+        };
+
+        // 全局数据
+        let currentCategory = '全部';
+        let menuData = [];
+        let historyData = JSON.parse(localStorage.getItem('compareHistory') || '[]');
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMenu();
+            renderHistory();
+            
+            // 搜索回车事件
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+        });
+
+        // 显示Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 加载菜单
+        async function loadMenu() {
+            try {
+                const response = await fetch(`${API_BASE}/menu`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    menuData = result.data.items;
+                    renderCategories(result.data.categories);
+                    renderMenu(menuData);
+                }
+            } catch (error) {
+                console.error('加载菜单失败:', error);
+                document.getElementById('menuList').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">😢</div>
+                        <div class="empty-text">加载失败，请检查服务器是否启动</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 渲染分类
+        function renderCategories(categories) {
+            const tabsContainer = document.getElementById('categoryTabs');
+            tabsContainer.innerHTML = categories.map(cat => `
+                <div class="category-tab ${cat === currentCategory ? 'active' : ''}" 
+                     data-category="${cat}"
+                     onclick="selectCategory('${cat}')">
+                    ${cat}
+                </div>
+            `).join('');
+        }
+
+        // 选择分类
+        function selectCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+            
+            if (category === '全部') {
+                renderMenu(menuData);
+            } else {
+                const filtered = menuData.filter(item => item.category === category);
+                renderMenu(filtered);
+            }
+        }
+
+        // 渲染菜单
+        function renderMenu(items) {
+            const container = document.getElementById('menuList');
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-text">没有找到相关菜品</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="menu-card" onclick="openCompare(${item.id}, '${item.name}')">
+                    <div class="menu-image">${getFoodEmoji(item.name)}</div>
+                    <div class="menu-info">
+                        <div>
+                            <div class="menu-name">${item.name}</div>
+                            <div class="menu-category">${item.category}</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="menu-price">${item.basePrice}</div>
+                            <button class="menu-compare-btn">比价 →</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 获取食物emoji
+        function getFoodEmoji(name) {
+            for (const [key, emoji] of Object.entries(FOOD_EMOJIS)) {
+                if (name.includes(key)) return emoji;
+            }
+            return '🍽️';
+        }
+
+        // 搜索
+        async function handleSearch() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            
+            if (!keyword) {
+                renderMenu(menuData);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/search?keyword=${encodeURIComponent(keyword)}`);
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    renderMenu(result.data);
+                } else {
+                    document.getElementById('menuList').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">🔍</div>
+                            <div class="empty-text">未找到"${keyword}"相关菜品</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                showToast('搜索失败，请重试');
+            }
+        }
+
+        // 打开比价弹窗
+        async function openCompare(itemId, itemName) {
+            const modal = document.getElementById('compareModal');
+            const modalBody = document.getElementById('modalBody');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            modalTitle.textContent = itemName;
+            modalBody.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            modal.classList.add('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/compare?itemId=${itemId}&itemName=${encodeURIComponent(itemName)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderCompareResult(result.data);
+                    addToHistory(itemId, itemName);
+                }
+            } catch (error) {
+                modalBody.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">😢</div>
+                        <div class="empty-text">加载失败，请重试</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 渲染比价结果
+        function renderCompareResult(data) {
+            const modalBody = document.getElementById('modalBody');
+            
+            let html = `
+                <div style="margin-bottom: 12px; padding: 12px; background: #FFF5F0; border-radius: 12px;">
+                    <div style="font-size: 14px; color: #666;">预估节省</div>
+                    <div style="font-size: 24px; font-weight: 700; color: #FF6B35;">¥${data.summary.savings}</div>
+                </div>
+            `;
+
+            data.platforms.forEach(p => {
+                html += `
+                    <div class="compare-card ${p.isBest ? 'best' : ''}">
+                        <div class="compare-header">
+                            <div class="platform-badge">
+                                <div class="platform-dot" style="background: ${p.platformColor}"></div>
+                                <div class="platform-name">${p.platform}</div>
+                            </div>
+                            ${p.isBest ? '<span class="best-badge">最优</span>' : ''}
+                        </div>
+                        <div class="compare-details">
+                            <div class="detail-item">
+                                <span class="detail-label">商品价格</span>
+                                <span class="detail-value">¥${p.price}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">配送费</span>
+                                <span class="detail-value ${p.deliveryFee === 0 ? 'highlight' : ''}">${p.deliveryFee === 0 ? '免费' : '¥' + p.deliveryFee}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">配送时间</span>
+                                <span class="detail-value">${p.deliveryTime}分钟</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">店铺评分</span>
+                                <span class="detail-value">⭐ ${p.rating}</span>
+                            </div>
+                        </div>
+                        <div class="total-price">
+                            <span class="total-label">合计</span>
+                            <span class="total-value">¥${p.totalPrice.toFixed(1)}</span>
+                        </div>
+                        ${p.coupons.length > 0 ? renderCoupons(p.coupons) : ''}
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="vip-promo">
+                    <div class="vip-header">
+                        <div class="vip-title">👑 开通VIP解锁更多优惠</div>
+                    </div>
+                    <div class="vip-price"><strong>¥9.9</strong>/月</div>
+                    <div class="vip-features">
+                        <div class="vip-feature">全平台优惠券聚合</div>
+                        <div class="vip-feature">价格变动提醒</div>
+                        <div class="vip-feature">一键跳转下单</div>
+                    </div>
+                    <button class="vip-btn" onclick="purchaseVip()">立即开通</button>
+                </div>
+            `;
+
+            modalBody.innerHTML = html;
+        }
+
+        // 渲染优惠券
+        function renderCoupons(coupons) {
+            return `
+                <div class="coupon-section">
+                    <div class="coupon-title">🎫 可用优惠券</div>
+                    <div class="coupon-list">
+                        ${coupons.map(c => `
+                            <div class="coupon-item">
+                                <div class="coupon-value">${c.type === '折扣' ? c.discount + '折' : '¥' + c.amount}</div>
+                                <div class="coupon-info">
+                                    <div class="coupon-type">${c.type === '满减' ? '满' + c.threshold + '减' + c.amount : c.type === '折扣' ? '最高减' + c.maxAmount + '元' : '新客专享'}</div>
+                                    <div class="coupon-condition">${c.type === '满减' ? '无门槛' : '部分商品可用'}</div>
+                                </div>
+                                <span class="coupon-platform">${c.platform}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 添加到历史
+        function addToHistory(itemId, itemName) {
+            const entry = {
+                id: Date.now(),
+                itemId,
+                itemName,
+                time: new Date().toLocaleString()
+            };
+            
+            historyData.unshift(entry);
+            if (historyData.length > 20) historyData.pop();
+            
+            localStorage.setItem('compareHistory', JSON.stringify(historyData));
+            renderHistory();
+        }
+
+        // 渲染历史
+        function renderHistory() {
+            const historyEmpty = document.getElementById('historyEmpty');
+            const historyList = document.getElementById('historyList');
+            
+            if (historyData.length === 0) {
+                historyEmpty.style.display = 'block';
+                historyList.innerHTML = '';
+            } else {
+                historyEmpty.style.display = 'none';
+                historyList.innerHTML = historyData.map(h => `
+                    <div class="menu-card" onclick="openCompare(${h.itemId}, '${h.itemName}')">
+                        <div class="menu-image">${getFoodEmoji(h.itemName)}</div>
+                        <div class="menu-info">
+                            <div>
+                                <div class="menu-name">${h.itemName}</div>
+                                <div class="menu-category">${h.time}</div>
+                            </div>
+                            <button class="menu-compare-btn">再比价 →</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // 关闭弹窗
+        function closeModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('compareModal').classList.remove('show');
+        }
+
+        // 切换标签页
+        function switchTab(tab) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            const pageMap = {
+                'home': 'page-home',
+                'history': 'page-history',
+                'coupons': 'page-coupons',
+                'vip': 'page-vip'
+            };
+
+            if (pageMap[tab]) {
+                document.getElementById(pageMap[tab])?.classList.add('active');
+            }
+            
+            document.querySelector(`.nav-item[data-tab="${tab}"]`)?.classList.add('active');
+
+            if (tab === 'coupons') {
+                loadCoupons();
+            }
+        }
+
+        // 显示优惠券
+        async function showCoupons() {
+            switchTab('coupons');
+            loadCoupons();
+        }
+
+        // 加载优惠券
+        async function loadCoupons() {
+            const container = document.getElementById('couponsContainer');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/coupons`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderAllCoupons(result.data);
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">😢</div>
+                        <div class="empty-text">加载失败，请重试</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 渲染所有优惠券
+        function renderAllCoupons(coupons) {
+            const container = document.getElementById('couponsContainer');
+            
+            if (coupons.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🎫</div>
+                        <div class="empty-text">暂无可用优惠券</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                    <div class="coupon-title">🎫 全平台优惠券汇总</div>
+                    <div class="coupon-list">
+                        ${coupons.map(c => `
+                            <div class="coupon-item">
+                                <div class="coupon-value">${c.type === '折扣' ? c.discount + '折' : '¥' + c.amount}</div>
+                                <div class="coupon-info">
+                                    <div class="coupon-type">${c.type === '满减' ? '满' + c.threshold + '减' + c.amount : c.type === '折扣' ? '享' + c.discount + '折' : '新客专享'}</div>
+                                    <div class="coupon-condition">有效期至${c.expireTime}</div>
+                                </div>
+                                <span class="coupon-platform">${c.platform}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="vip-promo" style="margin-top: 16px;">
+                    <div class="vip-header">
+                        <div class="vip-title">👑 开通VIP获取更多优惠券</div>
+                    </div>
+                    <div class="vip-price"><strong>¥9.9</strong>/月</div>
+                    <div class="vip-features">
+                        <div class="vip-feature">全平台优惠券实时更新</div>
+                        <div class="vip-feature">优惠券到期提醒</div>
+                    </div>
+                    <button class="vip-btn" onclick="purchaseVip()">立即开通</button>
+                </div>
+            `;
+        }
+
+        // 显示VIP推广
+        function showVipPromo() {
+            switchTab('vip');
+            
+            const container = document.getElementById('couponsContainer');
+            container.innerHTML = `
+                <div class="vip-promo" style="background: linear-gradient(135deg, #1A1A1A, #333333);">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">👑</div>
+                        <div style="font-size: 24px; font-weight: 700;">开通VIP会员</div>
+                        <div style="font-size: 14px; color: #999; margin-top: 4px;">解锁全部比价功能</div>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 32px; font-weight: 700; color: #FFD700;">¥9.9</div>
+                            <div style="font-size: 12px; color: #999;">月卡</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 32px; font-weight: 700; color: #FFD700;">¥99</div>
+                            <div style="font-size: 12px; color: #999;">年卡 <span style="background: #FF6B35; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px;">推荐</span></div>
+                        </div>
+                    </div>
+                    <div class="vip-features" style="text-align: left;">
+                        <div class="vip-feature">全平台完整比价数据</div>
+                        <div class="vip-feature">实时优惠券聚合</div>
+                        <div class="vip-feature">价格变动提醒</div>
+                        <div class="vip-feature">历史比价记录</div>
+                        <div class="vip-feature">一键跳转下单</div>
+                    </div>
+                    <button class="vip-btn" onclick="purchaseVip()">立即开通 月卡¥9.9</button>
+                    <div style="text-align: center; margin-top: 12px; font-size: 12px; color: #666;">
+                        支付即表示同意<span style="color: #FFD700;">《VIP服务协议》</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 购买VIP
+        async function purchaseVip() {
+            showToast('VIP购买功能演示中...');
+            
+            // 模拟购买
+            setTimeout(() => {
+                showToast('演示模式：实际需集成支付接口');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

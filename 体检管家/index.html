@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>体检管家 - 您的健康守护者</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A90E2;
+            --primary-dark: #3A7BC8;
+            --success: #52C41A;
+            --warning: #FAAD14;
+            --danger: #FF4D4F;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --bg-light: #F5F7FA;
+            --border-color: #E8E8E8;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 头部导航 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .vip-badge {
+            position: absolute;
+            right: 16px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding-top: 56px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* 首页样式 */
+        .hero-card {
+            background: linear-gradient(135deg, var(--primary), #6BA3E8);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .hero-greeting {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .hero-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+
+        .hero-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .health-overview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .health-stat {
+            text-align: center;
+            background: rgba(255,255,255,0.15);
+            padding: 12px 8px;
+            border-radius: 10px;
+        }
+
+        .health-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .health-stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* 快速入口 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 8px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .action-item:active {
+            transform: scale(0.95);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .action-icon.upload { background: #E6F7FF; }
+        .action-icon.report { background: #FFF7E6; }
+        .action-icon.remind { background: #F6FFED; }
+        .action-icon.package { background: #F9F0FF; }
+
+        .action-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 异常指标高亮 */
+        .abnormal-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .abnormal-indicator.high {
+            background: #FFF1F0;
+            color: #FF4D4F;
+        }
+
+        .abnormal-indicator.medium {
+            background: #FFFBE6;
+            color: #FAAD14;
+        }
+
+        .abnormal-indicator.normal {
+            background: #F6FFED;
+            color: #52C41A;
+        }
+
+        /* 风险评分环 */
+        .score-ring {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        .score-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .score-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+
+        .score-ring .bg {
+            stroke: #E8E8E8;
+        }
+
+        .score-ring .progress {
+            stroke: var(--primary);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .score-ring .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .score-ring .score-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .score-ring .score-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* 指标列表 */
+        .indicator-list {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .indicator-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .indicator-item:last-child {
+            border-bottom: none;
+        }
+
+        .indicator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .indicator-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .indicator-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .indicator-range {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .indicator-interpretation {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            padding: 8px;
+            background: var(--bg-light);
+            border-radius: 6px;
+        }
+
+        /* 分类标签 */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 12px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            background: var(--bg-light);
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 套餐卡片 */
+        .package-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .package-card.hot::before {
+            content: '热门推荐';
+            position: absolute;
+            top: 16px;
+            right: -32px;
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            padding: 4px 40px;
+            font-size: 12px;
+            transform: rotate(45deg);
+        }
+
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .package-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .package-price {
+            text-align: right;
+        }
+
+        .package-price .current {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FF4D4F;
+        }
+
+        .package-price .original {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .package-suitable {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .package-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .package-feature {
+            padding: 4px 10px;
+            background: var(--bg-light);
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .package-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .package-info {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .package-btn {
+            padding: 8px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .package-btn:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+        }
+
+        .package-btn.selected {
+            background: var(--success);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding-top: 8px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px 16px;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--primary);
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .upload-text strong {
+            color: var(--primary);
+        }
+
+        /* 提醒列表 */
+        .reminder-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .reminder-date {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reminder-date .month {
+            font-size: 10px;
+        }
+
+        .reminder-date .day {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .reminder-content {
+            flex: 1;
+        }
+
+        .reminder-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .reminder-note {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .reminder-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .reminder-status.pending {
+            background: #FFF7E6;
+            color: #FAAD14;
+        }
+
+        .reminder-status.done {
+            background: #F6FFED;
+            color: #52C41A;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* 雷达图容器 */
+        .radar-chart {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* VIP弹窗 */
+        .vip-modal {
+            text-align: center;
+        }
+
+        .vip-modal .vip-icon {
+            font-size: 80px;
+            margin-bottom: 16px;
+        }
+
+        .vip-modal .vip-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FF6B6B;
+            margin-bottom: 8px;
+        }
+
+        .vip-modal .vip-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .vip-features {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .vip-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vip-feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .vip-feature-text {
+            flex: 1;
+        }
+
+        .vip-feature-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .vip-feature-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #FF4D4F;
+            margin-bottom: 16px;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+        }
+
+        .vip-btn {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+        }
+
+        /* 套餐对比表格 */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .compare-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+
+        .compare-table th:first-child,
+        .compare-table td:first-child {
+            text-align: left;
+        }
+
+        /* 历史报告列表 */
+        .report-list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        .report-list-item:active {
+            transform: scale(0.98);
+        }
+
+        .report-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), #6BA3E8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .report-info {
+            flex: 1;
+        }
+
+        .report-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .report-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .report-score {
+            text-align: right;
+        }
+
+        .report-score-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .report-score-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* 风险等级标签 */
+        .risk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .risk-badge.low {
+            background: #F6FFED;
+            color: #52C41A;
+        }
+
+        .risk-badge.medium {
+            background: #FFFBE6;
+            color: #FAAD14;
+        }
+
+        .risk-badge.high {
+            background: #FFF1F0;
+            color: #FF4D4F;
+        }
+
+        /* 解读详情 */
+        .interpretation-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--warning);
+        }
+
+        .interpretation-card.normal {
+            border-left-color: var(--success);
+        }
+
+        .interpretation-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .interpretation-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        /* 隐藏文件上传 */
+        .hidden-input {
+            display: none;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* 分析报告弹窗 */
+        .analysis-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .analysis-score {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .analysis-score-value {
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .analysis-level {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .analysis-text {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .suggestion-list {
+            list-style: none;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .suggestion-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <h1>🏥 体检管家</h1>
+        <div class="vip-badge" onclick="showVipModal()">¥19.9 开通VIP</div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="hero-card">
+                <div class="hero-greeting">您好，<span id="user-name">尊贵的用户</span></div>
+                <div class="hero-title">您的健康指数</div>
+                <div class="hero-subtitle">保持良好的生活习惯，健康常相伴</div>
+                <div class="health-overview">
+                    <div class="health-stat">
+                        <div class="health-stat-value" id="overview-score">72</div>
+                        <div class="health-stat-label">健康评分</div>
+                    </div>
+                    <div class="health-stat">
+                        <div class="health-stat-value" id="overview-abnormal">4</div>
+                        <div class="health-stat-label">异常项</div>
+                    </div>
+                    <div class="health-stat">
+                        <div class="health-stat-value" id="overview-pending">1</div>
+                        <div class="health-stat-label">待复查</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="action-item" onclick="showUploadModal()">
+                    <div class="action-icon upload">📤</div>
+                    <span class="action-label">上传报告</span>
+                </div>
+                <div class="action-item" onclick="switchTab('report')">
+                    <div class="action-icon report">📋</div>
+                    <span class="action-label">我的报告</span>
+                </div>
+                <div class="action-item" onclick="switchTab('reminder')">
+                    <div class="action-icon remind">⏰</div>
+                    <span class="action-label">复查提醒</span>
+                </div>
+                <div class="action-item" onclick="switchTab('package')">
+                    <div class="action-icon package">🎁</div>
+                    <span class="action-label">体检套餐</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">健康小贴士</div>
+                <div id="health-tips" style="font-size: 14px; color: var(--text-secondary); line-height: 1.8;">
+                    保持每天7-8小时的充足睡眠，有助于身体机能恢复。建议少油少盐，多吃蔬菜水果，预防心脑血管疾病。
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">最新报告摘要</div>
+                <div id="latest-report-summary">
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">暂无体检报告，点击上方上传</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 报告详情页 -->
+        <div id="page-report" class="page">
+            <div class="card">
+                <div class="card-title">报告概览</div>
+                <div class="score-ring">
+                    <svg width="120" height="120">
+                        <circle class="bg" cx="60" cy="60" r="52"></circle>
+                        <circle class="progress" cx="60" cy="60" r="52" 
+                            stroke-dasharray="326.73" stroke-dashoffset="326.73" 
+                            id="score-progress"></circle>
+                    </svg>
+                    <div class="score-text">
+                        <div class="score-value" id="detail-score">72</div>
+                        <div class="score-label">健康评分</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 16px;">
+                    <span class="risk-badge medium" id="risk-level">中等风险</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">异常指标</div>
+                <div id="abnormal-indicators">
+                    <!-- 动态渲染 -->
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">详细指标</div>
+                <div class="category-tabs" id="category-tabs">
+                    <div class="category-tab active" data-category="all">全部</div>
+                    <div class="category-tab" data-category="血常规">血常规</div>
+                    <div class="category-tab" data-category="肝功能">肝功能</div>
+                    <div class="category-tab" data-category="血脂">血脂</div>
+                    <div class="category-tab" data-category="血糖">血糖</div>
+                    <div class="category-tab" data-category="肾功能">肾功能</div>
+                    <div class="category-tab" data-category="血压">血压</div>
+                </div>
+                <div class="indicator-list" id="indicator-list">
+                    <!-- 动态渲染 -->
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">健康建议</div>
+                <ul class="suggestion-list" id="suggestion-list">
+                    <!-- 动态渲染 -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- 报告列表页 -->
+        <div id="page-report-list" class="page">
+            <div class="card">
+                <div class="card-title">我的报告</div>
+                <div id="report-list">
+                    <!-- 动态渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 复查提醒页 -->
+        <div id="page-reminder" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div class="card-title" style="margin-bottom: 0;">复查提醒</div>
+                <button class="btn" style="width: auto; padding: 8px 16px; font-size: 13px;" onclick="showAddReminderModal()">+ 添加提醒</button>
+            </div>
+            <div id="reminder-list">
+                <!-- 动态渲染 -->
+            </div>
+        </div>
+
+        <!-- 体检套餐页 -->
+        <div id="page-package" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div class="card-title" style="margin-bottom: 0;">体检套餐</div>
+                <button class="btn btn-outline" style="width: auto; padding: 8px 16px; font-size: 13px;" onclick="showCompareModal()">对比套餐</button>
+            </div>
+            <div id="package-list">
+                <!-- 动态渲染 -->
+            </div>
+        </div>
+
+        <!-- 我的页面 -->
+        <div id="page-mine" class="page">
+            <div class="card" style="text-align: center; padding: 30px;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), #6BA3E8); border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 36px;">👤</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">健康用户</div>
+                <div style="font-size: 14px; color: var(--text-muted);">
+                    <span class="vip-badge" onclick="showVipModal()">✨ VIP会员</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">会员权益</div>
+                <div class="vip-features">
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">🔍</div>
+                        <div class="vip-feature-text">
+                            <div class="vip-feature-title">完整报告解读</div>
+                            <div class="vip-feature-desc">AI智能分析，深度解读每一项指标</div>
+                        </div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">📊</div>
+                        <div class="vip-feature-text">
+                            <div class="vip-feature-title">历史趋势分析</div>
+                            <div class="vip-feature-desc">追踪健康变化，预测风险趋势</div>
+                        </div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">🎯</div>
+                        <div class="vip-feature-text">
+                            <div class="vip-feature-title">个性化建议</div>
+                            <div class="vip-feature-desc">根据体检结果，定制专属健康方案</div>
+                        </div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">👨‍⚕️</div>
+                        <div class="vip-feature-text">
+                            <div class="vip-feature-title">专家咨询</div>
+                            <div class="vip-feature-desc">三甲医院医生在线答疑</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary vip-btn" onclick="showVipModal()">
+                    立即开通 ¥19.9/月
+                </button>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <div class="card-title">关于体检管家</div>
+                <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.8;">
+                    体检管家是一款专业的体检报告管理应用，致力于帮助用户轻松管理体检报告，解读健康数据，设置复查提醒，让健康管理变得简单高效。
+                </div>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 13px; color: var(--text-muted);">
+                    <div style="margin-bottom: 8px;">版本: 1.0.0</div>
+                    <div>© 2024 体检管家 All Rights Reserved</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home')">
+            <div class="nav-icon">🏠</div>
+            <span class="nav-label">首页</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('report-list')">
+            <div class="nav-icon">📋</div>
+            <span class="nav-label">报告</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('package')">
+            <div class="nav-icon">🎁</div>
+            <span class="nav-label">套餐</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('mine')">
+            <div class="nav-icon">👤</div>
+            <span class="nav-label">我的</span>
+        </div>
+    </nav>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 上传弹窗 -->
+    <div class="modal-overlay" id="upload-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">上传体检报告</div>
+                <div class="modal-close" onclick="closeModal('upload-modal')">✕</div>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-text">
+                        点击或拖拽上传<br>
+                        支持 PDF、JPG、PNG 格式
+                    </div>
+                </div>
+                <input type="file" id="file-input" class="hidden-input" accept=".pdf,.jpg,.jpeg,.png" onchange="handleUpload(this)">
+                
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-outline" onclick="simulateUpload()" style="margin-bottom: 12px;">
+                        🎲 模拟上传报告
+                    </button>
+                    <button class="btn btn-primary" onclick="analyzeReport()">
+                        开始分析
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加提醒弹窗 -->
+    <div class="modal-overlay" id="reminder-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">添加复查提醒</div>
+                <div class="modal-close" onclick="closeModal('reminder-modal')">✕</div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">复查项目</label>
+                    <input type="text" class="form-input" id="reminder-item" placeholder="如：谷丙转氨酶(ALT)">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">建议日期</label>
+                    <input type="date" class="form-input" id="reminder-date">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <input type="text" class="form-input" id="reminder-note" placeholder="如：清淡饮食一周后复查">
+                </div>
+                <button class="btn btn-primary" onclick="addReminder()">保存提醒</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vip-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">开通VIP会员</div>
+                <div class="modal-close" onclick="closeModal('vip-modal')">✕</div>
+            </div>
+            <div class="modal-body vip-modal">
+                <div class="vip-icon">👑</div>
+                <div class="vip-title">体检管家 VIP</div>
+                <div class="vip-desc">解锁全部高级功能，让健康管理更专业</div>
+                
+                <div class="vip-features">
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">🔍</div>
+                        <div class="vip-feature-text">
+                            <div class="vip-feature-title">完整报告解读</div>
+                            <div class="vip-feature-desc">AI智能深度分析每项指标含义</div>
+                        </div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">📈</div>
+                        <div class="vip-feature-text">
+                            <div class="vip-feature-title">历史趋势追踪</div>
+                            <div class="vip-feature-desc">多份报告对比，追踪健康变化</div>
+                        </div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">🎯</div>
+                        <div class="vip-feature-text">
+                            <div class="vip-feature-title">个性化方案</div>
+                            <div class="vip-feature-desc">根据体检结果定制健康建议</div>
+                        </div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">💬</div>
+                        <div class="vip-feature-text">
+                            <div class="vip-feature-title">专家在线答疑</div>
+                            <div class="vip-feature-desc">三甲医院医生实时解答疑惑</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="vip-price">¥19.9 <span>/月</span></div>
+                <button class="btn btn-primary vip-btn" onclick="purchaseVip()">
+                    立即开通
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分析结果弹窗 -->
+    <div class="modal-overlay" id="analysis-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">报告分析结果</div>
+                <div class="modal-close" onclick="closeModal('analysis-modal')">✕</div>
+            </div>
+            <div class="modal-body">
+                <div class="analysis-summary">
+                    <div class="analysis-score">
+                        <div class="analysis-score-value" id="analysis-score">72</div>
+                        <div class="analysis-level" id="analysis-level">中等风险</div>
+                    </div>
+                    <div class="analysis-text" id="analysis-summary-text">
+                        检测到4项指标异常，主要集中在血脂和肝功能，建议调整饮食习惯并定期复查。
+                    </div>
+                </div>
+                
+                <div class="card-title">关键发现</div>
+                <div id="analysis-findings" style="margin-bottom: 20px;">
+                    <!-- 动态渲染 -->
+                </div>
+                
+                <div class="card-title">改善建议</div>
+                <ul class="suggestion-list" id="analysis-suggestions">
+                    <!-- 动态渲染 -->
+                </ul>
+                
+                <button class="btn btn-primary" onclick="closeModal('analysis-modal'); switchTab('report')" style="margin-top: 20px;">
+                    查看完整报告
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 套餐对比弹窗 -->
+    <div class="modal-overlay" id="compare-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">套餐对比</div>
+                <div class="modal-close" onclick="closeModal('compare-modal')">✕</div>
+            </div>
+            <div class="modal-body">
+                <div id="compare-table-container">
+                    <!-- 动态渲染 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL
+        const API_BASE = '';
+
+        // 全局数据
+        let currentReport = null;
+        let selectedPackages = [];
+
+        // 页面切换
+        function switchTab(tabName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // 显示目标页面
+            const page = document.getElementById(`page-${tabName}`);
+            if (page) {
+                page.classList.add('active');
+            }
+
+            // 更新底部导航
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const navIndex = ['home', 'report-list', 'package', 'mine'].indexOf(tabName);
+            if (navIndex >= 0) {
+                document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+            }
+
+            // 加载对应页面数据
+            switch(tabName) {
+                case 'report':
+                case 'report-list':
+                    loadReportList();
+                    break;
+                case 'reminder':
+                    loadReminders();
+                    break;
+                case 'package':
+                    loadPackages();
+                    break;
+            }
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // 弹窗控制
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // 显示上传弹窗
+        function showUploadModal() {
+            showModal('upload-modal');
+        }
+
+        // 显示VIP弹窗
+        function showVipModal() {
+            showModal('vip-modal');
+        }
+
+        // 显示添加提醒弹窗
+        function showAddReminderModal() {
+            // 设置默认日期为一周后
+            const nextWeek = new Date();
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            document.getElementById('reminder-date').value = nextWeek.toISOString().split('T')[0];
+            showModal('reminder-modal');
+        }
+
+        // 处理文件上传
+        async function handleUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+                
+                if (!validTypes.includes(file.type)) {
+                    showToast('请上传 PDF、JPG 或 PNG 格式的文件');
+                    return;
+                }
+
+                showToast('正在上传...');
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    // 模拟上传
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    showToast('上传成功，正在分析...');
+                    closeModal('upload-modal');
+                    showAnalysisModal();
+                } catch (error) {
+                    showToast('上传失败，请重试');
+                }
+            }
+        }
+
+        // 模拟上传
+        async function simulateUpload() {
+            showToast('正在模拟上传...');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            showToast('上传成功！');
+            closeModal('upload-modal');
+            showAnalysisModal();
+        }
+
+        // 分析报告
+        async function analyzeReport() {
+            showToast('正在分析体检报告...');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            showAnalysisModal();
+        }
+
+        // 显示分析结果弹窗
+        async function showAnalysisModal() {
+            try {
+                const response = await fetch(`${API_BASE}/api/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ report_id: 'report_001' })
+                });
+                const result = await response.json();
+                
+                if (result.code === 0) {
+                    const data = result.data;
+                    document.getElementById('analysis-score').textContent = data.risk_score;
+                    document.getElementById('analysis-level').textContent = data.risk_level;
+                    document.getElementById('analysis-summary-text').textContent = data.summary;
+                    
+                    // 渲染关键发现
+                    const findingsHtml = data.key_findings.map(f => `
+                        <div class="interpretation-card warning">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <strong>${f.项目}</strong>
+                                <span class="abnormal-indicator high">${f.程度}</span>
+                            </div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">${f.建议}</div>
+                        </div>
+                    `).join('');
+                    document.getElementById('analysis-findings').innerHTML = findingsHtml;
+                    
+                    // 渲染建议
+                    const suggestionsHtml = data.recommendations.map((s, i) => `
+                        <li class="suggestion-item">
+                            <span class="suggestion-icon">${i + 1}</span>
+                            <span class="suggestion-text">${s}</span>
+                        </li>
+                    `).join('');
+                    document.getElementById('analysis-suggestions').innerHTML = suggestionsHtml;
+                    
+                    showModal('analysis-modal');
+                }
+            } catch (error) {
+                showToast('分析失败，请重试');
+            }
+        }
+
+        // 加载报告列表
+        async function loadReportList() {
+            const container = document.getElementById('report-list');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/reports`);
+                const result = await response.json();
+                
+                if (result.code === 0 && result.data.length > 0) {
+                    container.innerHTML = result.data.map(r => `
+                        <div class="report-list-item" onclick="viewReport('${r.id}')">
+                            <div class="report-avatar">📋</div>
+                            <div class="report-info">
+                                <div class="report-name">${r.user_name} - ${r.报告机构}</div>
+                                <div class="report-date">${r.体检日期}</div>
+                            </div>
+                            <div class="report-score">
+                                <div class="report-score-value">${r.风险评分}</div>
+                                <div class="report-score-label">健康评分</div>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    // 更新首页数据
+                    const latest = result.data[0];
+                    document.getElementById('overview-score').textContent = latest.风险评分;
+                    document.getElementById('overview-abnormal').textContent = latest.异常项数量;
+                    document.getElementById('user-name').textContent = latest.user_name;
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📭</div>
+                            <div class="empty-text">暂无体检报告</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-text">加载失败，请重试</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 查看报告详情
+        async function viewReport(reportId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/report/${reportId}`);
+                const result = await response.json();
+                
+                if (result.code === 0) {
+                    currentReport = result.data;
+                    renderReportDetail();
+                    switchTab('report');
+                }
+            } catch (error) {
+                showToast('加载报告失败');
+            }
+        }
+
+        // 渲染报告详情
+        function renderReportDetail() {
+            if (!currentReport) return;
+            
+            // 更新评分
+            const score = currentReport.风险评分;
+            document.getElementById('detail-score').textContent = score;
+            const circumference = 326.73;
+            const offset = circumference - (score / 100) * circumference;
+            document.getElementById('score-progress').style.strokeDashoffset = offset;
+            
+            // 更新风险等级
+            const riskLevel = document.getElementById('risk-level');
+            if (score >= 80) {
+                riskLevel.className = 'risk-badge low';
+                riskLevel.textContent = '低风险 ✓';
+            } else if (score >= 60) {
+                riskLevel.className = 'risk-badge medium';
+                riskLevel.textContent = '中等风险 △';
+            } else {
+                riskLevel.className = 'risk-badge high';
+                riskLevel.textContent = '较高风险 ⚠';
+            }
+            
+            // 渲染异常指标
+            const abnormalHtml = currentReport.异常项汇总.map(a => `
+                <div class="interpretation-card warning">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <strong>${a.项目}</strong>
+                        <span class="abnormal-indicator high">${a.程度}</span>
+                    </div>
+                    <div style="font-size: 14px; color: var(--text-secondary);">${a.建议}</div>
+                </div>
+            `).join('');
+            document.getElementById('abnormal-indicators').innerHTML = abnormalHtml || '<div class="empty-state"><div class="empty-text">暂无异常指标</div></div>';
+            
+            // 渲染指标列表
+            renderIndicators('all');
+            
+            // 渲染健康建议
+            const suggestionsHtml = currentReport.健康建议.map((s, i) => `
+                <li class="suggestion-item">
+                    <span class="suggestion-icon">${i + 1}</span>
+                    <span class="suggestion-text">${s}</span>
+                </li>
+            `).join('');
+            document.getElementById('suggestion-list').innerHTML = suggestionsHtml;
+            
+            // 更新首页摘要
+            document.getElementById('overview-score').textContent = score;
+            document.getElementById('overview-abnormal').textContent = currentReport.异常项汇总.length;
+            document.getElementById('latest-report-summary').innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 14px; font-weight: 500;">${currentReport.报告机构}</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">${currentReport.体检日期}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 24px; font-weight: 700; color: var(--primary);">${score}</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">综合评分</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 渲染指标列表
+        function renderIndicators(category) {
+            if (!currentReport) return;
+            
+            const indicators = category === 'all' 
+                ? currentReport.指标项 
+                : currentReport.指标项.filter(i => i.类别 === category);
+            
+            const html = indicators.map(item => {
+                let statusClass = 'normal';
+                let statusText = item.结果;
+                if (item.结果 === '偏高' || item.结果 === '偏低') {
+                    statusClass = 'high';
+                } else if (item.结果 === '正常偏高' || item.结果 === '正常偏低') {
+                    statusClass = 'medium';
+                }
+                
+                return `
+                    <div class="indicator-item">
+                        <div class="indicator-header">
+                            <span class="indicator-name">${item.项目}</span>
+                            <span class="indicator-value">${item.数值} ${item.单位}</span>
+                        </div>
+                        <div class="indicator-range">
+                            <span class="abnormal-indicator ${statusClass}">${statusText}</span>
+                            <span style="margin-left: 8px;">参考值: ${item.参考值}</span>
+                        </div>
+                        <div class="indicator-interpretation">${item.解读}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('indicator-list').innerHTML = html;
+            
+            // 更新标签选中状态
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+        }
+
+        // 分类标签点击
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    renderIndicators(tab.dataset.category);
+                });
+            });
+        });
+
+        // 加载复查提醒
+        async function loadReminders() {
+            const container = document.getElementById('reminder-list');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/reminders`);
+                const result = await response.json();
+                
+                if (result.code === 0 && result.data.length > 0) {
+                    container.innerHTML = result.data.map(r => {
+                        const date = new Date(r.suggested_date);
+                        const month = date.getMonth() + 1;
+                        const day = date.getDate();
+                        const isPast = new Date(r.suggested_date) < new Date();
+                        
+                        return `
+                            <div class="reminder-item">
+                                <div class="reminder-date">
+                                    <span class="month">${month}月</span>
+                                    <span class="day">${day}</span>
+                                </div>
+                                <div class="reminder-content">
+                                    <div class="reminder-title">${r.item}</div>
+                                    <div class="reminder-note">${r.note}</div>
+                                </div>
+                                <span class="reminder-status ${isPast ? 'done' : 'pending'}">${isPast ? '已到期' : '待复查'}</span>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    document.getElementById('overview-pending').textContent = result.data.filter(r => r.status === 'pending').length;
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">⏰</div>
+                            <div class="empty-text">暂无复查提醒</div>
+                        </div>
+                    `;
+                    document.getElementById('overview-pending').textContent = '0';
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-text">加载失败，请重试</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 添加提醒
+        async function addReminder() {
+            const item = document.getElementById('reminder-item').value.trim();
+            const date = document.getElementById('reminder-date').value;
+            const note = document.getElementById('reminder-note').value.trim();
+            
+            if (!item || !date) {
+                showToast('请填写完整信息');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/reminders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        item: item,
+                        suggested_date: date,
+                        note: note
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.code === 0) {
+                    showToast('提醒添加成功');
+                    closeModal('reminder-modal');
+                    loadReminders();
+                    
+                    // 清空表单
+                    document.getElementById('reminder-item').value = '';
+                    document.getElementById('reminder-note').value = '';
+                }
+            } catch (error) {
+                showToast('添加失败，请重试');
+            }
+        }
+
+        // 加载套餐列表
+        async function loadPackages() {
+            const container = document.getElementById('package-list');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/packages`);
+                const result = await response.json();
+                
+                if (result.code === 0) {
+                    container.innerHTML = result.data.map(pkg => `
+                        <div class="package-card ${pkg.hot ? 'hot' : ''}">
+                            <div class="package-header">
+                                <div class="package-name">${pkg.name}</div>
+                                <div class="package-price">
+                                    <div class="current">¥${pkg.price}</div>
+                                    <div class="original">¥${pkg.original_price}</div>
+                                </div>
+                            </div>
+                            <div class="package-suitable">适合人群: ${pkg.suitable}</div>
+                            <div class="package-features">
+                                ${pkg.features.slice(0, 5).map(f => `<span class="package-feature">${f}</span>`).join('')}
+                                ${pkg.features.length > 5 ? `<span class="package-feature">+${pkg.features.length - 5}项</span>` : ''}
+                            </div>
+                            <div class="package-meta">
+                                <div class="package-info">
+                                    <span>${pkg.items_count}项</span> | <span>${pkg.duration}</span>
+                                </div>
+                                <button class="package-btn" onclick="selectPackage('${pkg.id}')" id="pkg-btn-${pkg.id}">
+                                    ${selectedPackages.includes(pkg.id) ? '已选择' : '选择'}
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-text">加载失败，请重试</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 选择套餐
+        function selectPackage(pkgId) {
+            const index = selectedPackages.indexOf(pkgId);
+            if (index >= 0) {
+                selectedPackages.splice(index, 1);
+            } else {
+                if (selectedPackages.length >= 3) {
+                    showToast('最多只能对比3个套餐');
+                    return;
+                }
+                selectedPackages.push(pkgId);
+            }
+            
+            // 更新按钮状态
+            const btn = document.getElementById(`pkg-btn-${pkgId}`);
+            if (selectedPackages.includes(pkgId)) {
+                btn.textContent = '已选择';
+                btn.classList.add('selected');
+            } else {
+                btn.textContent = '选择';
+                btn.classList.remove('selected');
+            }
+        }
+
+        // 显示对比弹窗
+        async function showCompareModal() {
+            if (selectedPackages.length < 2) {
+                showToast('请至少选择2个套餐进行对比');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/packages/compare`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ package_ids: selectedPackages })
+                });
+                
+                const result = await response.json();
+                
+                if (result.code === 0) {
+                    const packages = result.data.packages;
+                    
+                    let tableHtml = `
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th>对比项</th>
+                                    ${packages.map(p => `<th>${p.name}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>价格</td>
+                                    ${packages.map(p => `<td><strong style="color:#FF4D4F">¥${p.price}</strong></td>`).join('')}
+                                </tr>
+                                <tr>
+                                    <td>原价</td>
+                                    ${packages.map(p => `<td><del>¥${p.original_price}</del></td>`).join('')}
+                                </tr>
+                                <tr>
+                                    <td>项目数量</td>
+                                    ${packages.map(p => `<td>${p.items_count}项</td>`).join('')}
+                                </tr>
+                                <tr>
+                                    <td>体检时长</td>
+                                    ${packages.map(p => `<td>${p.duration}</td>`).join('')}
+                                </tr>
+                                <tr>
+                                    <td>适合人群</td>
+                                    ${packages.map(p => `<td>${p.suitable}</td>`).join('')}
+                                </tr>
+                                <tr>
+                                    <td>特色项目</td>
+                                    ${packages.map(p => `<td>${p.features.slice(0, 2).join(', ')}</td>`).join('')}
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                    
+                    document.getElementById('compare-table-container').innerHTML = tableHtml;
+                    showModal('compare-modal');
+                }
+            } catch (error) {
+                showToast('加载失败，请重试');
+            }
+        }
+
+        // 购买VIP
+        async function purchaseVip() {
+            showToast('正在跳转到支付...');
+            
+            // 模拟支付
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            showToast('购买成功！');
+            closeModal('vip-modal');
+            
+            // 更新VIP状态
+            document.querySelector('.vip-badge').innerHTML = '✨ VIP会员';
+            showToast('欢迎成为VIP会员，解锁全部功能！');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReportList();
+            loadPackages();
+            
+            // 加载健康提示
+            const tips = [
+                '保持每天7-8小时的充足睡眠，有助于身体机能恢复。',
+                '建议少油少盐，多吃蔬菜水果，预防心脑血管疾病。',
+                '每周至少进行3次中等强度运动，每次30分钟以上。',
+                '体检前3天避免高脂肪、高糖饮食，确保检测准确性。',
+                '定期测量血压、血糖，及时发现潜在健康风险。',
+                '保持良好心态，心理健康同样重要。'
+            ];
+            document.getElementById('health-tips').textContent = tips[Math.floor(Math.random() * tips.length)];
+        });
+    </script>
+</body>
+</html>

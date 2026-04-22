@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小区公告 - 智慧社区服务</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A90E2;
+            --primary-dark: #357ABD;
+            --success: #52C41A;
+            --warning: #FAAD14;
+            --danger: #F5222D;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-light: #999;
+            --bg-color: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --border-color: #E8E8E8;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 70px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .community-name {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--card-bg);
+            padding: 0 8px;
+            position: sticky;
+            top: 76px;
+            z-index: 99;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .nav-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .nav-tab-icon {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-important {
+            background: #FFF1F0;
+            color: var(--danger);
+        }
+
+        .badge-normal {
+            background: #F0F5FF;
+            color: var(--primary);
+        }
+
+        .card-meta {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .card-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-item {
+            font-size: 12px;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .action-item:hover {
+            color: var(--primary);
+        }
+
+        /* Notice List */
+        .notice-item {
+            border-left: 4px solid var(--primary);
+        }
+
+        .notice-item.important {
+            border-left-color: var(--danger);
+        }
+
+        /* Review Stars */
+        .star-rating {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 8px;
+        }
+
+        .star {
+            font-size: 16px;
+            color: #DDD;
+            cursor: pointer;
+        }
+
+        .star.active {
+            color: #FFC53D;
+        }
+
+        /* Service Type Select */
+        .service-types {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .service-type-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: 1px solid var(--border-color);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .service-type-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #FFF7E6;
+            color: var(--warning);
+        }
+
+        .status-processing {
+            background: #E6F7FF;
+            color: var(--primary);
+        }
+
+        .status-completed {
+            background: #F6FFED;
+            color: var(--success);
+        }
+
+        .status-paid {
+            background: #F6FFED;
+            color: var(--success);
+        }
+
+        .status-unpaid {
+            background: #FFF1F0;
+            color: var(--danger);
+        }
+
+        /* Payment Card */
+        .payment-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-type {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .payment-desc {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .payment-amount {
+            text-align: right;
+        }
+
+        .amount-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+        .amount-value.paid {
+            color: var(--success);
+            font-size: 14px;
+        }
+
+        .deadline {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Neighbor Post */
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #E8F4FD 0%, #D4E9FC 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .post-user {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .post-images {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .post-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        .post-footer {
+            display: flex;
+            gap: 20px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .post-action:hover, .post-action.active {
+            color: var(--primary);
+        }
+
+        /* Comment Section */
+        .comment-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: #FAFAFA;
+            border-radius: 8px;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .comment-user {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .comment-content {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .comment-input-wrap {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .comment-submit {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            z-index: 1000;
+            animation: fadeInOverlay 0.2s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-height: 85vh;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 14px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 375px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div>
+                <h1>🏠 小区公告</h1>
+                <div class="community-name">阳光花园小区</div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">👤</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">📢</div>
+            <div class="stat-value" id="stat-notices">0</div>
+            <div class="stat-label">公告</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value" id="stat-rating">0</div>
+            <div class="stat-label">好评率</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🔧</div>
+            <div class="stat-value" id="stat-repairs">0</div>
+            <div class="stat-label">待处理</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" id="stat-bills">0</div>
+            <div class="stat-label">待缴费</div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="nav-tab active" data-tab="notices">
+            <span class="nav-tab-icon">📢</span>
+            公告
+        </div>
+        <div class="nav-tab" data-tab="reviews">
+            <span class="nav-tab-icon">⭐</span>
+            评价
+        </div>
+        <div class="nav-tab" data-tab="repairs">
+            <span class="nav-tab-icon">🔧</span>
+            报修
+        </div>
+        <div class="nav-tab" data-tab="neighbors">
+            <span class="nav-tab-icon">👥</span>
+            邻里
+        </div>
+        <div class="nav-tab" data-tab="payments">
+            <span class="nav-tab-icon">💳</span>
+            缴费
+        </div>
+    </nav>
+
+    <!-- Notices Section -->
+    <section id="notices-section" class="content-section active">
+        <div id="notices-list"></div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews-section" class="content-section">
+        <button class="btn btn-primary btn-block" onclick="openModal('review-modal')" style="margin-bottom: 16px;">
+            ✍️ 我要评价
+        </button>
+        <div id="reviews-list"></div>
+    </section>
+
+    <!-- Repairs Section -->
+    <section id="repairs-section" class="content-section">
+        <button class="btn btn-primary btn-block" onclick="openModal('repair-modal')" style="margin-bottom: 16px;">
+            ➕ 提交报修
+        </button>
+        <div id="repairs-list"></div>
+    </section>
+
+    <!-- Neighbors Section -->
+    <section id="neighbors-section" class="content-section">
+        <button class="btn btn-primary btn-block" onclick="openModal('post-modal')" style="margin-bottom: 16px;">
+            ➕ 发布动态
+        </button>
+        <div id="neighbors-list"></div>
+    </section>
+
+    <!-- Payments Section -->
+    <section id="payments-section" class="content-section">
+        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">
+            📅 账单信息实时更新，请及时缴纳
+        </div>
+        <div id="payments-list"></div>
+    </section>
+
+    <!-- Review Modal -->
+    <div class="modal-overlay" id="review-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">物业服务评价</h2>
+                <button class="modal-close" onclick="closeModal('review-modal')">×</button>
+            </div>
+            <form id="review-form">
+                <div class="form-group">
+                    <label class="form-label">服务类型</label>
+                    <div class="service-types">
+                        <button type="button" class="service-type-btn active" data-value="保洁服务">🧹 保沽服务</button>
+                        <button type="button" class="service-type-btn" data-value="安保服务">🔒 安保服务</button>
+                        <button type="button" class="service-type-btn" data-value="维修服务">🔧 维修服务</button>
+                        <button type="button" class="service-type-btn" data-value="客服服务">📞 客服服务</button>
+                        <button type="button" class="service-type-btn" data-value="绿化服务">🌿 绿化服务</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">服务评分</label>
+                    <div class="star-rating" id="star-rating">
+                        <span class="star active" data-value="1">★</span>
+                        <span class="star active" data-value="2">★</span>
+                        <span class="star active" data-value="3">★</span>
+                        <span class="star active" data-value="4">★</span>
+                        <span class="star active" data-value="5">★</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">您的称呼</label>
+                    <input type="text" class="form-input" id="review-name" placeholder="请输入您的称呼" value="业主">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">评价内容</label>
+                    <textarea class="form-input form-textarea" id="review-content" placeholder="请描述您的服务体验..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">提交评价</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Repair Modal -->
+    <div class="modal-overlay" id="repair-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">报修申请</h2>
+                <button class="modal-close" onclick="closeModal('repair-modal')">×</button>
+            </div>
+            <form id="repair-form">
+                <div class="form-group">
+                    <label class="form-label">报修标题</label>
+                    <input type="text" class="form-input" id="repair-title" placeholder="请简述报修问题" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">报修位置</label>
+                    <input type="text" class="form-input" id="repair-location" placeholder="如：3号楼2单元门口" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">详细描述</label>
+                    <textarea class="form-input form-textarea" id="repair-desc" placeholder="请详细描述您遇到的问题..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">提交报修</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Post Modal -->
+    <div class="modal-overlay" id="post-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">发布动态</h2>
+                <button class="modal-close" onclick="closeModal('post-modal')">×</button>
+            </div>
+            <form id="post-form">
+                <div class="form-group">
+                    <label class="form-label">您的称呼</label>
+                    <input type="text" class="form-input" id="post-name" placeholder="请输入您的称呼" value="邻居">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">动态内容</label>
+                    <textarea class="form-input form-textarea" id="post-content" placeholder="分享您想说的话..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">发布</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let notices = [];
+        let reviews = [];
+        let repairs = [];
+        let neighbors = [];
+        let payments = [];
+        let selectedRating = 5;
+        let selectedServiceType = '保洁服务';
+
+        // ==================== 工具函数 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function formatTime(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+            return date.toLocaleDateString('zh-CN');
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('zh-CN');
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': '待处理',
+                'processing': '处理中',
+                'completed': '已完成',
+                'paid': '已支付',
+                'unpaid': '待支付'
+            };
+            return statusMap[status] || status;
+        }
+
+        // ==================== API 请求 ====================
+        async function fetchData() {
+            try {
+                const [noticesRes, reviewsRes, repairsRes, neighborsRes, paymentsRes, statsRes] = await Promise.all([
+                    fetch('/api/notices'),
+                    fetch('/api/reviews'),
+                    fetch('/api/repairs'),
+                    fetch('/api/neighbors'),
+                    fetch('/api/payments'),
+                    fetch('/api/stats')
+                ]);
+
+                notices = await noticesRes.json();
+                reviews = await reviewsRes.json();
+                repairs = await repairsRes.json();
+                neighbors = await neighborsRes.json();
+                payments = await paymentsRes.json();
+                const stats = await statsRes.json();
+
+                updateStats(stats.data);
+                renderAll();
+            } catch (error) {
+                console.error('数据加载失败:', error);
+                showToast('数据加载失败，请刷新重试');
+            }
+        }
+
+        async function submitReview(data) {
+            try {
+                const res = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    showToast('评价提交成功');
+                    reviews.data.unshift(result.data);
+                    renderReviews();
+                    updateStats(await fetch('/api/stats').then(r => r.json()).then(d => d.data));
+                }
+            } catch (error) {
+                showToast('提交失败，请重试');
+            }
+        }
+
+        async function submitRepair(data) {
+            try {
+                const res = await fetch('/api/repairs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    showToast('报修提交成功');
+                    repairs.data.unshift(result.data);
+                    renderRepairs();
+                    updateStats(await fetch('/api/stats').then(r => r.json()).then(d => d.data));
+                }
+            } catch (error) {
+                showToast('提交失败，请重试');
+            }
+        }
+
+        async function submitPost(data) {
+            try {
+                const res = await fetch('/api/neighbors', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    showToast('发布成功');
+                    neighbors.data.unshift(result.data);
+                    renderNeighbors();
+                }
+            } catch (error) {
+                showToast('发布失败，请重试');
+            }
+        }
+
+        async function likePost(postId) {
+            try {
+                const res = await fetch(`/api/neighbors/${postId}/like`, { method: 'POST' });
+                const result = await res.json();
+                if (result.code === 200) {
+                    const post = neighbors.data.find(p => p.id === postId);
+                    if (post) {
+                        post.likes = result.data.likes;
+                        renderNeighbors();
+                    }
+                }
+            } catch (error) {
+                showToast('操作失败');
+            }
+        }
+
+        async function commentPost(postId, content) {
+            try {
+                const res = await fetch(`/api/neighbors/${postId}/comment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    const post = neighbors.data.find(p => p.id === postId);
+                    if (post) {
+                        post.comment_list.push(result.data);
+                        post.comments = post.comment_list.length;
+                        renderNeighbors();
+                    }
+                }
+            } catch (error) {
+                showToast('评论失败');
+            }
+        }
+
+        // ==================== 渲染函数 ====================
+        function renderAll() {
+            renderNotices();
+            renderReviews();
+            renderRepairs();
+            renderNeighbors();
+            renderPayments();
+        }
+
+        function updateStats(stats) {
+            document.getElementById('stat-notices').textContent = stats.total_notices;
+            document.getElementById('stat-rating').textContent = stats.avg_rating.toFixed(1);
+            document.getElementById('stat-repairs').textContent = stats.pending_repairs;
+            document.getElementById('stat-bills').textContent = stats.unpaid_bills;
+        }
+
+        function renderNotices() {
+            const container = document.getElementById('notices-list');
+            if (notices.data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">暂无公告</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notices.data.map(notice => `
+                <div class="card notice-item ${notice.type === 'important' ? 'important' : ''}">
+                    <div class="card-header">
+                        <div class="card-title">${notice.title}</div>
+                        <span class="card-badge badge-${notice.type}">${notice.type === 'important' ? '重要' : '通知'}</span>
+                    </div>
+                    <div class="card-meta">📅 ${notice.create_time} · 👤 ${notice.author} · 👁 ${notice.views}浏览</div>
+                    <div class="card-content">${notice.content}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviews-list');
+            if (reviews.data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⭐</div>
+                        <div class="empty-text">暂无评价</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reviews.data.map(review => `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div style="font-weight: 600;">${review.user_name}</div>
+                            <div style="font-size: 12px; color: var(--text-light);">${review.service_type}</div>
+                        </div>
+                        <div class="star-rating">
+                            ${Array(5).fill(0).map((_, i) => `<span style="color: ${i < review.rating ? '#FFC53D' : '#DDD'}">★</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="card-content">${review.comment}</div>
+                    <div class="card-meta">${review.create_time}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderRepairs() {
+            const container = document.getElementById('repairs-list');
+            if (repairs.data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔧</div>
+                        <div class="empty-text">暂无报修记录</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = repairs.data.map(repair => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">${repair.title}</div>
+                        <span class="status-badge status-${repair.status}">${getStatusText(repair.status)}</span>
+                    </div>
+                    <div class="card-meta">📍 ${repair.location} · ${repair.create_time}</div>
+                    <div class="card-content">${repair.description}</div>
+                    ${repair.complete_time ? `<div class="card-meta">✅ 完成时间: ${repair.complete_time}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderNeighbors() {
+            const container = document.getElementById('neighbors-list');
+            if (neighbors.data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">👥</div>
+                        <div class="empty-text">暂无动态</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = neighbors.data.map(post => `
+                <div class="card">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.user_avatar}</div>
+                        <div>
+                            <div class="post-user">${post.user_name}</div>
+                            <div class="post-time">${formatTime(post.create_time)}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-footer">
+                        <div class="post-action" onclick="likePost(${post.id})">❤️ ${post.likes}</div>
+                        <div class="post-action" onclick="toggleComments(${post.id})">💬 ${post.comments}</div>
+                    </div>
+                    <div class="comment-section" id="comments-${post.id}" style="display: none;">
+                        ${post.comment_list.map(c => `
+                            <div class="comment-item">
+                                <span class="comment-user">${c.user_name}:</span>
+                                <span class="comment-content">${c.content}</span>
+                            </div>
+                        `).join('')}
+                        <div class="comment-input-wrap">
+                            <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="写评论...">
+                            <button class="comment-submit" onclick="handleComment(${post.id})">发送</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPayments() {
+            const container = document.getElementById('payments-list');
+            if (payments.data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💳</div>
+                        <div class="empty-text">暂无账单</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = payments.data.map(payment => `
+                <div class="card payment-card">
+                    <div class="payment-info">
+                        <div class="payment-type">${payment.type}</div>
+                        <div class="payment-desc">${payment.description}</div>
+                        <div class="deadline">截止日期: ${payment.deadline}</div>
+                    </div>
+                    <div class="payment-amount">
+                        <div class="amount-value ${payment.status === 'paid' ? 'paid' : ''}">
+                            ${payment.status === 'paid' ? '已支付' : '¥' + payment.amount.toFixed(2)}
+                        </div>
+                        <span class="status-badge status-${payment.status}">${getStatusText(payment.status)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 事件处理 ====================
+        function toggleComments(postId) {
+            const section = document.getElementById(`comments-${postId}`);
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function handleComment(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+            if (content) {
+                commentPost(postId, content);
+                input.value = '';
+            }
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // 点击遮罩关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+
+        // Tab 切换
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`${tab.dataset.tab}-section`).classList.add('active');
+            });
+        });
+
+        // 服务类型选择
+        document.querySelectorAll('.service-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.service-type-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedServiceType = btn.dataset.value;
+            });
+        });
+
+        // 星级评分
+        document.querySelectorAll('#star-rating .star').forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = parseInt(star.dataset.value);
+                document.querySelectorAll('#star-rating .star').forEach((s, i) => {
+                    s.classList.toggle('active', i < selectedRating);
+                });
+            });
+        });
+
+        // 评价表单提交
+        document.getElementById('review-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const comment = document.getElementById('review-content').value;
+            submitReview({
+                user_name: document.getElementById('review-name').value,
+                service_type: selectedServiceType,
+                rating: selectedRating,
+                comment: comment
+            });
+            closeModal('review-modal');
+            document.getElementById('review-form').reset();
+            document.getElementById('review-name').value = '业主';
+            selectedRating = 5;
+            document.querySelectorAll('#star-rating .star').forEach(s => s.classList.add('active'));
+        });
+
+        // 报修表单提交
+        document.getElementById('repair-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitRepair({
+                title: document.getElementById('repair-title').value,
+                location: document.getElementById('repair-location').value,
+                description: document.getElementById('repair-desc').value
+            });
+            closeModal('repair-modal');
+            document.getElementById('repair-form').reset();
+        });
+
+        // 帖子表单提交
+        document.getElementById('post-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitPost({
+                user_name: document.getElementById('post-name').value,
+                content: document.getElementById('post-content').value,
+                user_avatar: '👤'
+            });
+            closeModal('post-modal');
+            document.getElementById('post-form').reset();
+            document.getElementById('post-name').value = '邻居';
+        });
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+        });
+    </script>
+</body>
+</html>

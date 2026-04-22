@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>水电费查询 - 让账单管理更简单</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --electricity: #F59E0B;
+            --water: #10B981;
+            --danger: #EF4444;
+            --success: #22C55E;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-400: #94A3B8;
+            --gray-500: #64748B;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+            --gray-900: #0F172A;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #7C2D12;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .vip-badge:hover {
+            transform: scale(1.05);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            color: var(--gray-400);
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 主容器 */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--gray-900);
+        }
+
+        /* 卡片组件 */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        /* 仪表盘 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon.electricity {
+            background: #FEF3C7;
+        }
+
+        .stat-icon.water {
+            background: #D1FAE5;
+        }
+
+        .stat-icon.warning {
+            background: #FEE2E2;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .stat-change.up {
+            color: var(--danger);
+        }
+
+        .stat-change.down {
+            color: var(--success);
+        }
+
+        /* 未缴费提醒 */
+        .unpaid-alert {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .unpaid-alert-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .unpaid-alert-icon {
+            font-size: 24px;
+        }
+
+        .unpaid-alert-title {
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .unpaid-alert-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gray-300);
+            color: var(--gray-600);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* 账单列表 */
+        .bill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bill-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .bill-item:hover {
+            transform: translateX(4px);
+        }
+
+        .bill-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bill-type-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .bill-type-icon.electricity {
+            background: #FEF3C7;
+        }
+
+        .bill-type-icon.water {
+            background: #D1FAE5;
+        }
+
+        .bill-details h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .bill-details p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .bill-amount {
+            text-align: right;
+        }
+
+        .bill-amount .amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .bill-amount .status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .status.unpaid {
+            background: #FEE2E2;
+            color: var(--danger);
+        }
+
+        .status.paid {
+            background: #D1FAE5;
+            color: var(--success);
+        }
+
+        .status.pending {
+            background: #FEF3C7;
+            color: #B45309;
+        }
+
+        /* 筛选器 */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            color: var(--gray-600);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .chart-wrapper {
+            height: 250px;
+            position: relative;
+        }
+
+        /* 室友管理 */
+        .roommate-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .roommate-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--gray-50);
+            border-radius: 10px;
+        }
+
+        .roommate-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .roommate-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .roommate-name {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .roommate-room {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .roommate-ratio {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 分摊结果 */
+        .split-result {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius);
+            padding: 20px;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .split-total {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .split-total-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .split-total-amount {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .split-person {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .split-person:last-child {
+            border-bottom: none;
+        }
+
+        /* 提醒列表 */
+        .reminder-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .reminder-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .reminder-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #FEE2E2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .reminder-text h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .reminder-text p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* 开关 */
+        .toggle {
+            width: 48px;
+            height: 28px;
+            background: var(--gray-300);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle.active {
+            background: var(--primary);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle.active::after {
+            transform: translateX(20px);
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--gray-500);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 表单 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* VIP会员 */
+        .vip-banner {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            border-radius: var(--radius);
+            padding: 20px;
+            color: #7C2D12;
+            margin-bottom: 20px;
+        }
+
+        .vip-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .vip-icon {
+            font-size: 32px;
+        }
+
+        .vip-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .vip-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .vip-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .vip-feature span:first-child {
+            font-size: 16px;
+        }
+
+        .vip-price {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 12px 0;
+        }
+
+        .vip-price span {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        /* 页面隐藏 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--gray-800);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 300;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 12px 16px;
+            }
+
+            .main-container {
+                padding: 16px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">💧⚡</span>
+                <span>水电费查询</span>
+            </div>
+            <div class="vip-badge" onclick="showPage('membership')">开通会员</div>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <main class="main-container">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <h1 class="page-title">我的账单</h1>
+            
+            <!-- 未缴提醒 -->
+            <div id="unpaid-alert" class="unpaid-alert" style="display: none;">
+                <div class="unpaid-alert-header">
+                    <span class="unpaid-alert-icon">⚠️</span>
+                    <span class="unpaid-alert-title">您有未缴账单</span>
+                </div>
+                <div class="unpaid-alert-amount" id="unpaid-amount">¥0.00</div>
+                <button class="btn btn-danger btn-block" onclick="showPage('bills')">立即缴纳</button>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="dashboard-grid" id="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon electricity">⚡</div>
+                    <div class="stat-label">当月电费</div>
+                    <div class="stat-value" id="current-electricity">¥0.00</div>
+                    <div class="stat-change" id="electricity-change"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon water">💧</div>
+                    <div class="stat-label">当月水费</div>
+                    <div class="stat-value" id="current-water">¥0.00</div>
+                    <div class="stat-change" id="water-change"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon warning">📅</div>
+                    <div class="stat-label">年度累计</div>
+                    <div class="stat-value" id="year-total">¥0.00</div>
+                    <div class="stat-change" id="year-info">已缴费用</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔮</div>
+                    <div class="stat-label">预估当月</div>
+                    <div class="stat-value" id="predicted">¥0.00</div>
+                    <div class="stat-change" id="predicted-info">基于近3月平均</div>
+                </div>
+            </div>
+
+            <!-- 当月账单列表 -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📋 当月账单</span>
+                    <button class="btn btn-sm btn-outline" onclick="showPage('bills')">查看全部</button>
+                </div>
+                <div class="bill-list" id="current-bills">
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+
+            <!-- 用量图表 -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <span class="chart-title">📊 近6月费用趋势</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 账单页面 -->
+        <div id="page-bills" class="page">
+            <h1 class="page-title">账单查询</h1>
+            
+            <div class="filter-bar">
+                <button class="filter-chip active" data-filter="all">全部</button>
+                <button class="filter-chip" data-filter="electricity">⚡ 电费</button>
+                <button class="filter-chip" data-filter="water">💧 水费</button>
+                <button class="filter-chip" data-filter="unpaid">未缴纳</button>
+            </div>
+
+            <div class="bill-list" id="bill-list">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- 统计页面 -->
+        <div id="page-stats" class="page">
+            <h1 class="page-title">用量分析</h1>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <span class="chart-title">⚡ 电费用量趋势</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="electricityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <span class="chart-title">💧 水费用量趋势</span>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="waterChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📈 年度对比</span>
+                </div>
+                <div id="year-compare">
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分摊页面 -->
+        <div id="page-split" class="page">
+            <h1 class="page-title">费用分摊</h1>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">👥 室友管理</span>
+                    <button class="btn btn-sm btn-primary" onclick="openAddRoommateModal()">+ 添加</button>
+                </div>
+                <div class="roommate-list" id="roommate-list">
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">💰 分摊计算</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">费用类型</label>
+                    <select class="form-select" id="split-type">
+                        <option value="all">全部费用</option>
+                        <option value="electricity">仅电费</option>
+                        <option value="water">仅水费</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分摊方式</label>
+                    <select class="form-select" id="split-method">
+                        <option value="ratio">按比例分摊</option>
+                        <option value="equal">平均分摊</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="calculateSplit()">计算分摊</button>
+
+                <div class="split-result" id="split-result" style="display: none;">
+                    <div class="split-total">
+                        <div class="split-total-label">分摊总额</div>
+                        <div class="split-total-amount" id="split-total-amount">¥0.00</div>
+                    </div>
+                    <div id="split-details"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提醒页面 -->
+        <div id="page-reminders" class="page">
+            <h1 class="page-title">缴费提醒</h1>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">🔔 提醒设置</span>
+                    <button class="btn btn-sm btn-primary" onclick="openAddReminderModal()">+ 添加</button>
+                </div>
+                <div id="reminder-list">
+                    <div class="loading"><div class="spinner"></div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">💡 使用说明</span>
+                </div>
+                <p style="color: var(--gray-600); font-size: 14px; line-height: 1.8;">
+                    1. 设置每月提醒日期，我们会提前3天通知您<br>
+                    2. 开启/关闭提醒开关可快速管理提醒状态<br>
+                    3. 会员可享受更智能的缴费提醒功能
+                </p>
+            </div>
+        </div>
+
+        <!-- 会员页面 -->
+        <div id="page-membership" class="page">
+            <h1 class="page-title">会员中心</h1>
+            
+            <div class="vip-banner">
+                <div class="vip-header">
+                    <span class="vip-icon">👑</span>
+                    <div>
+                        <div class="vip-title">开通会员</div>
+                        <div class="vip-subtitle">解锁全部高级功能</div>
+                    </div>
+                </div>
+                <div class="vip-features">
+                    <div class="vip-feature">✅ 完整用量分析</div>
+                    <div class="vip-feature">✅ 智能缴费提醒</div>
+                    <div class="vip-feature">✅ 无限费用分摊</div>
+                    <div class="vip-feature">✅ 数据导出功能</div>
+                </div>
+                <div class="vip-price">¥5.9 <span>/ 月</span></div>
+                <button class="btn btn-primary btn-block" onclick="upgradeVip()" style="background: #7C2D12;">
+                    立即开通会员
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📋 功能对比</span>
+                </div>
+                <table style="width: 100%; font-size: 14px;">
+                    <tr style="border-bottom: 1px solid var(--gray-200);">
+                        <th style="text-align: left; padding: 12px 0;">功能</th>
+                        <th style="text-align: center; padding: 12px 0;">免费版</th>
+                        <th style="text-align: center; padding: 12px 0; color: var(--primary);">会员版</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--gray-200);">
+                        <td style="padding: 12px 0;">账单查询</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center; color: var(--primary);">✅</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--gray-200);">
+                        <td style="padding: 12px 0;">历史账单</td>
+                        <td style="text-align: center;">✅</td>
+                        <td style="text-align: center; color: var(--primary);">✅</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--gray-200);">
+                        <td style="padding: 12px 0;">用量图表</td>
+                        <td style="text-align: center;">基础</td>
+                        <td style="text-align: center; color: var(--primary);">完整版</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--gray-200);">
+                        <td style="padding: 12px 0;">智能提醒</td>
+                        <td style="text-align: center;">❌</td>
+                        <td style="text-align: center; color: var(--primary);">✅</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--gray-200);">
+                        <td style="padding: 12px 0;">费用分摊</td>
+                        <td style="text-align: center;">❌</td>
+                        <td style="text-align: center; color: var(--primary);">✅</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px 0;">数据导出</td>
+                        <td style="text-align: center;">❌</td>
+                        <td style="text-align: center; color: var(--primary);">✅</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" data-page="bills">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <span>账单</span>
+        </div>
+        <div class="nav-item" data-page="stats">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            <span>统计</span>
+        </div>
+        <div class="nav-item" data-page="split">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>分摊</span>
+        </div>
+        <div class="nav-item" data-page="reminders">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            <span>提醒</span>
+        </div>
+    </nav>
+
+    <!-- 添加室友模态框 -->
+    <div class="modal-overlay" id="roommate-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">添加室友</span>
+                <button class="modal-close" onclick="closeModal('roommate-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">姓名</label>
+                    <input type="text" class="form-input" id="roommate-name" placeholder="请输入室友姓名">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">房间</label>
+                    <select class="form-select" id="roommate-room">
+                        <option value="主卧">主卧</option>
+                        <option value="次卧A">次卧A</option>
+                        <option value="次卧B">次卧B</option>
+                        <option value="次卧C">次卧C</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分摊比例</label>
+                    <select class="form-select" id="roommate-ratio">
+                        <option value="0.4">40%</option>
+                        <option value="0.3">30%</option>
+                        <option value="0.2">20%</option>
+                        <option value="0.1">10%</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="addRoommate()">确认添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加提醒模态框 -->
+    <div class="modal-overlay" id="reminder-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">添加提醒</span>
+                <button class="modal-close" onclick="closeModal('reminder-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">提醒名称</label>
+                    <input type="text" class="form-input" id="reminder-title" placeholder="如：电费缴纳提醒">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">费用类型</label>
+                    <select class="form-select" id="reminder-type">
+                        <option value="all">全部费用</option>
+                        <option value="electricity">仅电费</option>
+                        <option value="water">仅水费</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">每月提醒日期</label>
+                    <select class="form-select" id="reminder-day">
+                        <option value="10">10号</option>
+                        <option value="15">15号</option>
+                        <option value="18">18号</option>
+                        <option value="20">20号</option>
+                        <option value="25">25号</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="addReminder()">确认添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // 全局变量
+        let currentFilter = 'all';
+        let trendChart, electricityChart, waterChart;
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            loadDashboard();
+            initCharts();
+        });
+
+        // 初始化导航
+        function initNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    showPage(page);
+                });
+            });
+
+            // 筛选器
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentFilter = chip.dataset.filter;
+                    loadBills();
+                });
+            });
+        }
+
+        // 页面切换
+        function showPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            const targetPage = document.getElementById(`page-${pageName}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageName) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 加载对应页面数据
+            switch (pageName) {
+                case 'home':
+                    loadDashboard();
+                    break;
+                case 'bills':
+                    loadBills();
+                    break;
+                case 'stats':
+                    loadStats();
+                    break;
+                case 'split':
+                    loadRoommates();
+                    break;
+                case 'reminders':
+                    loadReminders();
+                    break;
+            }
+        }
+
+        // ==================== API请求 ====================
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('API请求失败:', error);
+                return { success: false, message: '网络请求失败，请检查服务是否启动' };
+            }
+        }
+
+        // ==================== 首页数据 ====================
+        async function loadDashboard() {
+            const result = await apiRequest('/dashboard');
+            
+            if (!result.success) {
+                showToast(result.message || '加载失败');
+                return;
+            }
+
+            const data = result.data;
+
+            // 更新未缴提醒
+            const unpaidAlert = document.getElementById('unpaid-alert');
+            if (data.unpaid_count > 0) {
+                unpaidAlert.style.display = 'block';
+                document.getElementById('unpaid-amount').textContent = `¥${data.unpaid_total.toFixed(2)}`;
+            } else {
+                unpaidAlert.style.display = 'none';
+            }
+
+            // 更新统计数据
+            const eleBill = data.current_bills.find(b => b.type === 'electricity');
+            const waterBill = data.current_bills.find(b => b.type === 'water');
+            
+            document.getElementById('current-electricity').textContent = `¥${(eleBill?.amount || 0).toFixed(2)}`;
+            document.getElementById('current-water').textContent = `¥${(waterBill?.amount || 0).toFixed(2)}`;
+            document.getElementById('year-total').textContent = `¥${data.year_total.toFixed(2)}`;
+            document.getElementById('predicted').textContent = `¥${data.predicted.toFixed(2)}`;
+
+            // 加载当月账单
+            renderCurrentBills(data.current_bills);
+
+            // 更新图表
+            loadTrendChart();
+        }
+
+        // 渲染当月账单
+        function renderCurrentBills(bills) {
+            const container = document.getElementById('current-bills');
+            
+            if (bills.length === 0) {
+                container.innerHTML = '<div class="empty-state">暂无账单数据</div>';
+                return;
+            }
+
+            container.innerHTML = bills.map(bill => `
+                <div class="bill-item" onclick="showBillDetail('${bill.id}')">
+                    <div class="bill-info">
+                        <div class="bill-type-icon ${bill.type}">
+                            ${bill.type === 'electricity' ? '⚡' : '💧'}
+                        </div>
+                        <div class="bill-details">
+                            <h4>${bill.type === 'electricity' ? '电费' : '水费'}</h4>
+                            <p>${bill.year}年${bill.month}月 · 用量${bill.usage}${bill.type === 'electricity' ? 'kWh' : 'm³'}</p>
+                        </div>
+                    </div>
+                    <div class="bill-amount">
+                        <div class="amount">¥${bill.amount.toFixed(2)}</div>
+                        <span class="status ${bill.status}">${getStatusText(bill.status)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 账单页面 ====================
+        async function loadBills() {
+            const container = document.getElementById('bill-list');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            let endpoint = '/bills';
+            if (currentFilter === 'unpaid') {
+                endpoint = '/bills?status=unpaid';
+            } else if (currentFilter !== 'all') {
+                endpoint = `/bills?type=${currentFilter}`;
+            }
+
+            const result = await apiRequest(endpoint);
+            
+            if (!result.success) {
+                container.innerHTML = `<div class="empty-state">${result.message || '加载失败'}</div>`;
+                return;
+            }
+
+            if (result.data.length === 0) {
+                container.innerHTML = '<div class="empty-state">暂无账单数据</div>';
+                return;
+            }
+
+            container.innerHTML = result.data.map(bill => `
+                <div class="bill-item" onclick="showBillDetail('${bill.id}')">
+                    <div class="bill-info">
+                        <div class="bill-type-icon ${bill.type}">
+                            ${bill.type === 'electricity' ? '⚡' : '💧'}
+                        </div>
+                        <div class="bill-details">
+                            <h4>${bill.type === 'electricity' ? '电费' : '水费'}</h4>
+                            <p>${bill.year}年${bill.month}月 · 用量${bill.usage}${bill.type === 'electricity' ? 'kWh' : 'm³'}</p>
+                        </div>
+                    </div>
+                    <div class="bill-amount">
+                        <div class="amount">¥${bill.amount.toFixed(2)}</div>
+                        <span class="status ${bill.status}">${getStatusText(bill.status)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 显示账单详情
+        async function showBillDetail(billId) {
+            const result = await apiRequest(`/bills/${billId}`);
+            
+            if (!result.success) {
+                showToast(result.message);
+                return;
+            }
+
+            const bill = result.data;
+            const statusActions = {
+                unpaid: `<button class="btn btn-success btn-block" onclick="payBill('${bill.id}')">立即缴纳</button>`,
+                pending: `<button class="btn btn-primary btn-block" onclick="payBill('${bill.id}')">确认缴纳</button>`,
+                paid: `<button class="btn btn-outline btn-block" disabled>已缴纳 ✓</button>`
+            };
+
+            showToast(`
+                📋 ${bill.type === 'electricity' ? '电费' : '水费'}账单详情
+                
+                账期：${bill.year}年${bill.month}月
+                用量：${bill.usage} ${bill.type === 'electricity' ? 'kWh' : 'm³'}
+                单价：¥${bill.price_per_unit}/${bill.type === 'electricity' ? 'kWh' : 'm³'}
+                金额：¥${bill.amount.toFixed(2)}
+                状态：${getStatusText(bill.status)}
+                ${bill.status !== 'paid' ? `\n到期日：${bill.due_date}` : `\n缴纳日期：${bill.paid_date}`}
+            `, 5000);
+        }
+
+        // 缴纳账单
+        async function payBill(billId) {
+            const result = await apiRequest(`/bills/${billId}/pay`, {
+                method: 'POST'
+            });
+
+            if (result.success) {
+                showToast('缴费成功！');
+                loadBills();
+                loadDashboard();
+            } else {
+                showToast(result.message || '缴费失败');
+            }
+        }
+
+        // ==================== 统计页面 ====================
+        async function loadStats() {
+            await Promise.all([
+                loadMonthlyStats(),
+                loadYearlyStats()
+            ]);
+        }
+
+        async function loadMonthlyStats() {
+            const result = await apiRequest('/stats/monthly');
+            
+            if (!result.success) return;
+
+            const data = result.data;
+
+            // 更新电费图表
+            updateElectricityChart(data);
+            
+            // 更新水费图表
+            updateWaterChart(data);
+        }
+
+        async function loadYearlyStats() {
+            const result = await apiRequest('/stats/yearly');
+            const container = document.getElementById('year-compare');
+            
+            if (!result.success) {
+                container.innerHTML = '<div class="empty-state">加载失败</div>';
+                return;
+            }
+
+            const data = result.data;
+            
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                    <div style="text-align: center; padding: 16px; background: var(--gray-50); border-radius: 10px;">
+                        <div style="font-size: 14px; color: var(--gray-500); margin-bottom: 8px;">${data[0]?.year || ''}年</div>
+                        <div style="font-size: 20px; font-weight: 700;">¥${(data[0]?.total || 0).toFixed(2)}</div>
+                        <div style="font-size: 12px; color: var(--gray-400); margin-top: 4px;">
+                            电 ${(data[0]?.electricity.amount || 0).toFixed(0)} + 水 ${(data[0]?.water.amount || 0).toFixed(0)}
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 10px; color: white;">
+                        <div style="font-size: 14px; opacity: 0.9; margin-bottom: 8px;">${data[1]?.year || ''}年</div>
+                        <div style="font-size: 20px; font-weight: 700;">¥${(data[1]?.total || 0).toFixed(2)}</div>
+                        <div style="font-size: 12px; opacity: 0.8; margin-top: 4px;">
+                            电 ${(data[1]?.electricity.amount || 0).toFixed(0)} + 水 ${(data[1]?.water.amount || 0).toFixed(0)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== 图表 ====================
+        function initCharts() {
+            // 趋势图
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: '电费',
+                            data: [],
+                            borderColor: '#F59E0B',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: '水费',
+                            data: [],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => '¥' + value
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadTrendChart() {
+            const result = await apiRequest('/stats/monthly');
+            
+            if (!result.success) return;
+
+            const data = result.data;
+            
+            trendChart.data.labels = data.map(d => d.label);
+            trendChart.data.datasets[0].data = data.map(d => d.electricity.amount);
+            trendChart.data.datasets[1].data = data.map(d => d.water.amount);
+            trendChart.update();
+        }
+
+        function updateElectricityChart(data) {
+            const ctx = document.getElementById('electricityChart').getContext('2d');
+            
+            if (electricityChart) {
+                electricityChart.destroy();
+            }
+
+            electricityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.label),
+                    datasets: [
+                        {
+                            label: '用电量 (kWh)',
+                            data: data.map(d => d.electricity.usage),
+                            backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateWaterChart(data) {
+            const ctx = document.getElementById('waterChart').getContext('2d');
+            
+            if (waterChart) {
+                waterChart.destroy();
+            }
+
+            waterChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.label),
+                    datasets: [
+                        {
+                            label: '用水量 (m³)',
+                            data: data.map(d => d.water.usage),
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==================== 分摊页面 ====================
+        async function loadRoommates() {
+            const result = await apiRequest('/roommates');
+            const container = document.getElementById('roommate-list');
+            
+            if (!result.success || result.data.length === 0) {
+                container.innerHTML = '<div class="empty-state">暂无室友信息，点击添加</div>';
+                return;
+            }
+
+            container.innerHTML = result.data.map(rm => `
+                <div class="roommate-item">
+                    <div class="roommate-info">
+                        <div class="roommate-avatar">${rm.name.charAt(0)}</div>
+                        <div>
+                            <div class="roommate-name">${rm.name}</div>
+                            <div class="roommate-room">${rm.room}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="roommate-ratio">${(rm.share_ratio * 100).toFixed(0)}%</span>
+                        <button class="btn btn-sm btn-outline" onclick="deleteRoommate(${rm.id})" style="padding: 4px 8px;">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddRoommateModal() {
+            document.getElementById('roommate-modal').classList.add('active');
+        }
+
+        async function addRoommate() {
+            const name = document.getElementById('roommate-name').value.trim();
+            const room = document.getElementById('roommate-room').value;
+            const ratio = parseFloat(document.getElementById('roommate-ratio').value);
+
+            if (!name) {
+                showToast('请输入室友姓名');
+                return;
+            }
+
+            const result = await apiRequest('/roommates', {
+                method: 'POST',
+                body: JSON.stringify({ name, room, share_ratio: ratio })
+            });
+
+            if (result.success) {
+                showToast('室友添加成功');
+                closeModal('roommate-modal');
+                document.getElementById('roommate-name').value = '';
+                loadRoommates();
+            } else {
+                showToast(result.message || '添加失败');
+            }
+        }
+
+        async function deleteRoommate(id) {
+            const result = await apiRequest(`/roommates/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (result.success) {
+                showToast('室友已删除');
+                loadRoommates();
+            }
+        }
+
+        async function calculateSplit() {
+            const type = document.getElementById('split-type').value;
+            const method = document.getElementById('split-method').value;
+
+            const result = await apiRequest('/split', {
+                method: 'POST',
+                body: JSON.stringify({ type, method })
+            });
+
+            const container = document.getElementById('split-result');
+            const detailsContainer = document.getElementById('split-details');
+
+            if (!result.success) {
+                container.style.display = 'none';
+                showToast(result.message || '计算失败');
+                return;
+            }
+
+            const data = result.data;
+            
+            document.getElementById('split-total-amount').textContent = `¥${data.total.toFixed(2)}`;
+            
+            detailsContainer.innerHTML = data.splits.map(s => `
+                <div class="split-person">
+                    <div>
+                        <span style="font-weight: 600;">${s.name}</span>
+                        <span style="font-size: 12px; opacity: 0.8; margin-left: 8px;">${s.room}</span>
+                        ${method === 'ratio' ? `<span style="font-size: 12px; opacity: 0.7; margin-left: 8px;">${(s.share_ratio * 100).toFixed(0)}%</span>` : ''}
+                    </div>
+                    <span style="font-weight: 700;">¥${s.amount.toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            container.style.display = 'block';
+        }
+
+        // ==================== 提醒页面 ====================
+        async function loadReminders() {
+            const result = await apiRequest('/reminders');
+            const container = document.getElementById('reminder-list');
+            
+            if (!result.success || result.data.length === 0) {
+                container.innerHTML = '<div class="empty-state">暂无提醒设置，点击添加</div>';
+                return;
+            }
+
+            container.innerHTML = result.data.map(r => `
+                <div class="reminder-item">
+                    <div class="reminder-info">
+                        <div class="reminder-icon">${getReminderIcon(r.type)}</div>
+                        <div class="reminder-text">
+                            <h4>${r.title}</h4>
+                            <p>每月${r.day}号提醒</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="toggle ${r.is_enabled ? 'active' : ''}" onclick="toggleReminder(${r.id}, ${!r.is_enabled})"></div>
+                        <button class="btn btn-sm btn-outline" onclick="deleteReminder(${r.id})" style="padding: 4px 8px;">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getReminderIcon(type) {
+            const icons = {
+                electricity: '⚡',
+                water: '💧',
+                all: '💰'
+            };
+            return icons[type] || '💰';
+        }
+
+        function openAddReminderModal() {
+            document.getElementById('reminder-modal').classList.add('active');
+        }
+
+        async function addReminder() {
+            const title = document.getElementById('reminder-title').value.trim();
+            const type = document.getElementById('reminder-type').value;
+            const day = parseInt(document.getElementById('reminder-day').value);
+
+            if (!title) {
+                showToast('请输入提醒名称');
+                return;
+            }
+
+            const result = await apiRequest('/reminders', {
+                method: 'POST',
+                body: JSON.stringify({ title, type, day })
+            });
+
+            if (result.success) {
+                showToast('提醒设置成功');
+                closeModal('reminder-modal');
+                document.getElementById('reminder-title').value = '';
+                loadReminders();
+            } else {
+                showToast(result.message || '设置失败');
+            }
+        }
+
+        async function toggleReminder(id, isEnabled) {
+            const result = await apiRequest(`/reminders/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ is_enabled: isEnabled })
+            });
+
+            if (result.success) {
+                loadReminders();
+            }
+        }
+
+        async function deleteReminder(id) {
+            const result = await apiRequest(`/reminders/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (result.success) {
+                showToast('提醒已删除');
+                loadReminders();
+            }
+        }
+
+        // ==================== 会员 ====================
+        async function upgradeVip() {
+            showToast('正在跳转到支付...');
+            
+            // 模拟支付
+            setTimeout(() => {
+                showToast('会员开通成功！');
+                document.querySelector('.vip-badge').textContent = '已开通';
+            }, 1500);
+        }
+
+        // ==================== 工具函数 ====================
+        function getStatusText(status) {
+            const texts = {
+                unpaid: '待缴纳',
+                pending: '待确认',
+                paid: '已缴纳'
+            };
+            return texts[status] || status;
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = message.replace(/\n/g, '<br>');
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // 点击模态框外部关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

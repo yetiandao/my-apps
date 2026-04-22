@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健身计划 - 你的私人健身教练</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #004E89;
+            --success-color: #00A896;
+            --warning-color: #F9C846;
+            --danger-color: #E63946;
+            --dark-color: #1D1D1D;
+            --light-color: #F8F9FA;
+            --gray-color: #6C757D;
+            --border-radius: 12px;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #FF8E5E);
+            color: white;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            padding: 30px 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: var(--dark-color);
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #E55A2B;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        /* 首页统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: var(--gray-color);
+            font-size: 14px;
+        }
+
+        /* 肌肉群网格 */
+        .muscle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .muscle-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .muscle-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .muscle-card.selected {
+            border: 2px solid var(--primary-color);
+            background: #FFF5F0;
+        }
+
+        .muscle-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .muscle-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .muscle-count {
+            color: var(--gray-color);
+            font-size: 14px;
+        }
+
+        /* 动作列表 */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .exercise-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .exercise-header {
+            background: linear-gradient(135deg, var(--secondary-color), #0066B3);
+            color: white;
+            padding: 16px;
+        }
+
+        .exercise-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .exercise-tags {
+            display: flex;
+            gap: 8px;
+        }
+
+        .exercise-tag {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .exercise-body {
+            padding: 16px;
+        }
+
+        .exercise-description {
+            color: var(--gray-color);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .exercise-tips {
+            background: #FFF3E0;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #E65100;
+            margin-bottom: 12px;
+        }
+
+        .exercise-video {
+            width: 100%;
+            height: 150px;
+            background: #E0E0E0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-color);
+            font-size: 14px;
+        }
+
+        /* 计划卡片 */
+        .plan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .plan-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .plan-header {
+            background: linear-gradient(135deg, var(--success-color), #00C8B3);
+            color: white;
+            padding: 24px;
+        }
+
+        .plan-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .plan-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .plan-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .plan-body {
+            padding: 24px;
+        }
+
+        .plan-description {
+            color: var(--gray-color);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .plan-schedule {
+            margin-bottom: 20px;
+        }
+
+        .schedule-day {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .schedule-day:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-day-label {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .schedule-day-focus {
+            color: var(--primary-color);
+        }
+
+        .schedule-day-rest {
+            color: var(--gray-color);
+            font-style: italic;
+        }
+
+        /* 计划生成表单 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        /* 训练记录 */
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .record-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .record-info {
+            flex: 1;
+        }
+
+        .record-date {
+            font-size: 14px;
+            color: var(--gray-color);
+            margin-bottom: 4px;
+        }
+
+        .record-plan {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .record-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--gray-color);
+        }
+
+        .record-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 身体数据表格 */
+        .body-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .body-data-table th,
+        .body-data-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .body-data-table th {
+            background: var(--light-color);
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .body-data-table tr:hover {
+            background: #FFF5F0;
+        }
+
+        /* 社区帖子 */
+        .post-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .post-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), #FF8E5E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .post-date {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+
+        .post-content {
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .post-tag {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: #FFF5F0;
+            color: var(--primary-color);
+        }
+
+        .post-actions {
+            padding: 16px;
+            display: flex;
+            gap: 24px;
+            border-top: 1px solid #E0E0E0;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--gray-color);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .post-action:hover {
+            color: var(--primary-color);
+        }
+
+        .post-action.active {
+            color: var(--danger-color);
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray-color);
+        }
+
+        .modal-body {
+            line-height: 1.8;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-color);
+        }
+
+        .loading-spinner {
+            border: 3px solid #E0E0E0;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-links {
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-link {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .muscle-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .exercise-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .plan-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .record-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* VIP提示 */
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-color);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        /* 搜索框 */
+        .search-box {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+
+        /* 标签页 */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #E0E0E0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray-color);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                💪 健身计划
+            </div>
+            <nav class="nav-links">
+                <a class="nav-link active" onclick="showPage('home')">首页</a>
+                <a class="nav-link" onclick="showPage('exercises')">动作库</a>
+                <a class="nav-link" onclick="showPage('plans')">训练计划</a>
+                <a class="nav-link" onclick="showPage('records')">训练记录</a>
+                <a class="nav-link" onclick="showPage('body-data')">身体数据</a>
+                <a class="nav-link" onclick="showPage('community')">健身社区</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="container main-content">
+        <!-- 首页 -->
+        <div id="home" class="page active">
+            <h1 class="page-title">欢迎回来，健身达人！</h1>
+            
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">本月训练</div>
+                    <div class="stat-value" id="stat-month-workouts">12</div>
+                    <div class="stat-label">次</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">总训练时长</div>
+                    <div class="stat-value" id="stat-duration">720</div>
+                    <div class="stat-label">分钟</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">消耗卡路里</div>
+                    <div class="stat-value" id="stat-calories">3,200</div>
+                    <div class="stat-label">千卡</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">连续训练</div>
+                    <div class="stat-value" id="stat-streak">7</div>
+                    <div class="stat-label">天</div>
+                </div>
+            </div>
+
+            <!-- 今日训练 -->
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">📋 今日训练计划</h2>
+                <p style="color: var(--gray-color); margin-bottom: 20px;">根据您的计划，今天是训练日！</p>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-primary" onclick="showPage('plans')">查看训练计划</button>
+                    <button class="btn btn-outline" onclick="showPage('records')">记录训练</button>
+                </div>
+            </div>
+
+            <!-- 推荐动作 -->
+            <h2 style="margin: 30px 0 20px;">🎯 今日推荐动作</h2>
+            <div class="exercise-grid" id="recommended-exercises">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 动作库 -->
+        <div id="exercises" class="page">
+            <h1 class="page-title">动作库</h1>
+            
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="搜索动作名称、肌肉群..." id="exercise-search" oninput="filterExercises()">
+            </div>
+
+            <div class="muscle-grid" id="muscle-groups">
+                <!-- 动态加载 -->
+            </div>
+
+            <div class="exercise-grid" id="exercise-list">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 训练计划 -->
+        <div id="plans" class="page">
+            <h1 class="page-title">训练计划</h1>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchPlanTab('preset')">预设计划</div>
+                <div class="tab" onclick="switchPlanTab('generate')">生成计划</div>
+            </div>
+
+            <!-- 预设计划 -->
+            <div id="preset-plans">
+                <div class="plan-grid" id="plan-list">
+                    <!-- 动态加载 -->
+                </div>
+            </div>
+
+            <!-- 生成计划 -->
+            <div id="generate-plan" style="display: none;">
+                <div class="card">
+                    <h2 style="margin-bottom: 24px;">🎯 个性化计划生成</h2>
+                    <form id="plan-form" onsubmit="generateCustomPlan(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">训练水平</label>
+                                <select class="form-select" id="plan-level" required>
+                                    <option value="beginner">初级新手</option>
+                                    <option value="intermediate">中级进阶</option>
+                                    <option value="advanced">高级专业</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">训练目标</label>
+                                <select class="form-select" id="plan-goal" required>
+                                    <option value="muscle_gain">增肌增重</option>
+                                    <option value="fat_loss">减脂塑形</option>
+                                    <option value="endurance">耐力提升</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">每次训练时长</label>
+                                <select class="form-select" id="plan-time" required>
+                                    <option value="30">30分钟</option>
+                                    <option value="45">45分钟</option>
+                                    <option value="60" selected>60分钟</option>
+                                    <option value="90">90分钟</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">每周训练次数</label>
+                                <select class="form-select" id="plan-frequency" required>
+                                    <option value="3">3次</option>
+                                    <option value="4">4次</option>
+                                    <option value="5">5次</option>
+                                    <option value="6">6次</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">生成我的计划</button>
+                    </form>
+                </div>
+
+                <div id="generated-plan-result" style="display: none;">
+                    <!-- 动态加载生成的计划 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 训练记录 -->
+        <div id="records" class="page">
+            <h1 class="page-title">训练记录</h1>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <p style="color: var(--gray-color);">记录您的每次训练，追踪进步</p>
+                <button class="btn btn-primary" onclick="showRecordModal()">+ 新增记录</button>
+            </div>
+
+            <div class="record-list" id="record-list">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 身体数据 -->
+        <div id="body-data" class="page">
+            <h1 class="page-title">身体数据</h1>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <p style="color: var(--gray-color);">记录身体变化，见证蜕变</p>
+                <button class="btn btn-primary" onclick="showBodyDataModal()">+ 新增数据</button>
+            </div>
+
+            <div class="card">
+                <table class="body-data-table" id="body-data-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>体重(kg)</th>
+                            <th>身高(cm)</th>
+                            <th>BMI</th>
+                            <th>体脂率(%)</th>
+                            <th>胸围</th>
+                            <th>腰围</th>
+                            <th>臀围</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body-data-list">
+                        <!-- 动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 健身社区 -->
+        <div id="community" class="page">
+            <h1 class="page-title">健身社区</h1>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <p style="color: var(--gray-color);">与健身爱好者交流分享</p>
+                <button class="btn btn-primary" onclick="showPostModal()">+ 发布动态</button>
+            </div>
+
+            <div class="post-grid" id="post-list">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 动作详情模态框 -->
+    <div id="exercise-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-exercise-name">动作名称</h3>
+                <button class="modal-close" onclick="closeModal('exercise-modal')">×</button>
+            </div>
+            <div class="modal-body" id="modal-exercise-content">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 记录训练模态框 -->
+    <div id="record-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">记录训练</h3>
+                <button class="modal-close" onclick="closeModal('record-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="saveTrainingRecord(event)">
+                    <div class="form-group">
+                        <label class="form-label">训练日期</label>
+                        <input type="date" class="form-input" id="record-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">训练计划</label>
+                        <select class="form-select" id="record-plan" required>
+                            <option value="">选择计划</option>
+                            <!-- 动态加载 -->
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">训练时长(分钟)</label>
+                            <input type="number" class="form-input" id="record-duration" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">消耗卡路里</label>
+                            <input type="number" class="form-input" id="record-calories" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">训练备注</label>
+                        <textarea class="form-input" id="record-notes" rows="3" placeholder="记录今天的感受..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">保存记录</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 身体数据模态框 -->
+    <div id="body-data-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">新增身体数据</h3>
+                <button class="modal-close" onclick="closeModal('body-data-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="saveBodyData(event)">
+                    <div class="form-group">
+                        <label class="form-label">记录日期</label>
+                        <input type="date" class="form-input" id="body-date" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">体重(kg)</label>
+                            <input type="number" class="form-input" id="body-weight" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">身高(cm)</label>
+                            <input type="number" class="form-input" id="body-height" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">体脂率(%)</label>
+                            <input type="number" class="form-input" id="body-fat" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">BMI</label>
+                            <input type="number" class="form-input" id="body-bmi" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">胸围(cm)</label>
+                            <input type="number" class="form-input" id="body-chest" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">腰围(cm)</label>
+                            <input type="number" class="form-input" id="body-waist" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">臀围(cm)</label>
+                        <input type="number" class="form-input" id="body-hip" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">备注</label>
+                        <textarea class="form-input" id="body-notes" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">保存数据</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发布动态模态框 -->
+    <div id="post-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">发布动态</h3>
+                <button class="modal-close" onclick="closeModal('post-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="createPost(event)">
+                    <div class="form-group">
+                        <label class="form-label">内容</label>
+                        <textarea class="form-input" id="post-content" rows="5" placeholder="分享你的健身心得..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">标签（用空格分隔）</label>
+                        <input type="text" class="form-input" id="post-tags" placeholder="减脂 增肌 训练分享">
+                    </div>
+                    <button type="submit" class="btn btn-primary">发布</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 配置 ====================
+        const API_BASE_URL = 'http://localhost:5000/api';
+        const USER_ID = 'demo_user_' + Date.now();
+
+        // ==================== 全局变量 ====================
+        let allExercises = [];
+        let selectedMuscle = 'all';
+        let allPlans = [];
+
+        // ==================== 页面初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        async function initApp() {
+            await loadStats();
+            await loadMuscleGroups();
+            await loadExercises();
+            await loadPlans();
+            await loadRecords();
+            await loadBodyData();
+            await loadPosts();
+            setTodayDate();
+        }
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('record-date').value = today;
+            document.getElementById('body-date').value = today;
+        }
+
+        // ==================== 页面切换 ====================
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            document.getElementById(pageId).classList.add('active');
+            
+            // 更新导航状态
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // ==================== 统计数据 ====================
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/stats/summary?userId=${USER_ID}`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const data = result.data;
+                    document.getElementById('stat-month-workouts').textContent = data.totalWorkouts;
+                    document.getElementById('stat-duration').textContent = data.totalDuration;
+                    document.getElementById('stat-calories').textContent = data.totalCalories.toLocaleString();
+                    document.getElementById('stat-streak').textContent = data.streak;
+                }
+            } catch (error) {
+                console.error('加载统计数据失败:', error);
+            }
+        }
+
+        // ==================== 动作库 ====================
+        async function loadMuscleGroups() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/muscle-groups`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const container = document.getElementById('muscle-groups');
+                    container.innerHTML = `
+                        <div class="muscle-card selected" onclick="filterByMuscle('all')">
+                            <div class="muscle-icon">💪</div>
+                            <div class="muscle-name">全部动作</div>
+                            <div class="muscle-count">${result.data.reduce((sum, g) => sum + g.count, 0)}个</div>
+                        </div>
+                    `;
+                    
+                    result.data.forEach(group => {
+                        container.innerHTML += `
+                            <div class="muscle-card" onclick="filterByMuscle('${group.id}')">
+                                <div class="muscle-icon">${group.icon}</div>
+                                <div class="muscle-name">${group.name}</div>
+                                <div class="muscle-count">${group.count}个动作</div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error('加载肌肉群失败:', error);
+            }
+        }
+
+        async function loadExercises(muscle = 'all') {
+            try {
+                const url = muscle === 'all' 
+                    ? `${API_BASE_URL}/exercises`
+                    : `${API_BASE_URL}/exercises?muscle=${muscle}`;
+                
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    allExercises = result.data;
+                    renderExercises(allExercises);
+                }
+            } catch (error) {
+                console.error('加载动作失败:', error);
+            }
+        }
+
+        function renderExercises(exercises) {
+            const container = document.getElementById('exercise-list');
+            
+            if (exercises.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-state-icon">🔍</div>
+                        <p>未找到相关动作</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = exercises.map(ex => `
+                <div class="exercise-card" onclick="showExerciseDetail('${ex.id}')">
+                    <div class="exercise-header">
+                        <div class="exercise-name">${ex.name}</div>
+                        <div class="exercise-tags">
+                            <span class="exercise-tag">${ex.difficulty}</span>
+                            <span class="exercise-tag">${ex.muscle}</span>
+                        </div>
+                    </div>
+                    <div class="exercise-body">
+                        <div class="exercise-description">${ex.description}</div>
+                        <div class="exercise-tips">💡 ${ex.tips}</div>
+                        <div class="exercise-video">🎬 动作演示视频</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterByMuscle(muscle) {
+            selectedMuscle = muscle;
+            
+            // 更新选中状态
+            document.querySelectorAll('.muscle-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            loadExercises(muscle);
+        }
+
+        function filterExercises() {
+            const searchTerm = document.getElementById('exercise-search').value.toLowerCase();
+            
+            const filtered = allExercises.filter(ex => 
+                ex.name.toLowerCase().includes(searchTerm) ||
+                ex.muscle.toLowerCase().includes(searchTerm) ||
+                ex.description.toLowerCase().includes(searchTerm)
+            );
+            
+            renderExercises(filtered);
+        }
+
+        async function showExerciseDetail(exerciseId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/exercises/${exerciseId}`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const ex = result.data;
+                    document.getElementById('modal-exercise-name').textContent = ex.name;
+                    document.getElementById('modal-exercise-content').innerHTML = `
+                        <div class="exercise-tags" style="margin-bottom: 16px;">
+                            <span class="post-tag">${ex.difficulty}</span>
+                            <span class="post-tag">${ex.muscle}</span>
+                            <span class="post-tag">${ex.equipment}</span>
+                        </div>
+                        <div class="exercise-tips" style="margin-bottom: 20px;">
+                            💡 ${ex.tips}
+                        </div>
+                        <h4 style="margin-bottom: 12px;">动作说明</h4>
+                        <p style="line-height: 1.8; margin-bottom: 20px;">${ex.description}</p>
+                        <div class="exercise-video" style="height: 200px;">
+                            🎬 动作演示视频：${ex.video_url}
+                        </div>
+                    `;
+                    document.getElementById('exercise-modal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('加载动作详情失败:', error);
+            }
+        }
+
+        // ==================== 训练计划 ====================
+        async function loadPlans() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/plans`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    allPlans = result.data;
+                    renderPlans(allPlans);
+                    populatePlanSelect();
+                }
+            } catch (error) {
+                console.error('加载计划失败:', error);
+            }
+        }
+
+        function renderPlans(plans) {
+            const container = document.getElementById('plan-list');
+            
+            container.innerHTML = plans.map(plan => `
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <div class="plan-title">${plan.name}</div>
+                        <div class="plan-meta">
+                            <div class="plan-meta-item">
+                                <span>⏱️</span>
+                                <span>${plan.duration}</span>
+                            </div>
+                            <div class="plan-meta-item">
+                                <span>📅</span>
+                                <span>${plan.frequency}</span>
+                            </div>
+                            <div class="plan-meta-item">
+                                <span>🎯</span>
+                                <span>${plan.level}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="plan-body">
+                        <div class="plan-description">${plan.description}</div>
+                        <div class="plan-schedule">
+                            ${plan.schedule.slice(0, 4).map(day => `
+                                <div class="schedule-day">
+                                    <span class="schedule-day-label">第${day.day}天</span>
+                                    <span class="${day.exercises.length > 0 ? 'schedule-day-focus' : 'schedule-day-rest'}">
+                                        ${day.focus}
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="btn btn-primary" onclick="viewPlanDetail('${plan.id}')">查看详情</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populatePlanSelect() {
+            const select = document.getElementById('record-plan');
+            allPlans.forEach(plan => {
+                const option = document.createElement('option');
+                option.value = plan.id;
+                option.textContent = plan.name;
+                select.appendChild(option);
+            });
+        }
+
+        async function viewPlanDetail(planId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/plans/${planId}`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const plan = result.data;
+                    document.getElementById('modal-exercise-name').textContent = plan.name;
+                    document.getElementById('modal-exercise-content').innerHTML = `
+                        <div class="exercise-tags" style="margin-bottom: 16px;">
+                            <span class="post-tag">${plan.level}</span>
+                            <span class="post-tag">${plan.duration}</span>
+                            <span class="post-tag">${plan.frequency}</span>
+                        </div>
+                        <p style="line-height: 1.8; margin-bottom: 24px;">${plan.description}</p>
+                        <h4 style="margin-bottom: 16px;">训练安排</h4>
+                        ${plan.schedule.map(day => `
+                            <div style="padding: 12px 0; border-bottom: 1px solid #E0E0E0;">
+                                <div style="font-weight: 500; margin-bottom: 8px;">
+                                    第${day.day}天 - ${day.focus}
+                                </div>
+                                ${day.exerciseDetails && day.exerciseDetails.length > 0 ? 
+                                    day.exerciseDetails.map(ex => `
+                                        <div style="padding: 8px 12px; background: #F5F5F5; border-radius: 6px; margin-top: 6px;">
+                                            ${ex.name}
+                                        </div>
+                                    `).join('') :
+                                    '<div style="color: var(--gray-color); font-style: italic;">休息日</div>'
+                                }
+                            </div>
+                        `).join('')}
+                    `;
+                    document.getElementById('exercise-modal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('加载计划详情失败:', error);
+            }
+        }
+
+        function switchPlanTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('preset-plans').style.display = tab === 'preset' ? 'block' : 'none';
+            document.getElementById('generate-plan').style.display = tab === 'generate' ? 'block' : 'none';
+        }
+
+        async function generateCustomPlan(e) {
+            e.preventDefault();
+            
+            const data = {
+                level: document.getElementById('plan-level').value,
+                goal: document.getElementById('plan-goal').value,
+                availableTime: parseInt(document.getElementById('plan-time').value),
+                frequency: parseInt(document.getElementById('plan-frequency').value)
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/plans/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    const plan = result.data;
+                    const container = document.getElementById('generated-plan-result');
+                    container.style.display = 'block';
+                    container.innerHTML = `
+                        <div class="card">
+                            <div class="plan-header">
+                                <div class="plan-title">
+                                    ${plan.name} <span class="vip-badge">定制</span>
+                                </div>
+                            </div>
+                            <div class="plan-body">
+                                <p style="line-height: 1.8; margin-bottom: 20px;">${plan.description}</p>
+                                <div class="plan-schedule">
+                                    ${plan.schedule.map(day => `
+                                        <div class="schedule-day">
+                                            <span class="schedule-day-label">第${day.day}天</span>
+                                            <span class="${day.exercises.length > 0 ? 'schedule-day-focus' : 'schedule-day-rest'}">
+                                                ${day.focus}
+                                            </span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <button class="btn btn-success" onclick="alert('计划已保存！');">使用此计划</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('生成计划失败:', error);
+                alert('生成计划失败，请稍后重试');
+            }
+        }
+
+        // ==================== 训练记录 ====================
+        async function loadRecords() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/training/records?userId=${USER_ID}`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    renderRecords(result.data);
+                }
+            } catch (error) {
+                console.error('加载训练记录失败:', error);
+            }
+        }
+
+        function renderRecords(records) {
+            const container = document.getElementById('record-list');
+            
+            if (records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>还没有训练记录，开始第一次训练吧！</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = records.map(record => `
+                <div class="record-card">
+                    <div class="record-info">
+                        <div class="record-date">${formatDate(record.date || record.createdAt)}</div>
+                        <div class="record-plan">${record.planName || '自定义训练'}</div>
+                        <div class="record-stats">
+                            <div class="record-stat">⏱️ ${record.duration || 0}分钟</div>
+                            <div class="record-stat">🔥 ${record.calories || 0}千卡</div>
+                        </div>
+                        ${record.notes ? `<div style="margin-top: 8px; color: var(--gray-color); font-size: 14px;">${record.notes}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showRecordModal() {
+            document.getElementById('record-modal').classList.add('active');
+        }
+
+        async function saveTrainingRecord(e) {
+            e.preventDefault();
+            
+            const planId = document.getElementById('record-plan').value;
+            const plan = allPlans.find(p => p.id === planId);
+            
+            const data = {
+                userId: USER_ID,
+                date: document.getElementById('record-date').value,
+                planId: planId,
+                planName: plan ? plan.name : '自定义训练',
+                duration: parseInt(document.getElementById('record-duration').value),
+                calories: parseInt(document.getElementById('record-calories').value) || 0,
+                notes: document.getElementById('record-notes').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/training/records`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    closeModal('record-modal');
+                    alert('训练记录已保存！');
+                    loadRecords();
+                    loadStats();
+                }
+            } catch (error) {
+                console.error('保存记录失败:', error);
+                alert('保存失败，请稍后重试');
+            }
+        }
+
+        // ==================== 身体数据 ====================
+        async function loadBodyData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/body-data?userId=${USER_ID}`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    renderBodyData(result.data);
+                }
+            } catch (error) {
+                console.error('加载身体数据失败:', error);
+            }
+        }
+
+        function renderBodyData(data) {
+            const tbody = document.getElementById('body-data-list');
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: var(--gray-color);">
+                            还没有身体数据，开始记录吧！
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = data.map(record => `
+                <tr>
+                    <td>${formatDate(record.date || record.createdAt)}</td>
+                    <td>${record.weight || '-'}</td>
+                    <td>${record.height || '-'}</td>
+                    <td>${record.bmi || '-'}</td>
+                    <td>${record.bodyFat || '-'}</td>
+                    <td>${record.chest || '-'}</td>
+                    <td>${record.waist || '-'}</td>
+                    <td>${record.hip || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function showBodyDataModal() {
+            document.getElementById('body-data-modal').classList.add('active');
+        }
+
+        async function saveBodyData(e) {
+            e.preventDefault();
+            
+            const weight = parseFloat(document.getElementById('body-weight').value);
+            const height = parseFloat(document.getElementById('body-height').value);
+            
+            // 计算BMI
+            let bmi = parseFloat(document.getElementById('body-bmi').value);
+            if (!bmi && weight && height) {
+                bmi = weight / Math.pow(height / 100, 2);
+            }
+            
+            const data = {
+                userId: USER_ID,
+                date: document.getElementById('body-date').value,
+                weight: weight,
+                height: height,
+                bmi: bmi,
+                bodyFat: parseFloat(document.getElementById('body-fat').value) || null,
+                chest: parseFloat(document.getElementById('body-chest').value) || null,
+                waist: parseFloat(document.getElementById('body-waist').value) || null,
+                hip: parseFloat(document.getElementById('body-hip').value) || null,
+                notes: document.getElementById('body-notes').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/body-data`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    closeModal('body-data-modal');
+                    alert('身体数据已保存！');
+                    loadBodyData();
+                }
+            } catch (error) {
+                console.error('保存身体数据失败:', error);
+                alert('保存失败，请稍后重试');
+            }
+        }
+
+        // ==================== 健身社区 ====================
+        async function loadPosts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/community/posts`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    renderPosts(result.data);
+                }
+            } catch (error) {
+                console.error('加载帖子失败:', error);
+            }
+        }
+
+        function renderPosts(posts) {
+            const container = document.getElementById('post-list');
+            
+            container.innerHTML = posts.map(post => `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.avatar}</div>
+                        <div class="post-user-info">
+                            <div class="post-username">${post.username}</div>
+                            <div class="post-date">${formatDate(post.createdAt)}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        ${post.tags.length > 0 ? `
+                            <div class="post-tags">
+                                ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                        ${post.content}
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action" onclick="likePost('${post.id}')">
+                            <span>❤️</span>
+                            <span>${post.likes}</span>
+                        </div>
+                        <div class="post-action">
+                            <span>💬</span>
+                            <span>${post.comments}</span>
+                        </div>
+                        <div class="post-action">
+                            <span>🔗</span>
+                            <span>分享</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showPostModal() {
+            document.getElementById('post-modal').classList.add('active');
+        }
+
+        async function createPost(e) {
+            e.preventDefault();
+            
+            const tagsInput = document.getElementById('post-tags').value;
+            const tags = tagsInput ? tagsInput.split(' ').filter(t => t.trim()) : [];
+            
+            const data = {
+                userId: USER_ID,
+                username: '健身爱好者',
+                avatar: '💪',
+                content: document.getElementById('post-content').value,
+                tags: tags
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/community/posts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    closeModal('post-modal');
+                    alert('动态已发布！');
+                    loadPosts();
+                }
+            } catch (error) {
+                console.error('发布动态失败:', error);
+                alert('发布失败，请稍后重试');
+            }
+        }
+
+        async function likePost(postId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/community/posts/${postId}/like`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    loadPosts();
+                }
+            } catch (error) {
+                console.error('点赞失败:', error);
+            }
+        }
+
+        // ==================== 工具函数 ====================
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            // 一天内显示相对时间
+            if (diff < 86400000) {
+                const hours = Math.floor(diff / 3600000);
+                if (hours < 1) return '刚刚';
+                if (hours < 24) return `${hours}小时前`;
+            }
+            
+            return date.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+
+        // 点击模态框外部关闭
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>副业雷达 - 发现你的下一个收入来源</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        /* 底部导航 */
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: var(--gray-500);
+            transition: all 0.3s;
+            border-radius: 12px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active .nav-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .nav-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 90px;
+        }
+
+        /* 页面切换 */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 首页概览卡片 */
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .overview-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .overview-card.primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .overview-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .overview-card .label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .overview-card .value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        /* 副业卡片 */
+        .hustle-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .hustle-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .hustle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .hustle-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .hustle-category {
+            background: var(--primary-light);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .hustle-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .hustle-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hustle-stat .label {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .hustle-stat .value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .hustle-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: var(--gray-100);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--gray-700);
+        }
+
+        .tag.difficulty-easy { background: #d1fae5; color: #065f46; }
+        .tag.difficulty-medium { background: #fef3c7; color: #92400e; }
+        .tag.difficulty-hard { background: #fee2e2; color: #991b1b; }
+
+        /* 筛选栏 */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 详情弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-section {
+            margin-bottom: 20px;
+        }
+
+        .modal-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-500);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .income-range {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .income-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .income-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #34d399);
+            border-radius: 4px;
+        }
+
+        .step-list {
+            counter-reset: step;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+            padding-top: 2px;
+        }
+
+        /* 技能匹配页 */
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .skill-item {
+            background: white;
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .skill-item:hover {
+            border-color: var(--primary-light);
+        }
+
+        .skill-item.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .skill-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .match-result {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .match-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--success);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .match-skills {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* 教程页 */
+        .tutorial-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tutorial-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .tutorial-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .tutorial-info {
+            flex: 1;
+        }
+
+        .tutorial-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .tutorial-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .tutorial-level {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tutorial-level.basic { background: #d1fae5; color: #065f46; }
+        .tutorial-level.intermediate { background: #fef3c7; color: #92400e; }
+        .tutorial-level.advanced { background: #fee2e2; color: #991b1b; }
+
+        /* 收入追踪页 */
+        .income-summary {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .income-total {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .income-period {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .income-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            height: 60px;
+            margin-top: 16px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s;
+        }
+
+        .chart-bar:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .income-record {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .record-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .record-source {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .record-date {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .record-amount {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .add-record-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-record-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--gray-700);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* VIP弹窗 */
+        .vip-features {
+            margin: 20px 0;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+        }
+
+        .vip-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .vip-price {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .vip-price-amount {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .vip-price-unit {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gray-900);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 300;
+            animation: toastIn 0.3s ease;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-desc {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        /* 会员页面 */
+        .member-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 32px 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .member-card .crown {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .member-card h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .member-card p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .member-features {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .member-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .member-feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: var(--success);
+            font-size: 18px;
+        }
+
+        .member-pricing {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .price-tag {
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .price-tag span {
+            font-size: 20px;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: var(--gray-500);
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .overview-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .skill-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">📡</div>
+                <span>副业雷达</span>
+            </div>
+            <div class="vip-badge" onclick="showMemberModal()">
+                👑 会员中心
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="overview-cards">
+                <div class="overview-card primary" onclick="switchPage('hustles')">
+                    <div class="icon">💼</div>
+                    <div class="label">副业机会</div>
+                    <div class="value">55+</div>
+                </div>
+                <div class="overview-card" onclick="switchPage('match')">
+                    <div class="icon">🎯</div>
+                    <div class="label">为你匹配</div>
+                    <div class="value">智能</div>
+                </div>
+                <div class="overview-card" onclick="switchPage('tutorials')">
+                    <div class="icon">📚</div>
+                    <div class="label">教程课程</div>
+                    <div class="value">20+</div>
+                </div>
+                <div class="overview-card" onclick="switchPage('income')">
+                    <div class="icon">💰</div>
+                    <div class="label">本月收入</div>
+                    <div class="value" id="month-income">¥0</div>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 12px; font-size: 16px;">🔥 热门副业推荐</h3>
+            <div id="hot-hustles"></div>
+            
+            <div style="margin-top: 24px;">
+                <h3 style="margin-bottom: 12px; font-size: 16px;">📊 收入排行榜</h3>
+                <div id="income-ranking"></div>
+            </div>
+        </div>
+
+        <!-- 副业机会页 -->
+        <div id="page-hustles" class="page">
+            <h2 style="margin-bottom: 16px; font-size: 20px;">💼 副业机会库</h2>
+            
+            <div class="filter-bar" id="category-filters">
+                <div class="filter-chip active" data-category="全部">全部</div>
+            </div>
+            
+            <div id="hustles-list"></div>
+        </div>
+
+        <!-- 技能匹配页 -->
+        <div id="page-match" class="page">
+            <h2 style="margin-bottom: 8px; font-size: 20px;">🎯 智能技能匹配</h2>
+            <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 20px;">
+                选择你擅长的技能，我们为你推荐最适合的副业
+            </p>
+            
+            <div class="skill-grid" id="skill-grid"></div>
+            
+            <button class="submit-btn" onclick="doMatch()" style="margin-bottom: 24px;">
+                开始匹配 →
+            </button>
+            
+            <h3 style="margin-bottom: 12px; font-size: 16px;" id="match-result-title" style="display:none;">为你推荐</h3>
+            <div id="match-results"></div>
+        </div>
+
+        <!-- 教程页 -->
+        <div id="page-tutorials" class="page">
+            <h2 style="margin-bottom: 8px; font-size: 20px;">📚 副业教程中心</h2>
+            <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 20px;">
+                系统学习，从入门到精通
+            </p>
+            
+            <div id="tutorials-list"></div>
+        </div>
+
+        <!-- 收入追踪页 -->
+        <div id="page-income" class="page">
+            <h2 style="margin-bottom: 16px; font-size: 20px;">💰 收入追踪</h2>
+            
+            <div class="income-summary">
+                <div class="income-total" id="total-income">¥0</div>
+                <div class="income-period">近30天总收入</div>
+                <div class="income-chart" id="income-chart"></div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="font-size: 16px;">📝 收入记录</h3>
+                <span style="color: var(--gray-500); font-size: 13px;" id="record-count">共0条</span>
+            </div>
+            
+            <div id="income-records"></div>
+            
+            <div class="add-record-btn" onclick="showAddIncomeModal()">+</div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="nav">
+        <div class="nav-item active" data-page="home" onclick="switchPage('home')">
+            <div class="nav-icon">🏠</div>
+            <span class="nav-text">首页</span>
+        </div>
+        <div class="nav-item" data-page="hustles" onclick="switchPage('hustles')">
+            <div class="nav-icon">💼</div>
+            <span class="nav-text">机会</span>
+        </div>
+        <div class="nav-item" data-page="match" onclick="switchPage('match')">
+            <div class="nav-icon">🎯</div>
+            <span class="nav-text">匹配</span>
+        </div>
+        <div class="nav-item" data-page="tutorials" onclick="switchPage('tutorials')">
+            <div class="nav-icon">📚</div>
+            <span class="nav-text">教程</span>
+        </div>
+        <div class="nav-item" data-page="income" onclick="switchPage('income')">
+            <div class="nav-icon">💰</div>
+            <span class="nav-text">收入</span>
+        </div>
+    </nav>
+
+    <!-- 副业详情弹窗 -->
+    <div class="modal-overlay" id="hustle-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">副业详情</h2>
+                <div class="modal-close" onclick="closeModal('hustle-modal')">✕</div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-section-title">收入预估</div>
+                <div class="income-range">
+                    <span style="color: var(--success); font-weight: 600;" id="modal-income">¥0 - ¥0/月</span>
+                    <div class="income-bar">
+                        <div class="income-fill" id="modal-income-bar" style="width: 50%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-section-title">基本信息</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div style="background: var(--gray-50); padding: 12px; border-radius: 8px;">
+                        <div style="font-size: 12px; color: var(--gray-500);">难度</div>
+                        <div style="font-weight: 600;" id="modal-difficulty">-</div>
+                    </div>
+                    <div style="background: var(--gray-50); padding: 12px; border-radius: 8px;">
+                        <div style="font-size: 12px; color: var(--gray-500);">时间投入</div>
+                        <div style="font-weight: 600;" id="modal-time">-</div>
+                    </div>
+                    <div style="background: var(--gray-50); padding: 12px; border-radius: 8px;">
+                        <div style="font-size: 12px; color: var(--gray-500);">初始投入</div>
+                        <div style="font-weight: 600;" id="modal-investment">-</div>
+                    </div>
+                    <div style="background: var(--gray-50); padding: 12px; border-radius: 8px;">
+                        <div style="font-size: 12px; color: var(--gray-500);">适用平台</div>
+                        <div style="font-weight: 600;" id="modal-platforms">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-section-title">项目介绍</div>
+                <p style="color: var(--gray-700); font-size: 14px; line-height: 1.7;" id="modal-desc">-</p>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-section-title">所需技能</div>
+                <div class="hustle-tags" id="modal-skills"></div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-section-title">适合人群</div>
+                <div id="modal-suitable" style="color: var(--gray-700); font-size: 14px;">-</div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-section-title">操作步骤</div>
+                <div class="step-list" id="modal-steps"></div>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-section-title">💡 小贴士</div>
+                <div style="background: #fef3c7; padding: 12px; border-radius: 8px; font-size: 14px; color: #92400e;" id="modal-tips">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 教程详情弹窗 -->
+    <div class="modal-overlay" id="tutorial-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="tutorial-modal-title">教程详情</h2>
+                <div class="modal-close" onclick="closeModal('tutorial-modal')">✕</div>
+            </div>
+            
+            <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                <span class="tag" id="tutorial-modal-category">-</span>
+                <span class="tag" id="tutorial-modal-duration">-</span>
+                <span class="tutorial-level basic" id="tutorial-modal-level">-</span>
+            </div>
+            
+            <div class="modal-section-title">课程内容</div>
+            <div class="step-list" id="tutorial-modal-content"></div>
+            
+            <button class="submit-btn btn-success" style="margin-top: 24px;">
+                开始学习
+            </button>
+        </div>
+    </div>
+
+    <!-- 添加收入记录弹窗 -->
+    <div class="modal-overlay" id="add-income-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">添加收入记录</h2>
+                <div class="modal-close" onclick="closeModal('add-income-modal')">✕</div>
+            </div>
+            
+            <form id="income-form" onsubmit="submitIncome(event)">
+                <div class="form-group">
+                    <label class="form-label">日期</label>
+                    <input type="date" class="form-input" id="income-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">金额 (元)</label>
+                    <input type="number" class="form-input" id="income-amount" placeholder="输入金额" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">来源</label>
+                    <input type="text" class="form-input" id="income-source" placeholder="如：小红书带货" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">分类</label>
+                    <select class="form-select" id="income-category">
+                        <option value="内容创作">内容创作</option>
+                        <option value="电商销售">电商销售</option>
+                        <option value="技能服务">技能服务</option>
+                        <option value="灵活用工">灵活用工</option>
+                        <option value="cps佣金">CPS佣金</option>
+                        <option value="任务平台">任务平台</option>
+                        <option value="生活服务">生活服务</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">备注 (可选)</label>
+                    <input type="text" class="form-input" id="income-note" placeholder="添加备注...">
+                </div>
+                
+                <button type="submit" class="submit-btn">保存记录</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 会员弹窗 -->
+    <div class="modal-overlay" id="member-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">会员中心</h2>
+                <div class="modal-close" onclick="closeModal('member-modal')">✕</div>
+            </div>
+            
+            <div class="member-card">
+                <div class="crown">👑</div>
+                <h2>开通副业雷达会员</h2>
+                <p>解锁全部55+副业机会 & 完整教程</p>
+            </div>
+            
+            <div class="member-features">
+                <div class="member-feature-item">
+                    <span class="check-icon">✓</span>
+                    <span>解锁全部55+副业机会</span>
+                </div>
+                <div class="member-feature-item">
+                    <span class="check-icon">✓</span>
+                    <span>查看完整教程内容</span>
+                </div>
+                <div class="member-feature-item">
+                    <span class="check-icon">✓</span>
+                    <span>无限次智能技能匹配</span>
+                </div>
+                <div class="member-feature-item">
+                    <span class="check-icon">✓</span>
+                    <span>收入追踪高级版</span>
+                </div>
+                <div class="member-feature-item">
+                    <span class="check-icon">✓</span>
+                    <span>专属客服支持</span>
+                </div>
+            </div>
+            
+            <div class="member-pricing">
+                <div class="price-tag">¥19<span>/月</span></div>
+                <div class="original-price">原价 ¥39/月</div>
+                <button class="submit-btn btn-success" style="margin-top: 20px;" onclick="showToast('功能开发中，敬请期待！')">
+                    立即开通
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API 基础URL
+        const API_BASE = 'http://localhost:5000/api';
+        
+        // 全局数据
+        let allHustles = [];
+        let allTutorials = [];
+        let incomeRecords = [];
+        let selectedSkills = [];
+
+        // 技能图标映射
+        const skillIcons = {
+            '写作': '✍️', '视频剪辑': '🎬', '设计': '🎨', '摄影': '📷',
+            '驾驶': '🚗', '外语': '🌍', '编程': '💻', '电商运营': '🛒',
+            '社交媒体运营': '📱', '授课能力': '👨‍🏫', '手工': '🔧', '烹饪': '🍳',
+            '养宠经验': '🐾', '销售': '💬', '客服': '🎧'
+        };
+
+        // 页面切换
+        function switchPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${pageName}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[data-page="${pageName}"]`).classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 弹窗控制
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // 获取副业列表
+        async function fetchHustles() {
+            try {
+                const res = await fetch(`${API_BASE}/hustles`);
+                const data = await res.json();
+                allHustles = data.data;
+                renderHotHustles();
+                renderHustlesList(allHustles);
+                renderCategoryFilters();
+                renderIncomeRanking();
+            } catch (e) {
+                console.error('获取副业列表失败:', e);
+                // 使用本地模拟数据
+                allHustles = getLocalHustles();
+                renderHotHustles();
+                renderHustlesList(allHustles);
+                renderCategoryFilters();
+                renderIncomeRanking();
+            }
+        }
+
+        // 本地模拟数据
+        function getLocalHustles() {
+            return [
+                { id: 1, name: "小红书博主", category: "内容创作", difficulty: "中等", monthly_income_min: 500, monthly_income_max: 5000, time_commitment: "3-5小时/周", required_skills: ["写作", "社交媒体运营"], platforms: ["小红书"] },
+                { id: 2, name: "抖音带货主播", category: "内容创作", difficulty: "较高", monthly_income_min: 1000, monthly_income_max: 10000, time_commitment: "5-10小时/周", required_skills: ["直播", "销售"], platforms: ["抖音"] },
+                { id: 3, name: "闲鱼二手交易", category: "电商销售", difficulty: "简单", monthly_income_min: 300, monthly_income_max: 3000, time_commitment: "2-3小时/周", required_skills: ["淘货", "沟通"], platforms: ["闲鱼"] },
+                { id: 4, name: "PPT定制设计", category: "技能服务", difficulty: "中等", monthly_income_min: 800, monthly_income_max: 5000, time_commitment: "5-8小时/周", required_skills: ["设计"], platforms: ["淘宝", "猪八戒"] },
+                { id: 5, name: "外卖cps推广", category: "cps佣金", difficulty: "简单", monthly_income_min: 200, monthly_income_max: 2000, time_commitment: "1-2小时/周", required_skills: ["推广", "社交"], platforms: ["美团", "饿了么"] },
+                { id: 6, name: "视频剪辑接单", category: "技能服务", difficulty: "中等", monthly_income_min: 1000, monthly_income_max: 5000, time_commitment: "5-10小时/周", required_skills: ["视频剪辑"], platforms: ["猪八戒", "淘宝"] },
+                { id: 7, name: "无货源电商", category: "电商销售", difficulty: "较高", monthly_income_min: 1000, monthly_income_max: 8000, time_commitment: "5-8小时/周", required_skills: ["电商运营"], platforms: ["拼多多", "淘宝"] },
+                { id: 8, name: "宠物寄养", category: "生活服务", difficulty: "中等", monthly_income_min: 800, monthly_income_max: 3000, time_commitment: "灵活", required_skills: ["养宠经验"], platforms: ["小红书", "闲鱼"] }
+            ];
+        }
+
+        // 获取教程列表
+        async function fetchTutorials() {
+            try {
+                const res = await fetch(`${API_BASE}/tutorials`);
+                const data = await res.json();
+                allTutorials = data.data;
+                renderTutorials();
+            } catch (e) {
+                console.error('获取教程列表失败:', e);
+                allTutorials = getLocalTutorials();
+                renderTutorials();
+            }
+        }
+
+        function getLocalTutorials() {
+            return [
+                { id: 1, title: "小红书从0到1入门指南", category: "内容创作", duration: "30分钟", level: "入门", content: ["账号定位", "主页装修", "内容规划", "爆款技巧", "数据复盘"] },
+                { id: 2, title: "闲鱼月入3000实战攻略", category: "电商销售", duration: "25分钟", level: "进阶", content: ["养号技巧", "选品方法论", "定价策略", "沟通话术", "防骗指南"] },
+                { id: 3, title: "视频剪辑速成教程", category: "技能服务", duration: "45分钟", level: "入门", content: ["剪映基础", "剪辑节奏", "字幕配音", "音乐选择", "导出设置"] },
+                { id: 4, title: "外卖cps推广秘籍", category: "cps佣金", duration: "20分钟", level: "入门", content: ["平台选择", "链接获取", "推广技巧", "社群裂变", "变现策略"] },
+                { id: 5, title: "PPT接单从报价到交付", category: "技能服务", duration: "35分钟", level: "进阶", content: ["定价方法", "需求沟通", "制作流程", "素材网站", "客户维护"] }
+            ];
+        }
+
+        // 获取收入记录
+        async function fetchIncomeRecords() {
+            try {
+                const res = await fetch(`${API_BASE}/income`);
+                const data = await res.json();
+                incomeRecords = data.data;
+                renderIncomePage();
+            } catch (e) {
+                console.error('获取收入记录失败:', e);
+                incomeRecords = generateLocalIncomeRecords();
+                renderIncomePage();
+            }
+        }
+
+        function generateLocalIncomeRecords() {
+            const records = [];
+            const categories = ["内容创作", "电商销售", "技能服务", "cps佣金"];
+            const sources = ["小红书带货", "闲鱼卖货", "PPT接单", "cps推广"];
+            for (let i = 0; i < 15; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                records.push({
+                    id: i + 1,
+                    date: date.toISOString().split('T')[0],
+                    category: categories[i % 4],
+                    amount: [50, 100, 150, 200, 300, 500][Math.floor(Math.random() * 6)],
+                    source: sources[i % 4]
+                });
+            }
+            return records;
+        }
+
+        // 渲染热门副业
+        function renderHotHustles() {
+            const container = document.getElementById('hot-hustles');
+            const hotHustles = allHustles.slice(0, 3);
+            
+            container.innerHTML = hotHustles.map(h => `
+                <div class="hustle-card" onclick="showHustleDetail(${h.id})">
+                    <div class="hustle-header">
+                        <div class="hustle-title">${h.name}</div>
+                        <span class="hustle-category">${h.category}</span>
+                    </div>
+                    <div class="hustle-stats">
+                        <div class="hustle-stat">
+                            <span class="label">月收入</span>
+                            <span class="value">¥${h.monthly_income_min}-${h.monthly_income_max}</span>
+                        </div>
+                        <div class="hustle-stat">
+                            <span class="label">难度</span>
+                            <span class="value">${h.difficulty}</span>
+                        </div>
+                    </div>
+                    <div class="hustle-tags">
+                        ${h.required_skills.map(s => `<span class="tag">${s}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染收入排行榜
+        function renderIncomeRanking() {
+            const container = document.getElementById('income-ranking');
+            const sorted = [...allHustles].sort((a, b) => b.monthly_income_max - a.monthly_income_max).slice(0, 5);
+            
+            container.innerHTML = sorted.map((h, i) => `
+                <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: white; border-radius: 12px; margin-bottom: 8px;">
+                    <div style="width: 24px; height: 24px; background: ${i === 0 ? '#fbbf24' : i === 1 ? '#9ca3af' : i === 2 ? '#cd7f32' : '#e5e7eb'}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px;">${i + 1}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500;">${h.name}</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">${h.category}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--success); font-weight: 600;">¥${h.monthly_income_max}</div>
+                        <div style="font-size: 11px; color: var(--gray-500);">最高月收</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染副业列表
+        function renderHustlesList(hustles) {
+            const container = document.getElementById('hustles-list');
+            
+            if (hustles.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <div class="empty-state-title">暂无相关副业</div>
+                        <div class="empty-state-desc">试试其他筛选条件</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = hustles.map(h => {
+                const diffClass = h.difficulty === '简单' ? 'difficulty-easy' : h.difficulty === '较高' ? 'difficulty-hard' : '';
+                return `
+                    <div class="hustle-card" onclick="showHustleDetail(${h.id})">
+                        <div class="hustle-header">
+                            <div class="hustle-title">${h.name}</div>
+                            <span class="hustle-category">${h.category}</span>
+                        </div>
+                        <div class="hustle-stats">
+                            <div class="hustle-stat">
+                                <span class="label">月收入</span>
+                                <span class="value">¥${h.monthly_income_min}-${h.monthly_income_max}</span>
+                            </div>
+                            <div class="hustle-stat">
+                                <span class="label">时间投入</span>
+                                <span class="value">${h.time_commitment}</span>
+                            </div>
+                        </div>
+                        <div class="hustle-tags">
+                            <span class="tag ${diffClass}">${h.difficulty}</span>
+                            ${h.required_skills.slice(0, 3).map(s => `<span class="tag">${s}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 渲染分类筛选
+        function renderCategoryFilters() {
+            const categories = [...new Set(allHustles.map(h => h.category))];
+            const container = document.getElementById('category-filters');
+            
+            container.innerHTML = `
+                <div class="filter-chip active" data-category="全部" onclick="filterByCategory('全部')">全部</div>
+                ${categories.map(c => `
+                    <div class="filter-chip" data-category="${c}" onclick="filterByCategory('${c}')">${c}</div>
+                `).join('')}
+            `;
+        }
+
+        // 按分类筛选
+        function filterByCategory(category) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            document.querySelector(`.filter-chip[data-category="${category}"]`).classList.add('active');
+            
+            const filtered = category === '全部' ? allHustles : allHustles.filter(h => h.category === category);
+            renderHustlesList(filtered);
+        }
+
+        // 显示副业详情
+        function showHustleDetail(id) {
+            const hustle = allHustles.find(h => h.id === id);
+            if (!hustle) return;
+            
+            document.getElementById('modal-title').textContent = hustle.name;
+            document.getElementById('modal-income').textContent = `¥${hustle.monthly_income_min} - ¥${hustle.monthly_income_max}/月`;
+            document.getElementById('modal-income-bar').style.width = `${(hustle.monthly_income_max / 10000) * 100}%`;
+            document.getElementById('modal-difficulty').textContent = hustle.difficulty;
+            document.getElementById('modal-time').textContent = hustle.time_commitment;
+            document.getElementById('modal-investment').textContent = hustle.initial_investment ? `¥${hustle.initial_investment}` : '¥0';
+            document.getElementById('modal-platforms').textContent = hustle.platforms?.join('、') || '-';
+            document.getElementById('modal-desc').textContent = hustle.description || '暂无描述';
+            document.getElementById('modal-skills').innerHTML = hustle.required_skills.map(s => `<span class="tag">${s}</span>`).join('');
+            document.getElementById('modal-suitable').textContent = hustle.suitable_for?.join('、') || '暂无信息';
+            document.getElementById('modal-tips').textContent = hustle.tips || '暂无提示';
+            
+            const steps = hustle.steps || ['暂无步骤'];
+            document.getElementById('modal-steps').innerHTML = steps.map((step, i) => `
+                <div class="step-item">
+                    <div class="step-number">${i + 1}</div>
+                    <div class="step-content">${step}</div>
+                </div>
+            `).join('');
+            
+            openModal('hustle-modal');
+        }
+
+        // 渲染技能匹配页
+        function renderSkillGrid() {
+            const skills = ['写作', '视频剪辑', '设计', '摄影', '驾驶', '外语', '编程', '电商运营', '社交媒体运营', '教学', '手工', '烹饪', '养宠经验', '销售', '客服'];
+            const container = document.getElementById('skill-grid');
+            
+            container.innerHTML = skills.map(s => `
+                <div class="skill-item" onclick="toggleSkill(this, '${s}')">
+                    <div class="skill-icon">${skillIcons[s] || '📌'}</div>
+                    <div>${s}</div>
+                </div>
+            `).join('');
+        }
+
+        // 切换技能选择
+        function toggleSkill(element, skill) {
+            element.classList.toggle('selected');
+            if (selectedSkills.includes(skill)) {
+                selectedSkills = selectedSkills.filter(s => s !== skill);
+            } else {
+                selectedSkills.push(skill);
+            }
+        }
+
+        // 执行匹配
+        async function doMatch() {
+            if (selectedSkills.length === 0) {
+                showToast('请先选择至少一个技能');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/match`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ skills: selectedSkills })
+                });
+                const data = await res.json();
+                renderMatchResults(data.data);
+            } catch (e) {
+                // 本地匹配
+                const matched = allHustles.filter(h => 
+                    h.required_skills.some(s => selectedSkills.includes(s))
+                ).map(h => ({
+                    ...h,
+                    match_score: h.required_skills.filter(s => selectedSkills.includes(s)).length,
+                    match_skills: h.required_skills.filter(s => selectedSkills.includes(s))
+                })).sort((a, b) => b.match_score - a.match_score).slice(0, 5);
+                
+                renderMatchResults(matched);
+            }
+            
+            document.getElementById('match-result-title').style.display = 'block';
+        }
+
+        // 渲染匹配结果
+        function renderMatchResults(results) {
+            const container = document.getElementById('match-results');
+            
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎯</div>
+                        <div class="empty-state-title">暂无完全匹配</div>
+                        <div class="empty-state-desc">试试选择更多技能</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = results.map(h => `
+                <div class="match-result" onclick="showHustleDetail(${h.id})">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 16px;">${h.name}</div>
+                            <div style="color: var(--gray-500); font-size: 13px; margin-top: 4px;">${h.category} · ${h.difficulty}</div>
+                        </div>
+                        <span class="match-score">匹配度 ${Math.min(h.match_score * 30 + 50, 98)}%</span>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 10px;">
+                        <div>
+                            <span style="font-size: 12px; color: var(--gray-500);">月收入 </span>
+                            <span style="color: var(--success); font-weight: 600;">¥${h.monthly_income_max}</span>
+                        </div>
+                    </div>
+                    <div class="match-skills">
+                        ${(h.match_skills || []).map(s => `<span class="tag">${s}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染教程列表
+        function renderTutorials() {
+            const container = document.getElementById('tutorials-list');
+            
+            container.innerHTML = allTutorials.map(t => {
+                const levelClass = t.level === '入门' ? 'basic' : t.level === '进阶' ? 'intermediate' : 'advanced';
+                return `
+                    <div class="tutorial-card" onclick="showTutorialDetail(${t.id})">
+                        <div class="tutorial-icon">📖</div>
+                        <div class="tutorial-info">
+                            <div class="tutorial-title">${t.title}</div>
+                            <div class="tutorial-meta">
+                                <span>${t.category}</span>
+                                <span>${t.duration}</span>
+                                <span class="tutorial-level ${levelClass}">${t.level}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 显示教程详情
+        function showTutorialDetail(id) {
+            const tutorial = allTutorials.find(t => t.id === id);
+            if (!tutorial) return;
+            
+            document.getElementById('tutorial-modal-title').textContent = tutorial.title;
+            document.getElementById('tutorial-modal-category').textContent = tutorial.category;
+            document.getElementById('tutorial-modal-duration').textContent = tutorial.duration;
+            document.getElementById('tutorial-modal-level').textContent = tutorial.level;
+            
+            const levelClass = tutorial.level === '入门' ? 'basic' : tutorial.level === '进阶' ? 'intermediate' : 'advanced';
+            document.getElementById('tutorial-modal-level').className = `tutorial-level ${levelClass}`;
+            
+            document.getElementById('tutorial-modal-content').innerHTML = (tutorial.content || []).map((c, i) => `
+                <div class="step-item">
+                    <div class="step-number">${i + 1}</div>
+                    <div class="step-content">${c}</div>
+                </div>
+            `).join('');
+            
+            openModal('tutorial-modal');
+        }
+
+        // 渲染收入页面
+        function renderIncomePage() {
+            const total = incomeRecords.reduce((sum, r) => sum + r.amount, 0);
+            document.getElementById('total-income').textContent = `¥${total}`;
+            document.getElementById('month-income').textContent = `¥${total}`;
+            document.getElementById('record-count').textContent = `共${incomeRecords.length}条`;
+            
+            // 渲染图表
+            const chartData = incomeRecords.slice(0, 7).reverse();
+            const maxAmount = Math.max(...chartData.map(r => r.amount));
+            const chartContainer = document.getElementById('income-chart');
+            chartContainer.innerHTML = chartData.map(r => `
+                <div class="chart-bar" style="height: ${(r.amount / maxAmount) * 100}%;" title="${r.date}: ¥${r.amount}"></div>
+            `).join('');
+            
+            // 渲染记录
+            const recordsContainer = document.getElementById('income-records');
+            recordsContainer.innerHTML = incomeRecords.map(r => `
+                <div class="income-record">
+                    <div class="record-info">
+                        <div class="record-source">${r.source}</div>
+                        <div class="record-date">${r.date} · ${r.category}</div>
+                    </div>
+                    <div class="record-amount">+¥${r.amount}</div>
+                </div>
+            `).join('');
+        }
+
+        // 显示添加收入弹窗
+        function showAddIncomeModal() {
+            document.getElementById('income-form').reset();
+            document.getElementById('income-date').valueAsDate = new Date();
+            openModal('add-income-modal');
+        }
+
+        // 提交收入记录
+        function submitIncome(e) {
+            e.preventDefault();
+            
+            const newRecord = {
+                date: document.getElementById('income-date').value,
+                amount: parseInt(document.getElementById('income-amount').value),
+                source: document.getElementById('income-source').value,
+                category: document.getElementById('income-category').value,
+                note: document.getElementById('income-note').value
+            };
+            
+            newRecord.id = incomeRecords.length + 1;
+            incomeRecords.unshift(newRecord);
+            
+            closeModal('add-income-modal');
+            renderIncomePage();
+            showToast('收入记录已添加！');
+        }
+
+        // 显示会员弹窗
+        function showMemberModal() {
+            openModal('member-modal');
+        }
+
+        // 初始化
+        async function init() {
+            renderSkillGrid();
+            await Promise.all([
+                fetchHustles(),
+                fetchTutorials(),
+                fetchIncomeRecords()
+            ]);
+        }
+
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', init);
+
+        // 点击弹窗背景关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>兼职信息聚合 - 找到真实、优质的兼职机会</title>
+    <style>
+        /* ==================== 全局样式 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4F46E5;
+            --primary-dark: #4338CA;
+            --secondary: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --text-light: #9CA3AF;
+            --bg-primary: #F9FAFB;
+            --bg-white: #FFFFFF;
+            --bg-gray: #F3F4F6;
+            --border: #E5E7EB;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ==================== 顶部导航 ==================== */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #818CF8 100%);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #333;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .vip-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .vip-badge.active {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .user-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .user-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* ==================== 主容器 ==================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ==================== 统计卡片 ==================== */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            padding: 16px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ==================== 筛选区域 ==================== */
+        .filter-section {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .search-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* ==================== 兼职列表 ==================== */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .job-card {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .job-card.vip-only::before {
+            content: 'VIP专属';
+            position: absolute;
+            top: 12px;
+            right: -32px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #333;
+            padding: 4px 40px;
+            font-size: 12px;
+            font-weight: 600;
+            transform: rotate(45deg);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .job-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .job-salary {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--danger);
+            white-space: nowrap;
+        }
+
+        .job-company {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .job-tag {
+            padding: 4px 10px;
+            background: var(--bg-gray);
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .job-tag.highlight {
+            background: #EEF2FF;
+            color: var(--primary);
+        }
+
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .job-platform {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .job-date {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* ==================== 加载状态 ==================== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== 详情弹窗 ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-white);
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--bg-white);
+            z-index: 10;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-gray);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--border);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-content {
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .contact-box {
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .contact-text {
+            flex: 1;
+        }
+
+        .contact-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .contact-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .contact-vip {
+            color: var(--warning);
+        }
+
+        /* ==================== 评价列表 ==================== */
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .review-item {
+            padding: 12px;
+            background: var(--bg-gray);
+            border-radius: var(--radius-sm);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .review-author {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .review-rating {
+            color: #FFD700;
+        }
+
+        .review-comment {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .review-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .review-tag {
+            padding: 2px 8px;
+            background: #D1FAE5;
+            color: #065F46;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        /* ==================== 操作按钮 ==================== */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-gray);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: #FEE2E2;
+            color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #FECACA;
+        }
+
+        .btn-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .btn-success:hover {
+            background: #A7F3D0;
+        }
+
+        /* ==================== 表单弹窗 ==================== */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 8px;
+        }
+
+        .star {
+            font-size: 28px;
+            color: var(--border);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star.active {
+            color: #FFD700;
+        }
+
+        .tag-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-option {
+            padding: 6px 12px;
+            background: var(--bg-gray);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-option.selected {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ==================== VIP弹窗 ==================== */
+        .vip-modal {
+            text-align: center;
+        }
+
+        .vip-header {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #1F2937 0%, #374151 100%);
+            color: white;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .vip-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        .vip-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .vip-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .vip-price {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FFD700;
+            margin: 20px 0;
+        }
+
+        .vip-price span {
+            font-size: 18px;
+        }
+
+        .vip-features {
+            text-align: left;
+            padding: 0 20px 20px;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .vip-feature:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature-icon {
+            width: 24px;
+            height: 24px;
+            background: #D1FAE5;
+            color: #065F46;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .vip-feature-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .vip-footer {
+            padding: 20px;
+            background: var(--bg-gray);
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        .vip-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .vip-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* ==================== Tab导航 ==================== */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-white);
+            padding: 12px;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .tab-item {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ==================== 记录列表 ==================== */
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .record-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-white);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        .record-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .record-info {
+            flex: 1;
+        }
+
+        .record-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .record-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        /* ==================== Toast提示 ==================== */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1F2937;
+            color: white;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: #059669;
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 768px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-row {
+                flex-direction: column;
+            }
+
+            .filter-item {
+                min-width: 100%;
+            }
+
+            .job-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .modal {
+                width: 95%;
+                max-height: 95vh;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .tab-nav {
+                overflow-x: auto;
+            }
+
+            .tab-item {
+                min-width: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .job-card {
+                padding: 16px;
+            }
+
+            .job-title {
+                font-size: 16px;
+            }
+
+            .job-salary {
+                font-size: 16px;
+            }
+        }
+
+        /* ==================== 页面切换动画 ==================== */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== 顶部导航 ==================== -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">💼</span>
+                <span class="logo-text">兼职信息聚合</span>
+            </div>
+            <div class="header-actions">
+                <div class="vip-badge" id="vipBadge" onclick="showVipModal()">
+                    开通VIP
+                </div>
+                <button class="user-btn" onclick="switchTab('records')">
+                    📋 我的记录
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- ==================== 兼职列表页 ==================== -->
+        <div class="page active" id="pageJobs">
+            <!-- 统计卡片 -->
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalJobs">0</div>
+                    <div class="stat-label">兼职总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="vipJobs">0</div>
+                    <div class="stat-label">VIP专属</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalReviews">0</div>
+                    <div class="stat-label">真实评价</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalReports">0</div>
+                    <div class="stat-label">已处理举报</div>
+                </div>
+            </div>
+
+            <!-- 筛选区域 -->
+            <div class="filter-section">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchKeyword" placeholder="搜索兼职名称、公司或描述...">
+                    <button class="search-btn" onclick="searchJobs()">🔍 搜索</button>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <div class="filter-label">地点</div>
+                        <select class="filter-select" id="filterLocation" onchange="searchJobs()">
+                            <option value="">全部</option>
+                            <option value="市区">市区</option>
+                            <option value="学校周边">学校周边</option>
+                            <option value="郊区">郊区</option>
+                            <option value="远程">远程</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <div class="filter-label">时间</div>
+                        <select class="filter-select" id="filterTimeType" onchange="searchJobs()">
+                            <option value="">全部</option>
+                            <option value="日结">日结</option>
+                            <option value="短期">短期</option>
+                            <option value="周末">周末</option>
+                            <option value="长期">长期</option>
+                            <option value="晚班">晚班</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <div class="filter-label">类型</div>
+                        <select class="filter-select" id="filterJobType" onchange="searchJobs()">
+                            <option value="">全部</option>
+                            <option value="服务员">服务员</option>
+                            <option value="家教">家教</option>
+                            <option value="骑手">骑手</option>
+                            <option value="派单">派单</option>
+                            <option value="店员">店员</option>
+                            <option value="收银">收银</option>
+                            <option value="地推">地推</option>
+                            <option value="客服">客服</option>
+                            <option value="分拣">分拣</option>
+                            <option value="模特">模特</option>
+                            <option value="代理">代理</option>
+                            <option value="调研">调研</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <div class="filter-label">薪资范围</div>
+                        <select class="filter-select" id="filterSalary" onchange="searchJobs()">
+                            <option value="">全部</option>
+                            <option value="0-100">100元以下/天</option>
+                            <option value="100-200">100-200元/天</option>
+                            <option value="200-500">200-500元/天</option>
+                            <option value="500-9999">500元以上/天</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 兼职列表 -->
+            <h2 class="section-title">📋 最新兼职信息</h2>
+            <div class="job-list" id="jobList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 记录页 ==================== -->
+        <div class="page" id="pageRecords">
+            <div class="tab-nav">
+                <button class="tab-item active" onclick="switchRecordTab('browse', this)">浏览历史</button>
+                <button class="tab-item" onclick="switchRecordTab('favorite', this)">我的收藏</button>
+                <button class="tab-item" onclick="switchRecordTab('apply', this)">申请记录</button>
+            </div>
+            <div class="record-list" id="recordList">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>暂无记录</p>
+                    <p style="font-size:12px;margin-top:8px;">快去浏览感兴趣的兼职吧</p>
+                </div>
+            </div>
+            <div style="margin-top:20px;">
+                <button class="btn btn-secondary" onclick="switchTab('jobs')">← 返回兼职列表</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 详情弹窗 ==================== -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+                <h2 class="job-title" id="detailTitle">兼职标题</h2>
+                <div style="color:var(--danger);font-size:20px;font-weight:700;margin-top:8px;" id="detailSalary">薪资</div>
+            </div>
+            <div class="modal-body" id="detailBody">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 评价弹窗 ==================== -->
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('reviewModal')">✕</button>
+                <h2>发表评价</h2>
+            </div>
+            <div class="modal-body">
+                <form id="reviewForm">
+                    <input type="hidden" id="reviewJobId">
+                    <div class="form-group">
+                        <label class="form-label">评分</label>
+                        <div class="star-rating" id="starRating">
+                            <span class="star active" data-rating="1">★</span>
+                            <span class="star active" data-rating="2">★</span>
+                            <span class="star active" data-rating="3">★</span>
+                            <span class="star active" data-rating="4">★</span>
+                            <span class="star active" data-rating="5">★</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">评价标签 (可多选)</label>
+                        <div class="tag-selector" id="tagSelector">
+                            <span class="tag-option" data-tag="靠谱">靠谱</span>
+                            <span class="tag-option" data-tag="结算快">结算快</span>
+                            <span class="tag-option" data-tag="环境好">环境好</span>
+                            <span class="tag-option" data-tag="福利好">福利好</span>
+                            <span class="tag-option" data-tag="轻松">轻松</span>
+                            <span class="tag-option" data-tag="赚钱多">赚钱多</span>
+                            <span class="tag-option" data-tag="辛苦">辛苦</span>
+                            <span class="tag-option" data-tag="有发展前景">有发展前景</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">评价内容</label>
+                        <textarea class="form-textarea" id="reviewComment" placeholder="分享你的兼职体验..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">昵称</label>
+                        <input type="text" class="form-input" id="reviewAuthor" placeholder="匿名用户" maxlength="20">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">提交评价</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 举报弹窗 ==================== -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal('reportModal')">✕</button>
+                <h2>举报该兼职</h2>
+            </div>
+            <div class="modal-body">
+                <form id="reportForm">
+                    <input type="hidden" id="reportJobId">
+                    <div class="form-group">
+                        <label class="form-label">举报类型</label>
+                        <select class="form-select" id="reportType" required>
+                            <option value="">请选择</option>
+                            <option value="虚假信息">虚假信息</option>
+                            <option value="收费骗人">收费骗人</option>
+                            <option value="态度恶劣">态度恶劣</option>
+                            <option value="薪资不符">薪资不符</option>
+                            <option value="其他问题">其他问题</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">详细说明</label>
+                        <textarea class="form-textarea" id="reportReason" placeholder="请详细描述问题..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">联系方式 (选填)</label>
+                        <input type="text" class="form-input" id="reportContact" placeholder="手机号或邮箱">
+                    </div>
+                    <button type="submit" class="btn btn-danger" style="width:100%;">提交举报</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== VIP弹窗 ==================== -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal vip-modal">
+            <div class="vip-header">
+                <div class="vip-icon">👑</div>
+                <div class="vip-title">开通VIP会员</div>
+                <div class="vip-subtitle">解锁全部兼职 & 联系方式</div>
+            </div>
+            <div class="vip-price">
+                <span>¥</span>12<span>/月</span>
+            </div>
+            <div class="vip-features">
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">查看全部兼职信息 (含VIP专属)</div>
+                </div>
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">解锁联系方式，快速联系雇主</div>
+                </div>
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">优先查看高质量兼职</div>
+                </div>
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">去除广告，干净清爽</div>
+                </div>
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">专属客服支持</div>
+                </div>
+            </div>
+            <div class="vip-footer">
+                <button class="vip-btn" onclick="activateVip()">立即开通 (¥12/月)</button>
+                <p style="font-size:12px;color:var(--text-secondary);margin-top:12px;">
+                    * 支付即表示同意《VIP会员协议》
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Toast提示 ==================== -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 全局变量 ====================
+        let currentSessionId = localStorage.getItem('sessionId') || generateSessionId();
+        let isVip = localStorage.getItem('isVip') === 'true';
+        let currentJob = null;
+        let currentRecordType = 'browse';
+
+        // 初始化sessionId
+        localStorage.setItem('sessionId', currentSessionId);
+
+        // ==================== 工具函数 ====================
+        function generateSessionId() {
+            return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        function getApiUrl(endpoint) {
+            const baseUrl = window.location.origin;
+            return `${baseUrl}${endpoint}`;
+        }
+
+        function getSalaryRange(selectValue) {
+            if (!selectValue) return { min: null, max: null };
+            const [min, max] = selectValue.split('-').map(Number);
+            return { min: min || 0, max: max || 99999 };
+        }
+
+        // ==================== 页面切换 ====================
+        function switchTab(tabName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+            
+            if (tabName === 'records') {
+                loadRecords('browse');
+            }
+        }
+
+        function switchRecordTab(type, btn) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            currentRecordType = type;
+            loadRecords(type);
+        }
+
+        // ==================== 数据加载 ====================
+        async function loadStats() {
+            try {
+                const res = await fetch(getApiUrl('/api/stats'));
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('totalJobs').textContent = data.data.total_jobs;
+                    document.getElementById('vipJobs').textContent = data.data.vip_jobs;
+                    document.getElementById('totalReviews').textContent = data.data.total_reviews;
+                    document.getElementById('totalReports').textContent = data.data.total_reports;
+                }
+            } catch (err) {
+                console.error('加载统计失败:', err);
+            }
+        }
+
+        async function searchJobs() {
+            const keyword = document.getElementById('searchKeyword').value;
+            const location = document.getElementById('filterLocation').value;
+            const timeType = document.getElementById('filterTimeType').value;
+            const jobType = document.getElementById('filterJobType').value;
+            const salaryRange = getSalaryRange(document.getElementById('filterSalary').value);
+
+            let url = `/api/jobs?page=1&per_page=20&vip=${isVip}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+            if (location) url += `&location=${encodeURIComponent(location)}`;
+            if (timeType) url += `&time_type=${encodeURIComponent(timeType)}`;
+            if (jobType) url += `&type=${encodeURIComponent(jobType)}`;
+            if (salaryRange.min) url += `&salary_min=${salaryRange.min}`;
+            if (salaryRange.max && salaryRange.max < 99999) url += `&salary_max=${salaryRange.max}`;
+
+            const jobList = document.getElementById('jobList');
+            jobList.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            `;
+
+            try {
+                const res = await fetch(getApiUrl(url));
+                const data = await res.json();
+                if (data.success) {
+                    renderJobList(data.data);
+                }
+            } catch (err) {
+                console.error('搜索失败:', err);
+                jobList.innerHTML = '<div class="loading">加载失败，请重试</div>';
+            }
+        }
+
+        function renderJobList(jobs) {
+            const jobList = document.getElementById('jobList');
+            
+            if (jobs.length === 0) {
+                jobList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p>未找到符合条件的兼职</p>
+                        <p style="font-size:12px;margin-top:8px;">试试调整筛选条件</p>
+                    </div>
+                `;
+                return;
+            }
+
+            jobList.innerHTML = jobs.map(job => `
+                <div class="job-card ${job.is_vip_only ? 'vip-only' : ''}" onclick="showJobDetail(${job.id})">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-title">${job.title}</div>
+                            <div class="job-company">🏢 ${job.company}</div>
+                        </div>
+                        <div class="job-salary">${job.salary}</div>
+                    </div>
+                    <div class="job-tags">
+                        <span class="job-tag highlight">📍 ${job.location}</span>
+                        <span class="job-tag">⏰ ${job.time_type}</span>
+                        <span class="job-tag">💼 ${job.job_type}</span>
+                        ${job.is_vip_only ? '<span class="job-tag" style="background:#FEF3C7;color:#92400E;">👑 VIP专属</span>' : ''}
+                    </div>
+                    <div class="job-footer">
+                        <div class="job-platform">📱 ${job.platform}</div>
+                        <div class="job-date">👁 ${job.view_count}次浏览</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 详情页 ====================
+        async function showJobDetail(jobId) {
+            try {
+                const res = await fetch(getApiUrl(`/api/jobs/${jobId}`));
+                const data = await res.json();
+                if (data.success) {
+                    currentJob = data.data.job;
+                    renderJobDetail(data.data);
+                    openModal('detailModal');
+                    
+                    // 记录浏览
+                    addRecord(jobId, 'browse');
+                }
+            } catch (err) {
+                console.error('加载详情失败:', err);
+                showToast('加载失败，请重试', 'error');
+            }
+        }
+
+        function renderJobDetail(data) {
+            const job = data.job;
+            
+            document.getElementById('detailTitle').textContent = job.title;
+            document.getElementById('detailSalary').textContent = job.salary;
+
+            const contactHtml = job.is_vip_only && !isVip ? `
+                <div class="contact-box">
+                    <div class="contact-icon">🔒</div>
+                    <div class="contact-text">
+                        <div class="contact-label">联系方式</div>
+                        <div class="contact-value contact-vip">开通VIP查看完整联系方式</div>
+                    </div>
+                </div>
+            ` : `
+                <div class="contact-box">
+                    <div class="contact-icon">📞</div>
+                    <div class="contact-text">
+                        <div class="contact-label">联系方式</div>
+                        <div class="contact-value">${job.contact}</div>
+                    </div>
+                </div>
+            `;
+
+            const reviewsHtml = data.reviews.length > 0 ? `
+                <div class="detail-section">
+                    <div class="detail-title">用户评价 (${data.review_count})</div>
+                    <div class="review-list">
+                        ${data.reviews.map(r => `
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <span class="review-author">${r.author}</span>
+                                    <span class="review-rating">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span>
+                                </div>
+                                <div class="review-comment">${r.comment}</div>
+                                <div class="review-tags">
+                                    ${r.tags.map(t => `<span class="review-tag">${t}</span>`).join('')}
+                                </div>
+                                <div class="review-date">${r.created_at}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : '<div class="detail-section"><div class="detail-title">用户评价</div><p style="color:var(--text-secondary);">暂无评价</p></div>';
+
+            document.getElementById('detailBody').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-title">基本信息</div>
+                    <div class="job-tags" style="margin-bottom:0;">
+                        <span class="job-tag highlight">📍 ${job.location}</span>
+                        <span class="job-tag">⏰ ${job.time_type}</span>
+                        <span class="job-tag">💼 ${job.job_type}</span>
+                        ${job.is_vip_only ? '<span class="job-tag" style="background:#FEF3C7;color:#92400E;">👑 VIP专属</span>' : ''}
+                    </div>
+                </div>
+                
+                ${contactHtml}
+                
+                <div class="detail-section">
+                    <div class="detail-title">工作描述</div>
+                    <div class="detail-content">${job.description || '暂无描述'}</div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-title">岗位要求</div>
+                    <div class="detail-content">${job.requirements || '暂无要求'}</div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-title">工作地点</div>
+                    <div class="detail-content">${job.location_detail || job.location}</div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-title">信息来源</div>
+                    <div class="detail-content">📱 ${job.platform}</div>
+                </div>
+                
+                ${reviewsHtml}
+                
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="addRecord(${job.id}, 'favorite')">
+                        ❤️ 收藏
+                    </button>
+                    <button class="btn btn-primary" onclick="addRecord(${job.id}, 'apply')">
+                        ✅ 申请
+                    </button>
+                </div>
+                
+                <div class="action-buttons" style="margin-top:12px;">
+                    <button class="btn btn-secondary" onclick="openReviewModal(${job.id})">
+                        ⭐ 评价
+                    </button>
+                    <button class="btn btn-danger" onclick="openReportModal(${job.id})">
+                        🚨 举报
+                    </button>
+                </div>
+            `;
+        }
+
+        // ==================== 记录功能 ====================
+        async function addRecord(jobId, type) {
+            try {
+                await fetch(getApiUrl('/api/records'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        session_id: currentSessionId,
+                        job_id: jobId,
+                        type: type
+                    })
+                });
+                
+                if (type === 'favorite') {
+                    showToast('已添加到收藏', 'success');
+                } else if (type === 'apply') {
+                    showToast('已申请，请等待联系', 'success');
+                }
+            } catch (err) {
+                console.error('记录失败:', err);
+            }
+        }
+
+        async function loadRecords(type) {
+            const recordList = document.getElementById('recordList');
+            recordList.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            `;
+
+            try {
+                const res = await fetch(getApiUrl(`/api/records?session_id=${currentSessionId}&type=${type}`));
+                const data = await res.json();
+                
+                if (data.success && data.data.length > 0) {
+                    recordList.innerHTML = data.data.map(item => `
+                        <div class="record-item" onclick="showJobDetail(${item.job.id})">
+                            <div class="record-icon">
+                                ${item.record.record_type === 'browse' ? '👁' : 
+                                  item.record.record_type === 'favorite' ? '❤️' : '✅'}
+                            </div>
+                            <div class="record-info">
+                                <div class="record-title">${item.job.title}</div>
+                                <div class="record-meta">${item.job.company} · ${item.job.salary}</div>
+                            </div>
+                            <div style="color:var(--text-light);font-size:12px;">${item.record.created_at}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    const emptyText = type === 'browse' ? '暂无浏览记录' : 
+                                     type === 'favorite' ? '暂无收藏' : '暂无申请记录';
+                    recordList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">${type === 'browse' ? '👁' : type === 'favorite' ? '❤️' : '✅'}</div>
+                            <p>${emptyText}</p>
+                            <p style="font-size:12px;margin-top:8px;">快去发现感兴趣的兼职吧</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error('加载记录失败:', err);
+                recordList.innerHTML = '<div class="loading">加载失败</div>';
+            }
+        }
+
+        // ==================== 评价功能 ====================
+        let currentRating = 5;
+        let selectedTags = [];
+
+        function openReviewModal(jobId) {
+            document.getElementById('reviewJobId').value = jobId;
+            currentRating = 5;
+            selectedTags = [];
+            document.getElementById('reviewComment').value = '';
+            document.getElementById('reviewAuthor').value = '';
+            updateStarRating(5);
+            updateTagSelection();
+            openModal('reviewModal');
+        }
+
+        function updateStarRating(rating) {
+            currentRating = rating;
+            document.querySelectorAll('#starRating .star').forEach((star, index) => {
+                star.classList.toggle('active', index < rating);
+            });
+        }
+
+        function updateTagSelection() {
+            document.querySelectorAll('#tagSelector .tag-option').forEach(tag => {
+                const tagName = tag.dataset.tag;
+                tag.classList.toggle('selected', selectedTags.includes(tagName));
+            });
+        }
+
+        document.getElementById('starRating').addEventListener('click', (e) => {
+            if (e.target.classList.contains('star')) {
+                updateStarRating(parseInt(e.target.dataset.rating));
+            }
+        });
+
+        document.getElementById('tagSelector').addEventListener('click', (e) => {
+            if (e.target.classList.contains('tag-option')) {
+                const tag = e.target.dataset.tag;
+                const index = selectedTags.indexOf(tag);
+                if (index > -1) {
+                    selectedTags.splice(index, 1);
+                } else {
+                    selectedTags.push(tag);
+                }
+                updateTagSelection();
+            }
+        });
+
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const res = await fetch(getApiUrl('/api/reviews'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_id: parseInt(document.getElementById('reviewJobId').value),
+                        rating: currentRating,
+                        comment: document.getElementById('reviewComment').value,
+                        tags: selectedTags,
+                        author: document.getElementById('reviewAuthor').value || '匿名用户'
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    showToast('评价提交成功，感谢您的反馈！', 'success');
+                    closeModal('reviewModal');
+                    closeModal('detailModal');
+                    searchJobs();
+                }
+            } catch (err) {
+                console.error('提交失败:', err);
+                showToast('提交失败，请重试', 'error');
+            }
+        });
+
+        // ==================== 举报功能 ====================
+        function openReportModal(jobId) {
+            document.getElementById('reportJobId').value = jobId;
+            document.getElementById('reportType').value = '';
+            document.getElementById('reportReason').value = '';
+            document.getElementById('reportContact').value = '';
+            openModal('reportModal');
+        }
+
+        document.getElementById('reportForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const res = await fetch(getApiUrl('/api/reports'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_id: parseInt(document.getElementById('reportJobId').value),
+                        type: document.getElementById('reportType').value,
+                        reason: document.getElementById('reportReason').value,
+                        contact: document.getElementById('reportContact').value
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    showToast('举报已提交，我们会尽快核实处理', 'success');
+                    closeModal('reportModal');
+                }
+            } catch (err) {
+                console.error('提交失败:', err);
+                showToast('提交失败，请重试', 'error');
+            }
+        });
+
+        // ==================== VIP功能 ====================
+        function showVipModal() {
+            if (isVip) {
+                showToast('您已是VIP会员', 'info');
+                return;
+            }
+            openModal('vipModal');
+        }
+
+        async function activateVip() {
+            try {
+                const res = await fetch(getApiUrl('/api/vip'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: currentSessionId })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    isVip = true;
+                    localStorage.setItem('isVip', 'true');
+                    localStorage.setItem('vipExpire', data.data.expire_date);
+                    
+                    document.getElementById('vipBadge').textContent = 'VIP会员 ✓';
+                    document.getElementById('vipBadge').classList.add('active');
+                    
+                    showToast('VIP开通成功！享受全部特权', 'success');
+                    closeModal('vipModal');
+                    searchJobs();
+                }
+            } catch (err) {
+                console.error('开通失败:', err);
+                showToast('开通失败，请重试', 'error');
+            }
+        }
+
+        async function checkVipStatus() {
+            try {
+                const res = await fetch(getApiUrl(`/api/vip?session_id=${currentSessionId}`));
+                const data = await res.json();
+                if (data.success && data.is_vip) {
+                    isVip = true;
+                    localStorage.setItem('isVip', 'true');
+                    localStorage.setItem('vipExpire', data.expire_date);
+                }
+                
+                updateVipBadge();
+            } catch (err) {
+                console.error('检查VIP失败:', err);
+            }
+        }
+
+        function updateVipBadge() {
+            const badge = document.getElementById('vipBadge');
+            if (isVip) {
+                const expire = localStorage.getItem('vipExpire');
+                badge.textContent = expire ? `VIP到期: ${expire}` : 'VIP会员 ✓';
+                badge.classList.add('active');
+            }
+        }
+
+        // ==================== 弹窗控制 ====================
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // 点击遮罩关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // ESC关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // 搜索框回车事件
+            document.getElementById('searchKeyword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchJobs();
+                }
+            });
+
+            // 初始化
+            checkVipStatus();
+            loadStats();
+            searchJobs();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>退休规划 - 轻松规划美好晚年</title>
+    <style>
+        /* ==================== 基础样式 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A90A4;
+            --primary-dark: #357A8A;
+            --secondary: #F5A623;
+            --success: #27AE60;
+            --danger: #E74C3C;
+            --warning: #F39C12;
+            --info: #3498DB;
+            --dark: #2C3E50;
+            --gray: #95A5A6;
+            --light: #ECF0F1;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* ==================== 头部导航 ==================== */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 10px 18px;
+            border: none;
+            background: transparent;
+            color: var(--dark);
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: rgba(74, 144, 164, 0.1);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ==================== 主容器 ==================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+
+        /* ==================== 卡片样式 ==================== */
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* ==================== 表单样式 ==================== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            padding: 14px 18px;
+            border: 2px solid var(--light);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(74, 144, 164, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--gray);
+        }
+
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2395A5A6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 18px;
+            padding-right: 45px;
+        }
+
+        /* ==================== 按钮样式 ==================== */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 164, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #dfe6e9;
+        }
+
+        .btn-vip {
+            background: linear-gradient(135deg, #f5a623 0%, #f39c12 100%);
+            color: white;
+        }
+
+        .btn-vip:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 166, 35, 0.4);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* ==================== 结果展示 ==================== */
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .result-value.success { color: var(--success); }
+        .result-value.warning { color: var(--warning); }
+        .result-value.danger { color: var(--danger); }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* ==================== 进度条 ==================== */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--light);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--success) 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* ==================== 评分显示 ==================== */
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(var(--success) 0deg, var(--light) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .score-value {
+            position: relative;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* ==================== 建议列表 ==================== */
+        .tips-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tip-item {
+            padding: 18px 20px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .tip-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tip-item.high { border-left-color: var(--danger); }
+        .tip-item.medium { border-left-color: var(--warning); }
+        .tip-item.low { border-left-color: var(--info); }
+
+        .tip-category {
+            font-size: 0.8rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .tip-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .tip-content {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-badge.high { background: #ffeaea; color: var(--danger); }
+        .priority-badge.medium { background: #fff4e6; color: var(--warning); }
+        .priority-badge.low { background: #e8f4fc; color: var(--info); }
+
+        /* ==================== 健康打卡 ==================== */
+        .checkin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .checkin-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+        }
+
+        .checkin-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .checkin-input {
+            width: 80px;
+            padding: 10px;
+            border: 2px solid var(--light);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .checkin-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .mood-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .mood-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--light);
+            background: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mood-btn:hover, .mood-btn.active {
+            border-color: var(--primary);
+            background: rgba(74, 144, 164, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* ==================== VIP订阅卡片 ==================== */
+        .vip-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vip-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        }
+
+        .vip-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f5a623 0%, #f39c12 100%);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .vip-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .vip-price span {
+            font-size: 1.2rem;
+        }
+
+        .vip-features {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .vip-features li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+        }
+
+        .vip-features li::before {
+            content: '✓';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            font-weight: 700;
+        }
+
+        /* ==================== 标签筛选 ==================== */
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border: 2px solid var(--light);
+            background: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--primary);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ==================== 图表区域 ==================== */
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        /* ==================== 模态框 ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* ==================== 响应式 ==================== */
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px 15px;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .nav-tabs {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+
+            .nav-tabs.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                width: 40px;
+                height: 40px;
+                border: none;
+                background: var(--light);
+                border-radius: 10px;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+        /* ==================== 隐藏部分 ==================== */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* ==================== 加载状态 ==================== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== 提示消息 ==================== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 3000;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🧓</span>
+                <span>退休规划</span>
+            </div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <nav class="nav-tabs" id="navTabs">
+                <button class="nav-tab active" data-tab="calculator">养老金计算</button>
+                <button class="nav-tab" data-tab="readiness">退休准备度</button>
+                <button class="nav-tab" data-tab="savings">储蓄目标</button>
+                <button class="nav-tab" data-tab="tips">生活建议</button>
+                <button class="nav-tab" data-tab="health">健康管理</button>
+                <button class="nav-tab" data-tab="vip">开通会员</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <main class="container">
+        <!-- 养老金计算 -->
+        <section class="page-section active" id="calculator">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">💰</span>
+                    <div>
+                        <h2 class="card-title">养老金计算器</h2>
+                        <p class="card-subtitle">输入您的信息，准确预估退休后的养老金收入</p>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">当前年龄</label>
+                        <input type="number" class="form-input" id="calc-age" placeholder="例如：45" min="18" max="70">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">计划退休年龄</label>
+                        <select class="form-input" id="calc-retire-age">
+                            <option value="60">60岁</option>
+                            <option value="65" selected>65岁</option>
+                            <option value="55">55岁（女性工人）</option>
+                            <option value="50">50岁（女性工人）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">当前月收入（元）</label>
+                        <input type="number" class="form-input" id="calc-salary" placeholder="例如：10000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">已缴费年限（年）</label>
+                        <input type="number" class="form-input" id="calc-years" placeholder="例如：15" min="0" max="40">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">个人账户储存额（元）</label>
+                        <input type="number" class="form-input" id="calc-savings" placeholder="可在社保局查询">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="calculatePension()">
+                        <span>🧮</span> 计算养老金
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetForm('calculator')">
+                        <span>🔄</span> 重置
+                    </button>
+                </div>
+
+                <div class="result-section" id="pension-result">
+                    <div class="result-title">📊 计算结果</div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-value" id="pension-total">0</div>
+                            <div class="result-label">预计月养老金（元）</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="pension-base">0</div>
+                            <div class="result-label">基础养老金</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="pension-personal">0</div>
+                            <div class="result-label">个人账户养老金</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="pension-rate">0%</div>
+                            <div class="result-label">养老金替代率</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container" style="margin-top: 25px;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="pension-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>距离60%替代率目标</span>
+                            <span id="pension-gap">需补充：0元</span>
+                        </div>
+                    </div>
+
+                    <div id="pension-advice" style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 10px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 退休准备度 -->
+        <section class="page-section" id="readiness">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📈</span>
+                    <div>
+                        <h2 class="card-title">退休准备度评估</h2>
+                        <p class="card-subtitle">全面评估您的退休财务准备情况</p>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">当前年龄</label>
+                        <input type="number" class="form-input" id="ready-age" placeholder="例如：45" min="18" max="70">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">月收入（元）</label>
+                        <input type="number" class="form-input" id="ready-income" placeholder="税后收入">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">月支出（元）</label>
+                        <input type="number" class="form-input" id="ready-expense" placeholder="每月开销">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">现有储蓄（元）</label>
+                        <input type="number" class="form-input" id="ready-savings" placeholder="包括存款、理财等">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">目标月退休金（元）</label>
+                        <input type="number" class="form-input" id="ready-target" placeholder="期望的退休后月收入">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="calculateReadiness()">
+                        <span>📊</span> 评估准备度
+                    </button>
+                </div>
+
+                <div class="result-section" id="readiness-result">
+                    <div style="text-align: center;">
+                        <div class="score-circle" id="score-circle">
+                            <span class="score-value" id="ready-score">0</span>
+                        </div>
+                        <p style="font-size: 1.2rem; font-weight: 600; color: var(--dark);" id="ready-level">准备度评估中...</p>
+                    </div>
+
+                    <div class="result-grid" style="margin-top: 30px;">
+                        <div class="result-item">
+                            <div class="result-value" id="ready-savings-rate">0%</div>
+                            <div class="result-label">月储蓄率</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="ready-rate">0%</div>
+                            <div class="result-label">准备充分度</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="ready-expected">0</div>
+                            <div class="result-label">预期退休储备</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value danger" id="ready-gap">0</div>
+                            <div class="result-label">资金缺口</div>
+                        </div>
+                    </div>
+
+                    <div id="readiness-advice" style="margin-top: 25px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 储蓄目标追踪 -->
+        <section class="page-section" id="savings">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🎯</span>
+                    <div>
+                        <h2 class="card-title">储蓄目标追踪</h2>
+                        <p class="card-subtitle">设定并追踪您的退休储蓄目标</p>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">当前年龄</label>
+                        <input type="number" class="form-input" id="save-age" placeholder="例如：45" min="18" max="70">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">计划退休年龄</label>
+                        <select class="form-input" id="save-retire-age">
+                            <option value="60">60岁</option>
+                            <option value="65" selected>65岁</option>
+                            <option value="55">55岁</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">当前储蓄（元）</label>
+                        <input type="number" class="form-input" id="save-current" placeholder="现有存款总额">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">月收入（元）</label>
+                        <input type="number" class="form-input" id="save-income" placeholder="每月收入">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">储蓄目标（元）</label>
+                        <input type="number" class="form-input" id="save-target" placeholder="期望达成的目标">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="calculateSavingsTarget()">
+                        <span>📊</span> 计算目标进度
+                    </button>
+                </div>
+
+                <div class="result-section" id="savings-result">
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-value" id="save-progress">0%</div>
+                            <div class="result-label">目标完成进度</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="save-monthly">0</div>
+                            <div class="result-label">每月需储蓄</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="save-ratio">0%</div>
+                            <div class="result-label">占月收入比例</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="save-years">0</div>
+                            <div class="result-label">剩余时间（年）</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container" style="margin-top: 30px;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="save-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="save-current-text">当前: 0元</span>
+                            <span id="save-target-text">目标: 0元</span>
+                        </div>
+                    </div>
+
+                    <div id="savings-advice" style="margin-top: 20px; padding: 15px; border-radius: 10px;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 退休生活建议 -->
+        <section class="page-section" id="tips">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">💡</span>
+                    <div>
+                        <h2 class="card-title">退休生活建议</h2>
+                        <p class="card-subtitle">专业顾问推荐的退休规划要点</p>
+                    </div>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">全部</button>
+                    <button class="filter-tab" data-filter="财务规划">财务规划</button>
+                    <button class="filter-tab" data-filter="健康管理">健康管理</button>
+                    <button class="filter-tab" data-filter="生活方式">生活方式</button>
+                    <button class="filter-tab" data-filter="风险管理">风险管理</button>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-priority="all">全部优先级</button>
+                    <button class="filter-tab" data-priority="high">⭐ 高优先级</button>
+                    <button class="filter-tab" data-priority="medium">中优先级</button>
+                    <button class="filter-tab" data-priority="low">低优先级</button>
+                </div>
+
+                <ul class="tips-list" id="tips-list">
+                    <li class="tip-item high">
+                        <div class="tip-category">财务规划</div>
+                        <div class="tip-title">建立应急基金 <span class="priority-badge high">高优先级</span></div>
+                        <div class="tip-content">保持3-6个月生活费的流动资金，以应对突发情况。建议将这部分资金放在高息储蓄账户或货币基金中。</div>
+                    </li>
+                    <li class="tip-item high">
+                        <div class="tip-category">健康管理</div>
+                        <div class="tip-title">定期体检 <span class="priority-badge high">高优先级</span></div>
+                        <div class="tip-content">建议每年进行一次全面体检，重点关注心血管、骨密度、血糖血压等老年人高发指标。</div>
+                    </li>
+                    <li class="tip-item medium">
+                        <div class="tip-category">财务规划</div>
+                        <div class="tip-title">多元化投资 <span class="priority-badge medium">中优先级</span></div>
+                        <div class="tip-content">退休后建议采用更保守的投资策略，如60%债券+40%股票的组合，在保持收益的同时控制风险。</div>
+                    </li>
+                </ul>
+
+                <div class="btn-group">
+                    <button class="btn btn-vip" onclick="switchTab('vip')">
+                        <span>👑</span> 解锁更多专家建议
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 健康管理 -->
+        <section class="page-section" id="health">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">❤️</span>
+                    <div>
+                        <h2 class="card-title">健康打卡</h2>
+                        <p class="card-subtitle">记录每日健康习惯，保持活力晚年</p>
+                    </div>
+                </div>
+
+                <div class="checkin-grid">
+                    <div class="checkin-item">
+                        <div class="checkin-icon">👟</div>
+                        <input type="number" class="checkin-input" id="checkin-steps" placeholder="0" min="0">
+                        <div class="checkin-label">今日步数</div>
+                    </div>
+                    <div class="checkin-item">
+                        <div class="checkin-icon">🏃</div>
+                        <input type="number" class="checkin-input" id="checkin-exercise" placeholder="0" min="0">
+                        <div class="checkin-label">运动时长(分钟)</div>
+                    </div>
+                    <div class="checkin-item">
+                        <div class="checkin-icon">😴</div>
+                        <input type="number" class="checkin-input" id="checkin-sleep" placeholder="7" min="0" max="24" step="0.5">
+                        <div class="checkin-label">睡眠时长(小时)</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <p style="margin-bottom: 10px; color: var(--gray);">今日心情</p>
+                    <div class="mood-selector">
+                        <button class="mood-btn" data-mood="great" onclick="selectMood(this)">😊</button>
+                        <button class="mood-btn" data-mood="good" onclick="selectMood(this)">🙂</button>
+                        <button class="mood-btn active" data-mood="normal" onclick="selectMood(this)">😐</button>
+                        <button class="mood-btn" data-mood="bad" onclick="selectMood(this)">😔</button>
+                        <button class="mood-btn" data-mood="terrible" onclick="selectMood(this)">😢</button>
+                    </div>
+                </div>
+
+                <div class="btn-group" style="justify-content: center;">
+                    <button class="btn btn-primary" onclick="healthCheckin()">
+                        <span>✓</span> 立即打卡
+                    </button>
+                    <button class="btn btn-secondary" onclick="showHealthHistory()">
+                        <span>📋</span> 查看历史
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📋</span>
+                    <div>
+                        <h2 class="card-title">健康计划</h2>
+                        <p class="card-subtitle">个性化健康管理建议</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">您的年龄</label>
+                        <input type="number" class="form-input" id="health-age" placeholder="例如：60" min="40" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">是否有慢性病</label>
+                        <select class="form-input" id="health-conditions">
+                            <option value="none">无</option>
+                            <option value="hypertension">高血压</option>
+                            <option value="diabetes">糖尿病</option>
+                            <option value="heart_disease">心脏病</option>
+                            <option value="osteoporosis">骨质疏松</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="btn-group" style="justify-content: center;">
+                    <button class="btn btn-primary" onclick="generateHealthPlan()">
+                        <span>📊</span> 生成健康计划
+                    </button>
+                </div>
+
+                <div class="result-section" id="health-plan-result">
+                    <div id="health-plan-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIP订阅 -->
+        <section class="page-section" id="vip">
+            <div class="vip-card">
+                <div class="vip-badge">👑 年度会员</div>
+                <h2 style="font-size: 1.8rem; margin-bottom: 10px;">解锁全部功能</h2>
+                <p style="opacity: 0.9; margin-bottom: 20px;">获得专业退休规划+专家一对一咨询</p>
+                
+                <div class="vip-price">
+                    <span>¥</span>199<span>/年</span>
+                </div>
+
+                <ul class="vip-features">
+                    <li>完整的养老金精确计算</li>
+                    <li>个性化退休规划方案</li>
+                    <li>专家一对一咨询服务</li>
+                    <li>全年健康跟踪管理</li>
+                    <li>专属生活建议库</li>
+                    <li>优先获取政策解读</li>
+                </ul>
+
+                <button class="btn btn-vip" onclick="activateVIP()" style="font-size: 1.2rem; padding: 18px 50px;">
+                    <span>立即开通</span>
+                </button>
+
+                <p style="margin-top: 20px; opacity: 0.8; font-size: 0.9rem;">
+                    💡 目标：6份/月 = ¥1,194 收益
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 模态框 -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <span class="modal-icon">📋</span>
+            <h3 style="margin-bottom: 20px;">打卡历史</h3>
+            <div id="historyContent"></div>
+            <button class="btn btn-primary" onclick="closeModal()" style="margin-top: 20px;">
+                关闭
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 标签页切换 ====================
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            
+            // 关闭移动端菜单
+            document.getElementById('navTabs').classList.remove('show');
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+            });
+        });
+
+        // 移动端菜单切换
+        function toggleMenu() {
+            document.getElementById('navTabs').classList.toggle('show');
+        }
+
+        // ==================== Toast提示 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==================== 养老金计算 ====================
+        async function calculatePension() {
+            const age = document.getElementById('calc-age').value;
+            const retireAge = document.getElementById('calc-retire-age').value;
+            const salary = document.getElementById('calc-salary').value;
+            const years = document.getElementById('calc-years').value;
+            const savings = document.getElementById('calc-savings').value;
+
+            if (!age || !salary || !years) {
+                showToast('请填写完整的年龄、收入和缴费年限信息');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/pension/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        current_age: parseInt(age),
+                        retirement_age: parseInt(retireAge),
+                        monthly_salary: parseFloat(salary),
+                        contribution_years: parseInt(years),
+                        personal_savings: parseFloat(savings) || 0
+                    })
+                });
+
+                const result = await response.json();
+
+                // 填充结果
+                document.getElementById('pension-total').textContent = result.total_monthly_pension.toLocaleString();
+                document.getElementById('pension-base').textContent = result.base_pension.toLocaleString();
+                document.getElementById('pension-personal').textContent = result.personal_pension.toLocaleString();
+                document.getElementById('pension-rate').textContent = result.replacement_rate + '%';
+
+                // 进度条
+                const progress = Math.min(result.replacement_rate / 60 * 100, 100);
+                document.getElementById('pension-progress').style.width = progress + '%';
+
+                // 缺口提示
+                if (result.pension_gap > 0) {
+                    document.getElementById('pension-gap').textContent = `需补充：${result.pension_gap.toLocaleString()}元/月`;
+                    document.getElementById('pension-gap').style.color = '#e74c3c';
+                } else {
+                    document.getElementById('pension-gap').textContent = '已达标 ✓';
+                    document.getElementById('pension-gap').style.color = '#27ae60';
+                }
+
+                // 建议
+                let advice = '';
+                if (result.replacement_rate < 40) {
+                    advice = '⚠️ 养老金替代率偏低，建议：1）延迟退休 2）增加商业养老保险 3）提高个人储蓄';
+                } else if (result.replacement_rate < 60) {
+                    advice = '📊 养老金基本满足需求，建议通过理财增加退休储备';
+                } else {
+                    advice = '✅ 养老金规划良好，继续保持当前的储蓄和缴费习惯';
+                }
+                document.getElementById('pension-advice').innerHTML = advice;
+
+                // 显示结果
+                document.getElementById('pension-result').classList.add('show');
+
+            } catch (error) {
+                showToast('计算失败，请重试');
+                console.error(error);
+            }
+        }
+
+        // ==================== 退休准备度 ====================
+        async function calculateReadiness() {
+            const age = document.getElementById('ready-age').value;
+            const income = document.getElementById('ready-income').value;
+            const expense = document.getElementById('ready-expense').value;
+            const savings = document.getElementById('ready-savings').value;
+            const target = document.getElementById('ready-target').value;
+
+            if (!age || !income || !expense || !savings) {
+                showToast('请填写完整的财务信息');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/retirement/readiness', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        current_age: parseInt(age),
+                        monthly_income: parseFloat(income),
+                        monthly_expense: parseFloat(expense),
+                        current_savings: parseFloat(savings),
+                        target_pension: parseFloat(target) || parseFloat(expense) * 0.6
+                    })
+                });
+
+                const result = await response.json();
+
+                // 更新分数
+                document.getElementById('ready-score').textContent = result.score;
+                document.getElementById('ready-level').textContent = result.level;
+
+                // 更新圆环颜色
+                const scoreCircle = document.getElementById('score-circle');
+                const scoreValue = document.getElementById('ready-score');
+                let color = '#27ae60'; // green
+                if (result.score < 60) color = '#f39c12'; // orange
+                if (result.score < 40) color = '#e74c3c'; // red
+                scoreValue.style.color = color;
+                scoreCircle.style.background = `conic-gradient(${color} 0deg, #ecf0f1 0deg)`.replace('0deg', `${result.score * 3.6}deg`);
+
+                // 其他数据
+                document.getElementById('ready-savings-rate').textContent = result.savings_rate + '%';
+                document.getElementById('ready-rate').textContent = result.readiness_rate + '%';
+                document.getElementById('ready-expected').textContent = result.expected_total.toLocaleString();
+                document.getElementById('ready-gap').textContent = result.gap.toLocaleString();
+
+                // 建议
+                let advice = '';
+                if (result.score >= 80) {
+                    advice = '<div style="padding: 15px; background: #d4edda; border-radius: 10px; color: #155724;">✅ 您的退休准备非常充分！继续保持良好的储蓄习惯</div>';
+                } else if (result.score >= 60) {
+                    advice = '<div style="padding: 15px; background: #fff3cd; border-radius: 10px; color: #856404;">📊 您的退休准备基本达标，建议适当提高储蓄率</div>';
+                } else {
+                    advice = '<div style="padding: 15px; background: #f8d7da; border-radius: 10px; color: #721c24;">⚠️ 您的退休准备需要加强，建议：1）提高月储蓄率至20%以上 2）减少不必要的开支 3）考虑延迟退休</div>';
+                }
+                document.getElementById('readiness-advice').innerHTML = advice;
+
+                document.getElementById('readiness-result').classList.add('show');
+
+            } catch (error) {
+                showToast('评估失败，请重试');
+                console.error(error);
+            }
+        }
+
+        // ==================== 储蓄目标 ====================
+        async function calculateSavingsTarget() {
+            const age = document.getElementById('save-age').value;
+            const retireAge = document.getElementById('save-retire-age').value;
+            const current = document.getElementById('save-current').value;
+            const income = document.getElementById('save-income').value;
+            const target = document.getElementById('save-target').value;
+
+            if (!age || !current || !income || !target) {
+                showToast('请填写完整信息');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/savings/target', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        current_age: parseInt(age),
+                        retirement_age: parseInt(retireAge),
+                        current_savings: parseFloat(current),
+                        monthly_income: parseFloat(income),
+                        target_amount: parseFloat(target)
+                    })
+                });
+
+                const result = await response.json();
+
+                document.getElementById('save-progress').textContent = result.progress + '%';
+                document.getElementById('save-monthly').textContent = Math.round(result.monthly_savings_needed).toLocaleString();
+                document.getElementById('save-ratio').textContent = result.savings_ratio_needed + '%';
+                document.getElementById('save-years').textContent = result.years_left;
+
+                document.getElementById('save-progress-bar').style.width = result.progress + '%';
+                document.getElementById('save-current-text').textContent = `当前: ${parseFloat(current).toLocaleString()}元`;
+                document.getElementById('save-target-text').textContent = `目标: ${parseFloat(target).toLocaleString()}元`;
+
+                // 建议
+                let adviceEl = document.getElementById('savings-advice');
+                if (result.is_achievable) {
+                    adviceEl.style.background = '#d4edda';
+                    adviceEl.innerHTML = `✅ 目标可达成！每月储蓄 ${Math.round(result.monthly_savings_needed).toLocaleString()} 元，占收入的 ${result.savings_ratio_needed}%，坚持 ${result.years_left} 年即可实现目标`;
+                } else {
+                    adviceEl.style.background = '#f8d7da';
+                    adviceEl.innerHTML = `⚠️ 目标较有挑战。每月需储蓄 ${Math.round(result.monthly_savings_needed).toLocaleString()} 元（占收入 ${result.savings_ratio_needed}%），建议适当调整目标或延长时间`;
+                }
+
+                document.getElementById('savings-result').classList.add('show');
+
+            } catch (error) {
+                showToast('计算失败，请重试');
+                console.error(error);
+            }
+        }
+
+        // ==================== 建议筛选 ====================
+        let currentCategory = 'all';
+        let currentPriority = 'all';
+
+        async function loadTips() {
+            try {
+                const url = new URL('/api/retirement/tips', window.location.origin);
+                if (currentCategory !== 'all') url.searchParams.set('category', currentCategory);
+                if (currentPriority !== 'all') url.searchParams.set('priority', currentPriority);
+
+                const response = await fetch(url);
+                const result = await response.json();
+
+                const list = document.getElementById('tips-list');
+                list.innerHTML = result.tips.map(tip => `
+                    <li class="tip-item ${tip.priority}">
+                        <div class="tip-category">${tip.category}</div>
+                        <div class="tip-title">${tip.title} <span class="priority-badge ${tip.priority}">
+                            ${tip.priority === 'high' ? '⭐ 高优先级' : tip.priority === 'medium' ? '中优先级' : '低优先级'}
+                        </span></div>
+                        <div class="tip-content">${tip.content}</div>
+                    </li>
+                `).join('');
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        document.querySelectorAll('[data-filter]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.filter;
+                loadTips();
+            });
+        });
+
+        document.querySelectorAll('[data-priority]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('[data-priority]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPriority = btn.dataset.priority;
+                loadTips();
+            });
+        });
+
+        // ==================== 健康打卡 ====================
+        let selectedMood = 'normal';
+
+        function selectMood(btn) {
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedMood = btn.dataset.mood;
+        }
+
+        async function healthCheckin() {
+            const steps = document.getElementById('checkin-steps').value || 0;
+            const exercise = document.getElementById('checkin-exercise').value || 0;
+            const sleep = document.getElementById('checkin-sleep').value || 0;
+
+            try {
+                const response = await fetch('/api/health/checkin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: 'default',
+                        steps: parseInt(steps),
+                        exercise_minutes: parseInt(exercise),
+                        sleep_hours: parseFloat(sleep),
+                        mood: selectedMood
+                    })
+                });
+
+                showToast('打卡成功！坚持就是胜利 💪');
+
+            } catch (error) {
+                showToast('打卡失败，请重试');
+                console.error(error);
+            }
+        }
+
+        async function showHealthHistory() {
+            try {
+                const response = await fetch('/api/health/history/default');
+                const result = await response.json();
+
+                const content = document.getElementById('historyContent');
+                if (result.history.length === 0) {
+                    content.innerHTML = '<p style="color: var(--gray);">暂无打卡记录，开始今日打卡吧！</p>';
+                } else {
+                    content.innerHTML = result.history.slice(-7).reverse().map(h => `
+                        <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px; text-align: left;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">${h.date}</div>
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <span>👟 ${h.steps}步</span>
+                                <span>🏃 ${h.exercise_minutes}分钟</span>
+                                <span>😴 ${h.sleep_hours}小时</span>
+                                <span>${getMoodEmoji(h.mood)}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                document.getElementById('historyModal').classList.add('show');
+
+            } catch (error) {
+                showToast('获取历史失败');
+                console.error(error);
+            }
+        }
+
+        function getMoodEmoji(mood) {
+            const moods = {
+                'great': '😊',
+                'good': '🙂',
+                'normal': '😐',
+                'bad': '😔',
+                'terrible': '😢'
+            };
+            return moods[mood] || '😐';
+        }
+
+        // ==================== 健康计划 ====================
+        async function generateHealthPlan() {
+            const age = document.getElementById('health-age').value || 60;
+            const condition = document.getElementById('health-conditions').value;
+
+            try {
+                const response = await fetch('/api/health/plan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        age: parseInt(age),
+                        has_conditions: condition !== 'none',
+                        conditions: condition !== 'none' ? [condition] : []
+                    })
+                });
+
+                const plan = await response.json();
+
+                let html = `
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">📋 通用健康建议</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px;">
+                                <strong>体检频率：</strong>${plan.general.checkup_frequency}
+                            </li>
+                            <li style="padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px;">
+                                <strong>运动建议：</strong>${plan.general.exercise.type}，${plan.general.exercise.duration}，${plan.general.exercise.frequency}
+                            </li>
+                            <li style="padding: 10px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px;">
+                                <strong>饮食建议：</strong>${plan.general.diet.style}，每日饮水${plan.general.diet.water}，限盐${plan.general.diet.salt}
+                            </li>
+                        </ul>
+                    </div>
+                `;
+
+                if (plan.specific.length > 0) {
+                    html += '<h4 style="color: var(--danger); margin-bottom: 15px;">🔴 专项健康指导</h4>';
+                    plan.specific.forEach(item => {
+                        html += `
+                            <div style="padding: 15px; background: #fff3cd; border-radius: 10px; margin-bottom: 15px;">
+                                <div style="font-weight: 600; color: #856404; margin-bottom: 10px;">${item.condition}</div>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    ${item.recommendations.map(r => `<li style="margin-bottom: 5px;">${r}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    });
+                }
+
+                document.getElementById('health-plan-content').innerHTML = html;
+                document.getElementById('health-plan-result').classList.add('show');
+
+            } catch (error) {
+                showToast('生成计划失败');
+                console.error(error);
+            }
+        }
+
+        // ==================== VIP订阅 ====================
+        async function activateVIP() {
+            try {
+                const response = await fetch('/api/subscription/activate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan: 'annual' })
+                });
+
+                const result = await response.json();
+                showToast(`🎉 会员开通成功！有效期至 ${result.expire_date}`);
+
+            } catch (error) {
+                showToast('开通失败，请重试');
+                console.error(error);
+            }
+        }
+
+        // ==================== 模态框 ====================
+        function closeModal() {
+            document.getElementById('historyModal').classList.remove('show');
+        }
+
+        document.getElementById('historyModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('historyModal')) {
+                closeModal();
+            }
+        });
+
+        // ==================== 表单重置 ====================
+        function resetForm(formId) {
+            document.getElementById(formId).querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById(`${formId === 'calculator' ? 'pension' : formId}-result`).classList.remove('show');
+        }
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTips();
+        });
+    </script>
+</body>
+</html>

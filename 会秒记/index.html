@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>会秒记 - AI智能会议纪要</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --primary-dark: #3730A3;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--gray-900);
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--gray-50);
+            min-height: 100vh;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* 标签栏 */
+        .tabs {
+            display: flex;
+            background: white;
+            padding: 12px 16px;
+            gap: 8px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 内容区 */
+        .content {
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 录音区域 */
+        .record-section {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .record-time {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--gray-900);
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 24px;
+        }
+
+        .record-btn {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .record-btn.idle {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
+        }
+
+        .record-btn.recording {
+            background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.6);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .record-btn svg {
+            width: 48px;
+            height: 48px;
+            fill: white;
+        }
+
+        .record-btn.recording svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .record-hint {
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* 上传区域 */
+        .upload-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px dashed var(--gray-300);
+        }
+
+        .upload-label {
+            display: block;
+            border: 2px dashed var(--gray-300);
+            border-radius: 12px;
+            padding: 32px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .upload-label:hover {
+            border-color: var(--primary);
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        .upload-label svg {
+            width: 48px;
+            height: 48px;
+            fill: var(--gray-500);
+            margin-bottom: 12px;
+        }
+
+        .upload-label p {
+            color: var(--gray-500);
+            font-size: 14px;
+        }
+
+        .upload-label span {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        #audioFile {
+            display: none;
+        }
+
+        /* 结果区域 */
+        .result-section {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .result-card h3 {
+            font-size: 16px;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-card h3 svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--primary);
+        }
+
+        .transcript-text {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--gray-700);
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 摘要区域 */
+        .summary-section {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .summary-section.show {
+            display: block;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .summary-card h4 {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-card ul {
+            list-style: none;
+        }
+
+        .summary-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-100);
+            font-size: 14px;
+            color: var(--gray-700);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .summary-card li:last-child {
+            border-bottom: none;
+        }
+
+        .summary-card li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .todo-item {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+        }
+
+        .todo-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .todo-content {
+            font-size: 14px;
+            color: var(--gray-900);
+            margin-bottom: 6px;
+        }
+
+        .todo-meta {
+            font-size: 12px;
+            color: var(--gray-500);
+            display: flex;
+            gap: 12px;
+        }
+
+        .todo-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 导出按钮 */
+        .export-section {
+            margin-top: 24px;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            background: #059669;
+        }
+
+        .export-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        /* 导出文本框 */
+        .export-textarea {
+            width: 100%;
+            height: 300px;
+            border: 1px solid var(--gray-300);
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 13px;
+            line-height: 1.6;
+            font-family: 'Courier New', monospace;
+            resize: none;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .export-textarea.show {
+            display: block;
+        }
+
+        /* 定价区域 */
+        .pricing-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .pricing-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .pricing-subtitle {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 16px;
+        }
+
+        .pricing-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 12px;
+            padding: 24px;
+            color: white;
+        }
+
+        .pricing-name {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .pricing-price {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .pricing-price span {
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .pricing-period {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-bottom: 16px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .pricing-features li {
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pricing-features li::before {
+            content: "✓";
+            color: #34D399;
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s;
+        }
+
+        .buy-btn:hover {
+            background: var(--gray-50);
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--gray-900);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 关于区域 */
+        .about-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .about-section h3 {
+            font-size: 16px;
+            color: var(--gray-900);
+            margin-bottom: 16px;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .feature-icon.record { background: var(--danger); }
+        .feature-icon.transcribe { background: var(--primary); }
+        .feature-icon.summary { background: var(--success); }
+        .feature-icon.export { background: var(--warning); }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .app-container {
+                box-shadow: none;
+            }
+            
+            .header {
+                padding: 20px 16px;
+            }
+            
+            .content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>🎙️ 会秒记</h1>
+            <p>AI智能会议纪要 · 让会议不再繁琐</p>
+        </div>
+
+        <!-- 标签栏 -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="record">录音</button>
+            <button class="tab-btn" data-tab="summary">纪要</button>
+            <button class="tab-btn" data-tab="pricing">年卡</button>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 录音标签页 -->
+            <div class="tab-content active" id="record-tab">
+                <div class="record-section">
+                    <div class="record-time" id="recordTime">00:00</div>
+                    <button class="record-btn idle" id="recordBtn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                        </svg>
+                    </button>
+                    <p class="record-hint" id="recordHint">点击开始录音</p>
+                </div>
+
+                <!-- 上传区域 -->
+                <div class="upload-section">
+                    <label class="upload-label" id="uploadLabel">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/>
+                        </svg>
+                        <p>或者<span>点击上传</span>已有音频文件</p>
+                    </label>
+                    <input type="file" id="audioFile" accept="audio/*">
+                </div>
+
+                <!-- 录音结果 -->
+                <div class="result-section" id="resultSection">
+                    <div class="result-card">
+                        <h3>
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
+                            转写结果
+                        </h3>
+                        <div class="transcript-text" id="transcriptText">正在处理...</div>
+                        <button class="generate-btn" id="generateBtn">生成会议纪要</button>
+                    </div>
+                </div>
+
+                <!-- 加载状态 -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>AI正在处理中，请稍候...</p>
+                </div>
+            </div>
+
+            <!-- 纪要标签页 -->
+            <div class="tab-content" id="summary-tab">
+                <div class="summary-section" id="summarySection">
+                    <!-- 会议要点 -->
+                    <div class="summary-card">
+                        <h4>📌 会议要点</h4>
+                        <ul id="keyPoints">
+                            <li>暂无</li>
+                        </ul>
+                    </div>
+
+                    <!-- 会议决议 -->
+                    <div class="summary-card">
+                        <h4>✅ 会议决议</h4>
+                        <ul id="decisions">
+                            <li>暂无</li>
+                        </ul>
+                    </div>
+
+                    <!-- 待办事项 -->
+                    <div class="summary-card">
+                        <h4>📝 待办事项</h4>
+                        <div id="todoList">
+                            <div class="todo-item">
+                                <div class="todo-content">暂无待办</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 导出按钮 -->
+                    <div class="export-section">
+                        <button class="export-btn" id="exportBtn">
+                            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            导出文本
+                        </button>
+                        <textarea class="export-textarea" id="exportTextarea" readonly></textarea>
+                    </div>
+                </div>
+
+                <div class="summary-section" id="noSummary">
+                    <div class="result-card" style="text-align: center; padding: 40px;">
+                        <svg width="64" height="64" fill="#D1D5DB" style="margin-bottom: 16px;">
+                            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+                        </svg>
+                        <p style="color: var(--gray-500);">请先录音或上传音频，生成纪要后查看</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 定价标签页 -->
+            <div class="tab-content" id="pricing-tab">
+                <div class="pricing-section">
+                    <h2 class="pricing-title">解锁全部功能</h2>
+                    <p class="pricing-subtitle">年卡特惠，限时优惠中</p>
+                    
+                    <div class="pricing-card">
+                        <div class="pricing-name">年度会员</div>
+                        <div class="pricing-price">¥199<span>/年</span></div>
+                        <div class="pricing-period">平均每天不到0.55元</div>
+                        
+                        <ul class="pricing-features">
+                            <li>无限次录音转文字</li>
+                            <li>AI智能摘要生成</li>
+                            <li>多种格式导出</li>
+                            <li>优先使用最新AI模型</li>
+                            <li>专属客服支持</li>
+                        </ul>
+                        
+                        <button class="buy-btn" id="buyBtn">立即开通</button>
+                    </div>
+                    
+                    <p style="margin-top: 16px; font-size: 12px; color: var(--gray-500);">
+                        已有 2,847 人开通 · 今日已售 23 份
+                    </p>
+                </div>
+
+                <div class="about-section">
+                    <h3>💡 产品介绍</h3>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-icon record">
+                                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/></svg>
+                            </div>
+                            <div>
+                                <strong>实时录音</strong>
+                                <p style="font-size: 12px; color: var(--gray-500);">一键开始，实时录音不遗漏</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon transcribe">
+                                <svg viewBox="0 0 24 24"><path d="M9 9h6v6H9V9zm0 8h6v2H9v-2zM3 17V7h2v10H3zm4-6h2v6H7v-6zm4-4h2v10h-2V7zm4 4h2v6h-2v-6z"/></svg>
+                            </div>
+                            <div>
+                                <strong>语音转文字</strong>
+                                <p style="font-size: 12px; color: var(--gray-500);">准确率高，支持普通话</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon summary">
+                                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
+                            </div>
+                            <div>
+                                <strong>智能摘要</strong>
+                                <p style="font-size: 12px; color: var(--gray-500);">自动提取要点和待办事项</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon export">
+                                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                            </div>
+                            <div>
+                                <strong>一键导出</strong>
+                                <p style="font-size: 12px; color: var(--gray-500);">多种格式，方便分享协作</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 全局状态
+        const state = {
+            isRecording: false,
+            sessionId: null,
+            transcript: null,
+            summary: null,
+            mediaRecorder: null,
+            audioChunks: [],
+            startTime: null,
+            timerInterval: null
+        };
+
+        // API基础地址
+        const API_BASE = window.location.origin;
+
+        // DOM元素
+        const elements = {
+            tabBtns: document.querySelectorAll('.tab-btn'),
+            tabContents: document.querySelectorAll('.tab-content'),
+            recordBtn: document.getElementById('recordBtn'),
+            recordTime: document.getElementById('recordTime'),
+            recordHint: document.getElementById('recordHint'),
+            uploadLabel: document.getElementById('uploadLabel'),
+            audioFile: document.getElementById('audioFile'),
+            resultSection: document.getElementById('resultSection'),
+            transcriptText: document.getElementById('transcriptText'),
+            generateBtn: document.getElementById('generateBtn'),
+            loading: document.getElementById('loading'),
+            summarySection: document.getElementById('summarySection'),
+            noSummary: document.getElementById('noSummary'),
+            keyPoints: document.getElementById('keyPoints'),
+            decisions: document.getElementById('decisions'),
+            todoList: document.getElementById('todoList'),
+            exportBtn: document.getElementById('exportBtn'),
+            exportTextarea: document.getElementById('exportTextarea'),
+            buyBtn: document.getElementById('buyBtn'),
+            toast: document.getElementById('toast')
+        };
+
+        // 初始化
+        function init() {
+            setupTabs();
+            setupRecordButton();
+            setupFileUpload();
+            setupGenerateButton();
+            setupExportButton();
+            setupBuyButton();
+        }
+
+        // 标签切换
+        function setupTabs() {
+            elements.tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tab = btn.dataset.tab;
+                    
+                    elements.tabBtns.forEach(b => b.classList.remove('active'));
+                    elements.tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    document.getElementById(`${tab}-tab`).classList.add('active');
+                });
+            });
+        }
+
+        // 录音按钮
+        function setupRecordButton() {
+            elements.recordBtn.addEventListener('click', toggleRecording);
+        }
+
+        // 切换录音状态
+        async function toggleRecording() {
+            if (state.isRecording) {
+                stopRecording();
+            } else {
+                await startRecording();
+            }
+        }
+
+        // 开始录音
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                state.mediaRecorder = new MediaRecorder(stream);
+                state.audioChunks = [];
+                
+                state.mediaRecorder.ondataavailable = (e) => {
+                    state.audioChunks.push(e.data);
+                };
+                
+                state.mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
+                    stream.getTracks().forEach(track => track.stop());
+                    await processAudio(audioBlob);
+                };
+                
+                state.mediaRecorder.start();
+                state.isRecording = true;
+                state.startTime = Date.now();
+                
+                elements.recordBtn.classList.remove('idle');
+                elements.recordBtn.classList.add('recording');
+                elements.recordHint.textContent = '点击结束录音';
+                
+                // 更新时长显示
+                state.timerInterval = setInterval(updateTimer, 1000);
+                
+                showToast('录音已开始');
+                
+            } catch (err) {
+                console.error('录音失败:', err);
+                showToast('无法访问麦克风，请检查权限设置');
+            }
+        }
+
+        // 停止录音
+        function stopRecording() {
+            if (state.mediaRecorder && state.isRecording) {
+                state.mediaRecorder.stop();
+                state.isRecording = false;
+                
+                clearInterval(state.timerInterval);
+                
+                elements.recordBtn.classList.remove('recording');
+                elements.recordBtn.classList.add('idle');
+                elements.recordHint.textContent = '正在处理...';
+                
+                showToast('录音已停止');
+            }
+        }
+
+        // 更新计时器
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            elements.recordTime.textContent = `${minutes}:${seconds}`;
+        }
+
+        // 处理音频
+        async function processAudio(audioBlob) {
+            showLoading(true);
+            
+            try {
+                // 模拟上传处理（实际应用中发送到后端）
+                const duration = Math.floor((Date.now() - state.startTime) / 1000);
+                
+                // 调用后端API
+                const response = await fetch(`${API_BASE}/api/record/stop`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ duration: duration })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    state.transcript = result.transcript;
+                    state.sessionId = result.session_id;
+                    
+                    elements.transcriptText.textContent = result.transcript;
+                    elements.resultSection.classList.add('show');
+                    elements.recordHint.textContent = '点击开始录音';
+                    elements.recordTime.textContent = '00:00';
+                    
+                    showToast('转写完成，点击生成纪要');
+                } else {
+                    showToast('转写失败，请重试');
+                }
+            } catch (err) {
+                console.error('处理音频失败:', err);
+                showToast('处理失败，请重试');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // 文件上传
+        function setupFileUpload() {
+            elements.audioFile.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                showLoading(true);
+                
+                try {
+                    // 模拟上传（实际应用中发送文件到后端）
+                    const response = await fetch(`${API_BASE}/api/record/upload`, {
+                        method: 'POST',
+                        body: new FormData()
+                    });
+                    
+                    // 模拟响应
+                    const result = {
+                        success: true,
+                        transcript: `音频文件 ${file.name} 已上传处理完成。\n\n这是一个模拟的转写结果，实际使用中将调用讯飞或百度语音识别API进行真实转写。\n\n会议内容摘要：参会人员就项目进度进行了讨论，确定了下周的工作安排，明确了各自分工。`,
+                        topic: '上传音频会议'
+                    };
+                    
+                    state.transcript = result.transcript;
+                    
+                    elements.transcriptText.textContent = result.transcript;
+                    elements.resultSection.classList.add('show');
+                    
+                    showToast('上传成功，点击生成纪要');
+                } catch (err) {
+                    console.error('上传失败:', err);
+                    showToast('上传失败，请重试');
+                } finally {
+                    showLoading(false);
+                    elements.audioFile.value = '';
+                }
+            });
+        }
+
+        // 生成纪要按钮
+        function setupGenerateButton() {
+            elements.generateBtn.addEventListener('click', generateSummary);
+        }
+
+        // 生成会议纪要
+        async function generateSummary() {
+            if (!state.transcript) {
+                showToast('请先录音或上传音频');
+                return;
+            }
+            
+            showLoading(true);
+            elements.generateBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/summary/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        transcript: state.transcript,
+                        topic: '会议纪要'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    state.summary = result.summary;
+                    renderSummary(result.summary);
+                    
+                    // 切换到纪要标签
+                    document.querySelector('[data-tab="summary"]').click();
+                    
+                    showToast('纪要生成成功');
+                } else {
+                    showToast('生成失败，请重试');
+                }
+            } catch (err) {
+                console.error('生成失败:', err);
+                showToast('生成失败，请重试');
+            } finally {
+                showLoading(false);
+                elements.generateBtn.disabled = false;
+            }
+        }
+
+        // 渲染摘要
+        function renderSummary(summary) {
+            elements.summarySection.classList.add('show');
+            elements.noSummary.style.display = 'none';
+            
+            // 会议要点
+            elements.keyPoints.innerHTML = summary.key_points
+                .map(point => `<li>${point}</li>`)
+                .join('');
+            
+            // 会议决议
+            elements.decisions.innerHTML = summary.decisions
+                .map(decision => `<li>${decision}</li>`)
+                .join('');
+            
+            // 待办事项
+            elements.todoList.innerHTML = summary.todos
+                .map(todo => `
+                    <div class="todo-item">
+                        <div class="todo-content">${todo.content}</div>
+                        <div class="todo-meta">
+                            <span>👤 ${todo.assignee}</span>
+                            <span>📅 ${todo.deadline}</span>
+                        </div>
+                    </div>
+                `)
+                .join('');
+        }
+
+        // 导出按钮
+        function setupExportButton() {
+            elements.exportBtn.addEventListener('click', exportText);
+        }
+
+        // 导出文本
+        async function exportText() {
+            if (!state.summary) {
+                showToast('请先生成会议纪要');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/export/text`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ summary: state.summary })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    elements.exportTextarea.value = result.content;
+                    elements.exportTextarea.classList.add('show');
+                    
+                    // 复制到剪贴板
+                    await navigator.clipboard.writeText(result.content);
+                    showToast('已复制到剪贴板');
+                }
+            } catch (err) {
+                console.error('导出失败:', err);
+                // 直接显示摘要文本
+                elements.exportTextarea.value = `会议主题：${state.summary.topic}\n\n会议要点：\n${state.summary.key_points.join('\n')}\n\n待办事项：\n${state.summary.todos.map(t => `• ${t.content} (${t.assignee})`).join('\n')}`;
+                elements.exportTextarea.classList.add('show');
+                showToast('已生成文本，请手动复制');
+            }
+        }
+
+        // 购买按钮
+        function setupBuyButton() {
+            elements.buyBtn.addEventListener('click', () => {
+                showToast('支付功能开发中，敬请期待！');
+            });
+        }
+
+        // 显示加载
+        function showLoading(show) {
+            elements.loading.classList.toggle('show', show);
+        }
+
+        // Toast提示
+        function showToast(message) {
+            elements.toast.textContent = message;
+            elements.toast.classList.add('show');
+            
+            setTimeout(() => {
+                elements.toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 启动
+        init();
+    </script>
+</body>
+</html>

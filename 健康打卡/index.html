@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>健康打卡 - 养成健康好习惯</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-light: #C8E6C9;
+            --secondary: #2196F3;
+            --accent: #FF9800;
+            --danger: #F44336;
+            --purple: #9C27B0;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --bg-main: #F5F5F5;
+            --bg-card: #FFFFFF;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Subscription Banner */
+        .subscription-banner {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .subscription-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .subscription-banner.subscribed {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .subscription-banner .badge {
+            background: white;
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .subscription-banner.subscribed .badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .icon {
+            font-size: 1.3rem;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Health Items Grid */
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .health-item {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .health-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .health-item.completed {
+            border: 2px solid var(--primary);
+        }
+
+        .health-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .health-name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .health-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .health-unit {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .health-target {
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-top: 4px;
+        }
+
+        /* Input Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 360px;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .modal-input:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background: #E0E0E0;
+            color: var(--text-secondary);
+        }
+
+        .btn-confirm {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .chart-bars {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 120px;
+            padding: 0 8px;
+        }
+
+        .chart-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .chart-bar {
+            width: 24px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s;
+        }
+
+        .chart-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Progress Ring */
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 160px;
+            height: 160px;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: #E0E0E0;
+            stroke-width: 12;
+        }
+
+        .progress-ring-fill {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .progress-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Goals List */
+        .goals-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .goal-icon {
+            font-size: 2rem;
+            width: 50px;
+            text-align: center;
+        }
+
+        .goal-info {
+            flex: 1;
+        }
+
+        .goal-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .goal-progress {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .goal-toggle {
+            width: 50px;
+            height: 28px;
+            background: #E0E0E0;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .goal-toggle.active {
+            background: var(--primary);
+        }
+
+        .goal-toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .goal-toggle.active::after {
+            transform: translateX(22px);
+        }
+
+        /* Reminders */
+        .reminder-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .reminder-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .reminder-time {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--secondary);
+            min-width: 60px;
+        }
+
+        .reminder-content {
+            flex: 1;
+        }
+
+        .reminder-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .reminder-message {
+            font-size: 0.95rem;
+        }
+
+        .reminder-toggle {
+            width: 50px;
+            height: 28px;
+            background: #E0E0E0;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .reminder-toggle.active {
+            background: var(--primary);
+        }
+
+        .reminder-toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .reminder-toggle.active::after {
+            transform: translateX(22px);
+        }
+
+        /* Health Tips */
+        .tips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tip-item {
+            padding: 16px;
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .tip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--primary-dark);
+        }
+
+        .tip-content {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #E0E0E0;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Share Modal */
+        .share-content {
+            background: #F5F5F5;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 16px 0;
+            white-space: pre-line;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .share-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Subscription Modal */
+        .subscription-options {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .sub-option {
+            flex: 1;
+            padding: 20px 16px;
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sub-option.selected {
+            border-color: var(--primary);
+            background: #E8F5E9;
+        }
+
+        .sub-plan {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .sub-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .sub-period {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .sub-features {
+            margin: 16px 0;
+            text-align: left;
+        }
+
+        .sub-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .sub-feature .check {
+            color: var(--primary);
+        }
+
+        /* Pay Button */
+        .pay-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent), #F57C00);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 360px) {
+            .health-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div>
+                <h1>🏃 健康打卡</h1>
+            </div>
+            <div class="header-date" id="currentDate"></div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Subscription Banner -->
+        <div class="subscription-banner" id="subscriptionBanner" onclick="showSubscriptionModal()">
+            <div>
+                <strong>解锁完整功能</strong>
+                <div style="font-size: 0.85rem; opacity: 0.9;">智能提醒 · 数据导出 · 深度统计</div>
+            </div>
+            <span class="badge">¥12/月</span>
+        </div>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="checkin">今日打卡</button>
+            <button class="tab-btn" data-tab="stats">数据统计</button>
+            <button class="tab-btn" data-tab="goals">目标设置</button>
+            <button class="tab-btn" data-tab="more">更多</button>
+        </nav>
+
+        <!-- Tab Content: Checkin -->
+        <section class="tab-content active" id="tab-checkin">
+            <div class="progress-container">
+                <div class="progress-ring">
+                    <svg width="160" height="160">
+                        <circle class="progress-ring-bg" cx="80" cy="80" r="68"></circle>
+                        <circle class="progress-ring-fill" cx="80" cy="80" r="68" 
+                                stroke-dasharray="427" stroke-dashoffset="427" id="progressCircle"></circle>
+                    </svg>
+                    <div class="progress-text">
+                        <div class="progress-value" id="completionPercent">0%</div>
+                        <div class="progress-label">今日完成</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="health-grid" id="healthGrid">
+                <!-- Dynamically generated -->
+            </div>
+        </section>
+
+        <!-- Tab Content: Stats -->
+        <section class="tab-content" id="tab-stats">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💧</div>
+                    <div class="stat-value" id="weekWater">0</div>
+                    <div class="stat-label">本周喝水(杯)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏃</div>
+                    <div class="stat-value" id="weekExercise">0</div>
+                    <div class="stat-label">本周运动(分钟)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">😴</div>
+                    <div class="stat-value" id="avgSleep">0</div>
+                    <div class="stat-label">平均睡眠(小时)</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👟</div>
+                    <div class="stat-value" id="totalSteps">0</div>
+                    <div class="stat-label">本周步数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="checkinDays">0</div>
+                    <div class="stat-label">打卡天数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-value" id="completionRate">0%</div>
+                    <div class="stat-label">目标完成率</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">本周饮水趋势</div>
+                <div class="chart-bars" id="weeklyChart">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Content: Goals -->
+        <section class="tab-content" id="tab-goals">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">🎯</span>
+                    每日目标
+                </div>
+                <div class="goals-list" id="goalsList">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">🔔</span>
+                    提醒设置
+                </div>
+                <div class="reminder-list" id="reminderList">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Content: More -->
+        <section class="tab-content" id="tab-more">
+            <div class="card" onclick="showShareModal()">
+                <div class="card-title">
+                    <span class="icon">📤</span>
+                    分享健康数据
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">生成精美分享卡片，展示你的健康成果</p>
+            </div>
+
+            <div class="card" onclick="exportData()">
+                <div class="card-title">
+                    <span class="icon">📊</span>
+                    导出数据
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">导出CSV格式的健康记录，方便分析</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">💡</span>
+                    健康小贴士
+                </div>
+                <div class="tips-list" id="tipsList">
+                    <!-- Dynamically generated -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-tab="checkin">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">打卡</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="stats">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">统计</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="goals">
+            <span class="nav-icon">🎯</span>
+            <span class="nav-label">目标</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="more">
+            <span class="nav-icon">更多</span>
+            <span class="nav-label">更多</span>
+        </a>
+    </nav>
+
+    <!-- Input Modal -->
+    <div class="modal-overlay" id="inputModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon">💧</div>
+                <div class="modal-title" id="modalTitle">喝水量</div>
+            </div>
+            <input type="number" class="modal-input" id="modalInput" placeholder="0">
+            <div style="text-align: center; margin-bottom: 16px; color: var(--text-secondary);">
+                <span id="modalUnit">杯</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal('inputModal')">取消</button>
+                <button class="btn btn-confirm" onclick="confirmInput()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Modal -->
+    <div class="modal-overlay" id="subscriptionModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">👑</div>
+                <div class="modal-title">解锁完整功能</div>
+            </div>
+            
+            <div class="subscription-options">
+                <div class="sub-option selected" data-plan="monthly" onclick="selectPlan(this)">
+                    <div class="sub-plan">月卡</div>
+                    <div class="sub-price">¥12</div>
+                    <div class="sub-period">30天</div>
+                </div>
+                <div class="sub-option" data-plan="yearly" onclick="selectPlan(this)">
+                    <div class="sub-plan">年卡</div>
+                    <div class="sub-price">¥99</div>
+                    <div class="sub-period">365天</div>
+                </div>
+            </div>
+
+            <div class="sub-features">
+                <div class="sub-feature"><span class="check">✓</span> 完整数据统计</div>
+                <div class="sub-feature"><span class="check">✓</span> 智能健康提醒</div>
+                <div class="sub-feature"><span class="check">✓</span> 数据导出分享</div>
+                <div class="sub-feature"><span class="check">✓</span> 个性化目标设置</div>
+                <div class="sub-feature"><span class="check">✓</span> 深度数据分析</div>
+            </div>
+
+            <button class="pay-btn" onclick="purchaseSubscription()">立即开通</button>
+            <button class="btn btn-cancel" onclick="closeModal('subscriptionModal')" style="width: 100%; margin-top: 8px;">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="shareModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon">📤</div>
+                <div class="modal-title">分享健康数据</div>
+            </div>
+            
+            <div class="share-content" id="shareContent">
+                正在生成...
+            </div>
+
+            <button class="share-btn" onclick="shareToFriends()">分享给好友</button>
+            <button class="copy-btn" onclick="copyShareText()">复制文字</button>
+            <button class="btn btn-cancel" onclick="closeModal('shareModal')" style="width: 100%; margin-top: 8px;">关闭</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">操作成功</div>
+
+    <script>
+        // ==================== 配置 ====================
+        const API_BASE = '/api';
+        const CURRENT_USER = 'default_user';
+        
+        // 健康类型配置
+        const HEALTH_TYPES = {
+            water: { id: 'water', name: '喝水量', icon: '💧', unit: '杯', target: 8, color: '#3498db' },
+            exercise: { id: 'exercise', name: '运动时长', icon: '🏃', unit: '分钟', target: 30, color: '#e74c3c' },
+            sleep: { id: 'sleep', name: '睡眠时长', icon: '😴', unit: '小时', target: 7, color: '#9b59b6' },
+            steps: { id: 'steps', name: '步数', icon: '👟', unit: '步', target: 10000, color: '#27ae60' },
+            weight: { id: 'weight', name: '体重', icon: '⚖️', unit: 'kg', target: null, color: '#f39c12' }
+        };
+
+        // 状态管理
+        let currentData = {
+            todayCheckin: null,
+            healthTypes: [],
+            weeklyStats: null,
+            monthlyStats: null,
+            goals: {},
+            reminders: [],
+            isSubscribed: false
+        };
+
+        let currentInputType = null;
+        let selectedPlan = 'monthly';
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+            initNav();
+            setCurrentDate();
+            loadAllData();
+        });
+
+        function setCurrentDate() {
+            const now = new Date();
+            const options = { month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('zh-CN', options);
+        }
+
+        // ==================== 标签页切换 ====================
+        function initTabs() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.dataset.tab;
+                    switchTab(tabId);
+                });
+            });
+        }
+
+        function switchTab(tabId) {
+            // 更新 tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabId);
+            });
+            
+            // 更新 tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `tab-${tabId}`);
+            });
+            
+            // 更新 bottom nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.tab === tabId);
+            });
+        }
+
+        function initNav() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabId = item.dataset.tab;
+                    switchTab(tabId);
+                });
+            });
+        }
+
+        // ==================== 数据加载 ====================
+        async function loadAllData() {
+            try {
+                await Promise.all([
+                    loadHealthTypes(),
+                    loadTodayCheckin(),
+                    loadWeeklyStats(),
+                    loadGoals(),
+                    loadReminders(),
+                    loadHealthTips(),
+                    checkSubscription()
+                ]);
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                showToast('数据加载失败，请刷新重试');
+            }
+        }
+
+        async function apiGet(endpoint) {
+            const response = await fetch(`${API_BASE}${endpoint}?user_id=${CURRENT_USER}`);
+            return response.json();
+        }
+
+        async function apiPost(endpoint, data) {
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...data, user_id: CURRENT_USER })
+            });
+            return response.json();
+        }
+
+        async function loadHealthTypes() {
+            const result = await apiGet('/health/types');
+            if (result.code === 200) {
+                currentData.healthTypes = result.data.types;
+                renderHealthGrid();
+            }
+        }
+
+        async function loadTodayCheckin() {
+            const result = await apiGet('/checkin/today');
+            if (result.code === 200) {
+                currentData.todayCheckin = result.data;
+                renderHealthGrid();
+                updateProgress();
+            }
+        }
+
+        async function loadWeeklyStats() {
+            const result = await apiGet('/stats/weekly');
+            if (result.code === 200) {
+                currentData.weeklyStats = result.data;
+                renderWeeklyStats();
+            }
+            
+            const monthResult = await apiGet('/stats/monthly');
+            if (monthResult.code === 200) {
+                currentData.monthlyStats = monthResult.data;
+                renderMonthlyStats();
+            }
+        }
+
+        async function loadGoals() {
+            const result = await apiGet('/goals');
+            if (result.code === 200) {
+                currentData.goals = result.data.goals;
+                renderGoals();
+            }
+        }
+
+        async function loadReminders() {
+            const result = await apiGet('/reminders');
+            if (result.code === 200) {
+                currentData.reminders = result.data.reminders;
+                renderReminders();
+            }
+        }
+
+        async function loadHealthTips() {
+            const result = await apiGet('/tips');
+            if (result.code === 200) {
+                renderHealthTips(result.data.tips);
+            }
+        }
+
+        async function checkSubscription() {
+            const result = await apiGet('/subscription/status');
+            if (result.code === 200) {
+                currentData.isSubscribed = result.data.is_subscribed;
+                updateSubscriptionBanner();
+            }
+        }
+
+        // ==================== 渲染函数 ====================
+        function renderHealthGrid() {
+            const grid = document.getElementById('healthGrid');
+            const todayItems = currentData.todayCheckin?.items || {};
+            
+            grid.innerHTML = currentData.healthTypes.map(type => {
+                const value = todayItems[type.id] || 0;
+                const isCompleted = type.target && value >= type.target;
+                const progress = type.target ? Math.min(100, (value / type.target) * 100) : 100;
+                
+                return `
+                    <div class="health-item ${isCompleted ? 'completed' : ''} fade-in" 
+                         onclick="openInputModal('${type.id}')"
+                         style="border-top: 3px solid ${type.color}">
+                        <div class="health-icon">${type.icon}</div>
+                        <div class="health-name">${type.name}</div>
+                        <div class="health-value">${value}</div>
+                        <div class="health-unit">${type.unit}</div>
+                        ${type.target ? `<div class="health-target">目标: ${type.target}${type.unit}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateProgress() {
+            const todayItems = currentData.todayCheckin?.items || {};
+            const completedTypes = ['water', 'exercise', 'sleep', 'steps'];
+            let completed = 0;
+            
+            completedTypes.forEach(type => {
+                const typeConfig = HEALTH_TYPES[type];
+                if (typeConfig && todayItems[type] >= typeConfig.target) {
+                    completed++;
+                }
+            });
+            
+            const percent = Math.round((completed / completedTypes.length) * 100);
+            
+            // 更新圆环
+            const circle = document.getElementById('progressCircle');
+            const circumference = 2 * Math.PI * 68;
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            
+            // 更新文字
+            document.getElementById('completionPercent').textContent = `${percent}%`;
+        }
+
+        function renderWeeklyStats() {
+            const stats = currentData.weeklyStats?.stats || {};
+            
+            document.getElementById('weekWater').textContent = stats.total_water || 0;
+            document.getElementById('weekExercise').textContent = stats.total_exercise || 0;
+            document.getElementById('avgSleep').textContent = stats.avg_sleep || 0;
+            document.getElementById('totalSteps').textContent = (stats.total_steps || 0).toLocaleString();
+            document.getElementById('checkinDays').textContent = stats.checkin_days || 0;
+            
+            // 渲染图表
+            const weekData = currentData.weeklyStats?.week_data || [];
+            const chart = document.getElementById('weeklyChart');
+            const maxWater = Math.max(...weekData.map(d => d.items?.water || 0), 10);
+            
+            chart.innerHTML = weekData.slice().reverse().map(day => {
+                const water = day.items?.water || 0;
+                const height = (water / maxWater) * 100;
+                return `
+                    <div class="chart-bar-wrapper">
+                        <div class="chart-bar" style="height: ${height}%"></div>
+                        <div class="chart-label">${day.day_name?.slice(0, 1) || ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderMonthlyStats() {
+            const stats = currentData.monthlyStats?.stats || {};
+            document.getElementById('completionRate').textContent = `${stats.completion_rate || 0}%`;
+        }
+
+        function renderGoals() {
+            const list = document.getElementById('goalsList');
+            const goals = currentData.goals;
+            
+            list.innerHTML = Object.entries(HEALTH_TYPES)
+                .filter(([key]) => key !== 'weight')
+                .map(([key, type]) => {
+                    const goal = goals[key] || { target: type.target, enabled: true };
+                    return `
+                        <div class="goal-item">
+                            <div class="goal-icon">${type.icon}</div>
+                            <div class="goal-info">
+                                <div class="goal-name">${type.name}</div>
+                                <div class="goal-progress">目标: ${goal.target}${type.unit}</div>
+                            </div>
+                            <div class="goal-toggle ${goal.enabled ? 'active' : ''}" 
+                                 onclick="toggleGoal('${key}', this)"></div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        function renderReminders() {
+            const list = document.getElementById('reminderList');
+            
+            list.innerHTML = currentData.reminders.map(reminder => `
+                <div class="reminder-item">
+                    <div class="reminder-time">${reminder.time}</div>
+                    <div class="reminder-content">
+                        <div class="reminder-type">${HEALTH_TYPES[reminder.type]?.name || reminder.type}</div>
+                        <div class="reminder-message">${reminder.message}</div>
+                    </div>
+                    <div class="reminder-toggle ${reminder.enabled ? 'active' : ''}"
+                         onclick="toggleReminder('${reminder.id}', this)"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderHealthTips(tips) {
+            const list = document.getElementById('tipsList');
+            
+            list.innerHTML = tips.map(tip => `
+                <div class="tip-item fade-in">
+                    <div class="tip-title">${tip.title}</div>
+                    <div class="tip-content">${tip.content}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateSubscriptionBanner() {
+            const banner = document.getElementById('subscriptionBanner');
+            
+            if (currentData.isSubscribed) {
+                banner.classList.add('subscribed');
+                banner.innerHTML = `
+                    <div>
+                        <strong>👑 已开通会员</strong>
+                        <div style="font-size: 0.85rem; opacity: 0.9;">享受完整功能</div>
+                    </div>
+                    <span class="badge">已订阅</span>
+                `;
+                banner.onclick = null;
+            }
+        }
+
+        // ==================== 操作函数 ====================
+        function openInputModal(typeId) {
+            currentInputType = typeId;
+            const type = HEALTH_TYPES[typeId];
+            const todayValue = currentData.todayCheckin?.items?.[typeId] || 0;
+            
+            document.getElementById('modalIcon').textContent = type.icon;
+            document.getElementById('modalTitle').textContent = type.name;
+            document.getElementById('modalInput').placeholder = type.target?.toString() || '0';
+            document.getElementById('modalInput').value = todayValue > 0 ? todayValue : '';
+            document.getElementById('modalUnit').textContent = type.unit;
+            
+            showModal('inputModal');
+            
+            // 自动聚焦
+            setTimeout(() => {
+                document.getElementById('modalInput').focus();
+            }, 100);
+        }
+
+        async function confirmInput() {
+            const value = parseFloat(document.getElementById('modalInput').value) || 0;
+            
+            // 更新本地数据
+            if (!currentData.todayCheckin) {
+                currentData.todayCheckin = {
+                    date: new Date().toISOString().split('T')[0],
+                    items: {}
+                };
+            }
+            currentData.todayCheckin.items[currentInputType] = value;
+            
+            // 保存到服务器
+            try {
+                const result = await apiPost('/checkin', {
+                    date: currentData.todayCheckin.date,
+                    items: currentData.todayCheckin.items
+                });
+                
+                if (result.code === 200) {
+                    showToast('打卡成功！');
+                    renderHealthGrid();
+                    updateProgress();
+                } else {
+                    showToast(result.message || '保存失败');
+                }
+            } catch (error) {
+                showToast('网络错误');
+            }
+            
+            closeModal('inputModal');
+        }
+
+        async function toggleGoal(typeId, element) {
+            if (!currentData.isSubscribed) {
+                showSubscriptionModal();
+                return;
+            }
+            
+            const isActive = element.classList.toggle('active');
+            currentData.goals[typeId] = {
+                ...currentData.goals[typeId],
+                enabled: isActive
+            };
+            
+            await apiPost('/goals', { goals: currentData.goals });
+            showToast('目标已更新');
+        }
+
+        async function toggleReminder(reminderId, element) {
+            if (!currentData.isSubscribed) {
+                showSubscriptionModal();
+                return;
+            }
+            
+            const isActive = element.classList.toggle('active');
+            const reminder = currentData.reminders.find(r => r.id === reminderId);
+            if (reminder) {
+                reminder.enabled = isActive;
+            }
+            
+            await apiPost('/reminders', { reminders: currentData.reminders });
+            showToast('提醒设置已更新');
+        }
+
+        function selectPlan(element) {
+            document.querySelectorAll('.sub-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedPlan = element.dataset.plan;
+        }
+
+        async function purchaseSubscription() {
+            try {
+                const result = await apiPost('/subscription/purchase', {
+                    plan: selectedPlan
+                });
+                
+                if (result.code === 200) {
+                    currentData.isSubscribed = true;
+                    updateSubscriptionBanner();
+                    closeModal('subscriptionModal');
+                    showToast('订阅成功！欢迎使用完整功能');
+                } else {
+                    showToast(result.message || '订阅失败');
+                }
+            } catch (error) {
+                showToast('网络错误');
+            }
+        }
+
+        async function showShareModal() {
+            if (!currentData.isSubscribed) {
+                showSubscriptionModal();
+                return;
+            }
+            
+            try {
+                const result = await apiGet('/share');
+                if (result.code === 200) {
+                    document.getElementById('shareContent').textContent = result.data.share_text;
+                    showModal('shareModal');
+                }
+            } catch (error) {
+                showToast('生成失败');
+            }
+        }
+
+        function shareToFriends() {
+            const text = document.getElementById('shareContent').textContent;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: '健康打卡',
+                    text: text
+                }).catch(() => {});
+            } else {
+                showToast('请长按复制分享内容');
+            }
+        }
+
+        function copyShareText() {
+            const text = document.getElementById('shareContent').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('已复制到剪贴板');
+            }).catch(() => {
+                showToast('复制失败');
+            });
+        }
+
+        async function exportData() {
+            if (!currentData.isSubscribed) {
+                showSubscriptionModal();
+                return;
+            }
+            
+            try {
+                const result = await apiGet('/export');
+                if (result.code === 200) {
+                    // 生成CSV
+                    let csv = '日期,喝水量(杯),运动(分钟),睡眠(小时),步数,体重(kg)\n';
+                    result.data.checkins.forEach(checkin => {
+                        const items = checkin.items;
+                        csv += `${checkin.date},${items.water || 0},${items.exercise || 0},${items.sleep || 0},${items.steps || 0},${items.weight || 0}\n`;
+                    });
+                    
+                    // 下载
+                    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `健康打卡数据_${new Date().toISOString().split('T')[0]}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    
+                    showToast('数据导出成功');
+                }
+            } catch (error) {
+                showToast('导出失败');
+            }
+        }
+
+        // ==================== 模态框控制 ====================
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function showSubscriptionModal() {
+            showModal('subscriptionModal');
+        }
+
+        // ==================== Toast提示 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 点击模态框外部关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

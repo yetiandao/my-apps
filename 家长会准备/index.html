@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家长会准备 - 让每次沟通更从容</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A90D9;
+            --primary-dark: #3A7BC8;
+            --secondary: #F5A623;
+            --success: #7ED321;
+            --danger: #D0021B;
+            --bg: #F7F9FC;
+            --card-bg: #FFFFFF;
+            --text: #333333;
+            --text-light: #666666;
+            --border: #E8ECF0;
+            --shadow: 0 2px 12px rgba(74, 144, 217, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #5BA3E8 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(74, 144, 217, 0.3);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* 订阅状态栏 */
+        .subscription-bar {
+            background: linear-gradient(90deg, var(--secondary), #FFB800);
+            color: white;
+            padding: 10px 16px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subscription-bar.premium {
+            background: linear-gradient(90deg, var(--success), #9AE52E);
+        }
+
+        .btn-vip {
+            background: white;
+            color: var(--secondary);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-vip:hover {
+            transform: scale(1.05);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 12px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active .nav-icon {
+            background: rgba(74, 144, 217, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 16px;
+            padding-bottom: 80px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* 页面切换 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .icon {
+            font-size: 20px;
+        }
+
+        /* 表单元素 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #FAFBFC;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #5BA3E8 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(74, 144, 217, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(74, 144, 217, 0.05);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+            width: auto;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #9AE52E 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* 按钮组 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* 问题列表 */
+        .question-item {
+            background: #FAFBFC;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .question-item:hover {
+            background: rgba(74, 144, 217, 0.08);
+            transform: translateX(4px);
+        }
+
+        .question-item.checked {
+            background: rgba(126, 211, 33, 0.1);
+        }
+
+        .question-item.checked .question-text {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        .question-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .question-item.checked .question-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .question-text {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* 标签 */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .tag-grade {
+            background: rgba(74, 144, 217, 0.1);
+            color: var(--primary);
+        }
+
+        .tag-subject {
+            background: rgba(245, 166, 35, 0.1);
+            color: var(--secondary);
+        }
+
+        /* 话术卡片 */
+        .script-card {
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .script-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            font-size: 120px;
+            opacity: 0.1;
+        }
+
+        .script-category {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .script-content {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .script-tips {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        /* 模板卡片 */
+        .template-card {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .template-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .template-card.selected {
+            border-color: var(--primary);
+            background: rgba(74, 144, 217, 0.05);
+        }
+
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .template-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .template-category {
+            font-size: 11px;
+            color: var(--text-light);
+            background: var(--bg);
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        /* 记录卡片 */
+        .record-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .record-date {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .record-emotion {
+            font-size: 20px;
+        }
+
+        .record-content {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .record-category {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-top: 10px;
+            background: rgba(74, 144, 217, 0.1);
+            color: var(--primary);
+        }
+
+        .record-actions {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .record-action {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .record-action:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        /* 提醒卡片 */
+        .reminder-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .reminder-date {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, #5BA3E8 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .reminder-day {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .reminder-month {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+
+        .reminder-content {
+            flex: 1;
+        }
+
+        .reminder-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .reminder-desc {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .reminder-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: rgba(245, 166, 35, 0.1);
+            color: var(--secondary);
+        }
+
+        .status-done {
+            background: rgba(126, 211, 33, 0.1);
+            color: var(--success);
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(51, 51, 51, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* 订阅弹窗 */
+        .vip-modal {
+            text-align: center;
+        }
+
+        .vip-header {
+            background: linear-gradient(135deg, #F5A623 0%, #FFB800 100%);
+            padding: 30px 20px;
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .vip-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .vip-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+        }
+
+        .vip-features {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .vip-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .vip-feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(245, 166, 35, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .vip-feature-text {
+            flex: 1;
+        }
+
+        .vip-feature-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .vip-feature-desc {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .vip-btn {
+            margin: 20px;
+        }
+
+        /* 模板预览 */
+        .template-preview {
+            background: #F8F9FA;
+            border-radius: 10px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* 快捷操作 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quick-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 14px 8px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        .quick-action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 复选框组 */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--primary);
+        }
+
+        .checkbox-item.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 分类标签选择 */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            border: 1px solid var(--border);
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 历史记录列表 */
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* 首页欢迎卡片 */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #667EEA 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-greeting {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .welcome-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+
+        .welcome-tips {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <h1>🎓 家长会准备</h1>
+        <p>让每次沟通更从容</p>
+    </header>
+
+    <!-- 订阅状态栏 -->
+    <div class="subscription-bar premium" id="subscriptionBar">
+        <span>⭐ 您已开通会员</span>
+        <span>有效期至：2026-02-01</span>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <section class="page active" id="page-home">
+            <div class="welcome-card">
+                <div class="welcome-greeting">您好，家长朋友</div>
+                <div class="welcome-title">准备好与老师沟通了吗？</div>
+                <div class="welcome-tips">💡 今天为您准备了5个关键问题</div>
+            </div>
+
+            <!-- 快捷操作 -->
+            <div class="quick-actions">
+                <div class="quick-action" onclick="switchPage('questions')">
+                    <div class="quick-action-icon" style="background: rgba(74,144,217,0.1)">❓</div>
+                    <span class="quick-action-label">问题清单</span>
+                </div>
+                <div class="quick-action" onclick="switchPage('records')">
+                    <div class="quick-action-icon" style="background: rgba(126,211,33,0.1)">📝</div>
+                    <span class="quick-action-label">表现记录</span>
+                </div>
+                <div class="quick-action" onclick="switchPage('scripts')">
+                    <div class="quick-action-icon" style="background: rgba(102,126,234,0.1)">💬</div>
+                    <span class="quick-action-label">沟通话术</span>
+                </div>
+                <div class="quick-action" onclick="switchPage('templates')">
+                    <div class="quick-action-icon" style="background: rgba(245,166,35,0.1)">📋</div>
+                    <span class="quick-action-label">会议模板</span>
+                </div>
+            </div>
+
+            <!-- 统计 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="statQuestions">0</div>
+                    <div class="stat-label">准备的问题</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statRecords">0</div>
+                    <div class="stat-label">表现记录</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statReminders">0</div>
+                    <div class="stat-label">待办提醒</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statScripts">8</div>
+                    <div class="stat-label">可用话术</div>
+                </div>
+            </div>
+
+            <!-- 最近提醒 -->
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">⏰</span>
+                    近期提醒
+                </div>
+                <div id="homeReminders">
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">暂无提醒，点击添加</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="switchPage('reminders')" style="margin-top: 12px;">
+                    查看全部提醒
+                </button>
+            </div>
+        </section>
+
+        <!-- 问题清单页 -->
+        <section class="page" id="page-questions">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">❓</span>
+                    生成问题清单
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">孩子年级</label>
+                    <select class="form-select" id="gradeSelect">
+                        <option value="小学一年级">小学一年级</option>
+                        <option value="小学二年级">小学二年级</option>
+                        <option value="小学三年级" selected>小学三年级</option>
+                        <option value="小学四年级">小学四年级</option>
+                        <option value="小学五年级">小学五年级</option>
+                        <option value="小学六年级">小学六年级</option>
+                        <option value="初一">初一</option>
+                        <option value="初二">初二</option>
+                        <option value="初三">初三</option>
+                        <option value="高一">高一</option>
+                        <option value="高二">高二</option>
+                        <option value="高三">高三</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">关注科目（可多选）</label>
+                    <div class="checkbox-group" id="subjectCheckboxes">
+                        <div class="checkbox-item selected" data-value="全科">全科</div>
+                        <div class="checkbox-item" data-value="语文">语文</div>
+                        <div class="checkbox-item" data-value="数学">数学</div>
+                        <div class="checkbox-item" data-value="英语">英语</div>
+                        <div class="checkbox-item" data-value="物理">物理</div>
+                        <div class="checkbox-item" data-value="化学">化学</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateQuestions()">
+                    🔄 生成问题清单
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">📋</span>
+                    问题清单
+                    <span style="font-size: 12px; color: var(--text-light); font-weight: normal; margin-left: auto;" id="questionCount">0/0</span>
+                </div>
+                <div id="questionList">
+                    <div class="empty-state">
+                        <div class="empty-icon">💡</div>
+                        <div class="empty-text">点击上方按钮生成问题清单</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="exportQuestions()" style="margin-top: 8px;">
+                📤 导出清单
+            </button>
+        </section>
+
+        <!-- 表现记录页 -->
+        <section class="page" id="page-records">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">➕</span>
+                    添加表现记录
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">记录分类</label>
+                    <select class="form-select" id="recordCategory">
+                        <option value="日常表现">日常表现</option>
+                        <option value="学习进步">学习进步</option>
+                        <option value="课堂表现">课堂表现</option>
+                        <option value="作业完成">作业完成</option>
+                        <option value="人际交往">人际交往</option>
+                        <option value="兴趣爱好">兴趣爱好</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">关联科目</label>
+                    <select class="form-select" id="recordSubject">
+                        <option value="">无</option>
+                        <option value="语文">语文</option>
+                        <option value="数学">数学</option>
+                        <option value="英语">英语</option>
+                        <option value="物理">物理</option>
+                        <option value="化学">化学</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">孩子心情</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item selected" data-emotion="happy" onclick="selectEmotion(this)">😊 开心</div>
+                        <div class="checkbox-item" data-emotion="normal" onclick="selectEmotion(this)">😐 平常</div>
+                        <div class="checkbox-item" data-emotion="sad" onclick="selectEmotion(this)">😢 难过</div>
+                        <div class="checkbox-item" data-emotion="excited" onclick="selectEmotion(this)">🤩 兴奋</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">记录内容</label>
+                    <textarea class="form-textarea" id="recordContent" placeholder="描述孩子的表现，如：今天数学考试得了95分，很开心，主动要求复习错题..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="addRecord()">
+                    💾 保存记录
+                </button>
+            </div>
+
+            <div class="category-tabs" id="recordTabs">
+                <div class="category-tab active" data-category="all">全部</div>
+                <div class="category-tab" data-category="日常表现">日常</div>
+                <div class="category-tab" data-category="学习进步">进步</div>
+                <div class="category-tab" data-category="课堂表现">课堂</div>
+            </div>
+
+            <div class="history-list" id="recordsList">
+                <div class="empty-state">
+                    <div class="empty-icon">📝</div>
+                    <div class="empty-text">暂无记录，记录孩子成长点滴</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 沟通话术页 -->
+        <section class="page" id="page-scripts">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">💬</span>
+                    生成定制话术
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">沟通场景</label>
+                    <select class="form-select" id="scriptSituation">
+                        <option value="开场白">开场白</option>
+                        <option value="学习情况">学习情况</option>
+                        <option value="行为表现">行为表现</option>
+                        <option value="寻求建议">寻求建议</option>
+                        <option value="结束语">结束语</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">沟通语气</label>
+                    <select class="form-select" id="scriptTone">
+                        <option value="礼貌">礼貌客气</option>
+                        <option value="直接">直接高效</option>
+                        <option value="关心">关心询问</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateScript()">
+                    ✨ 生成话术
+                </button>
+            </div>
+
+            <div id="generatedScript"></div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">📚</span>
+                    话术模板库
+                </div>
+            </div>
+            <div id="scriptLibrary"></div>
+        </section>
+
+        <!-- 会议模板页 -->
+        <section class="page" id="page-templates">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">📋</span>
+                    选择记录模板
+                </div>
+                <div id="templateList"></div>
+            </div>
+
+            <div id="templatePreview" style="display: none;">
+                <div class="card">
+                    <div class="card-title">
+                        <span class="icon">👁️</span>
+                        模板预览
+                    </div>
+                    <div class="template-preview" id="templateContent"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="copyTemplate()">📋 复制模板</button>
+                        <button class="btn btn-primary" onclick="fillTemplate()">✏️ 填写模板</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="customTemplate" style="display: none;">
+                <div class="card-title">
+                    <span class="icon">✏️</span>
+                    自定义填写
+                </div>
+                <textarea class="form-textarea" id="customContent" rows="15" placeholder="在上方粘贴模板内容，然后填写"></textarea>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="saveCustomTemplate()">💾 保存</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 提醒页 -->
+        <section class="page" id="page-reminders">
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">➕</span>
+                    添加提醒
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">提醒标题</label>
+                    <input type="text" class="form-input" id="reminderTitle" placeholder="如：跟进数学成绩">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">提醒内容</label>
+                    <textarea class="form-textarea" id="reminderContent" placeholder="详细说明需要跟进的事项"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">提醒日期</label>
+                    <input type="date" class="form-input" id="reminderDate">
+                </div>
+
+                <button class="btn btn-primary" onclick="addReminder()">
+                    ⏰ 添加提醒
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="icon">📅</span>
+                    提醒列表
+                </div>
+                <div id="remindersList">
+                    <div class="empty-state">
+                        <div class="empty-icon">⏰</div>
+                        <div class="empty-text">暂无提醒</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home" onclick="switchPage('home')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">首页</span>
+        </div>
+        <div class="nav-item" data-page="questions" onclick="switchPage('questions')">
+            <span class="nav-icon">❓</span>
+            <span class="nav-label">问题</span>
+        </div>
+        <div class="nav-item" data-page="records" onclick="switchPage('records')">
+            <span class="nav-icon">📝</span>
+            <span class="nav-label">记录</span>
+        </div>
+        <div class="nav-item" data-page="scripts" onclick="switchPage('scripts')">
+            <span class="nav-icon">💬</span>
+            <span class="nav-label">话术</span>
+        </div>
+        <div class="nav-item" data-page="templates" onclick="switchPage('templates')">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">模板</span>
+        </div>
+        <div class="nav-item" data-page="reminders" onclick="switchPage('reminders')">
+            <span class="nav-icon">⏰</span>
+            <span class="nav-label">提醒</span>
+        </div>
+    </nav>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 订阅弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal">
+            <div class="vip-header">
+                <div class="vip-icon">⭐</div>
+                <div class="vip-title">开通会员</div>
+                <div class="vip-price">¥9.9 <span>/月</span></div>
+            </div>
+            <div class="vip-features">
+                <div class="vip-feature-item">
+                    <div class="vip-feature-icon">💬</div>
+                    <div class="vip-feature-text">
+                        <div class="vip-feature-title">完整话术库</div>
+                        <div class="vip-feature-desc">50+精选话术，覆盖所有场景</div>
+                    </div>
+                </div>
+                <div class="vip-feature-item">
+                    <div class="vip-feature-icon">📋</div>
+                    <div class="vip-feature-text">
+                        <div class="vip-feature-title">全部模板</div>
+                        <div class="vip-feature-desc">10+专业会议记录模板</div>
+                    </div>
+                </div>
+                <div class="vip-feature-item">
+                    <div class="vip-feature-icon">📤</div>
+                    <div class="vip-feature-text">
+                        <div class="vip-feature-title">导出功能</div>
+                        <div class="vip-feature-desc">支持导出Word/PDF格式</div>
+                    </div>
+                </div>
+                <div class="vip-feature-item">
+                    <div class="vip-feature-icon">🔔</div>
+                    <div class="vip-feature-text">
+                        <div class="vip-feature-title">优先提醒</div>
+                        <div class="vip-feature-desc">提前3天推送会议提醒</div>
+                    </div>
+                </div>
+            </div>
+            <div class="vip-btn">
+                <button class="btn btn-primary" onclick="activateVip()">
+                    🔓 立即开通
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal('vipModal')" style="margin-top: 10px;">
+                    稍后再说
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://localhost:5000/api';
+        
+        // 当前状态
+        let currentEmotion = 'happy';
+        let currentQuestions = [];
+        let checkedQuestions = new Set();
+        let currentRecords = [];
+        let currentReminders = [];
+        let currentTemplates = [];
+        let currentScripts = {};
+        let selectedTemplate = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        async function initApp() {
+            // 设置默认日期
+            const today = new Date();
+            const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+            document.getElementById('reminderDate').value = nextWeek.toISOString().split('T')[0];
+
+            // 加载数据
+            await loadAllData();
+        }
+
+        async function loadAllData() {
+            // 本地存储数据演示
+            loadLocalData();
+            
+            // 更新统计
+            updateStats();
+        }
+
+        function loadLocalData() {
+            // 从localStorage加载数据
+            const records = JSON.parse(localStorage.getItem('parent_records') || '[]');
+            const reminders = JSON.parse(localStorage.getItem('parent_reminders') || '[]');
+            
+            currentRecords = records;
+            currentReminders = reminders;
+
+            renderRecords();
+            renderReminders();
+            renderHomeReminders();
+        }
+
+        function saveLocalData() {
+            localStorage.setItem('parent_records', JSON.stringify(currentRecords));
+            localStorage.setItem('parent_reminders', JSON.stringify(currentReminders));
+        }
+
+        function updateStats() {
+            document.getElementById('statQuestions').textContent = currentQuestions.length;
+            document.getElementById('statRecords').textContent = currentRecords.length;
+            document.getElementById('statReminders').textContent = currentReminders.filter(r => r.status === 'pending').length;
+        }
+
+        // 页面切换
+        function switchPage(pageName) {
+            // 更新导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.page === pageName);
+            });
+
+            // 更新页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.toggle('active', page.id === `page-${pageName}`);
+            });
+
+            // 加载页面数据
+            if (pageName === 'questions') {
+                loadScriptLibrary();
+            } else if (pageName === 'templates') {
+                loadTemplates();
+            } else if (pageName === 'scripts') {
+                loadScripts();
+            }
+        }
+
+        // Toast提示
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 模态框
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // ============ 问题清单 ============
+
+        function generateQuestions() {
+            const grade = document.getElementById('gradeSelect').value;
+            const subjects = Array.from(document.querySelectorAll('#subjectCheckboxes .checkbox-item.selected'))
+                .map(el => el.dataset.value);
+            
+            // 本地话术库
+            const allQuestions = {
+                '通用': [
+                    "孩子最近在课堂上的表现如何？",
+                    "孩子的学习态度有什么变化吗？",
+                    "孩子与同学们的相处情况怎么样？",
+                    "孩子有哪些优点值得继续保持？",
+                    "孩子在哪些方面需要改进？",
+                    "老师建议我们在家如何配合？",
+                    "孩子写作业的习惯和效率如何？",
+                    "有什么活动或比赛孩子可以参加吗？",
+                ],
+                '小学': [
+                    "孩子能跟上教学进度吗？",
+                    "孩子的注意力集中程度如何？",
+                    "孩子的书写习惯怎么样？",
+                    "孩子对哪些科目比较感兴趣？",
+                    "如何帮助孩子培养良好的学习习惯？",
+                ],
+                '初中': [
+                    "孩子的学习方法需要调整吗？",
+                    "孩子是否有偏科现象？",
+                    "孩子的自律性如何？",
+                    "青春期孩子情绪波动正常吗？",
+                    "如何帮助孩子应对学业压力？",
+                ],
+                '语文': [
+                    "孩子的作文水平如何？需要加强哪方面？",
+                    "孩子的阅读理解能力怎么样？",
+                    "需要增加哪些课外阅读？",
+                ],
+                '数学': [
+                    "孩子的计算能力如何？",
+                    "孩子对哪个数学模块比较薄弱？",
+                    "需要做哪些针对性的练习？",
+                ],
+                '英语': [
+                    "孩子的口语表达如何？",
+                    "孩子的词汇量够用吗？",
+                    "需要额外补充哪些学习资源？",
+                ],
+            };
+
+            let questions = [...allQuestions['通用']];
+            
+            if (grade.includes('小学')) {
+                questions = questions.concat(allQuestions['小学']);
+            } else if (grade.includes('初一') || grade.includes('初二') || grade.includes('初三')) {
+                questions = questions.concat(allQuestions['初中']);
+            }
+
+            subjects.forEach(subject => {
+                if (allQuestions[subject]) {
+                    questions = questions.concat(allQuestions[subject]);
+                }
+            });
+
+            // 去重
+            currentQuestions = [...new Set(questions)];
+            checkedQuestions = new Set();
+
+            renderQuestions();
+            showToast('问题清单已生成！', 'success');
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionList');
+            const countEl = document.getElementById('questionCount');
+
+            if (currentQuestions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💡</div>
+                        <div class="empty-text">点击上方按钮生成问题清单</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentQuestions.map((q, index) => `
+                <div class="question-item ${checkedQuestions.has(index) ? 'checked' : ''}" onclick="toggleQuestion(${index})">
+                    <div class="question-checkbox">
+                        ${checkedQuestions.has(index) ? '✓' : ''}
+                    </div>
+                    <div class="question-text">${q}</div>
+                </div>
+            `).join('');
+
+            countEl.textContent = `${checkedQuestions.size}/${currentQuestions.length}`;
+            updateStats();
+        }
+
+        function toggleQuestion(index) {
+            if (checkedQuestions.has(index)) {
+                checkedQuestions.delete(index);
+            } else {
+                checkedQuestions.add(index);
+            }
+            renderQuestions();
+        }
+
+        function exportQuestions() {
+            if (currentQuestions.length === 0) {
+                showToast('请先生成问题清单', 'error');
+                return;
+            }
+
+            const content = currentQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n');
+            const blob = new Blob([`家长会问题清单\n${'='.repeat(20)}\n\n${content}`], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `问题清单_${new Date().toLocaleDateString()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showToast('清单已导出！', 'success');
+        }
+
+        // ============ 表现记录 ============
+
+        function selectEmotion(el) {
+            document.querySelectorAll('[data-emotion]').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            currentEmotion = el.dataset.emotion;
+        }
+
+        function addRecord() {
+            const content = document.getElementById('recordContent').value.trim();
+            if (!content) {
+                showToast('请输入记录内容', 'error');
+                return;
+            }
+
+            const record = {
+                id: Date.now().toString(),
+                date: new Date().toLocaleDateString(),
+                category: document.getElementById('recordCategory').value,
+                subject: document.getElementById('recordSubject').value,
+                emotion: currentEmotion,
+                content: content
+            };
+
+            currentRecords.unshift(record);
+            saveLocalData();
+            renderRecords();
+            updateStats();
+
+            document.getElementById('recordContent').value = '';
+            showToast('记录已保存！', 'success');
+        }
+
+        function renderRecords(category = 'all') {
+            const container = document.getElementById('recordsList');
+            const filtered = category === 'all' 
+                ? currentRecords 
+                : currentRecords.filter(r => r.category === category);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <div class="empty-text">暂无记录</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const emotionMap = {
+                happy: '😊',
+                normal: '😐',
+                sad: '😢',
+                excited: '🤩'
+            };
+
+            container.innerHTML = filtered.map(record => `
+                <div class="record-card">
+                    <div class="record-actions">
+                        <button class="record-action" onclick="deleteRecord('${record.id}')">🗑️</button>
+                    </div>
+                    <div class="record-header">
+                        <span class="record-date">${record.date}</span>
+                        <span class="record-emotion">${emotionMap[record.emotion] || '😐'}</span>
+                    </div>
+                    <div class="record-content">${record.content}</div>
+                    <div>
+                        <span class="record-category">${record.category}</span>
+                        ${record.subject ? `<span class="record-category" style="background: rgba(245,166,35,0.1);color:var(--secondary)">${record.subject}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteRecord(id) {
+            currentRecords = currentRecords.filter(r => r.id !== id);
+            saveLocalData();
+            renderRecords();
+            updateStats();
+            showToast('记录已删除', 'info');
+        }
+
+        // 记录分类切换
+        document.getElementById('recordTabs').addEventListener('click', (e) => {
+            if (e.target.classList.contains('category-tab')) {
+                document.querySelectorAll('#recordTabs .category-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                renderRecords(e.target.dataset.category);
+            }
+        });
+
+        // ============ 话术建议 ============
+
+        function loadScripts() {
+            const scripts = {
+                '开场白': [
+                    "老师您好，我是XX的家长，想了解一下孩子最近的表现。",
+                    "老师辛苦了，请问孩子最近在学校的表现怎么样？",
+                    "您好老师，今天来想跟您聊聊孩子最近的学习情况。",
+                ],
+                '学习情况': [
+                    "您觉得孩子在哪些科目上需要加强？",
+                    "孩子上课的专注力怎么样？有没有走神的情况？",
+                    "孩子的作业完成质量如何？有没有什么问题？",
+                ],
+                '行为表现': [
+                    "孩子和同学相处得怎么样？有没有什么问题？",
+                    "孩子最近情绪如何？有没有什么异常？",
+                    "孩子在学校有没有交到好朋友？",
+                ],
+                '寻求建议': [
+                    "老师有什么建议可以帮助孩子进步吗？",
+                    "我们在家应该怎么配合学校教育？",
+                    "有没有什么学习资源或书籍推荐？",
+                ],
+                '结束语': [
+                    "谢谢老师，您辛苦了！以后有问题随时联系您。",
+                    "非常感谢您的耐心解答，我们会配合学校做好工作。",
+                    "打扰老师了，祝您工作顺利！",
+                ]
+            };
+
+            currentScripts = scripts;
+            renderScriptLibrary();
+        }
+
+        function loadScriptLibrary() {
+            loadScripts();
+        }
+
+        function renderScriptLibrary() {
+            const container = document.getElementById('scriptLibrary');
+            let html = '';
+
+            for (const [category, items] of Object.entries(currentScripts)) {
+                html += `
+                    <div class="card" style="margin-top: -10px;">
+                        <div class="card-title">
+                            <span class="icon">📂</span>
+                            ${category}
+                        </div>
+                        ${items.map(script => `
+                            <div class="script-card" style="margin: 12px 0 0 0;">
+                                <div class="script-category">${category}</div>
+                                <div class="script-content">${script}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function generateScript() {
+            const situation = document.getElementById('scriptSituation').value;
+            const tone = document.getElementById('scriptTone').value;
+
+            const templates = {
+                '开场白': `老师您好，我是孩子${tone === '礼貌' ? '的家长' : '爸爸/妈妈'}，${tone === '直接' ? '直接说' : '想了解一下'}孩子最近的表现。`,
+                '学习情况': `我想了解一下孩子最近的${tone === '关心' ? '各科' : ''}学习情况，${tone === '直接' ? '重点' : '特别是'}孩子${tone === '关心' ? '有哪些进步和不足' : '需要加强的地方'}。`,
+                '行为表现': `孩子最近在家${tone === '关心' ? '表现得很努力' : '学习态度不错'}，不知道在学校表现如何？`,
+                '寻求建议': `针对孩子现在的${tone === '直接' ? '情况' : '学习状态'}，您觉得我们在家应该怎么配合？`,
+                '结束语': `非常感谢老师的耐心解答，我们会认真${tone === '直接' ? '改进' : '配合'}。`
+            };
+
+            const container = document.getElementById('generatedScript');
+            container.innerHTML = `
+                <div class="script-card">
+                    <div class="script-category">${situation} - ${tone}风格</div>
+                    <div class="script-content">${templates[situation]}</div>
+                    <div class="script-tips">
+                        💡 使用建议：保持自然流畅，根据实际情况适当调整
+                    </div>
+                </div>
+            `;
+
+            showToast('话术已生成！', 'success');
+        }
+
+        // ============ 会议模板 ============
+
+        function loadTemplates() {
+            currentTemplates = [
+                {
+                    id: 'basic',
+                    name: '基础记录模板',
+                    category: '通用',
+                    content: `【家长会记录】
+日期：____年__月__日
+参会人：__________
+孩子姓名：__________
+
+一、学习情况
+- 总体评价：__________
+- 需要加强：__________
+- 老师建议：__________
+
+二、行为表现
+- 课堂表现：__________
+- 同学关系：__________
+- 其他备注：__________
+
+三、家庭配合
+- 需要改进：__________
+- 行动计划：__________
+
+四、下次跟进
+- 时间：__________
+- 目标：__________`
+                },
+                {
+                    id: 'problem',
+                    name: '问题跟进模板',
+                    category: '问题解决',
+                    content: `【问题跟进记录】
+日期：____年__月__日
+主要问题：__________
+
+问题描述：
+__________
+
+老师反馈：
+__________
+
+解决方案：
+1. __________
+2. __________
+3. __________
+
+执行时间：__________
+效果评估：__________`
+                },
+                {
+                    id: 'progress',
+                    name: '成长追踪模板',
+                    category: '成长记录',
+                    content: `【成长进步记录】
+记录日期：__________
+
+本次亮点：
+□ 课堂发言积极
+□ 作业完成度高
+□ 与同学相处融洽
+□ 考试成绩进步
+□ 其他：__________
+
+具体事例：
+__________
+
+继续保持：
+1. __________
+2. __________
+
+需要改进：
+1. __________
+2. __________
+
+家长感悟：
+__________`
+                }
+            ];
+
+            renderTemplates();
+        }
+
+        function renderTemplates() {
+            const container = document.getElementById('templateList');
+            container.innerHTML = currentTemplates.map(t => `
+                <div class="template-card ${selectedTemplate?.id === t.id ? 'selected' : ''}" onclick="selectTemplate('${t.id}')">
+                    <div class="template-header">
+                        <span class="template-name">${t.name}</span>
+                        <span class="template-category">${t.category}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectTemplate(id) {
+            selectedTemplate = currentTemplates.find(t => t.id === id);
+            document.getElementById('templatePreview').style.display = 'block';
+            document.getElementById('templateContent').textContent = selectedTemplate.content;
+            document.getElementById('customTemplate').style.display = 'block';
+            document.getElementById('customContent').value = selectedTemplate.content;
+            renderTemplates();
+        }
+
+        function copyTemplate() {
+            if (!selectedTemplate) return;
+            navigator.clipboard.writeText(selectedTemplate.content);
+            showToast('模板已复制到剪贴板！', 'success');
+        }
+
+        function fillTemplate() {
+            if (!selectedTemplate) return;
+            document.getElementById('customContent').focus();
+        }
+
+        function saveCustomTemplate() {
+            const content = document.getElementById('customContent').value;
+            if (content) {
+                navigator.clipboard.writeText(content);
+                showToast('模板已保存并复制！', 'success');
+            }
+        }
+
+        // ============ 提醒 ============
+
+        function addReminder() {
+            const title = document.getElementById('reminderTitle').value.trim();
+            const content = document.getElementById('reminderContent').value.trim();
+            const date = document.getElementById('reminderDate').value;
+
+            if (!title) {
+                showToast('请输入提醒标题', 'error');
+                return;
+            }
+
+            const reminder = {
+                id: Date.now().toString(),
+                title,
+                content,
+                remind_date: date,
+                status: 'pending',
+                created_at: new Date().toISOString()
+            };
+
+            currentReminders.push(reminder);
+            saveLocalData();
+            renderReminders();
+            renderHomeReminders();
+            updateStats();
+
+            document.getElementById('reminderTitle').value = '';
+            document.getElementById('reminderContent').value = '';
+
+            showToast('提醒已添加！', 'success');
+        }
+
+        function renderReminders() {
+            const container = document.getElementById('remindersList');
+            
+            if (currentReminders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⏰</div>
+                        <div class="empty-text">暂无提醒</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentReminders
+                .sort((a, b) => new Date(a.remind_date) - new Date(b.remind_date))
+                .map(reminder => {
+                    const date = new Date(reminder.remind_date);
+                    const day = date.getDate();
+                    const month = (date.getMonth() + 1) + '月';
+                    return `
+                        <div class="reminder-card">
+                            <div class="reminder-date">
+                                <span class="reminder-day">${day}</span>
+                                <span class="reminder-month">${month}</span>
+                            </div>
+                            <div class="reminder-content">
+                                <div class="reminder-title">${reminder.title}</div>
+                                <div class="reminder-desc">${reminder.content || '无详细说明'}</div>
+                            </div>
+                            <span class="reminder-status ${reminder.status === 'done' ? 'status-done' : 'status-pending'}" 
+                                  onclick="toggleReminderStatus('${reminder.id}')">
+                                ${reminder.status === 'done' ? '已完成' : '待办'}
+                            </span>
+                            <button class="record-action" onclick="deleteReminder('${reminder.id}')" style="margin-left: 8px;">🗑️</button>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        function renderHomeReminders() {
+            const container = document.getElementById('homeReminders');
+            const pending = currentReminders.filter(r => r.status === 'pending').slice(0, 3);
+
+            if (pending.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 30px;">
+                        <div class="empty-icon">📭</div>
+                        <div class="empty-text">暂无待办提醒</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = pending.map(reminder => `
+                <div class="reminder-card" style="margin-bottom: 10px;">
+                    <div class="reminder-date" style="width: 40px; height: 40px;">
+                        <span class="reminder-day" style="font-size: 14px;">${new Date(reminder.remind_date).getDate()}</span>
+                        <span class="reminder-month" style="font-size: 9px;">${(new Date(reminder.remind_date).getMonth() + 1)}月</span>
+                    </div>
+                    <div class="reminder-content">
+                        <div class="reminder-title" style="font-size: 14px;">${reminder.title}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleReminderStatus(id) {
+            const reminder = currentReminders.find(r => r.id === id);
+            if (reminder) {
+                reminder.status = reminder.status === 'done' ? 'pending' : 'done';
+                saveLocalData();
+                renderReminders();
+                renderHomeReminders();
+                updateStats();
+            }
+        }
+
+        function deleteReminder(id) {
+            currentReminders = currentReminders.filter(r => r.id !== id);
+            saveLocalData();
+            renderReminders();
+            renderHomeReminders();
+            updateStats();
+            showToast('提醒已删除', 'info');
+        }
+
+        // ============ VIP功能 ============
+
+        function activateVip() {
+            // 模拟激活
+            closeModal('vipModal');
+            document.getElementById('subscriptionBar').classList.add('premium');
+            document.getElementById('subscriptionBar').innerHTML = `
+                <span>⭐ 您已开通会员</span>
+                <span>有效期至：${new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}</span>
+            `;
+            showToast('恭喜！会员已开通', 'success');
+        }
+
+        // ============ 科目多选 ============
+
+        document.getElementById('subjectCheckboxes').addEventListener('click', (e) => {
+            const item = e.target.closest('.checkbox-item');
+            if (!item) return;
+
+            const value = item.dataset.value;
+            
+            if (value === '全科') {
+                // 全科互斥其他
+                document.querySelectorAll('#subjectCheckboxes .checkbox-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+            } else {
+                // 取消全科
+                document.querySelector('#subjectCheckboxes .checkbox-item[data-value="全科"]').classList.remove('selected');
+                item.classList.toggle('selected');
+                
+                // 如果都没选，自动选全科
+                const selected = document.querySelectorAll('#subjectCheckboxes .checkbox-item.selected');
+                if (selected.length === 0) {
+                    document.querySelector('#subjectCheckboxes .checkbox-item[data-value="全科"]').classList.add('selected');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

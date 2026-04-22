@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🏠 家庭账本 - 轻松管理家庭财务</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A90D9;
+            --secondary: #E91E63;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --bg-primary: #F5F7FA;
+            --bg-card: #FFFFFF;
+            --text-primary: #1A1A2E;
+            --text-secondary: #666666;
+            --border: #E8ECF0;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --radius: 16px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #6B60D9);
+            color: white;
+            padding: 20px;
+            padding-top: env(safe-area-inset-top, 20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subscription-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .subscription-badge.active {
+            background: var(--success);
+        }
+
+        /* 预算概览卡片 */
+        .budget-overview {
+            background: rgba(255,255,255,0.15);
+            border-radius: var(--radius);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .budget-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .budget-amount {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .budget-progress {
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .budget-progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .budget-detail {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 16px;
+            max-width: 100%;
+        }
+
+        /* 快捷操作 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .quick-action {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        .quick-action:active {
+            transform: scale(0.98);
+        }
+
+        .quick-action-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Tab 导航 */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 4px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .tab-item.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* 卡片通用样式 */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-more {
+            font-size: 13px;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* 家庭成员 */
+        .member-list {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .member-card {
+            min-width: 100px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .member-avatar {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .member-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .member-expense {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .member-role {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* 分类统计 */
+        .category-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .category-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .category-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .category-bar-container {
+            height: 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .category-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .category-amount {
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        /* 账单列表 */
+        .bill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bill-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+        }
+
+        .bill-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .bill-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bill-desc {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bill-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .bill-amount {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .bill-member {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        /* 提醒列表 */
+        .reminder-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .reminder-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border-left: 4px solid var(--warning);
+        }
+
+        .reminder-item.paid {
+            border-left-color: var(--success);
+            opacity: 0.7;
+        }
+
+        .reminder-info {
+            flex: 1;
+        }
+
+        .reminder-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .reminder-due {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .reminder-amount {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .reminder-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 12px;
+            transition: all 0.3s;
+        }
+
+        .reminder-status.paid {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        /* 报告页面 */
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .report-stat {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .report-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .report-stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .insight-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .insight-message {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* 底部按钮 */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #6B60D9);
+            color: white;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(74, 144, 217, 0.4);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            z-index: 99;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(74, 144, 217, 0.5);
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 表单元素 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #6B60D9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(74, 144, 217, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+            width: auto;
+        }
+
+        /* 订阅卡片 */
+        .subscription-card {
+            background: linear-gradient(135deg, var(--primary), #6B60D9);
+            color: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .subscription-card h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .subscription-price {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subscription-price span {
+            font-size: 16px;
+        }
+
+        .subscription-features {
+            list-style: none;
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .subscription-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subscription-features li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--text-primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 20px 0;
+            gap: 8px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: var(--primary);
+            border-radius: 6px 6px 0 0;
+            min-height: 10px;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+
+        .chart-bar::after {
+            content: attr(data-label);
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        /* 隐藏内容 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 360px) {
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .report-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 导出按钮 */
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--success);
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        .export-btn.disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <h1>🏠 家庭账本</h1>
+            <div class="subscription-badge" id="subscriptionBadge" onclick="showSubscription()">
+                月卡 ¥12
+            </div>
+        </div>
+        <div class="budget-overview">
+            <div class="budget-header">
+                <span class="budget-label">本月支出</span>
+                <span class="budget-amount" id="totalExpense">¥0.00</span>
+            </div>
+            <div class="budget-progress">
+                <div class="budget-progress-bar" id="budgetProgress" style="width: 0%"></div>
+            </div>
+            <div class="budget-detail">
+                <span>预算: ¥<span id="totalBudget">15000</span></span>
+                <span>剩余: ¥<span id="remainingBudget">0</span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- 快捷操作 -->
+        <div class="quick-actions">
+            <div class="quick-action" onclick="switchTab('bills'); showAddBillModal()">
+                <div class="quick-action-icon">💰</div>
+                <div class="quick-action-label">记一笔</div>
+            </div>
+            <div class="quick-action" onclick="switchTab('members')">
+                <div class="quick-action-icon">👨‍👩‍👧</div>
+                <div class="quick-action-label">家庭成员</div>
+            </div>
+            <div class="quick-action" onclick="switchTab('reminders')">
+                <div class="quick-action-icon">⏰</div>
+                <div class="quick-action-label">账单提醒</div>
+            </div>
+            <div class="quick-action" onclick="switchTab('report')">
+                <div class="quick-action-icon">📊</div>
+                <div class="quick-action-label">财务报告</div>
+            </div>
+        </div>
+
+        <!-- Tab: 账单 -->
+        <div id="tab-bills" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📈 支出分类</div>
+                    <span class="card-more" onclick="switchTab('report')">查看详情</span>
+                </div>
+                <div class="category-chart" id="categoryChart"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📋 最近账单</div>
+                    <span class="card-more" onclick="loadMoreBills()">加载更多</span>
+                </div>
+                <div class="bill-list" id="billList"></div>
+            </div>
+        </div>
+
+        <!-- Tab: 成员 -->
+        <div id="tab-members" class="tab-content hidden">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">👨‍👩‍👧 家庭成员</div>
+                    <span class="card-more" id="addMemberBtn" onclick="showAddMemberModal()">+ 添加</span>
+                </div>
+                <div class="member-list" id="memberList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📅 7日消费趋势</div>
+                </div>
+                <div class="chart-container" id="trendChart"></div>
+            </div>
+        </div>
+
+        <!-- Tab: 提醒 -->
+        <div id="tab-reminders" class="tab-content hidden">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">⏰ 待办提醒</div>
+                    <span class="card-more" onclick="showAddReminderModal()">+ 添加</span>
+                </div>
+                <div class="reminder-list" id="reminderList"></div>
+            </div>
+        </div>
+
+        <!-- Tab: 报告 -->
+        <div id="tab-report" class="tab-content hidden">
+            <div id="reportContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>加载报告中...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部添加按钮 -->
+    <div class="fab" onclick="showAddBillModal()">+</div>
+
+    <!-- Toast 提示 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 添加账单模态框 -->
+    <div class="modal-overlay" id="addBillModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">💰 记一笔</span>
+                <span class="modal-close" onclick="closeModal('addBillModal')">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">金额</label>
+                    <input type="number" class="form-input" id="billAmount" placeholder="输入金额" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类</label>
+                    <select class="form-select" id="billCategory"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">成员</label>
+                    <select class="form-select" id="billMember"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">说明</label>
+                    <input type="text" class="form-input" id="billDesc" placeholder="简单描述这笔支出">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">日期</label>
+                    <input type="date" class="form-input" id="billDate">
+                </div>
+                <button class="btn btn-primary" onclick="submitBill()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加成员模态框 -->
+    <div class="modal-overlay" id="addMemberModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">👨‍👩‍👧 添加成员</span>
+                <span class="modal-close" onclick="closeModal('addMemberModal')">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">头像</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <span class="avatar-option" data-avatar="👨" onclick="selectAvatar(this)">👨</span>
+                        <span class="avatar-option" data-avatar="👩" onclick="selectAvatar(this)">👩</span>
+                        <span class="avatar-option" data-avatar="👦" onclick="selectAvatar(this)">👦</span>
+                        <span class="avatar-option" data-avatar="👧" onclick="selectAvatar(this)">👧</span>
+                        <span class="avatar-option" data-avatar="👴" onclick="selectAvatar(this)">👴</span>
+                        <span class="avatar-option" data-avatar="👵" onclick="selectAvatar(this)">👵</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">姓名</label>
+                    <input type="text" class="form-input" id="memberName" placeholder="成员姓名">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">角色</label>
+                    <select class="form-select" id="memberRole">
+                        <option value="户主">户主</option>
+                        <option value="财务主管">财务主管</option>
+                        <option value="成员">成员</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">月度预算</label>
+                    <input type="number" class="form-input" id="memberBudget" placeholder="设置月度消费额度">
+                </div>
+                <button class="btn btn-primary" onclick="submitMember()">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加提醒模态框 -->
+    <div class="modal-overlay" id="addReminderModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">⏰ 添加提醒</span>
+                <span class="modal-close" onclick="closeModal('addReminderModal')">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">标题</label>
+                    <input type="text" class="form-input" id="reminderTitle" placeholder="如：信用卡还款">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">金额</label>
+                    <input type="number" class="form-input" id="reminderAmount" placeholder="金额">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">到期日期</label>
+                    <input type="date" class="form-input" id="reminderDate">
+                </div>
+                <button class="btn btn-primary" onclick="submitReminder()">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订阅模态框 -->
+    <div class="modal-overlay" id="subscriptionModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">💎 开通月卡</span>
+                <span class="modal-close" onclick="closeModal('subscriptionModal')">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="subscription-card">
+                    <h3>🏠 家庭账本月卡</h3>
+                    <div class="subscription-price">¥12<span>/月</span></div>
+                    <p>解锁全部高级功能</p>
+                </div>
+                <ul class="subscription-features">
+                    <li>多家庭成员账户管理</li>
+                    <li>月度财务报告导出</li>
+                    <li>无限账单提醒</li>
+                    <li>自定义预算配置</li>
+                    <li>专属数据分析</li>
+                </ul>
+                <button class="btn btn-primary" onclick="activateSubscription()">立即开通</button>
+                <p style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-secondary);">
+                    当前已有 1,085+ 家庭正在使用
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let state = {
+            subscription: { is_active: false },
+            members: [],
+            categories: [],
+            bills: [],
+            reminders: [],
+            statistics: null,
+            selectedAvatar: '👨',
+            billOffset: 0
+        };
+
+        const API_BASE = '/api';
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            await Promise.all([
+                loadSubscription(),
+                loadMembers(),
+                loadCategories(),
+                loadBills(),
+                loadReminders(),
+                loadStatistics()
+            ]);
+            renderUI();
+        });
+
+        // ==================== API 调用 ====================
+        async function loadSubscription() {
+            try {
+                const res = await fetch(`${API_BASE}/subscription/status`);
+                const data = await res.json();
+                state.subscription = data.data;
+            } catch (e) {
+                console.error('加载订阅状态失败', e);
+            }
+        }
+
+        async function loadMembers() {
+            try {
+                const res = await fetch(`${API_BASE}/members`);
+                const data = await res.json();
+                state.members = data.data;
+            } catch (e) {
+                console.error('加载成员失败', e);
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${API_BASE}/categories`);
+                const data = await res.json();
+                state.categories = data.data;
+            } catch (e) {
+                console.error('加载分类失败', e);
+            }
+        }
+
+        async function loadBills() {
+            try {
+                const res = await fetch(`${API_BASE}/bills?limit=20`);
+                const data = await res.json();
+                state.bills = data.data;
+                state.billOffset = data.data.length;
+            } catch (e) {
+                console.error('加载账单失败', e);
+            }
+        }
+
+        async function loadMoreBills() {
+            try {
+                const res = await fetch(`${API_BASE}/bills?limit=20&offset=${state.billOffset}`);
+                const data = await res.json();
+                state.bills = [...state.bills, ...data.data];
+                state.billOffset += data.data.length;
+                renderBillList();
+            } catch (e) {
+                console.error('加载更多账单失败', e);
+            }
+        }
+
+        async function loadReminders() {
+            try {
+                const res = await fetch(`${API_BASE}/reminders`);
+                const data = await res.json();
+                state.reminders = data.data;
+            } catch (e) {
+                console.error('加载提醒失败', e);
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                const res = await fetch(`${API_BASE}/statistics`);
+                const data = await res.json();
+                state.statistics = data.data;
+            } catch (e) {
+                console.error('加载统计失败', e);
+            }
+        }
+
+        async function loadReport() {
+            const reportContent = document.getElementById('reportContent');
+            
+            if (!state.subscription.is_active) {
+                reportContent.innerHTML = `
+                    <div class="card">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <p class="empty-state-text">开通月卡解锁完整财务报告</p>
+                            <button class="btn btn-primary" style="margin-top: 20px; width: auto; display: inline-block;" onclick="showSubscription()">
+                                开通月卡 ¥12
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/report/monthly`);
+                const data = await res.json();
+                renderReport(data.data);
+            } catch (e) {
+                console.error('加载报告失败', e);
+                reportContent.innerHTML = '<div class="card"><div class="empty-state"><p>加载失败，请重试</p></div></div>';
+            }
+        }
+
+        // ==================== 渲染函数 ====================
+        function renderUI() {
+            renderSubscriptionBadge();
+            renderOverview();
+            renderCategoryChart();
+            renderBillList();
+            renderMemberList();
+            renderTrendChart();
+            renderReminderList();
+            initFormOptions();
+        }
+
+        function renderSubscriptionBadge() {
+            const badge = document.getElementById('subscriptionBadge');
+            if (state.subscription.is_active) {
+                badge.classList.add('active');
+                badge.textContent = '✓ 已开通';
+            } else {
+                badge.classList.remove('active');
+                badge.textContent = '月卡 ¥12';
+            }
+        }
+
+        function renderOverview() {
+            if (!state.statistics) return;
+            
+            const { total_expense, budget_used_percent, remaining_budget } = state.statistics;
+            document.getElementById('totalExpense').textContent = `¥${total_expense.toFixed(2)}`;
+            document.getElementById('budgetProgress').style.width = `${Math.min(budget_used_percent, 100)}%`;
+            document.getElementById('totalBudget').textContent = '15000';
+            document.getElementById('remainingBudget').textContent = remaining_budget.toFixed(2);
+        }
+
+        function renderCategoryChart() {
+            const container = document.getElementById('categoryChart');
+            if (!state.statistics || !state.statistics.by_category) {
+                container.innerHTML = '<div class="empty-state"><p>暂无数据</p></div>';
+                return;
+            }
+
+            const categories = state.statistics.by_category.slice(0, 6);
+            const maxAmount = Math.max(...categories.map(c => c.amount), 1);
+
+            container.innerHTML = categories.map(cat => `
+                <div class="category-item">
+                    <div class="category-icon" style="background: ${cat.category_color}20; color: ${cat.category_color}">
+                        ${cat.category_icon}
+                    </div>
+                    <div class="category-info">
+                        <div class="category-name">${cat.category_name}</div>
+                        <div class="category-bar-container">
+                            <div class="category-bar" style="width: ${(cat.amount / maxAmount) * 100}%; background: ${cat.category_color}"></div>
+                        </div>
+                    </div>
+                    <div class="category-amount">¥${cat.amount.toFixed(0)}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderBillList() {
+            const container = document.getElementById('billList');
+            
+            if (state.bills.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><p class="empty-state-text">暂无账单记录</p></div>';
+                return;
+            }
+
+            container.innerHTML = state.bills.map(bill => `
+                <div class="bill-item" onclick="deleteBill('${bill.id}')">
+                    <div class="bill-icon" style="background: ${bill.category_color}20">
+                        ${bill.category_icon}
+                    </div>
+                    <div class="bill-info">
+                        <div class="bill-desc">${bill.description}</div>
+                        <div class="bill-meta">${bill.date} · ${bill.category_name}</div>
+                    </div>
+                    <div>
+                        <div class="bill-amount">-¥${bill.amount.toFixed(2)}</div>
+                        <div class="bill-member">${bill.member_name}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMemberList() {
+            const container = document.getElementById('memberList');
+            const addBtn = document.getElementById('addMemberBtn');
+            
+            // 非订阅用户限制添加成员
+            if (!state.subscription.is_active && state.members.length >= 3) {
+                addBtn.textContent = '开通月卡添加';
+                addBtn.onclick = showSubscription;
+            } else {
+                addBtn.textContent = '+ 添加';
+                addBtn.onclick = showAddMemberModal;
+            }
+
+            const memberStats = state.statistics?.by_member || [];
+            
+            container.innerHTML = state.members.map(member => {
+                const stats = memberStats.find(s => s.member_id === member.id);
+                const expense = stats ? stats.amount : 0;
+                return `
+                    <div class="member-card">
+                        <div class="member-avatar">${member.avatar}</div>
+                        <div class="member-name">${member.name}</div>
+                        <div class="member-role">${member.role}</div>
+                        <div class="member-expense">¥${expense.toFixed(0)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderTrendChart() {
+            const container = document.getElementById('trendChart');
+            if (!state.statistics || !state.statistics.daily_stats) return;
+
+            const maxAmount = Math.max(...state.statistics.daily_stats.map(d => d.amount), 1);
+            
+            container.innerHTML = state.statistics.daily_stats.map(day => `
+                <div class="chart-bar" style="height: ${(day.amount / maxAmount) * 150}px" data-label="${day.day_name}"></div>
+            `).join('');
+        }
+
+        function renderReminderList() {
+            const container = document.getElementById('reminderList');
+            
+            if (state.reminders.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏰</div><p class="empty-state-text">暂无账单提醒</p></div>';
+                return;
+            }
+
+            container.innerHTML = state.reminders.map(reminder => `
+                <div class="reminder-item ${reminder.is_paid ? 'paid' : ''}">
+                    <div class="reminder-info">
+                        <div class="reminder-title">${reminder.title}</div>
+                        <div class="reminder-due">${reminder.is_paid ? '✓ 已完成' : `到期: ${reminder.due_date}`}</div>
+                    </div>
+                    <div class="reminder-amount">¥${reminder.amount.toFixed(0)}</div>
+                    <div class="reminder-status ${reminder.is_paid ? 'paid' : ''}" onclick="toggleReminder('${reminder.id}')">
+                        ${reminder.is_paid ? '✓' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderReport(report) {
+            const container = document.getElementById('reportContent');
+            
+            const topCategory = report.summary.top_category;
+            const topMember = report.summary.top_member;
+            
+            container.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">📊 ${report.period} 财务报告</div>
+                    </div>
+                    <div class="report-summary">
+                        <div class="report-stat">
+                            <div class="report-stat-value" style="color: var(--danger)">¥${report.summary.total_expense.toFixed(2)}</div>
+                            <div class="report-stat-label">总支出</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="report-stat-value" style="color: var(--success)">¥${report.summary.total_budget.toFixed(0)}</div>
+                            <div class="report-stat-label">预算总额</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="report-stat-value" style="color: var(--primary)">${report.summary.budget_usage}%</div>
+                            <div class="report-stat-label">预算使用</div>
+                        </div>
+                        <div class="report-stat">
+                            <div class="report-stat-value">${report.member_breakdown?.length || 0}人</div>
+                            <div class="report-stat-label">消费成员</div>
+                        </div>
+                    </div>
+                    ${topCategory ? `
+                        <div style="margin-bottom: 16px; padding: 12px; background: var(--bg-primary); border-radius: 12px;">
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">支出最多分类</div>
+                            <div style="font-size: 16px; font-weight: 600;">${topCategory.category_icon} ${topCategory.category_name} ¥${topCategory.amount.toFixed(2)}</div>
+                        </div>
+                    ` : ''}
+                    ${topMember ? `
+                        <div style="margin-bottom: 16px; padding: 12px; background: var(--bg-primary); border-radius: 12px;">
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">消费最多成员</div>
+                            <div style="font-size: 16px; font-weight: 600;">${topMember.member_avatar} ${topMember.member_name} ¥${topMember.amount.toFixed(2)}</div>
+                        </div>
+                    ` : ''}
+                    <div class="export-btn" onclick="exportReport()">
+                        📥 导出报告
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">💡 财务洞察</div>
+                    </div>
+                    ${report.insights.map(insight => `
+                        <div class="insight-item">
+                            <div class="insight-icon">
+                                ${insight.type === 'warning' ? '⚠️' : insight.type === 'success' ? '🎉' : '💡'}
+                            </div>
+                            <div class="insight-message">${insight.message}</div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">📈 分类明细</div>
+                    </div>
+                    <div class="category-chart">
+                        ${report.category_breakdown.map(cat => `
+                            <div class="category-item">
+                                <div class="category-icon" style="background: ${cat.category_color}20; color: ${cat.category_color}">
+                                    ${cat.category_icon}
+                                </div>
+                                <div class="category-info">
+                                    <div class="category-name">${cat.category_name}</div>
+                                    <div class="category-bar-container">
+                                        <div class="category-bar" style="width: ${(cat.amount / cat.budget) * 100}%; background: ${cat.category_color}"></div>
+                                    </div>
+                                </div>
+                                <div class="category-amount">¥${cat.amount.toFixed(0)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">👥 成员明细</div>
+                    </div>
+                    <div class="member-list" style="overflow-x: auto;">
+                        ${report.member_breakdown.map(mem => `
+                            <div class="member-card">
+                                <div class="member-avatar">${mem.member_avatar}</div>
+                                <div class="member-name">${mem.member_name}</div>
+                                <div class="member-expense">¥${mem.amount.toFixed(0)}</div>
+                                <div class="member-role">${mem.count} 笔消费</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== 表单初始化 ====================
+        function initFormOptions() {
+            // 账单分类
+            const categorySelect = document.getElementById('billCategory');
+            categorySelect.innerHTML = state.categories.map(cat => 
+                `<option value="${cat.id}">${cat.icon} ${cat.name}</option>`
+            ).join('');
+
+            // 账单成员
+            const memberSelect = document.getElementById('billMember');
+            memberSelect.innerHTML = state.members.map(mem => 
+                `<option value="${mem.id}">${mem.avatar} ${mem.name}</option>`
+            ).join('');
+
+            // 默认日期
+            document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('reminderDate').value = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        }
+
+        // ==================== Tab 切换 ====================
+        function switchTab(tabName) {
+            // 隐藏所有 tab
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+
+            // 显示目标 tab
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+            }
+
+            // 更新 tab 导航状态
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeItem = document.querySelector(`.tab-item[data-tab="${tabName}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+
+            // 如果切换到报告，加载报告数据
+            if (tabName === 'report') {
+                loadReport();
+            }
+        }
+
+        // ==================== 模态框 ====================
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function showAddBillModal() {
+            showModal('addBillModal');
+        }
+
+        function showAddMemberModal() {
+            if (!state.subscription.is_active && state.members.length >= 3) {
+                showToast('开通月卡解锁更多成员', 'warning');
+                showSubscription();
+                return;
+            }
+            showModal('addMemberModal');
+        }
+
+        function showAddReminderModal() {
+            showModal('addReminderModal');
+        }
+
+        function showSubscription() {
+            showModal('subscriptionModal');
+        }
+
+        // ==================== 表单提交 ====================
+        async function submitBill() {
+            const amount = document.getElementById('billAmount').value;
+            const category = document.getElementById('billCategory').value;
+            const member = document.getElementById('billMember').value;
+            const desc = document.getElementById('billDesc').value;
+            const date = document.getElementById('billDate').value;
+
+            if (!amount || parseFloat(amount) <= 0) {
+                showToast('请输入有效金额', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/bills`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: parseFloat(amount), category_id: category, member_id: member, description: desc, date })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('记账成功', 'success');
+                    closeModal('addBillModal');
+                    await Promise.all([loadBills(), loadStatistics()]);
+                    renderUI();
+                    // 清空表单
+                    document.getElementById('billAmount').value = '';
+                    document.getElementById('billDesc').value = '';
+                } else {
+                    showToast(data.error || '保存失败', 'error');
+                }
+            } catch (e) {
+                showToast('网络错误', 'error');
+            }
+        }
+
+        async function submitMember() {
+            const name = document.getElementById('memberName').value;
+            const role = document.getElementById('memberRole').value;
+            const budget = document.getElementById('memberBudget').value;
+
+            if (!name) {
+                showToast('请输入姓名', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/members`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name, 
+                        role, 
+                        avatar: state.selectedAvatar,
+                        monthly_budget: parseFloat(budget) || 1000 
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('添加成功', 'success');
+                    closeModal('addMemberModal');
+                    await Promise.all([loadMembers(), loadStatistics()]);
+                    renderUI();
+                    // 清空表单
+                    document.getElementById('memberName').value = '';
+                    document.getElementById('memberBudget').value = '';
+                } else if (data.code === 'SUBSCRIPTION_REQUIRED') {
+                    showToast('需要开通月卡', 'warning');
+                    closeModal('addMemberModal');
+                    showSubscription();
+                } else {
+                    showToast(data.error || '保存失败', 'error');
+                }
+            } catch (e) {
+                showToast('网络错误', 'error');
+            }
+        }
+
+        async function submitReminder() {
+            const title = document.getElementById('reminderTitle').value;
+            const amount = document.getElementById('reminderAmount').value;
+            const date = document.getElementById('reminderDate').value;
+
+            if (!title || !amount) {
+                showToast('请填写完整信息', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/reminders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, amount: parseFloat(amount), due_date: date })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('提醒添加成功', 'success');
+                    closeModal('addReminderModal');
+                    await loadReminders();
+                    renderReminderList();
+                    // 清空表单
+                    document.getElementById('reminderTitle').value = '';
+                    document.getElementById('reminderAmount').value = '';
+                } else {
+                    showToast(data.error || '保存失败', 'error');
+                }
+            } catch (e) {
+                showToast('网络错误', 'error');
+            }
+        }
+
+        async function activateSubscription() {
+            try {
+                const res = await fetch(`${API_BASE}/subscription/activate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('订阅成功，欢迎使用！', 'success');
+                    state.subscription = data.data;
+                    closeModal('subscriptionModal');
+                    renderSubscriptionBadge();
+                    renderMemberList();
+                } else {
+                    showToast(data.error || '订阅失败', 'error');
+                }
+            } catch (e) {
+                showToast('网络错误', 'error');
+            }
+        }
+
+        // ==================== 操作函数 ====================
+        async function deleteBill(billId) {
+            if (!confirm('确定删除这条账单？')) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/bills/${billId}`, { method: 'DELETE' });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('删除成功', 'success');
+                    await Promise.all([loadBills(), loadStatistics()]);
+                    renderUI();
+                } else {
+                    showToast(data.error || '删除失败', 'error');
+                }
+            } catch (e) {
+                showToast('网络错误', 'error');
+            }
+        }
+
+        async function toggleReminder(reminderId) {
+            const reminder = state.reminders.find(r => r.id === reminderId);
+            if (!reminder) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/reminders/${reminderId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ is_paid: !reminder.is_paid })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast(reminder.is_paid ? '已取消完成' : '已标记完成', 'success');
+                    await loadReminders();
+                    renderReminderList();
+                } else {
+                    showToast(data.error || '更新失败', 'error');
+                }
+            } catch (e) {
+                showToast('网络错误', 'error');
+            }
+        }
+
+        function selectAvatar(el) {
+            document.querySelectorAll('.avatar-option').forEach(opt => {
+                opt.style.background = '';
+                opt.style.border = '';
+            });
+            el.style.background = 'var(--primary)';
+            el.style.border = '2px solid var(--primary)';
+            el.style.borderRadius = '50%';
+            state.selectedAvatar = el.dataset.avatar;
+        }
+
+        function exportReport() {
+            if (!state.subscription.is_active) {
+                showToast('开通月卡后即可导出报告', 'warning');
+                showSubscription();
+                return;
+            }
+            
+            showToast('报告已生成，请稍后在邮箱查收', 'success');
+        }
+
+        // ==================== 工具函数 ====================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 初始化头像选择
+        document.querySelectorAll('.avatar-option').forEach(opt => {
+            opt.style.cursor = 'pointer';
+            opt.style.padding = '10px';
+            opt.style.fontSize = '24px';
+        });
+        selectAvatar(document.querySelector('.avatar-option'));
+    </script>
+</body>
+</html>

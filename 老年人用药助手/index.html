@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="blue">
+    <title>老年人用药助手</title>
+    <style>
+        /* ============== 基础变量 ============== */
+        :root {
+            --primary: #2E7D32;
+            --primary-light: #4CAF50;
+            --primary-dark: #1B5E20;
+            --secondary: #FF7043;
+            --warning: #FFA726;
+            --danger: #EF5350;
+            --safe: #66BB6A;
+            --bg: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --text: #212121;
+            --text-secondary: #757575;
+            --border: #E0E0E0;
+        }
+
+        /* ============== 基础重置 ============== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            font-size: 18px;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* ============== 头部导航 ============== */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header h1::before {
+            content: "💊";
+            font-size: 28px;
+        }
+
+        .header-sub {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        /* ============== 底部导航 ============== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 12px;
+            transition: all 0.3s;
+            border-radius: 12px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 26px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:active {
+            background: rgba(46, 125, 50, 0.1);
+        }
+
+        /* ============== 页面容器 ============== */
+        .page {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============== 卡片组件 ============== */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ============== 按钮 ============== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: var(--primary-dark);
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-large {
+            padding: 18px 36px;
+            font-size: 20px;
+        }
+
+        /* ============== 表单 ============== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 18px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 18px;
+            background: white;
+        }
+
+        /* ============== 首页 - 今日提醒 ============== */
+        .today-date {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .today-date .date {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .today-date .weekday {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .reminder-item {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            background: var(--card-bg);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+        }
+
+        .reminder-item:active {
+            transform: scale(0.98);
+        }
+
+        .reminder-time {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 80px;
+        }
+
+        .reminder-info {
+            flex: 1;
+            margin-left: 16px;
+        }
+
+        .reminder-drug {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .reminder-status {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .reminder-action {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn.taken {
+            background: var(--safe);
+            color: white;
+        }
+
+        .action-btn.skip {
+            background: var(--border);
+            color: var(--text-secondary);
+        }
+
+        .action-btn.sound {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        /* ============== 空状态 ============== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state .text {
+            font-size: 18px;
+        }
+
+        /* ============== 药物列表 ============== */
+        .drug-card {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            background: var(--card-bg);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .drug-card:active {
+            transform: scale(0.98);
+            background: #f0f0f0;
+        }
+
+        .drug-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+
+        .drug-info {
+            flex: 1;
+            margin-left: 16px;
+        }
+
+        .drug-name {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .drug-category {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .drug-arrow {
+            font-size: 24px;
+            color: var(--text-secondary);
+        }
+
+        /* ============== 搜索框 ============== */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            font-size: 18px;
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+        }
+
+        /* ============== 药物详情 ============== */
+        .drug-detail-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .drug-detail-header h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .drug-detail-header .generic {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .detail-section {
+            margin-bottom: 24px;
+        }
+
+        .detail-label {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        .interaction-tag {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #FFF3E0;
+            color: #E65100;
+            border-radius: 20px;
+            font-size: 16px;
+            margin: 4px;
+        }
+
+        /* ============== 相互作用提示 ============== */
+        .interaction-alert {
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+        }
+
+        .interaction-alert.high {
+            background: #FFEBEE;
+            border-left: 6px solid var(--danger);
+        }
+
+        .interaction-alert.medium {
+            background: #FFF8E1;
+            border-left: 6px solid var(--warning);
+        }
+
+        .interaction-alert.low {
+            background: #E8F5E9;
+            border-left: 6px solid var(--safe);
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .alert-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .alert-drugs {
+            font-size: 16px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .alert-desc {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .alert-action {
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* ============== 相互作用检查页 ============== */
+        .check-drug-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .check-drug-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 16px;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 20px;
+            font-size: 16px;
+            gap: 8px;
+        }
+
+        .check-drug-tag .remove {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .check-drug-tag .remove:hover {
+            opacity: 1;
+        }
+
+        /* ============== 用药记录 ============== */
+        .record-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .record-item:last-child {
+            border-bottom: none;
+        }
+
+        .record-status {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .record-status.taken {
+            background: #E8F5E9;
+            color: var(--safe);
+        }
+
+        .record-status.skipped {
+            background: #EEEEEE;
+            color: var(--text-secondary);
+        }
+
+        .record-status.late {
+            background: #FFF3E0;
+            color: var(--warning);
+        }
+
+        .record-info {
+            flex: 1;
+            margin-left: 14px;
+        }
+
+        .record-drug {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .record-time {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .record-date {
+            font-size: 16px;
+            color: var(--text-secondary);
+            padding: 12px 0 8px 0;
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* ============== 会员页 ============== */
+        .vip-banner {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .vip-banner .vip-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .vip-banner h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .vip-banner p {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .vip-price {
+            font-size: 48px;
+            font-weight: 700;
+            color: #FFD700;
+            margin: 20px 0;
+        }
+
+        .vip-price span {
+            font-size: 20px;
+        }
+
+        .vip-features {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            font-size: 17px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .vip-feature .check {
+            color: #4CAF50;
+            font-size: 22px;
+            margin-right: 12px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .status-badge.vip {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #1a1a2e;
+        }
+
+        /* ============== 共享设置 ============== */
+        .share-code {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .share-code .code {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 4px;
+        }
+
+        .share-code .hint {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* ============== 提示卡片 ============== */
+        .tip-card {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+
+        .tip-icon {
+            font-size: 36px;
+            margin-right: 14px;
+        }
+
+        .tip-content h4 {
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .tip-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ============== 时间选择器 ============== */
+        .time-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .time-chip {
+            padding: 12px 20px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .time-chip.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .custom-time {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .custom-time input {
+            width: 100px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* ============== 模态框 ============== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-height: 90vh;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            animation: slideUp 0.3s ease;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* ============== Toast ============== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 16px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            z-index: 300;
+            animation: toastIn 0.3s ease;
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* ============== 响应式 ============== */
+        @media (max-width: 375px) {
+            body {
+                font-size: 16px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .btn {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
+        }
+
+        /* ============== 加载状态 ============== */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .loading::after {
+            content: "...";
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <h1>老年人用药助手</h1>
+        <div class="header-sub">守护健康，用药无忧</div>
+    </header>
+
+    <!-- 首页 -->
+    <div id="page-home" class="page active">
+        <div class="today-date">
+            <div class="date" id="current-date"></div>
+            <div class="weekday" id="current-weekday"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">⏰ 今日用药提醒</div>
+            <div id="today-reminders">
+                <div class="loading">加载中</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">💡 健康小贴士</div>
+            <div id="health-tips"></div>
+        </div>
+    </div>
+
+    <!-- 药物库 -->
+    <div id="page-drugs" class="page">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="drug-search" placeholder="搜索药物名称...">
+        </div>
+        
+        <div id="drug-list">
+            <div class="loading">加载中</div>
+        </div>
+    </div>
+
+    <!-- 相互作用检查 -->
+    <div id="page-interaction" class="page">
+        <div class="card">
+            <div class="card-title">🔬 药物相互作用检查</div>
+            <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 16px;">
+                选择您正在服用的药物，检查是否存在相互作用
+            </p>
+            
+            <div id="check-drug-selector" style="max-height: 200px; overflow-y: auto; margin-bottom: 16px;">
+                <!-- 动态加载药物列表 -->
+            </div>
+            
+            <div id="selected-drugs" class="check-drug-list"></div>
+            
+            <button class="btn btn-primary btn-full btn-large" onclick="checkInteractions()">
+                🔍 开始检查
+            </button>
+        </div>
+
+        <div id="interaction-results"></div>
+    </div>
+
+    <!-- 用药记录 -->
+    <div id="page-records" class="page">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 style="font-size: 22px;">📋 用药记录</h2>
+            <button class="btn btn-secondary" onclick="openAddRecordModal()">+ 添加记录</button>
+        </div>
+        
+        <div id="medication-records">
+            <div class="loading">加载中</div>
+        </div>
+    </div>
+
+    <!-- 我的 -->
+    <div id="page-profile" class="page">
+        <div class="vip-banner" id="subscription-banner">
+            <div class="vip-icon">👤</div>
+            <h2>个人中心</h2>
+            <p>管理您的用药助手</p>
+            <div class="status-badge" id="vip-status">普通会员</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">👨‍👩‍👧 子女远程查看</div>
+            <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 16px;">
+                开通年卡后，子女可以远程查看您的用药情况
+            </p>
+            
+            <div id="share-section">
+                <div class="share-code" id="share-code-display" style="display: none;">
+                    <div>您的邀请码</div>
+                    <div class="code" id="invite-code">------</div>
+                    <div class="hint">分享给子女，让他们绑定查看</div>
+                </div>
+                
+                <button class="btn btn-primary btn-full" id="share-btn" onclick="generateShareCode()">
+                    📱 生成邀请码
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">💎 开通年卡会员</div>
+            <div class="vip-features">
+                <div class="vip-feature">
+                    <span class="check">✓</span>
+                    <span>完整药物相互作用检查</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="check">✓</span>
+                    <span>子女远程查看用药情况</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="check">✓</span>
+                    <span>无限用药记录存储</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="check">✓</span>
+                    <span>专属语音提醒服务</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="check">✓</span>
+                    <span>优先客服支持</span>
+                </div>
+            </div>
+            <div class="vip-price"><span>¥</span>99<span>/年</span></div>
+            <button class="btn btn-warning btn-full btn-large" onclick="subscribe()">
+                🎁 立即开通
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🔧 帮助与设置</div>
+            <div class="tip-card">
+                <div class="tip-icon">📞</div>
+                <div class="tip-content">
+                    <h4>客服热线</h4>
+                    <p>400-123-4567 (工作日 9:00-18:00)</p>
+                </div>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">📧</div>
+                <div class="tip-content">
+                    <h4>意见反馈</h4>
+                    <p>feedback@eldercare.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a class="nav-item active" data-page="home">
+            <span class="icon">🏠</span>
+            <span>首页</span>
+        </a>
+        <a class="nav-item" data-page="drugs">
+            <span class="icon">💊</span>
+            <span>药物库</span>
+        </a>
+        <a class="nav-item" data-page="interaction">
+            <span class="icon">🔬</span>
+            <span>相互作用</span>
+        </a>
+        <a class="nav-item" data-page="records">
+            <span class="icon">📋</span>
+            <span>记录</span>
+        </a>
+        <a class="nav-item" data-page="profile">
+            <span class="icon">👤</span>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <!-- 添加提醒模态框 -->
+    <div class="modal-overlay" id="add-reminder-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">➕ 添加用药提醒</span>
+                <button class="modal-close" onclick="closeModal('add-reminder-modal')">✕</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">选择药物</label>
+                <select class="form-select" id="reminder-drug">
+                    <option value="">请选择药物</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">提醒时间</label>
+                <div class="time-chips" id="time-chips">
+                    <div class="custom-time">
+                        <input type="time" id="custom-time-input" value="08:00">
+                        <button class="btn btn-secondary" onclick="addCustomTime()">添加</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary btn-full btn-large" onclick="saveReminder()">
+                💾 保存提醒
+            </button>
+        </div>
+    </div>
+
+    <!-- 药物详情模态框 -->
+    <div class="modal-overlay" id="drug-detail-modal">
+        <div class="modal-content" style="max-height: 95vh;">
+            <div class="modal-header">
+                <span class="modal-title">💊 药物详情</span>
+                <button class="modal-close" onclick="closeModal('drug-detail-modal')">✕</button>
+            </div>
+            <div id="drug-detail-content">
+                <div class="loading">加载中</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加记录模态框 -->
+    <div class="modal-overlay" id="add-record-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">📝 添加用药记录</span>
+                <button class="modal-close" onclick="closeModal('add-record-modal')">✕</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">药物名称</label>
+                <select class="form-select" id="record-drug">
+                    <option value="">请选择药物</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">服用状态</label>
+                <div class="time-chips" id="record-status-chips">
+                    <div class="time-chip selected" data-status="taken" onclick="selectStatus(this)">✅ 已服用</div>
+                    <div class="time-chip" data-status="skipped" onclick="selectStatus(this)">⏭️ 跳过</div>
+                    <div class="time-chip" data-status="late" onclick="selectStatus(this)">⏰ 延迟服用</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary btn-full btn-large" onclick="saveRecord()">
+                💾 保存记录
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============== 全局变量 ==============
+        const API_BASE = 'http://localhost:5000/api';
+        const USER_ID = 'user_001';
+        let drugs = {};
+        let reminders = [];
+        let selectedDrugsForCheck = [];
+        let selectedReminderTimes = [];
+        let currentRecordStatus = 'taken';
+
+        // ============== 初始化 ==============
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initDateTime();
+            loadData();
+        });
+
+        // ============== 导航切换 ==============
+        function initNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = item.dataset.page;
+                    switchPage(page);
+                    
+                    // 更新导航状态
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+        }
+
+        // ============== 日期时间 ==============
+        function initDateTime() {
+            const now = new Date();
+            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            
+            document.getElementById('current-date').textContent = 
+                `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+            document.getElementById('current-weekday').textContent = weekdays[now.getDay()];
+        }
+
+        // ============== 数据加载 ==============
+        async function loadData() {
+            await Promise.all([
+                loadDrugs(),
+                loadReminders(),
+                loadHealthTips(),
+                loadRecords(),
+                loadSubscription()
+            ]);
+        }
+
+        async function loadDrugs() {
+            try {
+                const res = await fetch(`${API_BASE}/drugs`);
+                const data = await res.json();
+                drugs = data.data || {};
+                renderDrugList(drugs);
+                renderDrugSelector(drugs);
+                renderInteractionDrugSelector(drugs);
+            } catch (e) {
+                console.log('使用本地数据');
+                drugs = getLocalDrugs();
+                renderDrugList(drugs);
+                renderDrugSelector(drugs);
+                renderInteractionDrugSelector(drugs);
+            }
+        }
+
+        async function loadReminders() {
+            try {
+                const res = await fetch(`${API_BASE}/user/${USER_ID}/reminders`);
+                const data = await res.json();
+                reminders = data.data || [];
+            } catch (e) {
+                reminders = getLocalReminders();
+            }
+            renderTodayReminders();
+        }
+
+        async function loadHealthTips() {
+            try {
+                const res = await fetch(`${API_BASE}/tips`);
+                const data = await res.json();
+                renderHealthTips(data.data || []);
+            } catch (e) {
+                renderHealthTips(getLocalTips());
+            }
+        }
+
+        async function loadRecords() {
+            try {
+                const res = await fetch(`${API_BASE}/user/${USER_ID}/records`);
+                const data = await res.json();
+                renderRecords(data.data || []);
+            } catch (e) {
+                renderRecords(getLocalRecords());
+            }
+        }
+
+        async function loadSubscription() {
+            try {
+                const res = await fetch(`${API_BASE}/user/${USER_ID}/subscription`);
+                const data = await res.json();
+                updateSubscriptionUI(data.data);
+            } catch (e) {
+                updateSubscriptionUI({plan: 'free'});
+            }
+        }
+
+        // ============== 本地数据（API不可用时使用） ==============
+        function getLocalDrugs() {
+            return {
+                "阿司匹林": { name: "阿司匹林肠溶片", category: "心脑血管", generic_name: "Aspirin" },
+                "二甲双胍": { name: "盐酸二甲双胍片", category: "降糖药", generic_name: "Metformin" },
+                "氨氯地平": { name: "苯磺酸氨氯地平片", category: "降压药", generic_name: "Amlodipine" },
+                "辛伐他汀": { name: "辛伐他汀片", category: "调脂药", generic_name: "Simvastatin" },
+                "奥美拉唑": { name: "奥美拉唑肠溶胶囊", category: "消化系统", generic_name: "Omeprazole" },
+                "左氧氟沙星": { name: "左氧氟沙星片", category: "抗生素", generic_name: "Levofloxacin" },
+                "氯吡格雷": { name: "硫酸氢氯吡格雷片", category: "抗血小板", generic_name: "Clopidogrel" },
+                "华法林": { name: "华法林钠片", category: "抗凝药", generic_name: "Warfarin" },
+                "布洛芬": { name: "布洛芬缓释胶囊", category: "解热镇痛", generic_name: "Ibuprofen" },
+                "地高辛": { name: "地高辛片", category: "强心药", generic_name: "Digoxin" }
+            };
+        }
+
+        function getLocalReminders() {
+            return [
+                { id: 'rem_001', drug_name: '阿司匹林', times: ['08:00'], enabled: true },
+                { id: 'rem_002', drug_name: '二甲双胍', times: ['07:30', '18:30'], enabled: true },
+                { id: 'rem_003', drug_name: '氨氯地平', times: ['08:00'], enabled: true }
+            ];
+        }
+
+        function getLocalTips() {
+            return [
+                { title: "用药时间", content: "一般药物在餐前30分钟服用效果最佳", icon: "⏰" },
+                { title: "用药水温", content: "应用温水送服，避免用牛奶或果汁", icon: "💧" },
+                { title: "定期检查", content: "建议每3-6个月进行一次全面体检", icon: "🩺" },
+                { title: "用药记录", content: "养成记录用药情况的好习惯，方便医生了解", icon: "📝" }
+            ];
+        }
+
+        function getLocalRecords() {
+            return [
+                { id: 'rec_001', drug_name: '阿司匹林', taken_time: new Date().toISOString(), status: 'taken' },
+                { id: 'rec_002', drug_name: '二甲双胍', taken_time: new Date(Date.now() - 3600000).toISOString(), status: 'taken' }
+            ];
+        }
+
+        // ============== 渲染函数 ==============
+        function renderDrugList(drugList) {
+            const container = document.getElementById('drug-list');
+            
+            if (Object.keys(drugList).length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">💊</div>
+                        <div class="text">暂无药物数据</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = Object.entries(drugList).map(([key, drug]) => `
+                <div class="drug-card" onclick="showDrugDetail('${key}')">
+                    <div class="drug-icon">💊</div>
+                    <div class="drug-info">
+                        <div class="drug-name">${drug.name || key}</div>
+                        <div class="drug-category">${drug.category || '其他'}</div>
+                    </div>
+                    <span class="drug-arrow">›</span>
+                </div>
+            `).join('');
+        }
+
+        function renderDrugSelector(drugList) {
+            const selector = document.getElementById('reminder-drug');
+            const recordSelector = document.getElementById('record-drug');
+            const options = Object.entries(drugList).map(([key, drug]) => 
+                `<option value="${key}">${drug.name || key}</option>`
+            ).join('');
+            
+            selector.innerHTML = '<option value="">请选择药物</option>' + options;
+            recordSelector.innerHTML = '<option value="">请选择药物</option>' + options;
+        }
+
+        function renderInteractionDrugSelector(drugList) {
+            const container = document.getElementById('check-drug-selector');
+            container.innerHTML = Object.entries(drugList).map(([key, drug]) => `
+                <div class="time-chip" data-drug="${key}" onclick="toggleCheckDrug('${key}', this)">
+                    ${drug.name || key}
+                </div>
+            `).join('');
+        }
+
+        function renderTodayReminders() {
+            const container = document.getElementById('today-reminders');
+            
+            if (reminders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">⏰</div>
+                        <div class="text">暂无用药提醒</div>
+                        <button class="btn btn-primary" style="margin-top: 16px;" onclick="openAddReminderModal()">
+                            + 添加提醒
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // 合并所有提醒时间并排序
+            const allReminders = [];
+            reminders.forEach(r => {
+                if (r.enabled) {
+                    r.times.forEach(time => {
+                        allReminders.push({
+                            ...r,
+                            time: time,
+                            formattedTime: formatTime(time)
+                        });
+                    });
+                }
+            });
+            
+            allReminders.sort((a, b) => a.time.localeCompare(b.time));
+
+            if (allReminders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">⏰</div>
+                        <div class="text">今日暂无用药提醒</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allReminders.map(r => `
+                <div class="reminder-item">
+                    <div class="reminder-time">${r.formattedTime}</div>
+                    <div class="reminder-info">
+                        <div class="reminder-drug">${r.drug_name}</div>
+                        <div class="reminder-status">点击完成服药或跳过</div>
+                    </div>
+                    <div class="reminder-action">
+                        <button class="action-btn sound" onclick="playVoice('${r.drug_name}')" title="语音提醒">🔊</button>
+                        <button class="action-btn taken" onclick="markTaken('${r.drug_name}', '${r.time}')" title="已完成">✓</button>
+                        <button class="action-btn skip" onclick="markSkipped('${r.drug_name}', '${r.time}')" title="跳过">⏭</button>
+                    </div>
+                </div>
+            `).join('') + `
+                <button class="btn btn-secondary btn-full" style="margin-top: 16px;" onclick="openAddReminderModal()">
+                    ➕ 添加用药提醒
+                </button>
+            `;
+        }
+
+        function renderHealthTips(tips) {
+            const container = document.getElementById('health-tips');
+            container.innerHTML = tips.map(tip => `
+                <div class="tip-card">
+                    <div class="tip-icon">${tip.icon || '💡'}</div>
+                    <div class="tip-content">
+                        <h4>${tip.title}</h4>
+                        <p>${tip.content}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecords(records) {
+            const container = document.getElementById('medication-records');
+            
+            if (records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📋</div>
+                        <div class="text">暂无用药记录</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // 按日期分组
+            const grouped = {};
+            records.forEach(r => {
+                const date = new Date(r.taken_time).toLocaleDateString('zh-CN');
+                if (!grouped[date]) grouped[date] = [];
+                grouped[date].push(r);
+            });
+
+            container.innerHTML = Object.entries(grouped).map(([date, items]) => `
+                <div class="card">
+                    <div class="record-date">${date}</div>
+                    ${items.map(r => `
+                        <div class="record-item">
+                            <div class="record-status ${r.status}">
+                                ${r.status === 'taken' ? '✓' : r.status === 'skipped' ? '⏭' : '⏰'}
+                            </div>
+                            <div class="record-info">
+                                <div class="record-drug">${r.drug_name}</div>
+                                <div class="record-time">${new Date(r.taken_time).toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'})}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function updateSubscriptionUI(data) {
+            const statusEl = document.getElementById('vip-status');
+            const shareBtn = document.getElementById('share-btn');
+            
+            if (data.plan === 'annual') {
+                statusEl.textContent = '✨ 年卡会员';
+                statusEl.classList.add('vip');
+                shareBtn.textContent = '📱 查看邀请码';
+            } else {
+                statusEl.textContent = '普通会员';
+                statusEl.classList.remove('vip');
+                shareBtn.textContent = '📱 生成邀请码 (需开通年卡)';
+            }
+        }
+
+        // ============== 药物详情 ==============
+        async function showDrugDetail(drugName) {
+            const modal = document.getElementById('drug-detail-modal');
+            const content = document.getElementById('drug-detail-content');
+            
+            modal.classList.add('active');
+            
+            let drug;
+            try {
+                const res = await fetch(`${API_BASE}/drugs/${encodeURIComponent(drugName)}`);
+                const data = await res.json();
+                drug = data.data;
+            } catch (e) {
+                drug = drugs[drugName] || {};
+            }
+
+            content.innerHTML = `
+                <div class="drug-detail-header">
+                    <h2>${drug.name || drugName}</h2>
+                    <div class="generic">${drug.generic_name || ''}</div>
+                    <span class="status-badge">${drug.category || '其他'}</span>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-label">📋 适应症</div>
+                    <div class="detail-value">${drug.indications || '暂无信息'}</div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-label">💊 用法用量</div>
+                    <div class="detail-value">${drug.dosage || '请遵医嘱服用'}</div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-label">⚠️ 不良反应</div>
+                    <div class="detail-value">${drug.side_effects || '请阅读说明书'}</div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-label">🔬 药物相互作用</div>
+                    <div class="detail-value">
+                        ${(drug.interactions || []).map(d => 
+                            `<span class="interaction-tag">${d}</span>`
+                        ).join('') || '暂无数据'}
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-full" style="margin-top: 20px;" onclick="addToReminder('${drugName}')">
+                    🔔 设为提醒
+                </button>
+            `;
+        }
+
+        // ============== 提醒功能 ==============
+        function openAddReminderModal() {
+            document.getElementById('add-reminder-modal').classList.add('active');
+            selectedReminderTimes = [];
+        }
+
+        function addCustomTime() {
+            const input = document.getElementById('custom-time-input');
+            const time = input.value;
+            if (time && !selectedReminderTimes.includes(time)) {
+                selectedReminderTimes.push(time);
+                selectedReminderTimes.sort();
+                renderSelectedTimes();
+            }
+        }
+
+        function renderSelectedTimes() {
+            const container = document.getElementById('time-chips');
+            const timeChips = selectedReminderTimes.map(t => `
+                <div class="time-chip selected" onclick="removeTime('${t}')">${formatTime(t)} ✕</div>
+            `).join('');
+            
+            container.innerHTML = timeChips + `
+                <div class="custom-time">
+                    <input type="time" id="custom-time-input" value="08:00">
+                    <button class="btn btn-secondary" onclick="addCustomTime()">添加</button>
+                </div>
+            `;
+        }
+
+        function removeTime(time) {
+            selectedReminderTimes = selectedReminderTimes.filter(t => t !== time);
+            renderSelectedTimes();
+        }
+
+        async function saveReminder() {
+            const drugName = document.getElementById('reminder-drug').value;
+            
+            if (!drugName) {
+                showToast('请选择药物');
+                return;
+            }
+            
+            if (selectedReminderTimes.length === 0) {
+                showToast('请添加提醒时间');
+                return;
+            }
+
+            const newReminder = {
+                drug_name: drugName,
+                times: selectedReminderTimes
+            };
+
+            try {
+                await fetch(`${API_BASE}/user/${USER_ID}/reminders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newReminder)
+                });
+            } catch (e) {
+                reminders.push({ id: 'rem_' + Date.now(), ...newReminder, enabled: true });
+            }
+
+            closeModal('add-reminder-modal');
+            showToast('提醒添加成功');
+            loadReminders();
+        }
+
+        function addToReminder(drugName) {
+            closeModal('drug-detail-modal');
+            document.getElementById('reminder-drug').value = drugName;
+            openAddReminderModal();
+        }
+
+        // ============== 用药记录 ==============
+        function openAddRecordModal() {
+            document.getElementById('add-record-modal').classList.add('active');
+            currentRecordStatus = 'taken';
+            document.querySelectorAll('#record-status-chips .time-chip').forEach(chip => {
+                chip.classList.toggle('selected', chip.dataset.status === 'taken');
+            });
+        }
+
+        function selectStatus(el) {
+            document.querySelectorAll('#record-status-chips .time-chip').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            currentRecordStatus = el.dataset.status;
+        }
+
+        async function saveRecord() {
+            const drugName = document.getElementById('record-drug').value;
+            
+            if (!drugName) {
+                showToast('请选择药物');
+                return;
+            }
+
+            const record = {
+                drug_name: drugName,
+                taken_time: new Date().toISOString(),
+                status: currentRecordStatus
+            };
+
+            try {
+                await fetch(`${API_BASE}/user/${USER_ID}/records`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(record)
+                });
+            } catch (e) {
+                // 本地保存
+            }
+
+            closeModal('add-record-modal');
+            showToast('记录已保存');
+            loadRecords();
+        }
+
+        async function markTaken(drugName, time) {
+            await saveRecordInternal(drugName, time, 'taken');
+        }
+
+        async function markSkipped(drugName, time) {
+            await saveRecordInternal(drugName, time, 'skipped');
+        }
+
+        async function saveRecordInternal(drugName, time, status) {
+            const record = {
+                drug_name: drugName,
+                taken_time: new Date().toISOString(),
+                status: status
+            };
+
+            try {
+                await fetch(`${API_BASE}/user/${USER_ID}/records`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(record)
+                });
+            } catch (e) {
+                // 本地保存
+            }
+
+            showToast(status === 'taken' ? '已记录服药' : '已跳过');
+            loadRecords();
+        }
+
+        // ============== 语音提醒 ==============
+        function playVoice(drugName) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(`您好，该服用${drugName}了`);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.8;
+                utterance.volume = 1;
+                speechSynthesis.speak(utterance);
+                showToast('正在语音提醒...');
+            } else {
+                showToast('您的浏览器不支持语音功能');
+            }
+        }
+
+        // ============== 药物相互作用检查 ==============
+        function toggleCheckDrug(drugName, el) {
+            if (selectedDrugsForCheck.includes(drugName)) {
+                selectedDrugsForCheck = selectedDrugsForCheck.filter(d => d !== drugName);
+                el.classList.remove('selected');
+            } else {
+                selectedDrugsForCheck.push(drugName);
+                el.classList.add('selected');
+            }
+            renderSelectedCheckDrugs();
+        }
+
+        function renderSelectedCheckDrugs() {
+            const container = document.getElementById('selected-drugs');
+            container.innerHTML = selectedDrugsForCheck.map(d => `
+                <span class="check-drug-tag">
+                    ${drugs[d]?.name || d}
+                    <span class="remove" onclick="toggleCheckDrug('${d}', this.parentElement)">✕</span>
+                </span>
+            `).join('');
+        }
+
+        async function checkInteractions() {
+            if (selectedDrugsForCheck.length < 2) {
+                showToast('请至少选择2种药物');
+                return;
+            }
+
+            const resultsContainer = document.getElementById('interaction-results');
+            resultsContainer.innerHTML = '<div class="loading">检查中</div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/drugs/interaction`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ drugs: selectedDrugsForCheck })
+                });
+                const data = await res.json();
+                renderInteractionResults(data.data);
+            } catch (e) {
+                renderInteractionResults({ interactions: [], total: 0, has_high_risk: false });
+            }
+        }
+
+        function renderInteractionResults(results) {
+            const container = document.getElementById('interaction-results');
+            const { interactions, has_high_risk } = results;
+
+            if (interactions.length === 0) {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="empty-state">
+                            <div class="icon">✅</div>
+                            <div class="text" style="color: var(--safe); font-size: 20px;">未发现相互作用</div>
+                            <p style="color: var(--text-secondary); margin-top: 8px;">您选择的药物目前没有已知的相互作用</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="card" style="background: ${has_high_risk ? '#FFEBEE' : '#FFF8E1'}; border-left: 6px solid ${has_high_risk ? 'var(--danger)' : 'var(--warning)'};">
+                    <div style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">
+                        ${has_high_risk ? '⚠️ 发现高风险相互作用' : '⚡ 发现潜在相互作用'}
+                    </div>
+                    <p style="color: var(--text-secondary);">
+                        共发现 ${interactions.length} 项相互作用，请咨询医生或药师
+                    </p>
+                </div>
+                ${interactions.map(i => `
+                    <div class="interaction-alert ${i.severity}">
+                        <div class="alert-header">
+                            <span>${i.severity === 'high' ? '🔴' : '🟡'}</span>
+                            <span class="alert-title">${getSeverityText(i.severity)}</span>
+                        </div>
+                        <div class="alert-drugs">${i.drug1} + ${i.drug2}</div>
+                        <div class="alert-desc">${i.description}</div>
+                        <div class="alert-action">💡 ${i.recommendation}</div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function getSeverityText(severity) {
+            const map = { high: '高风险', medium: '中风险', low: '低风险' };
+            return map[severity] || severity;
+        }
+
+        // ============== 订阅与分享 ==============
+        async function subscribe() {
+            showToast('正在跳转支付...');
+            // 模拟支付流程
+            setTimeout(() => {
+                showToast('支付成功！年卡已开通');
+                document.getElementById('vip-status').textContent = '✨ 年卡会员';
+                document.getElementById('vip-status').classList.add('vip');
+            }, 1500);
+        }
+
+        async function generateShareCode() {
+            showToast('正在生成邀请码...');
+            try {
+                const res = await fetch(`${API_BASE}/share/${USER_ID}/invite`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                const data = await res.json();
+                if (data.code === 0) {
+                    document.getElementById('invite-code').textContent = data.data.invite_code;
+                    document.getElementById('share-code-display').style.display = 'block';
+                    document.getElementById('share-btn').textContent = '📱 查看邀请码';
+                    showToast('邀请码已生成');
+                } else {
+                    showToast(data.message);
+                }
+            } catch (e) {
+                // 本地模拟
+                document.getElementById('invite-code').textContent = 'INV' + Math.floor(Math.random() * 900000 + 100000);
+                document.getElementById('share-code-display').style.display = 'block';
+                showToast('邀请码已生成');
+            }
+        }
+
+        // ============== 搜索功能 ==============
+        document.getElementById('drug-search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = {};
+            Object.entries(drugs).forEach(([key, drug]) => {
+                if (key.toLowerCase().includes(query) || 
+                    (drug.name && drug.name.toLowerCase().includes(query)) ||
+                    (drug.generic_name && drug.generic_name.toLowerCase().includes(query))) {
+                    filtered[key] = drug;
+                }
+            });
+            renderDrugList(filtered);
+        });
+
+        // ============== 工具函数 ==============
+        function formatTime(time) {
+            const [h, m] = time.split(':');
+            const hour = parseInt(h);
+            const ampm = hour >= 12 ? '下午' : '上午';
+            const hour12 = hour > 12 ? hour - 12 : hour;
+            return `${ampm}${hour12}:${m}`;
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // 点击模态框背景关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

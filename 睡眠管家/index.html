@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>睡眠管家 - 每晚好眠</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --primary-light: #818CF8;
+            --secondary: #8B5CF6;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark: #1E1B4B;
+            --dark-light: #312E81;
+            --gray: #6B7280;
+            --gray-light: #9CA3AF;
+            --bg-dark: #0F0D1A;
+            --bg-card: #1A1730;
+            --bg-card-hover: #252142;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A5B4FC;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* 通用容器 */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 16px;
+            padding-bottom: 100px;
+        }
+
+        /* 头部 */
+        .header {
+            padding: 24px 0 16px;
+            text-align: center;
+            background: linear-gradient(180deg, var(--dark) 0%, transparent 100%);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* 底部导航 */
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid rgba(99, 102, 241, 0.2);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 16px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary-light);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+        }
+
+        /* 页面 */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 睡眠评分圆环 */
+        .score-ring-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 0;
+        }
+
+        .score-ring {
+            position: relative;
+            width: 180px;
+            height: 180px;
+        }
+
+        .score-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .score-ring circle {
+            fill: none;
+            stroke-width: 12;
+        }
+
+        .score-ring .bg {
+            stroke: var(--dark-light);
+        }
+
+        .score-ring .progress {
+            stroke: url(#scoreGradient);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .score-ring .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .score-ring .score-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .score-ring .score-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* 睡眠数据网格 */
+        .sleep-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--gray-light);
+            margin-top: 4px;
+        }
+
+        /* 睡眠时间线 */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-bar {
+            height: 8px;
+            background: var(--dark-light);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .timeline-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--gray-light);
+        }
+
+        .timeline-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timeline-marker .time {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 助眠音乐卡片 */
+        .sound-card {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .sound-card:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .sound-card.playing {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        .sound-card.premium-locked {
+            opacity: 0.6;
+        }
+
+        .sound-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .sound-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .sound-info {
+            flex: 1;
+        }
+
+        .sound-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .sound-category {
+            font-size: 12px;
+            color: var(--gray-light);
+        }
+
+        .sound-play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sound-play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .sound-play-btn svg {
+            width: 18px;
+            height: 18px;
+            color: white;
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, #F59E0B, #EF4444);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        .lock-icon {
+            color: var(--gray-light);
+            margin-left: 8px;
+        }
+
+        /* 分类筛选 */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding: 4px 0;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            color: var(--gray-light);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 播放器控制 */
+        .player-bar {
+            position: fixed;
+            bottom: 70px;
+            left: 16px;
+            right: 16px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: none;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            z-index: 99;
+        }
+
+        .player-bar.show {
+            display: flex;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .player-status {
+            font-size: 12px;
+            color: var(--success);
+        }
+
+        .player-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .player-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+        }
+
+        .player-btn.stop {
+            background: var(--danger);
+        }
+
+        /* 睡眠建议卡片 */
+        .suggestion-card {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .suggestion-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .suggestion-icon.high {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .suggestion-icon.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .suggestion-icon.low {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .suggestion-content h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .suggestion-content p {
+            font-size: 13px;
+            color: var(--gray-light);
+        }
+
+        /* 闹钟设置 */
+        .alarm-time {
+            text-align: center;
+            padding: 32px 0;
+        }
+
+        .alarm-time-display {
+            font-size: 64px;
+            font-weight: 300;
+            color: var(--text-primary);
+            font-family: 'SF Pro Display', -apple-system, sans-serif;
+        }
+
+        .alarm-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        .alarm-presets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .preset-btn {
+            padding: 12px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .preset-btn:hover, .preset-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* 订阅按钮 */
+        .subscribe-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .subscribe-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .subscribe-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .premium-features {
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(99, 102, 241, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-light);
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-text h5 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .feature-text p {
+            font-size: 12px;
+            color: var(--gray-light);
+        }
+
+        /* 订阅成功状态 */
+        .premium-status {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .premium-badge-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #F59E0B, #EF4444);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .premium-expires {
+            color: var(--gray-light);
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        /* 睡眠记录列表 */
+        .record-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .record-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .record-date {
+            width: 60px;
+            text-align: center;
+        }
+
+        .record-day {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .record-weekday {
+            font-size: 12px;
+            color: var(--gray-light);
+        }
+
+        .record-info {
+            flex: 1;
+            padding: 0 16px;
+        }
+
+        .record-time {
+            font-size: 13px;
+            color: var(--gray-light);
+        }
+
+        .record-duration {
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .record-score {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .record-score.excellent { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .record-score.good { background: rgba(99, 102, 241, 0.2); color: var(--primary-light); }
+        .record-score.average { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .record-score.poor { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        /* 图表区域 */
+        .chart-container {
+            height: 200px;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 160px;
+            padding: 0 8px;
+        }
+
+        .chart-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .chart-bar {
+            width: 24px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+        }
+
+        .chart-label {
+            font-size: 11px;
+            color: var(--gray-light);
+            margin-top: 8px;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 360px;
+            width: 100%;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--gray-light);
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--dark-light);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary-light);
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--bg-card);
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--primary);
+            color: white;
+            font-size: 14px;
+            z-index: 300;
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--dark-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 统计卡片 */
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .stat-unit {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            color: var(--gray-light);
+            font-size: 14px;
+        }
+
+        /* 睡眠录入表单 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--dark-light);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* 睡眠阶段可视化 */
+        .sleep-stages {
+            display: flex;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .sleep-stage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .sleep-stage.awake { background: var(--warning); }
+        .sleep-stage.rem { background: var(--secondary); }
+        .sleep-stage.light { background: var(--primary); }
+        .sleep-stage.deep { background: var(--dark); }
+
+        /* SVG渐变定义 */
+        .svg-defs {
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG渐变定义 -->
+    <svg class="svg-defs">
+        <defs>
+            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#6366F1"/>
+                <stop offset="100%" stop-color="#8B5CF6"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 页面1: 首页 -->
+        <div id="page-home" class="page active">
+            <div class="header">
+                <h1>🌙 睡眠管家</h1>
+                <p id="date-display"></p>
+            </div>
+
+            <!-- 今日睡眠评分 -->
+            <div class="card">
+                <div class="score-ring-container">
+                    <div class="score-ring">
+                        <svg width="180" height="180" viewBox="0 0 180 180">
+                            <circle class="bg" cx="90" cy="90" r="78"/>
+                            <circle class="progress" cx="90" cy="90" r="78" 
+                                    stroke-dasharray="490" stroke-dashoffset="490" id="scoreProgress"/>
+                        </svg>
+                        <div class="score-text">
+                            <div class="score-value" id="todayScore">--</div>
+                            <div class="score-label" id="scoreLabel">今日睡眠</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sleep-metrics">
+                    <div class="metric-item">
+                        <div class="metric-value" id="metricDuration">--</div>
+                        <div class="metric-label">睡眠时长</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="metricDeep">--</div>
+                        <div class="metric-label">深睡眠</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" id="metricWake">--</div>
+                        <div class="metric-label">醒来次数</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速记录 -->
+            <div class="card">
+                <div class="card-title">📝 快速记录</div>
+                <button class="btn btn-primary" onclick="showRecordModal()" style="width: 100%;">
+                    记录昨晚睡眠
+                </button>
+            </div>
+
+            <!-- 智能闹钟 -->
+            <div class="card">
+                <div class="card-title">⏰ 智能闹钟</div>
+                <div class="alarm-info" id="alarmSuggestion">
+                    设置起床时间，我们会找到最佳唤醒时机
+                </div>
+                <div class="form-row" style="margin-top: 16px;">
+                    <input type="time" class="form-input" id="alarmTime" value="07:00">
+                    <button class="btn btn-primary" onclick="setAlarm()">设置</button>
+                </div>
+            </div>
+
+            <!-- 本周概览 -->
+            <div class="card">
+                <div class="card-title">📊 本周概览</div>
+                <div class="chart-container">
+                    <div class="chart-bars" id="weekChart"></div>
+                </div>
+                <div style="display: flex; justify-content: space-around; margin-top: 16px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--primary-light);" id="weekAvgScore">--</div>
+                        <div style="font-size: 12px; color: var(--gray-light);">平均评分</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--primary-light);" id="weekAvgDuration">--</div>
+                        <div style="font-size: 12px; color: var(--gray-light);">平均时长(h)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面2: 助眠音乐 -->
+        <div id="page-sounds" class="page">
+            <div class="header">
+                <h1>🎵 助眠音乐</h1>
+                <p>精选白噪音与放松音乐</p>
+            </div>
+
+            <div class="category-tabs" id="categoryTabs">
+                <button class="category-tab active" data-category="all">全部</button>
+                <button class="category-tab" data-category="nature">自然声</button>
+                <button class="category-tab" data-category="noise">白噪音</button>
+                <button class="category-tab" data-category="music">音乐</button>
+            </div>
+
+            <div id="soundsList"></div>
+
+            <div id="premiumSection"></div>
+        </div>
+
+        <!-- 页面3: 分析报告 -->
+        <div id="page-analysis" class="page">
+            <div class="header">
+                <h1>📈 睡眠分析</h1>
+                <p>深度了解您的睡眠质量</p>
+            </div>
+
+            <div id="analysisContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面4: 订阅 -->
+        <div id="page-subscribe" class="page">
+            <div class="header">
+                <h1>💎 高级会员</h1>
+                <p>解锁全部高级功能</p>
+            </div>
+
+            <div id="subscribeContent"></div>
+        </div>
+    </div>
+
+    <!-- 播放器 -->
+    <div class="player-bar" id="playerBar">
+        <div class="player-info">
+            <div class="player-name" id="playerName">海浪声</div>
+            <div class="player-status">正在播放...</div>
+        </div>
+        <div class="player-controls">
+            <button class="player-btn stop" onclick="stopSound()">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="6" width="12" height="12" rx="2"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="nav">
+        <div class="nav-item active" data-page="home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" data-page="sounds">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18V5l12-2v13"/>
+                <circle cx="6" cy="18" r="3"/>
+                <circle cx="18" cy="16" r="3"/>
+            </svg>
+            <span>助眠</span>
+        </div>
+        <div class="nav-item" data-page="analysis">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            <span>分析</span>
+        </div>
+        <div class="nav-item" data-page="subscribe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span>会员</span>
+        </div>
+    </nav>
+
+    <!-- 睡眠记录模态框 -->
+    <div class="modal" id="recordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📝 记录睡眠</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">入睡时间</label>
+                <input type="time" class="form-input" id="sleepTime" value="23:00">
+            </div>
+            <div class="form-group">
+                <label class="form-label">起床时间</label>
+                <input type="time" class="form-input" id="wakeTime" value="07:00">
+            </div>
+            <div class="form-group">
+                <label class="form-label">睡眠质量（1-5）</label>
+                <select class="form-input" id="sleepQuality">
+                    <option value="5">非常好</option>
+                    <option value="4" selected>较好</option>
+                    <option value="3">一般</option>
+                    <option value="2">较差</option>
+                    <option value="1">很差</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">夜间醒来次数</label>
+                <input type="number" class="form-input" id="interruptions" value="0" min="0" max="10">
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closeModal('recordModal')" style="flex:1;">取消</button>
+                <button class="btn btn-primary" onclick="saveSleepRecord()" style="flex:1;">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ 全局状态 ============
+        let currentUser = 'user_' + Date.now();
+        let isPremium = false;
+        let sounds = [];
+        let currentSound = null;
+        let audioContext = null;
+        let oscillator = null;
+        let gainNode = null;
+
+        // ============ 初始化 ============
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            updateDateDisplay();
+            loadSounds();
+            loadAnalysis();
+            loadWeekData();
+            checkSubscription();
+            
+            // 加载上次播放的音乐
+            const lastSound = localStorage.getItem('lastSound');
+            if (lastSound) {
+                const soundData = JSON.parse(lastSound);
+                if (soundData.isPlaying) {
+                    // 不自动播放，只显示播放器
+                }
+            }
+        });
+
+        function updateDateDisplay() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('date-display').textContent = now.toLocaleDateString('zh-CN', options);
+        }
+
+        // ============ 导航 ============
+        function initNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    switchPage(page);
+                });
+            });
+        }
+
+        function switchPage(page) {
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.toggle('active', nav.dataset.page === page);
+            });
+
+            // 更新页面显示
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.toggle('active', p.id === `page-${page}`);
+            });
+
+            // 加载页面数据
+            if (page === 'sounds') {
+                renderSounds('all');
+            } else if (page === 'analysis') {
+                loadAnalysis();
+            } else if (page === 'subscribe') {
+                renderSubscribe();
+            }
+        }
+
+        // ============ Toast 提示 ============
+        function showToast(message, duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        // ============ 模态框 ============
+        function showRecordModal() {
+            document.getElementById('recordModal').classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // 点击模态框外部关闭
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+
+        // ============ 睡眠记录 ============
+        function saveSleepRecord() {
+            const sleepTime = document.getElementById('sleepTime').value;
+            const wakeTime = document.getElementById('wakeTime').value;
+            const quality = parseInt(document.getElementById('sleepQuality').value);
+            const interruptions = parseInt(document.getElementById('interruptions').value) || 0;
+
+            // 计算睡眠时长
+            const [sh, sm] = sleepTime.split(':').map(Number);
+            const [wh, wm] = wakeTime.split(':').map(Number);
+            let duration = wh - sh;
+            if (wm < sm) duration -= 1;
+            const actualDuration = duration + (wm - sm) / 60;
+
+            // 根据质量调整深睡眠比例
+            const deepRatio = 0.1 + (quality - 1) * 0.05;
+
+            const recordData = {
+                userId: currentUser,
+                sleepTime,
+                wakeTime,
+                duration: actualDuration,
+                deepSleepRatio: deepRatio,
+                interruptions,
+                heartRate: 60 + Math.floor(Math.random() * 15)
+            };
+
+            fetch('/api/sleep/record', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(recordData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('recordModal');
+                    showToast('睡眠记录已保存 🌙');
+                    updateHomePage(data.record);
+                    loadWeekData();
+                }
+            })
+            .catch(err => {
+                console.error('保存失败:', err);
+                showToast('保存失败，请重试');
+            });
+        }
+
+        function updateHomePage(record) {
+            // 更新评分
+            const score = record.scoreData.score;
+            document.getElementById('todayScore').textContent = score;
+            document.getElementById('scoreLabel').textContent = record.scoreData.grade;
+            
+            // 更新评分圆环
+            const progress = document.getElementById('scoreProgress');
+            const circumference = 2 * Math.PI * 78;
+            const offset = circumference - (score / 100) * circumference;
+            progress.style.strokeDashoffset = offset;
+
+            // 更新指标
+            document.getElementById('metricDuration').textContent = record.duration.toFixed(1);
+            document.getElementById('metricDeep').textContent = (record.duration * record.deepSleepRatio).toFixed(1);
+            document.getElementById('metricWake').textContent = record.interruptions;
+        }
+
+        // ============ 智能闹钟 ============
+        function setAlarm() {
+            const alarmTime = document.getElementById('alarmTime').value;
+            
+            fetch(`/api/alarm/optimal?bedtime=${alarmTime}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('alarmSuggestion').innerHTML = `
+                        <strong>建议起床时间: ${data.suggestedWakeTime}</strong><br>
+                        <span style="color: var(--text-secondary); font-size: 13px;">${data.reason}</span>
+                    `;
+                    showToast('闹钟已设置 ⏰');
+                });
+        }
+
+        // ============ 助眠音乐 ============
+        function loadSounds() {
+            fetch('/api/sounds')
+                .then(res => res.json())
+                .then(data => {
+                    sounds = data.sounds;
+                    renderSounds('all');
+                });
+        }
+
+        function renderSounds(category) {
+            // 更新标签状态
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+
+            const container = document.getElementById('soundsList');
+            const filtered = category === 'all' ? sounds : sounds.filter(s => s.category === category);
+
+            container.innerHTML = filtered.map(sound => {
+                const isLocked = sound.premium && !isPremium;
+                return `
+                    <div class="sound-card ${isLocked ? 'premium-locked' : ''}" 
+                         onclick="${isLocked ? 'showUpgradePrompt()' : `playSound('${sound.id}')`}">
+                        <div class="sound-icon">
+                            ${getSoundIcon(sound.category)}
+                        </div>
+                        <div class="sound-info">
+                            <div class="sound-name">
+                                ${sound.name}
+                                ${sound.premium ? '<span class="premium-badge">高级</span>' : ''}
+                                ${isLocked ? '<span class="lock-icon">🔒</span>' : ''}
+                            </div>
+                            <div class="sound-category">${getCategoryName(sound.category)}</div>
+                        </div>
+                        ${!isLocked ? `
+                            <button class="sound-play-btn" onclick="event.stopPropagation(); playSound('${sound.id}')">
+                                ${currentSound === sound.id ? `
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <rect x="6" y="4" width="4" height="16"/>
+                                        <rect x="14" y="4" width="4" height="16"/>
+                                    </svg>
+                                ` : `
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <polygon points="5,3 19,12 5,21"/>
+                                    </svg>
+                                `}
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // 添加高级会员区域
+            renderPremiumSection();
+        }
+
+        function getSoundIcon(category) {
+            const icons = {
+                nature: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c4-4 8-7.5 8-12a8 8 0 1 0-16 0c0 4.5 4 8 8 12z"/><circle cx="12" cy="10" r="3"/></svg>',
+                noise: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h2m4 0h2m4 0h2m4 0h2"/></svg>',
+                music: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>'
+            };
+            return icons[category] || icons.music;
+        }
+
+        function getCategoryName(category) {
+            const names = { nature: '自然声', noise: '白噪音', music: '放松音乐' };
+            return names[category] || category;
+        }
+
+        function playSound(soundId) {
+            const sound = sounds.find(s => s.id === soundId);
+            if (!sound) return;
+
+            if (currentSound === soundId) {
+                stopSound();
+                return;
+            }
+
+            stopSound();
+
+            // 创建音频上下文
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            oscillator = audioContext.createOscillator();
+            gainNode = audioContext.createGain();
+
+            // 根据声音类型设置不同的波形
+            const waveTypes = {
+                rain: { type: 'sawtooth', freq: 200 },
+                ocean: { type: 'sine', freq: 150 },
+                forest: { type: 'sine', freq: 400 },
+                fire: { type: 'triangle', freq: 100 },
+                wind: { type: 'sawtooth', freq: 250 },
+                thunder: { type: 'square', freq: 80 },
+                white_noise: { type: 'square', freq: 1000 },
+                pink_noise: { type: 'sawtooth', freq: 500 },
+                brown_noise: { type: 'triangle', freq: 200 },
+                meditation: { type: 'sine', freq: 396 },
+                piano: { type: 'sine', freq: 261.63 },
+                ambient: { type: 'sine', freq: 220 },
+                delta_wave: { type: 'sine', freq: 2 },
+                breathing: { type: 'sine', freq: 6 }
+            };
+
+            const config = waveTypes[soundId] || { type: 'sine', freq: 200 };
+            
+            oscillator.type = config.type;
+            oscillator.frequency.setValueAtTime(config.freq, audioContext.currentTime);
+            
+            // 音量渐入
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 2);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.start();
+
+            currentSound = soundId;
+
+            // 显示播放器
+            const playerBar = document.getElementById('playerBar');
+            document.getElementById('playerName').textContent = sound.name;
+            playerBar.classList.add('show');
+
+            // 保存状态
+            localStorage.setItem('lastSound', JSON.stringify({ id: soundId, name: sound.name, isPlaying: true }));
+            
+            // 更新UI
+            renderSounds(document.querySelector('.category-tab.active').dataset.category);
+        }
+
+        function stopSound() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator.disconnect();
+            }
+            if (gainNode) {
+                gainNode.disconnect();
+            }
+            if (audioContext) {
+                audioContext.close();
+            }
+            
+            currentSound = null;
+            document.getElementById('playerBar').classList.remove('show');
+            localStorage.setItem('lastSound', JSON.stringify({ isPlaying: false }));
+        }
+
+        function showUpgradePrompt() {
+            showToast('开通高级会员解锁全部内容 💎');
+            switchPage('subscribe');
+        }
+
+        // 分类标签点击
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                renderSounds(tab.dataset.category);
+            });
+        });
+
+        // ============ 睡眠分析 ============
+        function loadAnalysis() {
+            fetch(`/api/sleep/analysis?userId=${currentUser}`)
+                .then(res => res.json())
+                .then(data => {
+                    renderAnalysis(data);
+                });
+        }
+
+        function renderAnalysis(data) {
+            const container = document.getElementById('analysisContent');
+            
+            const html = `
+                <!-- 周数据卡片 -->
+                <div class="stat-card">
+                    <div class="stat-label">本周平均评分</div>
+                    <div class="stat-value">${data.weekly.avgScore || '--'}</div>
+                    <div style="font-size: 13px; opacity: 0.8; margin-top: 8px;">
+                        趋势: ${getTrendText(data.weekly.trend)} ${getTrendIcon(data.weekly.trend)}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📊 关键指标</div>
+                    <div class="sleep-metrics">
+                        <div class="metric-item">
+                            <div class="metric-value">${data.weekly.avgDuration || '--'}</div>
+                            <div class="metric-label">平均时长(h)</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${((data.weekly.avgDeepSleepRatio || 0) * 100).toFixed(0)}%</div>
+                            <div class="metric-label">深睡眠占比</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-value">${data.weekly.totalRecords || 0}</div>
+                            <div class="metric-label">记录总数</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">💡 睡眠洞察</div>
+                    ${data.insights && data.insights.length > 0 ? 
+                        data.insights.map(insight => `
+                            <div style="padding: 12px 0; border-bottom: 1px solid rgba(99,102,241,0.1);">
+                                ${insight}
+                            </div>
+                        `).join('') :
+                        '<div style="color: var(--gray-light);">暂无足够数据分析</div>'
+                    }
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🎯 个性化建议</div>
+                    ${data.recommendations && data.recommendations.length > 0 ?
+                        data.recommendations.map(rec => `
+                            <div class="suggestion-card">
+                                <div class="suggestion-icon ${rec.priority === 'high' ? 'high' : 'medium'}">
+                                    ${rec.priority === 'high' ? '!' : 'i'}
+                                </div>
+                                <div class="suggestion-content">
+                                    <h4>${rec.title}</h4>
+                                    <p>${rec.description}</p>
+                                </div>
+                            </div>
+                        `).join('') :
+                        '<div style="color: var(--gray-light);">暂无建议</div>'
+                    }
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function getTrendText(trend) {
+            const texts = {
+                improving: '改善中',
+                declining: '下降',
+                stable: '稳定',
+                insufficient_data: '数据不足'
+            };
+            return texts[trend] || trend;
+        }
+
+        function getTrendIcon(trend) {
+            const icons = {
+                improving: '📈',
+                declining: '📉',
+                stable: '➡️',
+                insufficient_data: '⏳'
+            };
+            return icons[trend] || '';
+        }
+
+        // ============ 周数据图表 ============
+        function loadWeekData() {
+            fetch(`/api/sleep/records?userId=${currentUser}&days=7`)
+                .then(res => res.json())
+                .then(data => {
+                    renderWeekChart(data.records);
+                })
+                .catch(() => {
+                    // 使用模拟数据
+                    renderWeekChart(generateMockWeekData());
+                });
+        }
+
+        function generateMockWeekData() {
+            const days = ['日', '一', '二', '三', '四', '五', '六'];
+            const data = [];
+            const today = new Date();
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    score: 65 + Math.floor(Math.random() * 30),
+                    duration: 6 + Math.random() * 2
+                });
+            }
+            return data;
+        }
+
+        function renderWeekChart(records) {
+            const container = document.getElementById('weekChart');
+            const days = ['日', '一', '二', '三', '四', '五', '六'];
+            const today = new Date();
+            
+            // 如果没有数据，生成模拟数据
+            if (!records || records.length === 0) {
+                records = generateMockWeekData();
+            }
+
+            // 计算每日平均分
+            const dayScores = {};
+            records.forEach(r => {
+                const date = new Date(r.date || r.createdAt);
+                const day = date.getDay();
+                if (!dayScores[day] || r.scoreData?.score > dayScores[day]) {
+                    dayScores[day] = r.scoreData?.score || r.score || 0;
+                }
+            });
+
+            // 渲染图表
+            let html = '';
+            for (let i = 0; i < 7; i++) {
+                const dayIndex = (today.getDay() - 6 + i + 7) % 7;
+                const score = dayScores[dayIndex] || 0;
+                const height = Math.max(20, (score / 100) * 140);
+                
+                html += `
+                    <div class="chart-bar-wrapper">
+                        <div class="chart-bar" style="height: ${height}px;"></div>
+                        <div class="chart-label">${days[dayIndex]}</div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+
+            // 更新平均分
+            const scores = Object.values(dayScores);
+            const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : '--';
+            const avgDuration = records.length > 0 ? 
+                (records.reduce((sum, r) => sum + (r.duration || 0), 0) / records.length).toFixed(1) : '--';
+            
+            document.getElementById('weekAvgScore').textContent = avgScore;
+            document.getElementById('weekAvgDuration').textContent = avgDuration;
+        }
+
+        // ============ 订阅页面 ============
+        function checkSubscription() {
+            fetch('/api/subscription/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: currentUser })
+            })
+            .then(res => res.json())
+            .then(data => {
+                isPremium = data.isPremium;
+                renderSubscribe();
+                renderSounds('all');
+            });
+        }
+
+        function renderSubscribe() {
+            const container = document.getElementById('subscribeContent');
+            
+            if (isPremium) {
+                container.innerHTML = `
+                    <div class="premium-status">
+                        <div class="premium-badge-large">
+                            <span>💎</span>
+                            <span>高级会员</span>
+                        </div>
+                        <div class="premium-expires">有效期至: ${getPremiumExpiry()}</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">🎁 会员特权</div>
+                        <div class="premium-features">
+                            ${getFeaturesList().map(f => `
+                                <div class="feature-item">
+                                    <div class="feature-icon">✓</div>
+                                    <div class="feature-text">
+                                        <h5>${f.title}</h5>
+                                        <p>${f.desc}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="card" style="background: linear-gradient(135deg, var(--primary-dark), var(--dark)); text-align: center; padding: 32px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🌙</div>
+                        <div style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">睡眠管家高级会员</div>
+                        <div style="color: var(--text-secondary); margin-bottom: 24px;">
+                            <span style="font-size: 36px; font-weight: 700; color: var(--warning);">¥18</span>
+                            <span>/月</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">✨ 会员特权</div>
+                        <div class="premium-features">
+                            ${getFeaturesList().map(f => `
+                                <div class="feature-item">
+                                    <div class="feature-icon">✓</div>
+                                    <div class="feature-text">
+                                        <h5>${f.title}</h5>
+                                        <p>${f.desc}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <button class="subscribe-btn" onclick="subscribe()">
+                        立即开通 · ¥18/月
+                    </button>
+                    
+                    <div style="text-align: center; margin-top: 16px; color: var(--gray-light); font-size: 12px;">
+                        按月订阅 · 随时可取消
+                    </div>
+                `;
+            }
+        }
+
+        function getFeaturesList() {
+            return [
+                { title: '全部高级助眠音乐', desc: '解锁所有15+首专业助眠音乐' },
+                { title: '完整睡眠分析报告', desc: '获取详细的睡眠质量分析和建议' },
+                { title: '智能浅睡眠闹钟', desc: '在最佳时机唤醒，精神一整天' },
+                { title: '无限历史记录', desc: '云端保存所有睡眠数据' },
+                { title: '专属作息建议', desc: '基于数据的个性化改善方案' }
+            ];
+        }
+
+        function subscribe() {
+            // 模拟支付流程
+            showToast('正在唤起支付...');
+            
+            setTimeout(() => {
+                fetch('/api/subscription/activate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        isPremium = true;
+                        localStorage.setItem('premiumExpiry', data.expiresAt);
+                        showToast('开通成功！欢迎成为高级会员 💎');
+                        renderSubscribe();
+                        renderSounds('all');
+                    }
+                });
+            }, 1500);
+        }
+
+        function getPremiumExpiry() {
+            return localStorage.getItem('premiumExpiry') || '2024-12-31';
+        }
+    </script>
+</body>
+</html>

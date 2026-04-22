@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陪诊师预约 - 专业陪诊，全程陪同</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f5f5f5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+            color: white;
+            padding: 40px 24px;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(46, 125, 50, 0.3);
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+        /* 区块通用样式 */
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #4caf50, #2e7d32);
+            border-radius: 2px;
+        }
+        /* 痛点 */
+        .pain-points {
+            display: grid;
+            gap: 12px;
+        }
+        .pain-item {
+            background: #f8fdf8;
+            padding: 14px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-left: 3px solid #81c784;
+        }
+        .pain-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .pain-text {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        /* 服务内容 */
+        .services {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .service-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .service-card:hover {
+            transform: translateY(-2px);
+        }
+        .service-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .service-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2e7d32;
+        }
+        /* 价格 */
+        .pricing {
+            display: grid;
+            gap: 12px;
+        }
+        .price-card {
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #c8e6c9;
+        }
+        .price-card.featured {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+        }
+        .price-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .price-amount {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .price-note {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+        /* 流程 */
+        .process {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            position: relative;
+        }
+        .process::before {
+            content: "";
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, #81c784, #4caf50);
+        }
+        .step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .step-text {
+            font-size: 11px;
+            color: #666;
+            line-height: 1.4;
+        }
+        /* 支付 */
+        .payment {
+            text-align: center;
+        }
+        .payment-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .qr-card {
+            background: #f8fdf8;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .qr-card img {
+            width: 140px;
+            height: 140px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .qr-label {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .payment-note {
+            background: #fff8e1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #f57c00;
+            line-height: 1.6;
+        }
+        /* 联系 */
+        .contact {
+            text-align: center;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        }
+        .contact-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        .contact-email {
+            display: inline-block;
+            background: #2e7d32;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        /* CTA按钮 */
+        .cta-section {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            padding: 16px 48px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(46, 125, 50, 0.5);
+        }
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>🏥 陪诊师预约</h1>
+            <p>异地就医不孤单<br>专业陪诊全程陪同</p>
+        </div>
+
+        <!-- 痛点 -->
+        <div class="section">
+            <div class="section-title">您是否遇到这些困扰？</div>
+            <div class="pain-points">
+                <div class="pain-item">
+                    <span class="pain-icon">😰</span>
+                    <span class="pain-text">第一次去大医院，找不到科室，一脸迷茫</span>
+                </div>
+                <div class="pain-item">
+                    <span class="pain-icon">😢</span>
+                    <span class="pain-text">父母就医，自己在异地工作无法陪同</span>
+                </div>
+                <div class="pain-item">
+                    <span class="pain-icon">🤰</span>
+                    <span class="pain-text">孕期产检，一个人挺着大肚子不方便</span>
+                </div>
+                <div class="pain-item">
+                    <span class="pain-icon">📱</span>
+                    <span class="pain-text">老年人不会用智能挂号，看病难</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务内容 -->
+        <div class="section">
+            <div class="section-title">我们的服务</div>
+            <div class="services">
+                <div class="service-card">
+                    <div class="service-icon">🚶</div>
+                    <div class="service-name">全程陪同就医</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📋</div>
+                    <div class="service-name">就医流程规划</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📄</div>
+                    <div class="service-name">代取检查报告</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🚗</div>
+                    <div class="service-name">上门接送服务</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务价格 -->
+        <div class="section">
+            <div class="section-title">透明定价</div>
+            <div class="pricing">
+                <div class="price-card">
+                    <div>
+                        <div class="price-name">半天陪诊</div>
+                        <div class="price-note">4小时内</div>
+                    </div>
+                    <div class="price-amount">¥138</div>
+                </div>
+                <div class="price-card featured">
+                    <div>
+                        <div class="price-name">全天陪诊</div>
+                        <div class="price-note">8小时内 · 热门推荐</div>
+                    </div>
+                    <div class="price-amount">¥198</div>
+                </div>
+                <div class="price-card">
+                    <div>
+                        <div class="price-name">高峰时段加价</div>
+                        <div class="price-note">周一及节假日</div>
+                    </div>
+                    <div class="price-amount">+¥40~70</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务流程 -->
+        <div class="section">
+            <div class="section-title">预约流程</div>
+            <div class="process">
+                <div class="step">
+                    <div class="step-icon">1</div>
+                    <div class="step-text">选择陪诊师<br>查看评价</div>
+                </div>
+                <div class="step">
+                    <div class="step-icon">2</div>
+                    <div class="step-text">确认服务<br>时间地点</div>
+                </div>
+                <div class="step">
+                    <div class="step-icon">3</div>
+                    <div class="step-text">支付<br>定金</div>
+                </div>
+                <div class="step">
+                    <div class="step-icon">4</div>
+                    <div class="step-text">服务完成<br>付尾款</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 支付 -->
+        <div class="section payment">
+            <div class="payment-title">💳 立即预约</div>
+            <div class="payment-methods">
+                <div class="qr-card">
+                    <img src="../assets/alipay.jpg" alt="支付宝付款">
+                    <div class="qr-label">📱 支付宝</div>
+                </div>
+                <div class="qr-card">
+                    <img src="../assets/wechat.png" alt="微信付款">
+                    <div class="qr-label">💬 微信支付</div>
+                </div>
+            </div>
+            <div class="payment-note">
+                ⚠️ 扫码支付<span style="font-weight:600">定金¥50</span>，剩余尾款服务完成后支付<br>
+                支付后请联系邮箱确认预约时间
+            </div>
+        </div>
+
+        <!-- 联系 -->
+        <div class="section contact">
+            <div class="section-title" style="justify-content:center;">联系我们</div>
+            <p class="contact-text">有任何问题欢迎咨询</p>
+            <a href="mailto:xiaojin@coze.email" class="contact-email">📧 xiaojin@coze.email</a>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <a href="mailto:xiaojin@coze.email" class="cta-button">立即预约陪诊服务</a>
+        </div>
+
+        <!-- 底部 -->
+        <div class="footer">
+            <p>© 2024 陪诊师预约 · 专业陪诊服务</p>
+        </div>
+    </div>
+</body>
+</html>

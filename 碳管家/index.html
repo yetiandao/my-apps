@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碳管家 - 企业碳排放管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #0891b2;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #22c55e;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(15deg);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .logo span {
+            opacity: 0.9;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .header-desc {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        input, select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .input-hint {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* Section */
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin: 1.5rem 0 1rem;
+            padding-left: 0.75rem;
+            border-left: 3px solid var(--primary);
+        }
+
+        /* Button */
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results */
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        /* Summary Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-value.warning {
+            color: var(--warning);
+        }
+
+        .stat-value.danger {
+            color: var(--danger);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        /* Breakdown */
+        .breakdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        .breakdown-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .breakdown-icon.electricity { background: #fef3c7; }
+        .breakdown-icon.transport { background: #dbeafe; }
+        .breakdown-icon.fuel { background: #fee2e2; }
+        .breakdown-icon.waste { background: #d1fae5; }
+
+        .breakdown-info {
+            flex: 1;
+        }
+
+        .breakdown-name {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .breakdown-bar {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .breakdown-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .breakdown-value {
+            text-align: right;
+            min-width: 120px;
+        }
+
+        .breakdown-kg {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .breakdown-percent {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        /* Compliance Status */
+        .compliance-status {
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .compliance-status.excellent {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        }
+
+        .compliance-status.good {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+
+        .compliance-status.warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+
+        .compliance-status.exceeded {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        }
+
+        .compliance-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .compliance-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .compliance-rate {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .compliance-desc {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-top: 0.5rem;
+        }
+
+        /* Suggestions */
+        .suggestions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .suggestion-number {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .suggestion-text {
+            color: var(--gray-700);
+            font-size: 0.9375rem;
+        }
+
+        /* Report */
+        .report-section {
+            margin-top: 1.5rem;
+        }
+
+        .report-content {
+            background: var(--gray-900);
+            color: var(--gray-100);
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .report-actions .btn {
+            flex: 1;
+        }
+
+        /* Pricing Banner */
+        .pricing-banner {
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pricing-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pricing-info p {
+            opacity: 0.8;
+            font-size: 0.875rem;
+        }
+
+        .pricing-price {
+            text-align: right;
+        }
+
+        .pricing-price .amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .pricing-price .period {
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--gray-900);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .pricing-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pricing-price {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🌱</div>
+                <div>
+                    <h1>碳管家</h1>
+                    <span>Carbon Manager</span>
+                </div>
+            </div>
+            <p class="header-desc">
+                企业碳排放智能管理平台 · 输入数据 · AI自动计算 · 生成合规报告
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Input Form -->
+        <div class="card" id="inputSection">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                <h2 class="card-title">企业碳排放数据录入</h2>
+            </div>
+
+            <form id="emissionForm">
+                <!-- Basic Info -->
+                <h3 class="section-title">企业基本信息</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="companyName">企业名称</label>
+                        <input type="text" id="companyName" name="companyName" placeholder="请输入企业名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="industry">所属行业</label>
+                        <select id="industry" name="industry" required>
+                            <option value="manufacturing">制造业</option>
+                            <option value="retail">零售业</option>
+                            <option value="service" selected>服务业</option>
+                            <option value="technology">科技业</option>
+                            <option value="finance">金融业</option>
+                            <option value="construction">建筑业</option>
+                            <option value="transportation">交通运输业</option>
+                            <option value="energy">能源行业</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="annualRevenue">年营收规模（万元）</label>
+                        <input type="number" id="annualRevenue" name="annualRevenue" placeholder="如：1000" min="0" required>
+                    </div>
+                </div>
+
+                <!-- Electricity -->
+                <h3 class="section-title">电力消耗</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="electricityKwh">用电量（千瓦时/kWh）</label>
+                        <input type="number" id="electricityKwh" name="electricityKwh" placeholder="如：10000" min="0">
+                        <span class="input-hint">参考系数：0.7039 kg CO₂/kWh</span>
+                    </div>
+                </div>
+
+                <!-- Transportation -->
+                <h3 class="section-title">交通运输</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="carKm">私家车里程（km）</label>
+                        <input type="number" id="carKm" name="carKm" placeholder="如：5000" min="0">
+                        <span class="input-hint">参考系数：0.192 kg CO₂/km</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="busKm">公交里程（km）</label>
+                        <input type="number" id="busKm" name="busKm" placeholder="如：1000" min="0">
+                        <span class="input-hint">参考系数：0.089 kg CO₂/km</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="flightDomesticKm">国内航班里程（km）</label>
+                        <input type="number" id="flightDomesticKm" name="flightDomesticKm" placeholder="如：2000" min="0">
+                        <span class="input-hint">参考系数：0.139 kg CO₂/km</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="flightInternationalKm">国际航班里程（km）</label>
+                        <input type="number" id="flightInternationalKm" name="flightInternationalKm" placeholder="如：5000" min="0">
+                        <span class="input-hint">参考系数：0.115 kg CO₂/km</span>
+                    </div>
+                </div>
+
+                <!-- Fuel -->
+                <h3 class="section-title">燃料消耗</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="gasolineLiters">汽油消耗（升）</label>
+                        <input type="number" id="gasolineLiters" name="gasolineLiters" placeholder="如：1000" min="0">
+                        <span class="input-hint">参考系数：2.36 kg CO₂/升</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="dieselLiters">柴油消耗（升）</label>
+                        <input type="number" id="dieselLiters" name="dieselLiters" placeholder="如：500" min="0">
+                        <span class="input-hint">参考系数：2.68 kg CO₂/升</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="naturalGasM3">天然气消耗（立方米）</label>
+                        <input type="number" id="naturalGasM3" name="naturalGasM3" placeholder="如：1000" min="0">
+                        <span class="input-hint">参考系数：2.02 kg CO₂/m³</span>
+                    </div>
+                </div>
+
+                <!-- Waste -->
+                <h3 class="section-title">废弃物处理</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="landfillTons">填埋（吨）</label>
+                        <input type="number" id="landfillTons" name="landfillTons" placeholder="如：10" min="0" step="0.1">
+                        <span class="input-hint">参考系数：400 kg CO₂/吨</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="incinerationTons">焚烧（吨）</label>
+                        <input type="number" id="incinerationTons" name="incinerationTons" placeholder="如：5" min="0" step="0.1">
+                        <span class="input-hint">参考系数：857 kg CO₂/吨</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="recyclingTons">回收处理（吨）</label>
+                        <input type="number" id="recyclingTons" name="recyclingTons" placeholder="如：3" min="0" step="0.1">
+                        <span class="input-hint">参考系数：50 kg CO₂/吨</span>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" id="calculateBtn">
+                        <span>🚀</span> 计算碳排放
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                        <span>🔄</span> 重置数据
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading -->
+        <div class="card loading" id="loadingSection">
+            <div class="loading active">
+                <div class="spinner"></div>
+                <p>正在计算碳排放数据...</p>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card results" id="resultsSection">
+            <div class="card-header">
+                <div class="card-icon">📋</div>
+                <h2 class="card-title">碳排放分析报告</h2>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalEmission">0</div>
+                    <div class="stat-label">总排放量（kg CO₂）</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalEmissionTons">0</div>
+                    <div class="stat-label">总排放量（吨）</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="complianceRate">0%</div>
+                    <div class="stat-label">合规率</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="suggestionCount">0</div>
+                    <div class="stat-label">减排建议数</div>
+                </div>
+            </div>
+
+            <!-- Compliance Status -->
+            <div class="compliance-status" id="complianceStatus">
+                <div class="compliance-icon" id="complianceIcon">✓</div>
+                <div class="compliance-title" id="complianceTitle">合规状态</div>
+                <div class="compliance-rate" id="complianceRateValue">0%</div>
+                <div class="compliance-desc" id="complianceDesc">描述信息</div>
+            </div>
+
+            <!-- Breakdown -->
+            <h3 class="section-title">排放构成分析</h3>
+            <div class="breakdown-list" id="breakdownList">
+                <!-- Dynamic content -->
+            </div>
+
+            <!-- Suggestions -->
+            <h3 class="section-title">减排建议</h3>
+            <div class="suggestions-list" id="suggestionsList">
+                <!-- Dynamic content -->
+            </div>
+
+            <!-- Report -->
+            <div class="report-section">
+                <h3 class="section-title">完整报告</h3>
+                <div class="report-content" id="reportContent">
+                    <!-- Dynamic content -->
+                </div>
+                <div class="report-actions">
+                    <button class="btn btn-secondary" onclick="copyReport()">
+                        <span>📋</span> 复制报告
+                    </button>
+                    <button class="btn btn-primary" onclick="downloadReport()">
+                        <span>💾</span> 下载报告
+                    </button>
+                </div>
+            </div>
+
+            <!-- New Calculation -->
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="showInputForm()">
+                    <span>🔄</span> 新建计算
+                </button>
+            </div>
+        </div>
+
+        <!-- Pricing Banner -->
+        <div class="pricing-banner">
+            <div class="pricing-info">
+                <h3>💎 升级专业版</h3>
+                <p>无限次计算 · 批量数据导入 · 专属客服 · API接口</p>
+            </div>
+            <div class="pricing-price">
+                <span class="amount">¥299</span>
+                <span class="period">/月卡</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 碳管家 Carbon Manager · 基于IPCC标准简化模型 · 仅供参考</p>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API Base URL - 默认为本地开发服务器
+        const API_BASE = 'http://localhost:5000/api';
+
+        // Form submission
+        document.getElementById('emissionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const companyName = document.getElementById('companyName').value;
+            const industry = document.getElementById('industry').value;
+            const annualRevenue = parseFloat(document.getElementById('annualRevenue').value) || 0;
+
+            // Gather data
+            const data = {
+                company_name: companyName,
+                industry: industry,
+                annual_revenue: annualRevenue,
+                electricity_kwh: parseFloat(document.getElementById('electricityKwh').value) || 0,
+                transport: {
+                    car_km: parseFloat(document.getElementById('carKm').value) || 0,
+                    bus_km: parseFloat(document.getElementById('busKm').value) || 0,
+                    flight_domestic_km: parseFloat(document.getElementById('flightDomesticKm').value) || 0,
+                    flight_international_km: parseFloat(document.getElementById('flightInternationalKm').value) || 0
+                },
+                fuel: {
+                    gasoline_liters: parseFloat(document.getElementById('gasolineLiters').value) || 0,
+                    diesel_liters: parseFloat(document.getElementById('dieselLiters').value) || 0,
+                    natural_gas_m3: parseFloat(document.getElementById('naturalGasM3').value) || 0
+                },
+                waste: {
+                    landfill_tons: parseFloat(document.getElementById('landfillTons').value) || 0,
+                    incineration_tons: parseFloat(document.getElementById('incinerationTons').value) || 0,
+                    recycling_tons: parseFloat(document.getElementById('recyclingTons').value) || 0
+                }
+            };
+
+            // Show loading
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_BASE}/calculate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayResults(result);
+                } else {
+                    showToast('计算失败：' + result.error);
+                    showInputForm();
+                }
+            } catch (error) {
+                console.error('API Error:', error);
+                showToast('连接服务器失败，请确保后端服务已启动');
+                showInputForm();
+            }
+        });
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            document.getElementById('emissionForm').reset();
+            showInputForm();
+        });
+
+        function showLoading() {
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('resultsSection').classList.remove('active');
+        }
+
+        function showInputForm() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultsSection').classList.remove('active');
+        }
+
+        function showResults() {
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultsSection').classList.add('active');
+        }
+
+        let currentReport = '';
+
+        function displayResults(result) {
+            currentReport = result.report;
+            
+            // Stats
+            document.getElementById('totalEmission').textContent = formatNumber(result.total_emission_kg);
+            document.getElementById('totalEmissionTons').textContent = result.total_emission_tons.toFixed(3);
+            document.getElementById('complianceRate').textContent = result.compliance.compliance_rate + '%';
+            document.getElementById('suggestionCount').textContent = result.suggestions.length;
+
+            // Compliance Status
+            const compliance = result.compliance;
+            const statusEl = document.getElementById('complianceStatus');
+            statusEl.className = 'compliance-status ' + compliance.status;
+            
+            const icons = {
+                'excellent': '🏆',
+                'good': '✓',
+                'warning': '⚠',
+                'exceeded': '✗'
+            };
+            const titles = {
+                'excellent': '表现优秀',
+                'good': '符合要求',
+                'warning': '需要关注',
+                'exceeded': '超标警告'
+            };
+            
+            document.getElementById('complianceIcon').textContent = icons[compliance.status];
+            document.getElementById('complianceTitle').textContent = titles[compliance.status];
+            document.getElementById('complianceRateValue').textContent = compliance.compliance_rate + '%';
+            document.getElementById('complianceDesc').textContent = 
+                `允许排放量：${compliance.allowed_emission_tons}吨 | 实际排放：${compliance.total_emission_tons}吨 | 差额：${compliance.difference_tons}吨`;
+
+            // Breakdown
+            const breakdownList = document.getElementById('breakdownList');
+            const breakdown = result.breakdown;
+            const totalEmission = result.total_emission_kg;
+            
+            const breakdownNames = {
+                'electricity': { name: '电力消耗', icon: '💡' },
+                'transport': { name: '交通运输', icon: '🚗' },
+                'fuel': { name: '燃料燃烧', icon: '🔥' },
+                'waste': { name: '废弃物处理', icon: '🗑' }
+            };
+
+            let breakdownHTML = '';
+            for (const [key, value] of Object.entries(breakdown)) {
+                const info = breakdownNames[key] || { name: key, icon: '📊' };
+                const percentage = ((value / totalEmission) * 100).toFixed(1);
+                
+                breakdownHTML += `
+                    <div class="breakdown-item">
+                        <div class="breakdown-icon ${key}">${info.icon}</div>
+                        <div class="breakdown-info">
+                            <div class="breakdown-name">${info.name}</div>
+                            <div class="breakdown-bar">
+                                <div class="breakdown-bar-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                        <div class="breakdown-value">
+                            <div class="breakdown-kg">${formatNumber(value)} kg</div>
+                            <div class="breakdown-percent">${percentage}%</div>
+                        </div>
+                    </div>
+                `;
+            }
+            breakdownList.innerHTML = breakdownHTML;
+
+            // Suggestions
+            const suggestionsList = document.getElementById('suggestionsList');
+            let suggestionsHTML = '';
+            result.suggestions.forEach((suggestion, index) => {
+                suggestionsHTML += `
+                    <div class="suggestion-item">
+                        <div class="suggestion-number">${index + 1}</div>
+                        <div class="suggestion-text">${suggestion}</div>
+                    </div>
+                `;
+            });
+            suggestionsList.innerHTML = suggestionsHTML;
+
+            // Report
+            document.getElementById('reportContent').textContent = result.report;
+
+            // Show results
+            showResults();
+        }
+
+        function formatNumber(num) {
+            return num.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+        }
+
+        function copyReport() {
+            navigator.clipboard.writeText(currentReport).then(() => {
+                showToast('报告已复制到剪贴板');
+            }).catch(() => {
+                showToast('复制失败，请手动复制');
+            });
+        }
+
+        function downloadReport() {
+            const blob = new Blob([currentReport], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `碳排放报告_${new Date().toISOString().slice(0,10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('报告下载成功');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Demo mode - when API is not available
+        async function initDemo() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (!response.ok) {
+                    throw new Error('API not available');
+                }
+            } catch (error) {
+                // API not available, could show demo mode notice
+                console.log('API server not available. Please start the backend server.');
+            }
+        }
+
+        initDemo();
+    </script>
+</body>
+</html>

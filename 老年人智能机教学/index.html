@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>老年人智能机教学</title>
+    
+    <style>
+        /* ============================================
+           适老化设计核心变量
+           ============================================ */
+        :root {
+            --font-size-large: 24px;
+            --font-size-medium: 20px;
+            --font-size-small: 18px;
+            --button-height: 60px;
+            --button-radius: 16px;
+            --spacing-large: 24px;
+            --spacing-medium: 16px;
+            --spacing-small: 12px;
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --danger-color: #E53935;
+            --background-color: #F5F5F5;
+            --card-background: #FFFFFF;
+            --text-primary: #212121;
+            --text-secondary: #616161;
+            --border-color: #E0E0E0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* ============================================
+           基础样式重置
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            font-size: var(--font-size-medium);
+            line-height: 1.8;
+            color: var(--text-primary);
+            background-color: var(--background-color);
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        /* ============================================
+           顶部导航栏
+           ============================================ */
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: var(--spacing-large);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: var(--font-size-small);
+            opacity: 0.9;
+        }
+
+        /* ============================================
+           底部导航栏 - 适老化大按钮
+           ============================================ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: var(--spacing-small) 0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--spacing-small);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            min-width: 80px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item .icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item .label {
+            font-size: var(--font-size-small);
+            font-weight: 500;
+        }
+
+        /* ============================================
+           主内容区域
+           ============================================ */
+        .main-content {
+            padding: var(--spacing-medium);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================
+           卡片通用样式
+           ============================================ */
+        .card {
+            background: var(--card-background);
+            border-radius: var(--button-radius);
+            padding: var(--spacing-large);
+            margin-bottom: var(--spacing-medium);
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: var(--font-size-large);
+            font-weight: bold;
+            margin-bottom: var(--spacing-medium);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-small);
+        }
+
+        /* ============================================
+           快捷入口 - 大图标适老化设计
+           ============================================ */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-medium);
+            padding: var(--spacing-medium);
+        }
+
+        .quick-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-large);
+            border-radius: var(--button-radius);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 100px;
+            box-shadow: var(--shadow);
+        }
+
+        .quick-action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quick-action-btn .icon {
+            font-size: 40px;
+            margin-bottom: var(--spacing-small);
+        }
+
+        .quick-action-btn .label {
+            font-size: var(--font-size-small);
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* ============================================
+           教程分类列表
+           ============================================ */
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-medium);
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-large);
+            background: var(--card-background);
+            border-radius: var(--button-radius);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .category-item:active {
+            transform: scale(0.98);
+        }
+
+        .category-item .icon {
+            font-size: 48px;
+            margin-right: var(--spacing-large);
+        }
+
+        .category-item .info {
+            flex: 1;
+        }
+
+        .category-item .name {
+            font-size: var(--font-size-large);
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .category-item .desc {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .category-item .arrow {
+            font-size: 24px;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           教程列表
+           ============================================ */
+        .tutorial-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-medium);
+        }
+
+        .tutorial-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-large);
+            background: var(--card-background);
+            border-radius: var(--button-radius);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .tutorial-item:active {
+            transform: scale(0.98);
+        }
+
+        .tutorial-item .info {
+            flex: 1;
+        }
+
+        .tutorial-item .title {
+            font-size: var(--font-size-medium);
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .tutorial-item .meta {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .tutorial-item .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 16px;
+            margin-right: 8px;
+        }
+
+        .badge-easy {
+            background: #E8F5E9;
+            color: #4CAF50;
+        }
+
+        .badge-medium {
+            background: #FFF3E0;
+            color: #FF9800;
+        }
+
+        .badge-hard {
+            background: #FFEBEE;
+            color: #E53935;
+        }
+
+        .tutorial-item .arrow {
+            font-size: 24px;
+            color: var(--text-secondary);
+            margin-left: var(--spacing-medium);
+        }
+
+        /* ============================================
+           教程详情页
+           ============================================ */
+        .tutorial-detail {
+            padding: var(--spacing-medium);
+        }
+
+        .tutorial-header {
+            background: var(--card-background);
+            border-radius: var(--button-radius);
+            padding: var(--spacing-large);
+            margin-bottom: var(--spacing-medium);
+            box-shadow: var(--shadow);
+        }
+
+        .tutorial-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: var(--spacing-small);
+        }
+
+        .tutorial-meta {
+            display: flex;
+            gap: var(--spacing-medium);
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+        }
+
+        .tutorial-content {
+            background: var(--card-background);
+            border-radius: var(--button-radius);
+            padding: var(--spacing-large);
+            margin-bottom: var(--spacing-medium);
+            box-shadow: var(--shadow);
+        }
+
+        .step-item {
+            margin-bottom: var(--spacing-large);
+            padding-bottom: var(--spacing-large);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .step-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-medium);
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-medium);
+            font-weight: bold;
+            margin-right: var(--spacing-medium);
+        }
+
+        .step-title {
+            font-size: var(--font-size-large);
+            font-weight: bold;
+        }
+
+        .step-content {
+            font-size: var(--font-size-medium);
+            line-height: 2;
+            color: var(--text-primary);
+            padding-left: 64px;
+        }
+
+        .step-image {
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+            background: #E8F5E9;
+            border-radius: var(--button-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: var(--spacing-medium) 0 var(--spacing-medium) 64px;
+            font-size: 64px;
+        }
+
+        /* ============================================
+           大按钮 - 适老化核心
+           ============================================ */
+        .big-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-large) var(--spacing-large);
+            border-radius: var(--button-radius);
+            border: none;
+            font-size: var(--font-size-large);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: var(--button-height);
+            width: 100%;
+            margin-bottom: var(--spacing-medium);
+        }
+
+        .big-button:active {
+            transform: scale(0.98);
+        }
+
+        .big-button-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .big-button-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .big-button-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .big-button-outline {
+            background: white;
+            color: var(--primary-color);
+            border: 3px solid var(--primary-color);
+        }
+
+        .big-button .icon {
+            margin-right: var(--spacing-small);
+            font-size: 28px;
+        }
+
+        /* ============================================
+           VIP/会员区域
+           ============================================ */
+        .vip-banner {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: var(--button-radius);
+            padding: var(--spacing-large);
+            margin-bottom: var(--spacing-medium);
+            color: #5D4037;
+            text-align: center;
+        }
+
+        .vip-banner h3 {
+            font-size: var(--font-size-large);
+            margin-bottom: var(--spacing-small);
+        }
+
+        .vip-banner p {
+            font-size: var(--font-size-small);
+            margin-bottom: var(--spacing-medium);
+        }
+
+        .vip-price {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--danger-color);
+        }
+
+        /* ============================================
+           用户反馈
+           ============================================ */
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-medium);
+        }
+
+        .feedback-item {
+            background: var(--card-background);
+            border-radius: var(--button-radius);
+            padding: var(--spacing-large);
+            box-shadow: var(--shadow);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-small);
+        }
+
+        .feedback-avatar {
+            font-size: 40px;
+            margin-right: var(--spacing-small);
+        }
+
+        .feedback-name {
+            font-size: var(--font-size-medium);
+            font-weight: bold;
+        }
+
+        .feedback-age {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+        }
+
+        .feedback-content {
+            font-size: var(--font-size-medium);
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        /* ============================================
+           语音播报浮动按钮
+           ============================================ */
+        .voice-float-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 100px;
+            width: 70px;
+            height: 70px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 4px 16px rgba(33, 150, 243, 0.4);
+            cursor: pointer;
+            z-index: 99;
+            border: none;
+        }
+
+        .voice-float-btn.playing {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* ============================================
+           搜索功能
+           ============================================ */
+        .search-box {
+            display: flex;
+            gap: var(--spacing-small);
+            margin-bottom: var(--spacing-medium);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: var(--spacing-medium);
+            font-size: var(--font-size-medium);
+            border: 2px solid var(--border-color);
+            border-radius: var(--button-radius);
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            padding: var(--spacing-medium) var(--spacing-large);
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--button-radius);
+            font-size: var(--font-size-medium);
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ============================================
+           协助页面
+           ============================================ */
+        .assistance-section {
+            text-align: center;
+            padding: var(--spacing-large);
+        }
+
+        .assistance-icon {
+            font-size: 80px;
+            margin-bottom: var(--spacing-large);
+        }
+
+        .assistance-title {
+            font-size: var(--font-size-large);
+            font-weight: bold;
+            margin-bottom: var(--spacing-medium);
+        }
+
+        .assistance-desc {
+            font-size: var(--font-size-medium);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-large);
+            line-height: 1.8;
+        }
+
+        .phone-input {
+            width: 100%;
+            padding: var(--spacing-large);
+            font-size: var(--font-size-large);
+            border: 3px solid var(--border-color);
+            border-radius: var(--button-radius);
+            text-align: center;
+            margin-bottom: var(--spacing-large);
+            outline: none;
+        }
+
+        .phone-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* ============================================
+           工具页面
+           ============================================ */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-medium);
+        }
+
+        .tool-item {
+            background: var(--card-background);
+            border-radius: var(--button-radius);
+            padding: var(--spacing-large);
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .tool-item:active {
+            transform: scale(0.95);
+        }
+
+        .tool-item .icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-small);
+        }
+
+        .tool-item .name {
+            font-size: var(--font-size-medium);
+            font-weight: bold;
+        }
+
+        .tool-item .desc {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ============================================
+           设置页面
+           ============================================ */
+        .setting-list {
+            background: var(--card-background);
+            border-radius: var(--button-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-large);
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-item .icon {
+            font-size: 28px;
+            margin-right: var(--spacing-medium);
+        }
+
+        .setting-item .label {
+            flex: 1;
+            font-size: var(--font-size-medium);
+            text-align: left;
+        }
+
+        .setting-item .value {
+            font-size: var(--font-size-small);
+            color: var(--text-secondary);
+        }
+
+        .setting-item .arrow {
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           弹窗
+           ============================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-large);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--button-radius);
+            padding: var(--spacing-large);
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: var(--font-size-large);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: var(--spacing-large);
+        }
+
+        .modal-close {
+            display: block;
+            margin: var(--spacing-large) auto 0;
+            padding: var(--spacing-medium) var(--spacing-large);
+            background: var(--text-secondary);
+            color: white;
+            border: none;
+            border-radius: var(--button-radius);
+            font-size: var(--font-size-medium);
+            cursor: pointer;
+        }
+
+        /* ============================================
+           空状态
+           ============================================ */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-large) * 2;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-medium);
+        }
+
+        .empty-state p {
+            font-size: var(--font-size-medium);
+        }
+
+        /* ============================================
+           返回按钮
+           ============================================ */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-medium);
+            background: var(--card-background);
+            border: none;
+            cursor: pointer;
+            font-size: var(--font-size-medium);
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-medium);
+            border-radius: var(--button-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .back-btn .icon {
+            margin-right: var(--spacing-small);
+            font-size: 24px;
+        }
+
+        /* ============================================
+           Toast提示
+           ============================================ */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: var(--spacing-large) var(--spacing-large) * 2;
+            border-radius: var(--button-radius);
+            font-size: var(--font-size-medium);
+            z-index: 2000;
+            display: none;
+        }
+
+        .toast.active {
+            display: block;
+            animation: toastIn 0.3s ease;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* ============================================
+           响应式适配
+           ============================================ */
+        @media (max-width: 360px) {
+            :root {
+                --font-size-large: 22px;
+                --font-size-medium: 18px;
+                --font-size-small: 16px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* ============================================
+           进度指示器
+           ============================================ */
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: var(--spacing-medium) 0;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+        }
+
+        .progress-dot.active {
+            background: var(--primary-color);
+            width: 24px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <h1>📱 智能手机教学</h1>
+        <p>简单易学，子女更安心</p>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <!-- VIP Banner -->
+            <div class="vip-banner">
+                <h3>🌟 年卡会员特权</h3>
+                <p>解锁全部教程 + 一对一指导</p>
+                <div class="vip-price">¥99/年</div>
+                <button class="big-button big-button-danger" onclick="showVipModal()" style="margin-top: 16px;">
+                    立即开通
+                </button>
+            </div>
+
+            <!-- 快捷入口 -->
+            <div class="card">
+                <div class="card-title">⚡ 常用功能</div>
+                <div class="quick-actions" id="quick-actions">
+                    <!-- 由JS动态渲染 -->
+                </div>
+            </div>
+
+            <!-- 教程分类 -->
+            <div class="card">
+                <div class="card-title">📚 学习中心</div>
+                <div class="category-list" id="category-list">
+                    <!-- 由JS动态渲染 -->
+                </div>
+            </div>
+
+            <!-- 用户评价 -->
+            <div class="card">
+                <div class="card-title">💬 学员评价</div>
+                <div class="feedback-list" id="feedback-list">
+                    <!-- 由JS动态渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 教程分类页 -->
+        <div id="page-category" class="page">
+            <button class="back-btn" onclick="showPage('home')">
+                <span class="icon">←</span> 返回首页
+            </button>
+            <div class="card">
+                <div class="card-title" id="category-title">教程分类</div>
+                <div class="tutorial-list" id="tutorial-list">
+                    <!-- 由JS动态渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 教程详情页 -->
+        <div id="page-tutorial" class="page">
+            <button class="back-btn" onclick="goBack()">
+                <span class="icon">←</span> 返回
+            </button>
+            <div id="tutorial-detail-content">
+                <!-- 由JS动态渲染 -->
+            </div>
+        </div>
+
+        <!-- 学习页 -->
+        <div id="page-learn" class="page">
+            <button class="back-btn" onclick="showPage('home')">
+                <span class="icon">←</span> 返回首页
+            </button>
+            <div class="card">
+                <div class="card-title">📚 全部教程</div>
+                <div class="search-box">
+                    <input type="text" class="search-input" id="search-input" placeholder="搜索想学的内容...">
+                    <button class="search-btn" onclick="searchTutorials()">搜索</button>
+                </div>
+                <div class="category-list" id="learn-category-list">
+                    <!-- 由JS动态渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 协助页 -->
+        <div id="page-assistance" class="page">
+            <div class="card">
+                <div class="assistance-section">
+                    <div class="assistance-icon">👨‍👩‍👧‍👦</div>
+                    <div class="assistance-title">子女远程协助</div>
+                    <div class="assistance-desc">
+                        遇到操作困难时，可以一键请求子女协助。<br>
+                        您的子女会收到通知，帮助您解决问题。
+                    </div>
+                    <input type="tel" class="phone-input" id="assistance-phone" 
+                           placeholder="请输入您的手机号码" maxlength="11">
+                    <button class="big-button big-button-primary" onclick="requestAssistance()">
+                        <span class="icon">📞</span> 请求协助
+                    </button>
+                    <div style="margin-top: 24px; color: var(--text-secondary); font-size: 16px;">
+                        <p>或联系客服热线</p>
+                        <p style="font-size: 24px; color: var(--primary-color); font-weight: bold; margin-top: 8px;">
+                            400-123-4567
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具页 -->
+        <div id="page-tools" class="page">
+            <div class="card">
+                <div class="card-title">🛠️ 实用工具</div>
+                <div class="tool-grid">
+                    <button class="tool-item" onclick="useCalculator()">
+                        <div class="icon">🧮</div>
+                        <div class="name">计算器</div>
+                        <div class="desc">简单加减乘除</div>
+                    </button>
+                    <button class="tool-item" onclick="useNotepad()">
+                        <div class="icon">📝</div>
+                        <div class="name">记事本</div>
+                        <div class="desc">记录重要事项</div>
+                    </button>
+                    <button class="tool-item" onclick="useMagnifier()">
+                        <div class="icon">🔍</div>
+                        <div class="name">放大镜</div>
+                        <div class="desc">放大屏幕内容</div>
+                    </button>
+                    <button class="tool-item" onclick="useEmergency()">
+                        <div class="icon">🆘</div>
+                        <div class="name">紧急呼叫</div>
+                        <div class="desc">一键拨打急救</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置页 -->
+        <div id="page-settings" class="page">
+            <div class="card">
+                <div class="card-title">⚙️ 设置</div>
+                <div class="setting-list">
+                    <div class="setting-item" onclick="toggleVoice()">
+                        <span class="icon">🔊</span>
+                        <span class="label">语音播报</span>
+                        <span class="value" id="voice-status">已开启</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="setting-item" onclick="toggleFontSize()">
+                        <span class="icon">🔤</span>
+                        <span class="label">字体大小</span>
+                        <span class="value" id="font-size-status">大</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="setting-item" onclick="showVipModal()">
+                        <span class="icon">💎</span>
+                        <span class="label">会员中心</span>
+                        <span class="value">未开通</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="setting-item" onclick="showAbout()">
+                        <span class="icon">ℹ️</span>
+                        <span class="label">关于我们</span>
+                        <span class="arrow">›</span>
+                    </div>
+                    <div class="setting-item" onclick="showHelp()">
+                        <span class="icon">❓</span>
+                        <span class="label">使用帮助</span>
+                        <span class="arrow">›</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 16px; text-align: center;">
+                <p style="color: var(--text-secondary); font-size: 14px;">版本 1.0.0</p>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">老年人智能手机教学</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航栏 -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-page="home" onclick="showPage('home')">
+            <span class="icon">🏠</span>
+            <span class="label">首页</span>
+        </button>
+        <button class="nav-item" data-page="learn" onclick="showPage('learn')">
+            <span class="icon">📚</span>
+            <span class="label">学习</span>
+        </button>
+        <button class="nav-item" data-page="assistance" onclick="showPage('assistance')">
+            <span class="icon">🆘</span>
+            <span class="label">协助</span>
+        </button>
+        <button class="nav-item" data-page="tools" onclick="showPage('tools')">
+            <span class="icon">🛠️</span>
+            <span class="label">工具</span>
+        </button>
+        <button class="nav-item" data-page="settings" onclick="showPage('settings')">
+            <span class="icon">⚙️</span>
+            <span class="label">设置</span>
+        </button>
+    </nav>
+
+    <!-- 语音播报浮动按钮 -->
+    <button class="voice-float-btn" id="voice-btn" onclick="toggleVoiceRead()">
+        🔊
+    </button>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal" id="vip-modal">
+        <div class="modal-content">
+            <div class="modal-title">🌟 开通年卡会员</div>
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 48px; margin-bottom: 16px;">💎</div>
+                <div style="font-size: 32px; color: var(--danger-color); font-weight: bold; margin-bottom: 16px;">
+                    ¥99 <span style="font-size: 18px; color: var(--text-secondary);">/ 年</span>
+                </div>
+                <div style="text-align: left; font-size: 18px; line-height: 2;">
+                    <p>✓ 全部教程无限学习</p>
+                    <p>✓ 一对一专属指导</p>
+                    <p>✓ 优先子女协助通道</p>
+                    <p>✓ 持续更新新课程</p>
+                </div>
+            </div>
+            <button class="big-button big-button-primary" onclick="subscribeVip()">
+                微信支付立即开通
+            </button>
+            <button class="modal-close" onclick="closeModal('vip-modal')">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- 关于弹窗 -->
+    <div class="modal" id="about-modal">
+        <div class="modal-content">
+            <div class="modal-title">关于我们</div>
+            <div style="text-align: center; padding: 20px 0; font-size: 18px; line-height: 2;">
+                <p style="font-size: 24px; margin-bottom: 16px;">📱 老年人智能机教学</p>
+                <p>专为老年朋友设计的</p>
+                <p>智能手机学习应用</p>
+                <p style="margin-top: 16px;">大字体 · 简单学 · 随时问</p>
+            </div>
+            <button class="modal-close" onclick="closeModal('about-modal')">我知道了</button>
+        </div>
+    </div>
+
+    <!-- 帮助弹窗 -->
+    <div class="modal" id="help-modal">
+        <div class="modal-content">
+            <div class="modal-title">使用帮助</div>
+            <div style="padding: 20px 0; font-size: 18px; line-height: 2;">
+                <p><strong>如何开始学习？</strong></p>
+                <p style="color: var(--text-secondary);">点击首页的教程分类，选择想学的内容即可。</p>
+                <p style="margin-top: 16px;"><strong>看不清文字怎么办？</strong></p>
+                <p style="color: var(--text-secondary);">点击右下角蓝色按钮，可以语音播报内容。</p>
+                <p style="margin-top: 16px;"><strong>遇到问题找谁？</strong></p>
+                <p style="color: var(--text-secondary);">点击底部"协助"按钮，可以请求子女帮助。</p>
+            </div>
+            <button class="modal-close" onclick="closeModal('help-modal')">我知道了</button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // 全局状态
+        // ============================================
+        let currentPage = 'home';
+        let pageHistory = ['home'];
+        let voiceEnabled = true;
+        let currentFontSize = 'large';
+        let categories = [];
+        let tutorials = {};
+
+        // ============================================
+        // API 请求封装
+        // ============================================
+        async function api(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.data || [];
+            } catch (error) {
+                console.error('API请求失败:', error);
+                return [];
+            }
+        }
+
+        async function apiPost(url, body) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('API请求失败:', error);
+                return { code: 500, message: '请求失败' };
+            }
+        }
+
+        // ============================================
+        // 页面导航
+        // ============================================
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+            
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageId) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // 记录历史
+            if (pageId !== currentPage) {
+                pageHistory.push(pageId);
+            }
+            currentPage = pageId;
+            
+            // 语音播报页面标题
+            const pageTitles = {
+                'home': '欢迎来到智能手机教学',
+                'learn': '学习中心',
+                'assistance': '子女协助页面',
+                'tools': '实用工具',
+                'settings': '设置页面'
+            };
+            if (pageTitles[pageId]) {
+                speak(pageTitles[pageId]);
+            }
+        }
+
+        function goBack() {
+            if (pageHistory.length > 1) {
+                pageHistory.pop();
+                const prevPage = pageHistory[pageHistory.length - 1];
+                showPage(prevPage);
+            } else {
+                showPage('home');
+            }
+        }
+
+        // ============================================
+        // 数据加载
+        // ============================================
+        async function loadHomeData() {
+            // 加载快捷入口
+            const quickActions = await api('/api/quick-actions');
+            renderQuickActions(quickActions);
+            
+            // 加载分类
+            categories = await api('/api/categories');
+            renderCategories(categories);
+            
+            // 加载用户评价
+            const feedbacks = await api('/api/feedbacks');
+            renderFeedbacks(feedbacks);
+        }
+
+        async function loadCategories() {
+            if (categories.length === 0) {
+                categories = await api('/api/categories');
+            }
+            renderLearnCategories(categories);
+        }
+
+        async function loadCategoryTutorials(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return;
+            
+            document.getElementById('category-title').innerHTML = 
+                `<span style="font-size: 32px; margin-right: 8px;">${category.icon}</span> ${category.name}`;
+            
+            const tutorialList = await api(`/api/tutorials/${categoryId}`);
+            tutorials[categoryId] = tutorialList;
+            renderTutorialList(tutorialList);
+        }
+
+        // ============================================
+        // 渲染函数
+        // ============================================
+        function renderQuickActions(actions) {
+            const container = document.getElementById('quick-actions');
+            container.innerHTML = actions.map(action => `
+                <button class="quick-action-btn" 
+                        style="background: ${action.color};"
+                        onclick="goToTutorial(${action.tutorial_id})">
+                    <span class="icon">${action.icon}</span>
+                    <span class="label">${action.name}</span>
+                </button>
+            `).join('');
+        }
+
+        function renderCategories(cats) {
+            const container = document.getElementById('category-list');
+            container.innerHTML = cats.map(cat => `
+                <button class="category-item" onclick="enterCategory(${cat.id})">
+                    <span class="icon">${cat.icon}</span>
+                    <div class="info">
+                        <div class="name">${cat.name}</div>
+                        <div class="desc">${cat.description}</div>
+                    </div>
+                    <span class="arrow">›</span>
+                </button>
+            `).join('');
+        }
+
+        function renderLearnCategories(cats) {
+            const container = document.getElementById('learn-category-list');
+            container.innerHTML = cats.map(cat => `
+                <button class="category-item" onclick="enterCategory(${cat.id})">
+                    <span class="icon">${cat.icon}</span>
+                    <div class="info">
+                        <div class="name">${cat.name}</div>
+                        <div class="desc">${cat.description}</div>
+                    </div>
+                    <span class="arrow">›</span>
+                </button>
+            `).join('');
+        }
+
+        function renderTutorialList(tutorials) {
+            const container = document.getElementById('tutorial-list');
+            if (tutorials.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <p>暂无教程，敬请期待</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = tutorials.map(tutorial => `
+                <button class="tutorial-item" onclick="showTutorial(${tutorial.id})">
+                    <div class="info">
+                        <div class="title">${tutorial.title}</div>
+                        <div class="meta">
+                            <span class="badge ${getDifficultyClass(tutorial.difficulty)}">${tutorial.difficulty}</span>
+                            <span>⏱️ ${tutorial.duration}</span>
+                        </div>
+                    </div>
+                    <span class="arrow">›</span>
+                </button>
+            `).join('');
+        }
+
+        function renderFeedbacks(feedbacks) {
+            const container = document.getElementById('feedback-list');
+            container.innerHTML = feedbacks.slice(0, 3).map(f => `
+                <div class="feedback-item">
+                    <div class="feedback-header">
+                        <span class="feedback-avatar">${f.avatar}</span>
+                        <div>
+                            <div class="feedback-name">${f.name}</div>
+                            <div class="feedback-age">${f.age}岁</div>
+                        </div>
+                    </div>
+                    <div class="feedback-content">"${f.content}"</div>
+                </div>
+            `).join('');
+        }
+
+        async function renderTutorialDetail(tutorialId) {
+            const data = await api(`/api/tutorial/${tutorialId}`);
+            if (!data) {
+                showToast('教程不存在');
+                return;
+            }
+            
+            const stepsHtml = data.steps.map(step => `
+                <div class="step-item">
+                    <div class="step-header">
+                        <div class="step-number">${step.step}</div>
+                        <div class="step-title">${step.title}</div>
+                    </div>
+                    <div class="step-content">${step.content}</div>
+                    <div class="step-image">📸 示意图</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('tutorial-detail-content').innerHTML = `
+                <div class="tutorial-header">
+                    <div class="tutorial-title">${data.title}</div>
+                    <div class="tutorial-meta">
+                        <span>📊 ${data.difficulty}</span>
+                        <span>⏱️ ${data.duration}</span>
+                    </div>
+                </div>
+                
+                <div class="tutorial-content">
+                    <div class="card-title">📝 步骤教学</div>
+                    <div class="progress-indicator">
+                        ${data.steps.map((_, i) => `<div class="progress-dot ${i === 0 ? 'active' : ''}"></div>`).join('')}
+                    </div>
+                    ${stepsHtml}
+                    
+                    <button class="big-button big-button-primary" onclick="speakTutorialContent(${JSON.stringify(data).replace(/"/g, '&quot;')})" style="margin-top: 24px;">
+                        <span class="icon">🔊</span> 朗读全部内容
+                    </button>
+                </div>
+                
+                <button class="big-button big-button-secondary" onclick="markAsCompleted(${data.id})">
+                    <span class="icon">✅</span> 我学会了
+                </button>
+            `;
+            
+            // 朗读标题
+            speak(data.title);
+        }
+
+        // ============================================
+        // 页面跳转
+        // ============================================
+        function enterCategory(categoryId) {
+            loadCategoryTutorials(categoryId);
+            showPage('category');
+        }
+
+        async function goToTutorial(tutorialId) {
+            await renderTutorialDetail(tutorialId);
+            showPage('tutorial');
+        }
+
+        function showTutorial(tutorialId) {
+            goToTutorial(tutorialId);
+        }
+
+        // ============================================
+        // 搜索功能
+        // ============================================
+        async function searchTutorials() {
+            const keyword = document.getElementById('search-input').value.trim();
+            if (!keyword) {
+                showToast('请输入搜索关键词');
+                return;
+            }
+            
+            const results = await api(`/api/search?keyword=${encodeURIComponent(keyword)}`);
+            if (results.length === 0) {
+                showToast('没有找到相关教程');
+                return;
+            }
+            
+            // 临时显示搜索结果
+            renderTutorialList(results);
+            document.getElementById('category-title').textContent = `搜索"${keyword}"的结果`;
+            showPage('category');
+            speak(`找到${results.length}个相关教程`);
+        }
+
+        // ============================================
+        // 语音播报
+        // ============================================
+        let speechSynthesis = window.speechSynthesis;
+        let currentUtterance = null;
+
+        function speak(text) {
+            if (!voiceEnabled || !speechSynthesis) return;
+            
+            // 停止之前的播报
+            speechSynthesis.cancel();
+            
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'zh-CN';
+            currentUtterance.rate = 0.85; // 稍慢的语速
+            currentUtterance.pitch = 1.0;
+            currentUtterance.volume = 1.0;
+            
+            // 选择中文语音
+            const voices = speechSynthesis.getVoices();
+            const chineseVoice = voices.find(v => v.lang.includes('zh'));
+            if (chineseVoice) {
+                currentUtterance.voice = chineseVoice;
+            }
+            
+            speechSynthesis.speak(currentUtterance);
+        }
+
+        function speakTutorialContent(tutorial) {
+            let content = `${tutorial.title}。`;
+            tutorial.steps.forEach(step => {
+                content += `第${step.step}步，${step.title}。${step.content}。`;
+            });
+            speak(content);
+        }
+
+        function toggleVoiceRead() {
+            const btn = document.getElementById('voice-btn');
+            if (voiceEnabled) {
+                speechSynthesis.cancel();
+                btn.classList.remove('playing');
+                btn.innerHTML = '🔇';
+                showToast('已停止播报');
+            } else {
+                btn.classList.add('playing');
+                btn.innerHTML = '🔊';
+                speak('语音播报已开启');
+            }
+            voiceEnabled = !voiceEnabled;
+        }
+
+        // ============================================
+        // 辅助功能
+        // ============================================
+        function requestAssistance() {
+            const phone = document.getElementById('assistance-phone').value.trim();
+            if (!phone || phone.length < 11) {
+                showToast('请输入正确的手机号码');
+                return;
+            }
+            
+            apiPost('/api/assistance/request', { phone: phone }).then(res => {
+                if (res.code === 200) {
+                    showToast('已通知您的家人');
+                    speak('已发送协助请求，您的家人会尽快联系您');
+                }
+            });
+        }
+
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            document.getElementById('voice-status').textContent = voiceEnabled ? '已开启' : '已关闭';
+            showToast(`语音播报${voiceEnabled ? '已开启' : '已关闭'}`);
+        }
+
+        function toggleFontSize() {
+            const sizes = ['large', 'larger', 'largest'];
+            const labels = { 'large': '大', 'larger': '特大', 'largest': '超大' };
+            const currentIndex = sizes.indexOf(currentFontSize);
+            currentFontSize = sizes[(currentIndex + 1) % sizes.length];
+            document.getElementById('font-size-status').textContent = labels[currentFontSize];
+            
+            const multipliers = { 'large': 1, 'larger': 1.15, 'largest': 1.3 };
+            document.body.style.fontSize = `${20 * multipliers[currentFontSize]}px`;
+            showToast(`字体已调整为${labels[currentFontSize]}`);
+        }
+
+        function markAsCompleted(tutorialId) {
+            showToast('太棒了！已记录您的学习进度');
+            speak('恭喜您完成学习！');
+        }
+
+        function subscribeVip() {
+            showToast('支付功能开发中...');
+            closeModal('vip-modal');
+        }
+
+        function useCalculator() {
+            showToast('正在打开计算器...');
+            // 实际可调用系统计算器
+        }
+
+        function useNotepad() {
+            showToast('正在打开记事本...');
+        }
+
+        function useMagnifier() {
+            showToast('正在打开放大镜...');
+        }
+
+        function useEmergency() {
+            if (confirm('确定要拨打急救电话120吗？')) {
+                window.location.href = 'tel:120';
+            }
+        }
+
+        // ============================================
+        // UI 工具
+        // ============================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 2000);
+        }
+
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showVipModal() {
+            showModal('vip-modal');
+        }
+
+        function showAbout() {
+            showModal('about-modal');
+        }
+
+        function showHelp() {
+            showModal('help-modal');
+        }
+
+        function getDifficultyClass(difficulty) {
+            switch(difficulty) {
+                case '入门': return 'badge-easy';
+                case '基础': return 'badge-medium';
+                case '进阶': return 'badge-hard';
+                default: return 'badge-easy';
+            }
+        }
+
+        // 点击弹窗背景关闭
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // ============================================
+        // 初始化
+        // ============================================
+        async function init() {
+            // 等待语音合成就绪
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => {};
+            }
+            
+            // 加载首页数据
+            await loadHomeData();
+            
+            // 加载学习页数据
+            await loadCategories();
+            
+            console.log('老年人智能机教学APP初始化完成');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="blue">
+    <title>守护银铃 - 老年人防诈骗助手</title>
+    <style>
+        /* ========== 基础样式重置 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #E53935;
+            --primary-dark: #C62828;
+            --secondary-color: #1565C0;
+            --success-color: #2E7D32;
+            --warning-color: #F57C00;
+            --bg-color: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --text-primary: #212121;
+            --text-secondary: #616161;
+            --border-color: #E0E0E0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* ========== 顶部导航 ========== */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        /* ========== 底部导航 ========== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 15px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+            background: rgba(229, 57, 53, 0.1);
+        }
+        
+        .nav-item .icon {
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+        
+        /* ========== 主内容区 ========== */
+        .main-content {
+            padding: 20px;
+            padding-bottom: 90px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ========== 首页样式 ========== */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-banner h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-banner p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .action-btn {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+        
+        .action-btn .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .action-btn .label {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .action-btn.alert-btn {
+            background: var(--primary-color);
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .action-btn.alert-btn .label {
+            color: white;
+        }
+        
+        /* ========== 卡片样式 ========== */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title .icon {
+            font-size: 28px;
+        }
+        
+        /* ========== 案例列表 ========== */
+        .case-item {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .case-item:active {
+            transform: scale(0.98);
+        }
+        
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .case-icon {
+            font-size: 36px;
+        }
+        
+        .case-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+        
+        .case-badges {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .badge-category {
+            background: #E3F2FD;
+            color: var(--secondary-color);
+        }
+        
+        .badge-severity {
+            background: #FFEBEE;
+            color: var(--primary-color);
+        }
+        
+        .badge-severity.high {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* ========== 详情页面 ========== */
+        .detail-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+        }
+        
+        .detail-overlay.active {
+            display: block;
+        }
+        
+        .detail-page {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 201;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+        }
+        
+        .detail-page.active {
+            right: 0;
+        }
+        
+        .detail-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .detail-header h2 {
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        
+        .detail-content {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin: 20px 0 12px 0;
+            padding-left: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .tip-list {
+            list-style: none;
+        }
+        
+        .tip-list li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            font-size: 17px;
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .tip-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--success-color);
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .warning-box {
+            background: #FFF3E0;
+            border: 2px solid var(--warning-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .warning-box .icon {
+            font-size: 28px;
+            margin-right: 10px;
+        }
+        
+        /* ========== 风险测试 ========== */
+        .question-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .question-num {
+            color: var(--primary-color);
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .option-btn {
+            width: 100%;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            background: #F5F5F5;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option-btn:active {
+            background: #E0E0E0;
+        }
+        
+        .option-btn.selected {
+            border-color: var(--secondary-color);
+            background: #E3F2FD;
+        }
+        
+        .option-btn.correct {
+            border-color: var(--success-color);
+            background: #E8F5E9;
+        }
+        
+        .option-btn.wrong {
+            border-color: var(--primary-color);
+            background: #FFEBEE;
+        }
+        
+        .submit-test-btn {
+            width: 100%;
+            padding: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .submit-test-btn:active {
+            background: var(--primary-dark);
+        }
+        
+        /* ========== 结果页面 ========== */
+        .result-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .result-score {
+            font-size: 60px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .result-level {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .result-advice {
+            font-size: 18px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* ========== 报警页面 ========== */
+        .emergency-btn {
+            width: 100%;
+            padding: 25px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .emergency-btn .icon {
+            font-size: 32px;
+        }
+        
+        .emergency-btn:active {
+            background: var(--primary-dark);
+        }
+        
+        .secondary-btn {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 20px;
+            width: 100%;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        
+        .emergency-tips {
+            margin-top: 25px;
+        }
+        
+        .emergency-tips h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        
+        .emergency-tips ol {
+            padding-left: 25px;
+        }
+        
+        .emergency-tips li {
+            font-size: 17px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* ========== 知识页面 ========== */
+        .knowledge-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .knowledge-card:active {
+            transform: scale(0.98);
+        }
+        
+        .knowledge-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .knowledge-icon {
+            font-size: 48px;
+        }
+        
+        .knowledge-title {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .knowledge-category {
+            font-size: 14px;
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+        
+        .knowledge-preview {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* ========== 会员页面 ========== */
+        .vip-card {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #5D4037;
+        }
+        
+        .vip-card .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        
+        .vip-price {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .vip-price .unit {
+            font-size: 20px;
+        }
+        
+        .vip-features {
+            list-style: none;
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        .vip-features li {
+            padding: 12px 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .buy-vip-btn {
+            width: 100%;
+            padding: 22px;
+            background: #5D4037;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        /* ========== 筛选器 ========== */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .filter-btn {
+            padding: 10px 18px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 16px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* ========== Toast提示 ========== */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            z-index: 300;
+            display: none;
+        }
+        
+        .toast.active {
+            display: block;
+            animation: toastShow 0.3s ease;
+        }
+        
+        @keyframes toastShow {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        /* ========== 空状态 ========== */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        
+        /* ========== 加载状态 ========== */
+        .loading {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        
+        .loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ========== 响应式 ========== */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <h1>🛡️ 守护银铃</h1>
+            <div class="header-subtitle">老年人防诈骗助手</div>
+        </header>
+        
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 首页 -->
+            <div id="page-home" class="page active">
+                <div class="welcome-banner">
+                    <h2>👋 您好，欢迎回来</h2>
+                    <p>让诈骗远离您和家人<br>每日学习一个防骗技巧</p>
+                </div>
+                
+                <div class="quick-actions">
+                    <div class="action-btn alert-btn" onclick="switchPage('alert')">
+                        <div class="icon">🚨</div>
+                        <div class="label">一键报警</div>
+                    </div>
+                    <div class="action-btn" onclick="switchPage('test')">
+                        <div class="icon">📝</div>
+                        <div class="label">风险测试</div>
+                    </div>
+                    <div class="action-btn" onclick="switchPage('cases')">
+                        <div class="icon">📚</div>
+                        <div class="label">诈骗案例</div>
+                    </div>
+                    <div class="action-btn" onclick="switchPage('knowledge')">
+                        <div class="icon">💡</div>
+                        <div class="label">防骗知识</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <span class="icon">⚠️</span>
+                        今日提醒
+                    </div>
+                    <p style="font-size: 17px; color: var(--text-secondary); line-height: 1.8;">
+                        近期冒充"公检法"的诈骗电话频发，<strong style="color: var(--primary-color);">公安机关不会通过电话办案</strong>，也不会要求您转账到任何账户。遇到类似情况，请立即挂断并拨打110核实！
+                    </p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <span class="icon">📊</span>
+                        数据统计
+                    </div>
+                    <div id="stats-content" class="loading">
+                        <div class="spinner"></div>
+                        加载中...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 诈骗案例页 -->
+            <div id="page-cases" class="page">
+                <h2 style="font-size: 24px; margin-bottom: 15px;">📚 诈骗案例库</h2>
+                
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="filterCases('全部')">全部</button>
+                    <button class="filter-btn" onclick="filterCases('冒充身份')">冒充身份</button>
+                    <button class="filter-btn" onclick="filterCases('金融诈骗')">金融诈骗</button>
+                    <button class="filter-btn" onclick="filterCases('虚假宣传')">虚假宣传</button>
+                </div>
+                
+                <div id="cases-list">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        加载中...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 风险测试页 -->
+            <div id="page-test" class="page">
+                <h2 style="font-size: 24px; margin-bottom: 15px;">📝 防骗能力测试</h2>
+                
+                <div class="card" style="margin-bottom: 20px;">
+                    <p style="font-size: 17px; color: var(--text-secondary);">
+                        测试您的防骗意识，共<span id="test-total">3</span>道题。
+                        选择您的判断，看看能得多少分！
+                    </p>
+                </div>
+                
+                <div id="test-questions"></div>
+                
+                <button class="submit-test-btn" id="submit-test-btn" onclick="submitTest()" style="display: none;">
+                    提交测试
+                </button>
+                
+                <div id="test-result" style="display: none;"></div>
+            </div>
+            
+            <!-- 防骗知识页 -->
+            <div id="page-knowledge" class="page">
+                <h2 style="font-size: 24px; margin-bottom: 15px;">💡 防骗知识</h2>
+                
+                <div id="knowledge-list">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        加载中...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 报警页 -->
+            <div id="page-alert" class="page">
+                <h2 style="font-size: 24px; margin-bottom: 20px;">🚨 紧急求助</h2>
+                
+                <div class="emergency-btn" onclick="callPolice()">
+                    <span class="icon">📞</span>
+                    <span>拨打110报警</span>
+                </div>
+                
+                <div class="secondary-btn" onclick="notifyFamily()">
+                    <span style="font-size: 28px;">👨‍👩‍👧</span>
+                    <span>通知子女</span>
+                </div>
+                
+                <div class="secondary-btn" onclick="reportFraud()">
+                    <span style="font-size: 28px;">⚠️</span>
+                    <span>举报诈骗信息</span>
+                </div>
+                
+                <div class="emergency-tips">
+                    <h3>📋 紧急情况处理步骤</h3>
+                    <ol>
+                        <li><strong>保持冷静</strong> - 遇到紧急情况首先要冷静</li>
+                        <li><strong>立即停止</strong> - 停止一切转账汇款操作</li>
+                        <li><strong>保存证据</strong> - 保存好聊天记录、转账凭证</li>
+                        <li><strong>尽快报警</strong> - 拨打110或到就近派出所</li>
+                        <li><strong>联系家人</strong> - 第一时间通知家人</li>
+                    </ol>
+                </div>
+                
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-title" style="color: var(--primary-color);">
+                        <span>💡</span> 反诈热线
+                    </div>
+                    <p style="font-size: 20px; text-align: center; font-weight: bold;">
+                        96110<br>
+                        <span style="font-size: 16px; color: var(--text-secondary); font-weight: normal;">
+                            （全国反诈中心咨询热线）
+                        </span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 会员页 -->
+            <div id="page-vip" class="page">
+                <div class="vip-card">
+                    <div class="icon">👑</div>
+                    <h2 style="font-size: 26px; margin-bottom: 10px;">尊享年卡会员</h2>
+                    <div class="vip-price">
+                        ¥99 <span class="unit">/年</span>
+                    </div>
+                    <p style="font-size: 16px;">原价值 ¥299/年</p>
+                </div>
+                
+                <div class="card">
+                    <h3 style="font-size: 20px; margin-bottom: 15px;">会员专属权益</h3>
+                    <ul class="vip-features">
+                        <li>✅ <strong>完整案例库</strong> - 解锁全部8大类型诈骗案例</li>
+                        <li>✅ <strong>无限次测试</strong> - 风险测试无限次练习</li>
+                        <li>✅ <strong>子女共享</strong> - 子女可同步查看您的防护状态</li>
+                        <li>✅ <strong>实时推送</strong> - 新型诈骗实时预警通知</li>
+                        <li>✅ <strong>专属客服</strong> - 7×24小时人工客服支持</li>
+                    </ul>
+                </div>
+                
+                <button class="buy-vip-btn" onclick="buyVip()">
+                    立即开通年卡
+                </button>
+                
+                <p style="text-align: center; margin-top: 15px; font-size: 14px; color: var(--text-secondary);">
+                    支付即表示同意《会员服务协议》
+                </p>
+            </div>
+        </main>
+        
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchPage('home')">
+                <span class="icon">🏠</span>
+                <span>首页</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('cases')">
+                <span class="icon">📚</span>
+                <span>案例</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('test')">
+                <span class="icon">📝</span>
+                <span>测试</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('alert')">
+                <span class="icon">🚨</span>
+                <span>报警</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('vip')">
+                <span class="icon">👑</span>
+                <span>会员</span>
+            </div>
+        </nav>
+    </div>
+    
+    <!-- 详情弹窗 -->
+    <div class="detail-overlay" id="detail-overlay" onclick="closeDetail()"></div>
+    <div class="detail-page" id="detail-page">
+        <div class="detail-header">
+            <button class="back-btn" onclick="closeDetail()">←</button>
+            <h2 id="detail-title">详情</h2>
+        </div>
+        <div class="detail-content" id="detail-content"></div>
+    </div>
+    
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ========== 全局变量 ==========
+        const API_BASE = '/api';
+        let currentFilter = '全部';
+        let currentQuestions = [];
+        let selectedAnswers = {};
+        let currentDetailType = '';
+        
+        // ========== 页面切换 ==========
+        function switchPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // 显示目标页面
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            
+            // 更新底部导航
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const navMap = {
+                'home': 0, 'cases': 1, 'test': 2, 'alert': 3, 'vip': 4
+            };
+            if (navMap[pageId] !== undefined) {
+                document.querySelectorAll('.nav-item')[navMap[pageId]].classList.add('active');
+            }
+            
+            // 加载对应页面数据
+            if (pageId === 'cases') loadCases();
+            if (pageId === 'test') loadTest();
+            if (pageId === 'knowledge') loadKnowledge();
+            if (pageId === 'home') loadStats();
+        }
+        
+        // ========== Toast提示 ==========
+        function showToast(message, duration = 2000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), duration);
+        }
+        
+        // ========== API请求 ==========
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                return { code: 500, message: '网络请求失败' };
+            }
+        }
+        
+        // ========== 加载统计数据 ==========
+        async function loadStats() {
+            const result = await apiRequest('/stats');
+            if (result.code === 200) {
+                const data = result.data;
+                document.getElementById('stats-content').innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div style="text-align: center; padding: 15px; background: #FFF3E0; border-radius: 12px;">
+                            <div style="font-size: 32px; font-weight: bold; color: var(--warning-color);">${data.total_cases}</div>
+                            <div style="font-size: 15px; color: var(--text-secondary);">诈骗案例</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #E3F2FD; border-radius: 12px;">
+                            <div style="font-size: 32px; font-weight: bold; color: var(--secondary-color);">${data.tips_count}</div>
+                            <div style="font-size: 15px; color: var(--text-secondary);">防骗知识</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 15px; font-size: 14px; color: var(--text-secondary);">
+                        数据更新日期: ${data.update_date}
+                    </p>
+                `;
+            }
+        }
+        
+        // ========== 加载案例列表 ==========
+        async function loadCases() {
+            const container = document.getElementById('cases-list');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+            
+            const result = await apiRequest(`/cases?category=${currentFilter}`);
+            
+            if (result.code === 200 && result.data.length > 0) {
+                container.innerHTML = result.data.map(case_item => `
+                    <div class="case-item" onclick="showCaseDetail(${case_item.id})">
+                        <div class="case-header">
+                            <span class="case-icon">${case_item.icon}</span>
+                            <div>
+                                <div class="case-title">${case_item.title}</div>
+                                <div class="case-badges">
+                                    <span class="badge badge-category">${case_item.category}</span>
+                                    <span class="badge badge-severity ${case_item.severity === '高危' ? 'high' : ''}">${case_item.severity}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 16px; color: var(--text-secondary); margin-top: 10px; line-height: 1.6;">
+                            ${case_item.description.substring(0, 80)}...
+                        </p>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <p>暂无相关案例</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // ========== 筛选案例 ==========
+        function filterCases(category) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent === category);
+            });
+            loadCases();
+        }
+        
+        // ========== 显示案例详情 ==========
+        async function showCaseDetail(caseId) {
+            currentDetailType = 'case';
+            const result = await apiRequest(`/cases/${caseId}`);
+            if (result.code === 200) {
+                const case_item = result.data;
+                document.getElementById('detail-title').innerHTML = `${case_item.icon} ${case_item.title}`;
+                document.getElementById('detail-content').innerHTML = `
+                    <div class="case-badges" style="margin-bottom: 20px;">
+                        <span class="badge badge-category">${case_item.category}</span>
+                        <span class="badge badge-severity high">${case_item.severity}风险</span>
+                    </div>
+                    
+                    <h3 class="section-title">📋 案件概述</h3>
+                    <div class="card">${case_item.description}</div>
+                    
+                    <h3 class="section-title">🔍 识别特征</h3>
+                    <ul class="tip-list">
+                        ${case_item.signs.map(s => `<li>${s}</li>`).join('')}
+                    </ul>
+                    
+                    <div class="warning-box">
+                        <span class="icon">💡</span>
+                        <strong>遇到这类情况要警惕！</strong>
+                    </div>
+                    
+                    <h3 class="section-title">🛡️ 防范方法</h3>
+                    <ul class="tip-list">
+                        ${case_item.prevention.map(p => `<li>${p}</li>`).join('')}
+                    </ul>
+                    
+                    <button class="emergency-btn" style="margin-top: 25px;" onclick="showToast('已记录此案例')">
+                        📌 收藏案例
+                    </button>
+                `;
+                openDetail();
+            }
+        }
+        
+        // ========== 加载防骗知识 ==========
+        async function loadKnowledge() {
+            const container = document.getElementById('knowledge-list');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>加载中...</div>';
+            
+            const result = await apiRequest('/tips');
+            
+            if (result.code === 200 && result.data.length > 0) {
+                container.innerHTML = result.data.map(tip => `
+                    <div class="knowledge-card" onclick="showTipDetail(${tip.id})">
+                        <div class="knowledge-header">
+                            <span class="knowledge-icon">${tip.icon}</span>
+                            <div>
+                                <div class="knowledge-title">${tip.title}</div>
+                                <div class="knowledge-category">${tip.category}</div>
+                            </div>
+                        </div>
+                        <div class="knowledge-preview">
+                            ${tip.content.slice(0, 2).map(c => `• ${c}`).join('<br>')}
+                            ${tip.content.length > 2 ? '<br>...' : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <p>暂无防骗知识</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // ========== 显示知识详情 ==========
+        async function showTipDetail(tipId) {
+            currentDetailType = 'tip';
+            const result = await apiRequest(`/tips/${tipId}`);
+            if (result.code === 200) {
+                const tip = result.data;
+                document.getElementById('detail-title').innerHTML = `${tip.icon} ${tip.title}`;
+                document.getElementById('detail-content').innerHTML = `
+                    <div class="knowledge-category" style="margin-bottom: 20px; font-size: 16px;">
+                        分类：${tip.category}
+                    </div>
+                    
+                    <h3 class="section-title">📖 详细内容</h3>
+                    <ul class="tip-list">
+                        ${tip.content.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                    
+                    <div class="warning-box" style="margin-top: 20px;">
+                        <span class="icon">💡</span>
+                        <strong>记住这些要点，关键时刻能救命！</strong>
+                    </div>
+                `;
+                openDetail();
+            }
+        }
+        
+        // ========== 加载测试题目 ==========
+        async function loadTest() {
+            const container = document.getElementById('test-questions');
+            const resultDiv = document.getElementById('test-result');
+            const submitBtn = document.getElementById('submit-test-btn');
+            
+            // 重置状态
+            selectedAnswers = {};
+            resultDiv.style.display = 'none';
+            submitBtn.style.display = 'none';
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>加载题目中...</div>';
+            
+            const result = await apiRequest('/risk/questions');
+            
+            if (result.code === 200) {
+                currentQuestions = result.data;
+                document.getElementById('test-total').textContent = currentQuestions.length;
+                
+                container.innerHTML = currentQuestions.map((q, index) => `
+                    <div class="question-card" id="question-${index}">
+                        <div class="question-num">第 ${index + 1} / ${currentQuestions.length} 题</div>
+                        <div class="question-text">${q.question}</div>
+                        ${q.options.map((opt, optIndex) => `
+                            <button class="option-btn" onclick="selectOption(${index}, ${optIndex})">
+                                ${String.fromCharCode(65 + optIndex)}. ${opt}
+                            </button>
+                        `).join('')}
+                        <div class="explanation" id="explanation-${index}" style="display: none; margin-top: 15px; padding: 15px; background: #FFF3E0; border-radius: 10px;">
+                            <strong style="color: var(--primary-color);">解析：</strong>
+                            <span style="color: var(--text-secondary);">${q.explanation}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // ========== 选择答案 ==========
+        function selectOption(questionIndex, optionIndex) {
+            selectedAnswers[questionIndex] = optionIndex;
+            
+            // 更新UI
+            const questionCard = document.getElementById(`question-${questionIndex}`);
+            questionCard.querySelectorAll('.option-btn').forEach((btn, idx) => {
+                btn.classList.remove('selected');
+                if (idx === optionIndex) {
+                    btn.classList.add('selected');
+                }
+            });
+            
+            // 显示解析
+            const explanation = document.getElementById(`explanation-${questionIndex}`);
+            explanation.style.display = 'block';
+            
+            // 检查是否所有题目都已作答
+            checkAllAnswered();
+        }
+        
+        // ========== 检查是否全部作答 ==========
+        function checkAllAnswered() {
+            const submitBtn = document.getElementById('submit-test-btn');
+            if (Object.keys(selectedAnswers).length === currentQuestions.length) {
+                submitBtn.style.display = 'block';
+            }
+        }
+        
+        // ========== 提交测试 ==========
+        async function submitTest() {
+            const answers = [];
+            for (let i = 0; i < currentQuestions.length; i++) {
+                answers.push(selectedAnswers[i]);
+            }
+            
+            const result = await apiRequest('/risk/evaluate', {
+                method: 'POST',
+                body: JSON.stringify({ answers })
+            });
+            
+            if (result.code === 200) {
+                const data = result.data;
+                let icon = '🎉';
+                if (data.score < 60) icon = '📚';
+                else if (data.score < 80) icon = '👍';
+                
+                document.getElementById('test-result').innerHTML = `
+                    <div class="result-card">
+                        <div class="result-icon">${icon}</div>
+                        <div class="result-score">${data.score}分</div>
+                        <div class="result-level">${data.level}</div>
+                        <p class="result-advice">${data.advice}</p>
+                        <p style="margin-top: 15px; color: var(--text-secondary);">
+                            答对 ${data.correct} / ${data.total} 题
+                        </p>
+                        <button class="submit-test-btn" onclick="loadTest()" style="margin-top: 20px;">
+                            🔄 再测一次
+                        </button>
+                    </div>
+                `;
+                document.getElementById('test-result').style.display = 'block';
+                document.getElementById('submit-test-btn').style.display = 'none';
+                
+                // 标记正确答案
+                currentQuestions.forEach((q, i) => {
+                    const questionCard = document.getElementById(`question-${i}`);
+                    questionCard.querySelectorAll('.option-btn').forEach((btn, idx) => {
+                        if (idx === q.correct) {
+                            btn.classList.add('correct');
+                        }
+                    });
+                });
+            }
+        }
+        
+        // ========== 报警功能 ==========
+        function callPolice() {
+            showToast('正在拨打 110...');
+            window.location.href = 'tel:110';
+        }
+        
+        async function notifyFamily() {
+            const result = await apiRequest('/alert', {
+                method: 'POST',
+                body: JSON.stringify({ type: 'family', content: '需要帮助' })
+            });
+            if (result.code === 200) {
+                showToast('已通知子女，请保持手机畅通');
+            }
+        }
+        
+        async function reportFraud() {
+            showToast('请描述诈骗信息内容...');
+        }
+        
+        // ========== 会员功能 ==========
+        function buyVip() {
+            showToast('正在跳转支付页面...');
+            // 实际项目中这里会调用支付SDK
+            setTimeout(() => {
+                showToast('支付功能开发中，敬请期待！');
+            }, 1500);
+        }
+        
+        // ========== 详情弹窗 ==========
+        function openDetail() {
+            document.getElementById('detail-overlay').classList.add('active');
+            document.getElementById('detail-page').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeDetail() {
+            document.getElementById('detail-overlay').classList.remove('active');
+            document.getElementById('detail-page').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // ========== 初始化 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            
+            // 检查会员状态
+            apiRequest('/subscription/check').then(result => {
+                if (result.code === 200 && result.data.is_active) {
+                    console.log('会员状态:', result.data.type);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

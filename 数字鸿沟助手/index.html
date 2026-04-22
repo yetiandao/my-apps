@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>数字鸿沟助手 - 帮您轻松用手机</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2E7D32;
+            --secondary: #1565C0;
+            --accent: #E65100;
+            --bg: #FAFAFA;
+            --card-bg: #FFFFFF;
+            --text: #212121;
+            --text-light: #757575;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #4CAF50);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* 会员卡片 */
+        .vip-card {
+            background: linear-gradient(135deg, #1A237E, #3949AB);
+            color: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .vip-info h3 {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .vip-info p {
+            font-size: 16px;
+            opacity: 0.85;
+        }
+
+        .vip-btn {
+            background: #FFD700;
+            color: #1A237E;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 快捷操作 */
+        .section {
+            padding: 15px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: var(--text);
+            margin-bottom: 15px;
+            padding-left: 5px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .quick-action {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .quick-action:active {
+            transform: scale(0.95);
+        }
+
+        .quick-action .icon {
+            font-size: 42px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action .name {
+            font-size: 16px;
+            color: var(--text);
+        }
+
+        /* 视频教程分类 */
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .category-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+        }
+
+        .category-item .icon {
+            font-size: 40px;
+            margin-right: 15px;
+        }
+
+        .category-item .info {
+            flex: 1;
+        }
+
+        .category-item .name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .category-item .count {
+            font-size: 15px;
+            color: var(--text-light);
+        }
+
+        .category-item .arrow {
+            font-size: 28px;
+            color: var(--text-light);
+        }
+
+        /* 常用电话 */
+        .phone-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .phone-item {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .phone-item .icon {
+            font-size: 36px;
+            margin-right: 15px;
+        }
+
+        .phone-item .info {
+            flex: 1;
+        }
+
+        .phone-item .name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .phone-item .phone {
+            font-size: 17px;
+            color: var(--text-light);
+        }
+
+        .phone-item .call-btn {
+            background: #E53935;
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 5px 15px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 28px;
+            margin-bottom: 3px;
+        }
+
+        .nav-item .text {
+            font-size: 14px;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 语音助手悬浮按钮 */
+        .voice-assistant {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent), #FF5722);
+            border-radius: 50%;
+            border: none;
+            font-size: 36px;
+            box-shadow: 0 4px 15px rgba(230, 81, 0, 0.4);
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* 视频教程弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 25px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+        }
+
+        .video-item {
+            background: #F5F5F5;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .video-item .title {
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .video-item .meta {
+            font-size: 15px;
+            color: var(--text-light);
+            display: flex;
+            gap: 15px;
+        }
+
+        .video-player {
+            background: #000;
+            border-radius: 16px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .video-placeholder {
+            color: white;
+            font-size: 60px;
+        }
+
+        .step-list {
+            margin-top: 20px;
+        }
+
+        .step-item {
+            background: #E8F5E9;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 10px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            margin-right: 12px;
+            font-weight: bold;
+        }
+
+        .guide-btn {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 30px;
+            font-size: 22px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        /* 会员购买弹窗 */
+        .subscribe-modal .modal-content {
+            text-align: center;
+        }
+
+        .price-display {
+            font-size: 48px;
+            color: #E53935;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .price-display .unit {
+            font-size: 24px;
+        }
+
+        .benefits {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .benefit-item {
+            font-size: 18px;
+            padding: 10px 0;
+            border-bottom: 1px solid #EEE;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            background: #FFD700;
+            color: #1A237E;
+            border: none;
+            padding: 20px;
+            border-radius: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 25px 40px;
+            border-radius: 15px;
+            font-size: 20px;
+            z-index: 300;
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* 语音指导界面 */
+        .voice-guide {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, #1A237E, #3949AB);
+            z-index: 250;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .voice-guide.active {
+            display: flex;
+        }
+
+        .voice-icon {
+            font-size: 80px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .voice-step {
+            font-size: 26px;
+            text-align: center;
+            padding: 0 30px;
+            margin-top: 30px;
+            line-height: 1.6;
+        }
+
+        .voice-progress {
+            font-size: 20px;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+
+        .voice-control {
+            margin-top: 50px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .voice-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            font-size: 36px;
+            cursor: pointer;
+        }
+
+        .voice-prev {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .voice-next {
+            background: #FFD700;
+            color: #1A237E;
+        }
+
+        .voice-exit {
+            position: absolute;
+            top: 30px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        /* 帮助子女按钮 */
+        .help-section {
+            background: #E3F2FD;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 15px;
+            text-align: center;
+        }
+
+        .help-section h3 {
+            font-size: 22px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .help-section p {
+            font-size: 17px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .help-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 30px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="header">
+        <h1>👋 数字鸿沟助手</h1>
+        <p>帮您轻松学会用手机</p>
+    </div>
+
+    <!-- 首页 -->
+    <div id="page-home" class="page active">
+        <!-- 会员卡片 -->
+        <div class="vip-card">
+            <div class="vip-info">
+                <h3>🌟 年卡会员</h3>
+                <p>解锁全部视频教程</p>
+            </div>
+            <button class="vip-btn" onclick="showSubscribe()">¥29/年</button>
+        </div>
+
+        <!-- 快捷操作 -->
+        <div class="section">
+            <h2 class="section-title">📱 常用操作</h2>
+            <div class="quick-actions" id="quick-actions"></div>
+        </div>
+
+        <!-- 帮助子女 -->
+        <div class="help-section">
+            <h3>👨‍👩‍👧 子女协助</h3>
+            <p>遇到困难？一键呼叫子女帮忙</p>
+            <button class="help-btn" onclick="requestHelp()">📞 请求帮助</button>
+        </div>
+    </div>
+
+    <!-- 视频教程页 -->
+    <div id="page-videos" class="page">
+        <div class="section">
+            <h2 class="section-title">📺 视频教程</h2>
+            <div class="category-list" id="category-list"></div>
+        </div>
+    </div>
+
+    <!-- 常用电话页 -->
+    <div id="page-phones" class="page">
+        <div class="section">
+            <h2 class="section-title">📞 常用电话</h2>
+            <div class="phone-list" id="phone-list"></div>
+        </div>
+    </div>
+
+    <!-- 我的页 -->
+    <div id="page-me" class="page">
+        <div class="section">
+            <h2 class="section-title">👤 我的</h2>
+            <div style="background: white; border-radius: 16px; padding: 25px; text-align: center;">
+                <div style="font-size: 80px; margin-bottom: 15px;">👴</div>
+                <h3 style="font-size: 24px; margin-bottom: 10px;">尊敬的用户</h3>
+                <p style="font-size: 17px; color: var(--text-light);">年卡会员 · 剩余365天</p>
+                <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid #EEE;">
+                    <button onclick="showSubscribe()" style="background: var(--primary); color: white; border: none; padding: 18px 50px; border-radius: 30px; font-size: 20px; cursor: pointer;">
+                        🌟 续费会员
+                    </button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button onclick="showFeedback()" style="width: 100%; background: white; border: none; padding: 22px; border-radius: 16px; font-size: 20px; text-align: left; cursor: pointer; margin-bottom: 12px;">
+                    💬 意见反馈
+                </button>
+                <button style="width: 100%; background: white; border: none; padding: 22px; border-radius: 16px; font-size: 20px; text-align: left; cursor: pointer;">
+                    ℹ️ 关于我们
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a class="nav-item active" href="#" onclick="switchPage('home')">
+            <span class="icon">🏠</span>
+            <span class="text">首页</span>
+        </a>
+        <a class="nav-item" href="#" onclick="switchPage('videos')">
+            <span class="icon">📺</span>
+            <span class="text">教程</span>
+        </a>
+        <a class="nav-item" href="#" onclick="switchPage('phones')">
+            <span class="icon">📞</span>
+            <span class="text">电话</span>
+        </a>
+        <a class="nav-item" href="#" onclick="switchPage('me')">
+            <span class="icon">👤</span>
+            <span class="text">我的</span>
+        </a>
+    </nav>
+
+    <!-- 语音助手按钮 -->
+    <button class="voice-assistant" onclick="startVoiceGuide()">🔊</button>
+
+    <!-- 视频教程弹窗 -->
+    <div class="modal" id="video-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">视频教程</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div id="video-list"></div>
+        </div>
+    </div>
+
+    <!-- 视频播放弹窗 -->
+    <div class="modal" id="player-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="player-title">视频标题</h3>
+                <button class="modal-close" onclick="closePlayerModal()">×</button>
+            </div>
+            <div class="video-player">
+                <div class="video-placeholder">▶️</div>
+            </div>
+            <h4 style="font-size: 20px; margin: 15px 0 10px;">操作步骤</h4>
+            <div class="step-list" id="step-list"></div>
+            <button class="guide-btn" onclick="startVoiceGuide()">🔊 语音指导此操作</button>
+        </div>
+    </div>
+
+    <!-- 会员购买弹窗 -->
+    <div class="modal subscribe-modal" id="subscribe-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeSubscribe()">×</button>
+            <h3 style="font-size: 26px; margin-top: 10px;">🌟 年卡会员</h3>
+            <div class="price-display">
+                <span class="unit">¥</span>29<span style="font-size: 20px;">/年</span>
+            </div>
+            <div class="benefits">
+                <div class="benefit-item">✅ 全部视频教程免费看</div>
+                <div class="benefit-item">✅ 语音指导功能</div>
+                <div class="benefit-item">✅ 子女协助功能</div>
+                <div class="benefit-item">✅ 持续更新新教程</div>
+            </div>
+            <button class="confirm-btn" onclick="confirmSubscribe()">立即开通</button>
+        </div>
+    </div>
+
+    <!-- 语音指导界面 -->
+    <div class="voice-guide" id="voice-guide">
+        <button class="voice-exit" onclick="exitVoiceGuide()">×</button>
+        <div class="voice-icon">🔊</div>
+        <div class="voice-step" id="voice-step">第一步：打开微信应用</div>
+        <div class="voice-progress" id="voice-progress">1 / 5</div>
+        <div class="voice-control">
+            <button class="voice-btn voice-prev" onclick="prevStep()">⬅️</button>
+            <button class="voice-btn voice-next" onclick="nextStep()">➡️</button>
+        </div>
+    </div>
+
+    <!-- 提示消息 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API地址
+        const API_BASE = 'http://localhost:5000';
+
+        // 数据存储
+        let currentCategory = null;
+        let currentStep = 0;
+        let currentGuideSteps = [];
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuickActions();
+            loadCategories();
+            loadPhones();
+        });
+
+        // 切换页面
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${page}`).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // 显示提示
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // 加载快捷操作
+        async function loadQuickActions() {
+            const container = document.getElementById('quick-actions');
+            try {
+                const res = await fetch(`${API_BASE}/api/quick-actions`);
+                const data = await res.json();
+                container.innerHTML = data.data.map(action => `
+                    <div class="quick-action" style="background: ${action.color}15;">
+                        <div class="icon">${action.icon}</div>
+                        <div class="name">${action.name}</div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<p style="text-align:center;color:#999;">加载中...</p>';
+            }
+        }
+
+        // 加载视频分类
+        async function loadCategories() {
+            const container = document.getElementById('category-list');
+            try {
+                const res = await fetch(`${API_BASE}/api/video-categories`);
+                const data = await res.json();
+                container.innerHTML = data.data.map(cat => `
+                    <div class="category-item" onclick="showVideos(${cat.id}, '${cat.name}')">
+                        <div class="icon">${cat.icon}</div>
+                        <div class="info">
+                            <div class="name">${cat.name}</div>
+                            <div class="count">${cat.videos.length}个教程</div>
+                        </div>
+                        <div class="arrow">›</div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<p style="text-align:center;color:#999;">加载中...</p>';
+            }
+        }
+
+        // 显示视频列表
+        async function showVideos(categoryId, categoryName) {
+            currentCategory = categoryId;
+            document.getElementById('modal-title').textContent = categoryName;
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/videos/${categoryId}`);
+                const data = await res.json();
+                document.getElementById('video-list').innerHTML = data.data.map(v => `
+                    <div class="video-item" onclick="showPlayer(${v.id}, '${v.title}')">
+                        <div class="title">▶️ ${v.title}</div>
+                        <div class="meta">
+                            <span>⏱️ ${v.duration}</span>
+                            <span>📊 ${v.difficulty}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                document.getElementById('video-list').innerHTML = '<p style="text-align:center;">加载失败</p>';
+            }
+            
+            document.getElementById('video-modal').classList.add('active');
+        }
+
+        // 显示视频播放器
+        async function showPlayer(videoId, title) {
+            document.getElementById('player-title').textContent = title;
+            
+            // 模拟步骤数据
+            const steps = [
+                '打开手机主屏幕，找到相关应用图标',
+                '点击应用图标，进入应用首页',
+                '在页面中找到对应功能入口',
+                '按照提示完成操作',
+                '操作完成，可以退出或返回'
+            ];
+            
+            document.getElementById('step-list').innerHTML = steps.map((step, i) => `
+                <div class="step-item">
+                    <span class="step-number">${i + 1}</span>
+                    ${step}
+                </div>
+            `).join('');
+            
+            document.getElementById('video-modal').classList.remove('active');
+            document.getElementById('player-modal').classList.add('active');
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('video-modal').classList.remove('active');
+        }
+
+        function closePlayerModal() {
+            document.getElementById('player-modal').classList.remove('active');
+        }
+
+        // 加载常用电话
+        async function loadPhones() {
+            const container = document.getElementById('phone-list');
+            try {
+                const res = await fetch(`${API_BASE}/api/service-phones`);
+                const data = await res.json();
+                container.innerHTML = data.data.map(phone => `
+                    <div class="phone-item">
+                        <div class="icon">${phone.icon}</div>
+                        <div class="info">
+                            <div class="name">${phone.name}</div>
+                            <div class="phone">${phone.phone}</div>
+                        </div>
+                        <button class="call-btn" onclick="callPhone('${phone.phone}')">📞</button>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<p style="text-align:center;color:#999;">加载中...</p>';
+            }
+        }
+
+        // 拨打电话
+        function callPhone(phone) {
+            showToast(`正在拨打: ${phone}`);
+            // 实际应用中这里会调用tel:链接
+            setTimeout(() => {
+                window.location.href = `tel:${phone}`;
+            }, 500);
+        }
+
+        // 语音指导
+        function startVoiceGuide() {
+            currentGuideSteps = [
+                '第一步：打开手机上的微信应用',
+                '第二步：点击屏幕下方的【通讯录】',
+                '第三步：找到您想联系的家人的名字',
+                '第四步：点击他的头像或名字',
+                '第五步：点击右下角的【视频】按钮',
+                '第六步：等待对方接听就可以看到对方了'
+            ];
+            currentStep = 0;
+            updateVoiceDisplay();
+            document.getElementById('voice-guide').classList.add('active');
+            
+            // 语音播报
+            speak(currentGuideSteps[0]);
+        }
+
+        function updateVoiceDisplay() {
+            document.getElementById('voice-step').textContent = currentGuideSteps[currentStep];
+            document.getElementById('voice-progress').textContent = `${currentStep + 1} / ${currentGuideSteps.length}`;
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.85;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateVoiceDisplay();
+                speak(currentGuideSteps[currentStep]);
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < currentGuideSteps.length - 1) {
+                currentStep++;
+                updateVoiceDisplay();
+                speak(currentGuideSteps[currentStep]);
+            } else {
+                showToast('🎉 已完成全部步骤！');
+            }
+        }
+
+        function exitVoiceGuide() {
+            speechSynthesis.cancel();
+            document.getElementById('voice-guide').classList.remove('active');
+        }
+
+        // 请求帮助
+        function requestHelp() {
+            showToast('📱 已通知子女，请等待...');
+        }
+
+        // 显示订阅
+        function showSubscribe() {
+            document.getElementById('subscribe-modal').classList.add('active');
+        }
+
+        function closeSubscribe() {
+            document.getElementById('subscribe-modal').classList.remove('active');
+        }
+
+        function confirmSubscribe() {
+            showToast('✅ 购买成功！');
+            closeSubscribe();
+        }
+
+        // 反馈
+        function showFeedback() {
+            showToast('💬 感谢您的反馈！');
+        }
+    </script>
+</body>
+</html>

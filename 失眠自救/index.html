@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>失眠自救 - 30天找回好睡眠</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%);
+            color: white;
+            padding: 40px 24px;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(63, 81, 181, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: "🌙";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 60px;
+            opacity: 0.2;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+        /* 区块通用样式 */
+        .section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #3f51b5;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #7986cb, #5c6bc0);
+            border-radius: 2px;
+        }
+        /* 痛点 */
+        .pain-points {
+            display: grid;
+            gap: 12px;
+        }
+        .pain-item {
+            background: #f5f5ff;
+            padding: 14px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-left: 3px solid #9fa8da;
+        }
+        .pain-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .pain-text {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        /* 功能 */
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #e8eaf6 0%, #f5f5ff 100%);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+        }
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .feature-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #3f51b5;
+        }
+        /* 见证 */
+        .testimonials {
+            display: grid;
+            gap: 16px;
+        }
+        .testimonial {
+            background: linear-gradient(135deg, #f5f5ff 0%, #e8eaf6 100%);
+            padding: 16px;
+            border-radius: 12px;
+            position: relative;
+        }
+        .testimonial::before {
+            content: """;
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 40px;
+            color: #9fa8da;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        .testimonial-content {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+        .testimonial-author {
+            font-size: 13px;
+            color: #7986cb;
+            font-weight: 500;
+            padding-left: 20px;
+        }
+        /* 价格 */
+        .pricing {
+            background: linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .price-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        .price-amount {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .price-unit {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        .price-desc {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+            margin-top: 12px;
+        }
+        /* 支付 */
+        .payment {
+            text-align: center;
+        }
+        .payment-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #3f51b5;
+            margin-bottom: 20px;
+        }
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .qr-card {
+            background: #f5f5ff;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .qr-card img {
+            width: 140px;
+            height: 140px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .qr-label {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .payment-note {
+            background: #fff3e0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #e65100;
+            line-height: 1.6;
+        }
+        /* 联系 */
+        .contact {
+            text-align: center;
+            background: linear-gradient(135deg, #e8eaf6 0%, #f5f5ff 100%);
+        }
+        .contact-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        .contact-email {
+            display: inline-block;
+            background: #3f51b5;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        /* CTA按钮 */
+        .cta-section {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #7986cb 0%, #5c6bc0 100%);
+            color: white;
+            padding: 16px 48px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(92, 107, 192, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(92, 107, 192, 0.5);
+        }
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+        }
+        /* 星星动画 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars">
+        <div class="star" style="top:10%;left:20%;animation-delay:0s"></div>
+        <div class="star" style="top:15%;left:80%;animation-delay:0.5s"></div>
+        <div class="star" style="top:30%;left:10%;animation-delay:1s"></div>
+        <div class="star" style="top:40%;left:90%;animation-delay:1.5s"></div>
+        <div class="star" style="top:60%;left:30%;animation-delay:0.3s"></div>
+        <div class="star" style="top:70%;left:70%;animation-delay:0.8s"></div>
+        <div class="star" style="top:85%;left:15%;animation-delay:1.2s"></div>
+    </div>
+
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>😴 失眠自救</h1>
+            <p>30天找回好睡眠<br>告别失眠困扰</p>
+        </div>
+
+        <!-- 痛点 -->
+        <div class="section">
+            <div class="section-title">您是否也这样？</div>
+            <div class="pain-points">
+                <div class="pain-item">
+                    <span class="pain-icon">😫</span>
+                    <span class="pain-text">躺床上2小时，翻来覆去睡不着</span>
+                </div>
+                <div class="pain-item">
+                    <span class="pain-icon">🌙</span>
+                    <span class="pain-text">半夜醒来，再也睡不着，一直熬到天亮</span>
+                </div>
+                <div class="pain-item">
+                    <span class="pain-icon">😴</span>
+                    <span class="pain-text">第二天精神差，工作效率低，容易出错</span>
+                </div>
+                <div class="pain-item">
+                    <span class="pain-icon">💊</span>
+                    <span class="pain-text">安眠药不敢长期吃，怕有副作用</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 -->
+        <div class="section">
+            <div class="section-title">科学助眠方案</div>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-name">睡眠质量测评</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-name">个性化睡眠方案</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎧</div>
+                    <div class="feature-name">助眠音频</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📓</div>
+                    <div class="feature-name">睡眠日记记录</div>
+                </div>
+                <div class="feature-card" style="grid-column: span 2;">
+                    <div class="feature-icon">📚</div>
+                    <div class="feature-name">睡眠知识科普</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户见证 -->
+        <div class="section">
+            <div class="section-title">真实用户反馈</div>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <div class="testimonial-content">用了这个APP后，第一周就能在30分钟内入睡了，现在每天睡得特别香！</div>
+                    <div class="testimonial-author">张女士 · 28岁 · 使用30天</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">白噪音+冥想引导真的很有效，终于不用靠吃药了，感谢这个产品！</div>
+                    <div class="testimonial-author">李先生 · 35岁 · 使用45天</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">睡眠日记帮我找到了失眠的原因，原来是我睡前玩手机的问题...</div>
+                    <div class="testimonial-author">王女士 · 42岁 · 使用60天</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 价格 -->
+        <div class="pricing">
+            <div class="price-label">专属特惠价</div>
+            <div class="price-amount">¥29</div>
+            <div class="price-unit">/ 月卡</div>
+            <div class="price-desc">🌟 30天改善睡眠，无效退款</div>
+        </div>
+
+        <!-- 支付 -->
+        <div class="section payment">
+            <div class="payment-title">💳 立即开启好睡眠</div>
+            <div class="payment-methods">
+                <div class="qr-card">
+                    <img src="../assets/alipay.jpg" alt="支付宝付款">
+                    <div class="qr-label">📱 支付宝</div>
+                </div>
+                <div class="qr-card">
+                    <img src="../assets/wechat.png" alt="微信付款">
+                    <div class="qr-label">💬 微信支付</div>
+                </div>
+            </div>
+            <div class="payment-note">
+                ⚠️ 扫码支付<span style="font-weight:600">¥29</span>月卡费用<br>
+                支付后联系邮箱获取激活码
+            </div>
+        </div>
+
+        <!-- 联系 -->
+        <div class="section contact">
+            <div class="section-title" style="justify-content:center;">联系我们</div>
+            <p class="contact-text">睡眠问题随时咨询</p>
+            <a href="mailto:xiaojin@coze.email" class="contact-email">📧 xiaojin@coze.email</a>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <a href="mailto:xiaojin@coze.email" class="cta-button">🌙 开启睡眠改善之旅</a>
+        </div>
+
+        <!-- 底部 -->
+        <div class="footer">
+            <p>© 2024 失眠自救 · 科学改善睡眠质量</p>
+        </div>
+    </div>
+</body>
+</html>

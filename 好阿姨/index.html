@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好阿姨 - 靠谱家政服务匹配平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF6B35;
+            --primary-light: #FFF0EB;
+            --success: #52C41A;
+            --warning: #FAAD14;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-light: #999;
+            --border: #EEE;
+            --bg: #F7F8FA;
+            --white: #FFF;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5E 100%);
+            color: var(--white);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo::before {
+            content: "👩‍🍳";
+            font-size: 28px;
+        }
+        
+        .stats-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* 主容器 */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        /* 筛选栏 */
+        .filter-bar {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            box-shadow: var(--shadow);
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: none;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .filter-btn:hover:not(.active) {
+            background: var(--primary-light);
+        }
+        
+        /* 阿姨卡片 */
+        .aunt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .aunt-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            gap: 14px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .aunt-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .aunt-card.unavailable {
+            opacity: 0.6;
+        }
+        
+        .aunt-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .aunt-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .aunt-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .aunt-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .aunt-age {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .aunt-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--warning);
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        
+        .aunt-rating .count {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        
+        .aunt-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .skill-tag {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .aunt-tags {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .tag {
+            background: var(--bg);
+            color: var(--text-secondary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .aunt-price {
+            text-align: right;
+            flex-shrink: 0;
+        }
+        
+        .price {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .price-unit {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .available-tag {
+            display: inline-block;
+            background: var(--success);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 6px;
+        }
+        
+        .available-tag.unavailable {
+            background: var(--text-light);
+        }
+        
+        /* 详情页 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            overflow-y: auto;
+        }
+        
+        .modal.active {
+            display: block;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            min-height: 100%;
+            padding-bottom: 80px;
+        }
+        
+        .modal-header {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5E 100%);
+            padding: 20px;
+            color: var(--white);
+        }
+        
+        .modal-back {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: var(--white);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-profile {
+            text-align: center;
+            padding-top: 20px;
+        }
+        
+        .modal-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--white);
+            margin-bottom: 12px;
+        }
+        
+        .modal-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .modal-rating {
+            color: var(--warning);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .modal-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .modal-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .modal-body {
+            padding: 16px;
+        }
+        
+        .info-section {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .section-title::before {
+            content: "📋";
+        }
+        
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .service-item:last-child {
+            border-bottom: none;
+        }
+        
+        .service-name {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .service-price {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .cert-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .cert-item {
+            background: var(--white);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .cert-item::before {
+            content: "✅";
+            font-size: 12px;
+        }
+        
+        .bio-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .review-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .review-item {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .review-user {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .review-rating {
+            color: var(--warning);
+            font-size: 13px;
+        }
+        
+        .review-comment {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .review-date {
+            color: var(--text-light);
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .no-reviews {
+            text-align: center;
+            color: var(--text-light);
+            padding: 30px;
+        }
+        
+        /* 预约按钮 */
+        .book-btn {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: 12px 16px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 50;
+        }
+        
+        .book-btn-inner {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .book-btn-inner:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+        }
+        
+        /* 预约表单 */
+        .form-section {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .form-row .form-section {
+            flex: 1;
+        }
+        
+        .service-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .service-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .service-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .service-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .submit-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        
+        .submit-btn:disabled {
+            background: var(--text-light);
+        }
+        
+        /* 成功提示 */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .success-modal.active {
+            display: flex;
+        }
+        
+        .success-content {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 300px;
+            margin: 20px;
+        }
+        
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+        
+        .success-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .success-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .success-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 400;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        /* 评价弹窗 */
+        .review-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 300;
+            align-items: flex-end;
+        }
+        
+        .review-modal.active {
+            display: block;
+        }
+        
+        .review-form {
+            background: var(--white);
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+        }
+        
+        .star {
+            font-size: 36px;
+            cursor: pointer;
+            color: var(--border);
+            transition: color 0.2s;
+        }
+        
+        .star.active {
+            color: var(--warning);
+        }
+        
+        .textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            resize: none;
+            height: 120px;
+            font-family: inherit;
+        }
+        
+        .textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 50;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 11px;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 4px 16px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item::before {
+            font-size: 22px;
+        }
+        
+        .nav-item.home::before { content: "🏠"; }
+        .nav-item.orders::before { content: "📋"; }
+        .nav-item.mine::before { content: "👤"; }
+        
+        /* 订单列表 */
+        .order-list {
+            display: none;
+        }
+        
+        .order-list.active {
+            display: block;
+        }
+        
+        .order-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .order-id {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .order-status {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .order-status.pending {
+            background: #FFF7E6;
+            color: #FA8C16;
+        }
+        
+        .order-status.completed {
+            background: #F6FFED;
+            color: #52C41A;
+        }
+        
+        .order-aunt {
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        
+        .order-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        
+        .order-price {
+            text-align: right;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        
+        .order-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .order-btn.review {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        /* 我的页面 */
+        .mine-page {
+            display: none;
+        }
+        
+        .mine-page.active {
+            display: block;
+        }
+        
+        .mine-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5E 100%);
+            padding: 30px 20px;
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .mine-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--white);
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        .mine-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .mine-menu {
+            background: var(--white);
+            border-radius: 12px;
+            margin: 16px;
+            overflow: hidden;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-icon {
+            font-size: 20px;
+        }
+        
+        .menu-text {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .menu-arrow {
+            color: var(--text-light);
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+        
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">好阿姨</div>
+            <div class="stats-badge" id="statsBadge">
+                <span>👩‍🍳 <span id="auntCount">12</span>位阿姨</span>
+                <span>⭐ <span id="reviewCount">0</span>条评价</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主页内容 -->
+    <main class="container" id="homePage">
+        <!-- 筛选栏 -->
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="available">可预约</button>
+            <button class="filter-btn" data-filter="cleaning">日常保洁</button>
+            <button class="filter-btn" data-filter="deep">深度清洁</button>
+            <button class="filter-btn" data-filter="nursing">照护服务</button>
+            <button class="filter-btn" data-filter="maternity">月嫂育儿</button>
+        </div>
+        
+        <!-- 阿姨列表 -->
+        <div class="aunt-list" id="auntList">
+            <div class="loading">
+                <div class="spinner"></div>
+                加载中...
+            </div>
+        </div>
+    </main>
+
+    <!-- 订单页面 -->
+    <div class="container order-list" id="orderPage">
+        <div id="orderListContent">
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <p>暂无预约记录</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 我的页面 -->
+    <div class="mine-page" id="minePage">
+        <div class="mine-header">
+            <div class="mine-avatar">👤</div>
+            <div class="mine-name">游客用户</div>
+        </div>
+        <div class="mine-menu">
+            <div class="menu-item" onclick="showToast('功能开发中')">
+                <span class="menu-icon">🏆</span>
+                <span class="menu-text">我的勋章</span>
+                <span class="menu-arrow">></span>
+            </div>
+            <div class="menu-item" onclick="showToast('功能开发中')">
+                <span class="menu-icon">💰</span>
+                <span class="menu-text">我的钱包</span>
+                <span class="menu-arrow">></span>
+            </div>
+            <div class="menu-item" onclick="showToast('功能开发中')">
+                <span class="menu-icon">📞</span>
+                <span class="menu-text">联系客服</span>
+                <span class="menu-arrow">></span>
+            </div>
+            <div class="menu-item" onclick="showToast('功能开发中')">
+                <span class="menu-icon">⚙️</span>
+                <span class="menu-text">设置</span>
+                <span class="menu-arrow">></span>
+            </div>
+        </div>
+        <div class="mine-menu">
+            <div class="menu-item" onclick="showToast('功能开发中')">
+                <span class="menu-icon">❓</span>
+                <span class="menu-text">帮助与反馈</span>
+                <span class="menu-arrow">></span>
+            </div>
+            <div class="menu-item" onclick="showToast('功能开发中')">
+                <span class="menu-icon">📜</span>
+                <span class="menu-text">用户协议</span>
+                <span class="menu-arrow">></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item home active" onclick="switchTab('home')">首页</div>
+        <div class="nav-item orders" onclick="switchTab('orders')">订单</div>
+        <div class="nav-item mine" onclick="switchTab('mine')">我的</div>
+    </nav>
+
+    <!-- 详情弹窗 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-back" onclick="closeModal('detailModal')">←</button>
+                <div class="modal-profile">
+                    <img class="modal-avatar" id="modalAvatar" src="" alt="">
+                    <div class="modal-name" id="modalName"></div>
+                    <div class="modal-rating" id="modalRating"></div>
+                    <div class="modal-tags" id="modalTags"></div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- 服务项目 -->
+                <div class="info-section">
+                    <div class="section-title">服务项目及价格</div>
+                    <div id="modalServices"></div>
+                </div>
+                
+                <!-- 认证信息 -->
+                <div class="info-section">
+                    <div class="section-title">认证信息</div>
+                    <div class="cert-list" id="modalCerts"></div>
+                </div>
+                
+                <!-- 个人简介 -->
+                <div class="info-section">
+                    <div class="section-title">个人简介</div>
+                    <div class="bio-text" id="modalBio"></div>
+                </div>
+                
+                <!-- 用户评价 -->
+                <div class="info-section">
+                    <div class="section-title">用户评价</div>
+                    <div class="review-list" id="modalReviews"></div>
+                </div>
+            </div>
+            
+            <!-- 预约按钮 -->
+            <div class="book-btn">
+                <button class="book-btn-inner" id="bookBtn" onclick="openBookingForm()">
+                    立即预约
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 预约表单弹窗 -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content" style="padding-bottom: 20px;">
+            <div class="modal-header">
+                <button class="modal-back" onclick="closeModal('bookingModal')">←</button>
+                <div class="modal-profile">
+                    <div class="modal-name">预约服务</div>
+                    <div id="bookingAuntName" style="font-size: 14px; margin-top: 4px; opacity: 0.8;"></div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="bookingForm" onsubmit="submitBooking(event)">
+                    <div class="form-section">
+                        <label class="form-label">选择服务 *</label>
+                        <div class="service-selector" id="serviceSelector"></div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-section">
+                            <label class="form-label">预约日期 *</label>
+                            <input type="date" class="form-input" id="bookingDate" required>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label">预约时间 *</label>
+                            <input type="time" class="form-input" id="bookingTime" value="09:00" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <label class="form-label">您的姓名 *</label>
+                        <input type="text" class="form-input" id="customerName" placeholder="请输入您的姓名" required>
+                    </div>
+                    
+                    <div class="form-section">
+                        <label class="form-label">联系电话 *</label>
+                        <input type="tel" class="form-input" id="customerPhone" placeholder="请输入您的手机号" required pattern="[0-9]{11}">
+                    </div>
+                    
+                    <div class="form-section">
+                        <label class="form-label">服务地址 *</label>
+                        <input type="text" class="form-input" id="address" placeholder="请输入详细地址" required>
+                    </div>
+                    
+                    <div class="form-section">
+                        <label class="form-label">备注</label>
+                        <textarea class="form-input" id="remark" placeholder="如有特殊要求请备注" style="height: 80px;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">提交预约</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 评价弹窗 -->
+    <div class="review-modal" id="reviewModal">
+        <div class="review-form">
+            <div style="text-align: center; padding: 10px 0;">
+                <h3 style="font-size: 18px;">服务评价</h3>
+                <p style="color: var(--text-light); font-size: 13px; margin-top: 4px;" id="reviewAuntName"></p>
+            </div>
+            
+            <div class="rating-stars">
+                <span class="star" onclick="setRating(1)">★</span>
+                <span class="star" onclick="setRating(2)">★</span>
+                <span class="star" onclick="setRating(3)">★</span>
+                <span class="star" onclick="setRating(4)">★</span>
+                <span class="star" onclick="setRating(5)">★</span>
+            </div>
+            
+            <textarea class="textarea" id="reviewComment" placeholder="请分享您的服务体验..."></textarea>
+            
+            <button class="submit-btn" onclick="submitReview()">提交评价</button>
+            <button class="submit-btn" style="background: var(--bg); color: var(--text-secondary); margin-top: 10px;" onclick="closeModal('reviewModal')">取消</button>
+        </div>
+    </div>
+
+    <!-- 成功提示弹窗 -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <div class="success-title">预约成功!</div>
+            <div class="success-text" id="successText">客服将在2小时内联系您确认</div>
+            <button class="success-btn" onclick="closeSuccessModal()">知道了</button>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 全局变量
+        let aunts = [];
+        let currentAunt = null;
+        let currentBooking = null;
+        let currentReviewBooking = null;
+        let selectedRating = 5;
+        let selectedService = '';
+
+        // API基础URL
+        const API_BASE = '/api';
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAunts();
+            loadStats();
+            initFilter();
+            initDatePicker();
+        });
+
+        // 加载阿姨数据
+        async function loadAunts() {
+            try {
+                const res = await fetch(`${API_BASE}/aunts`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    aunts = data.data;
+                    renderAunts(aunts);
+                }
+            } catch (e) {
+                console.error('加载失败:', e);
+                document.getElementById('auntList').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">❌</div>
+                        <p>加载失败，请刷新重试</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 加载统计数据
+        async function loadStats() {
+            try {
+                const res = await fetch(`${API_BASE}/stats`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    document.getElementById('auntCount').textContent = data.data.total_aunts;
+                    document.getElementById('reviewCount').textContent = data.data.total_reviews;
+                }
+            } catch (e) {
+                console.error('统计加载失败:', e);
+            }
+        }
+
+        // 渲染阿姨列表
+        function renderAunts(list) {
+            const container = document.getElementById('auntList');
+            
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p>暂无符合条件的阿姨</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = list.map(aunt => `
+                <div class="aunt-card ${aunt.available ? '' : 'unavailable'}" onclick="showDetail('${aunt.id}')">
+                    <img class="aunt-avatar" src="${aunt.avatar}" alt="${aunt.name}">
+                    <div class="aunt-info">
+                        <div class="aunt-header">
+                            <span class="aunt-name">${aunt.name}</span>
+                            <span class="aunt-age">${aunt.age}岁</span>
+                        </div>
+                        <div class="aunt-rating">
+                            ⭐ ${aunt.rating} <span class="count">(${aunt.review_count}条评价)</span>
+                        </div>
+                        <div class="aunt-skills">
+                            ${aunt.skills.map(s => `<span class="skill-tag">${s}</span>`).join('')}
+                        </div>
+                        <div class="aunt-tags">
+                            ${aunt.tags.slice(0, 2).map(t => `<span class="tag">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="aunt-price">
+                        <div><span class="price">${aunt.hourly_rate}</span><span class="price-unit">元/小时</span></div>
+                        ${aunt.available 
+                            ? '<span class="available-tag">可预约</span>' 
+                            : '<span class="available-tag unavailable">已约满</span>'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 筛选功能
+        function initFilter() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const filter = btn.dataset.filter;
+                    let filtered = aunts;
+                    
+                    if (filter === 'available') {
+                        filtered = aunts.filter(a => a.available);
+                    } else if (filter !== 'all') {
+                        const skillMap = {
+                            'cleaning': ['日常保洁'],
+                            'deep': ['深度清洁'],
+                            'nursing': ['照顾老人', '护理'],
+                            'maternity': ['月嫂', '育儿']
+                        };
+                        const keywords = skillMap[filter] || [];
+                        filtered = aunts.filter(a => 
+                            a.skills.some(s => keywords.includes(s))
+                        );
+                    }
+                    
+                    renderAunts(filtered);
+                });
+            });
+        }
+
+        // 初始化日期选择器
+        function initDatePicker() {
+            const dateInput = document.getElementById('bookingDate');
+            const today = new Date();
+            const maxDate = new Date();
+            maxDate.setDate(today.getDate() + 30);
+            
+            dateInput.min = today.toISOString().split('T')[0];
+            dateInput.max = maxDate.toISOString().split('T')[0];
+            dateInput.value = today.toISOString().split('T')[0];
+        }
+
+        // 显示详情
+        async function showDetail(auntId) {
+            currentAunt = aunts.find(a => a.id === auntId);
+            if (!currentAunt) return;
+            
+            document.getElementById('modalAvatar').src = currentAunt.avatar;
+            document.getElementById('modalName').textContent = `${currentAunt.name} · ${currentAunt.age}岁 · 从业${currentAunt.experience}年`;
+            document.getElementById('modalRating').innerHTML = `⭐ ${currentAunt.rating}分 (${currentAunt.review_count}条评价)`;
+            document.getElementById('modalTags').innerHTML = currentAunt.tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
+            
+            document.getElementById('modalServices').innerHTML = currentAunt.services.map(s => {
+                const [name, price] = s.split(' ');
+                return `
+                    <div class="service-item">
+                        <span class="service-name">${name}</span>
+                        <span class="service-price">${price}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('modalCerts').innerHTML = currentAunt.certifications.map(c => 
+                `<span class="cert-item">${c}</span>`
+            ).join('');
+            
+            document.getElementById('modalBio').textContent = currentAunt.bio;
+            
+            // 加载评价
+            try {
+                const res = await fetch(`${API_BASE}/aunts/${auntId}/reviews`);
+                const data = await res.json();
+                if (data.code === 200 && data.data.length > 0) {
+                    document.getElementById('modalReviews').innerHTML = data.data.map(r => `
+                        <div class="review-item">
+                            <div class="review-header">
+                                <span class="review-user">${r.user}</span>
+                                <span class="review-rating">${'⭐'.repeat(r.rating)}</span>
+                            </div>
+                            <div class="review-comment">${r.comment}</div>
+                            <div class="review-date">${r.date}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('modalReviews').innerHTML = '<div class="no-reviews">暂无评价</div>';
+                }
+            } catch (e) {
+                document.getElementById('modalReviews').innerHTML = '<div class="no-reviews">暂无评价</div>';
+            }
+            
+            // 设置预约按钮状态
+            const bookBtn = document.getElementById('bookBtn');
+            if (currentAunt.available) {
+                bookBtn.disabled = false;
+                bookBtn.textContent = '立即预约';
+            } else {
+                bookBtn.disabled = true;
+                bookBtn.textContent = '暂不可预约';
+            }
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        // 打开预约表单
+        function openBookingForm() {
+            if (!currentAunt) return;
+            
+            document.getElementById('bookingAuntName').textContent = `预约 ${currentAunt.name}`;
+            
+            // 生成服务选择
+            document.getElementById('serviceSelector').innerHTML = currentAunt.services.map((s, i) => {
+                const [name, price] = s.split(' ');
+                return `
+                    <div class="service-option ${i === 0 ? 'selected' : ''}" onclick="selectService(this, '${s}')">
+                        <span>${name}</span>
+                        <span style="color: var(--primary); font-weight: 600;">${price}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            selectedService = currentAunt.services[0];
+            
+            document.getElementById('detailModal').classList.remove('active');
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        // 选择服务
+        function selectService(el, service) {
+            document.querySelectorAll('.service-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedService = service;
+        }
+
+        // 提交预约
+        async function submitBooking(e) {
+            e.preventDefault();
+            
+            const serviceName = selectedService.split(' ')[0];
+            
+            const bookingData = {
+                aunt_id: currentAunt.id,
+                customer_name: document.getElementById('customerName').value,
+                customer_phone: document.getElementById('customerPhone').value,
+                service_type: serviceName,
+                booking_date: document.getElementById('bookingDate').value,
+                booking_time: document.getElementById('bookingTime').value,
+                address: document.getElementById('address').value,
+                remark: document.getElementById('remark').value
+            };
+            
+            try {
+                const res = await fetch(`${API_BASE}/bookings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bookingData)
+                });
+                
+                const data = await res.json();
+                
+                if (data.code === 200) {
+                    currentBooking = data.data;
+                    document.getElementById('successText').textContent = `${data.message}\n预计费用: ${data.data.estimated_price}元`;
+                    closeModal('bookingModal');
+                    document.getElementById('successModal').classList.add('active');
+                    document.getElementById('bookingForm').reset();
+                    loadOrders();
+                } else {
+                    showToast(data.message);
+                }
+            } catch (e) {
+                showToast('提交失败，请重试');
+            }
+        }
+
+        // 关闭成功弹窗
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // 切换标签页
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item.${tab}`).classList.add('active');
+            
+            document.getElementById('homePage').style.display = tab === 'home' ? 'block' : 'none';
+            document.getElementById('orderPage').style.display = tab === 'orders' ? 'block' : 'none';
+            document.getElementById('minePage').style.display = tab === 'mine' ? 'block' : 'none';
+            
+            if (tab === 'orders') {
+                loadOrders();
+            }
+        }
+
+        // 加载订单
+        async function loadOrders() {
+            try {
+                const res = await fetch(`${API_BASE}/bookings`);
+                const data = await res.json();
+                
+                if (data.code === 200) {
+                    renderOrders(data.data);
+                }
+            } catch (e) {
+                console.error('订单加载失败:', e);
+            }
+        }
+
+        // 渲染订单
+        function renderOrders(orders) {
+            const container = document.getElementById('orderListContent');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>暂无预约记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = orders.slice().reverse().map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">订单号: ${order.id}</span>
+                        <span class="order-status ${order.status}">${getStatusText(order.status)}</span>
+                    </div>
+                    <div class="order-aunt">👩‍🍳 ${order.aunt_name}</div>
+                    <div class="order-info">服务: ${order.service_type}</div>
+                    <div class="order-info">时间: ${order.booking_date} ${order.booking_time}</div>
+                    <div class="order-info">地址: ${order.address}</div>
+                    <div class="order-price">¥${order.estimated_price}</div>
+                    ${order.status === 'completed' && !order.review ? `
+                        <div class="order-actions">
+                            <button class="order-btn review" onclick="openReviewForm('${order.id}', '${order.aunt_name}')">立即评价</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            const map = {
+                'pending': '待确认',
+                'confirmed': '已确认',
+                'completed': '已完成',
+                'cancelled': '已取消'
+            };
+            return map[status] || status;
+        }
+
+        // 打开评价表单
+        function openReviewForm(bookingId, auntName) {
+            currentReviewBooking = bookingId;
+            document.getElementById('reviewAuntName').textContent = auntName;
+            setRating(5);
+            document.getElementById('reviewComment').value = '';
+            document.getElementById('reviewModal').classList.add('active');
+        }
+
+        // 设置评分
+        function setRating(rating) {
+            selectedRating = rating;
+            document.querySelectorAll('.star').forEach((star, i) => {
+                star.classList.toggle('active', i < rating);
+            });
+        }
+
+        // 提交评价
+        async function submitReview() {
+            const comment = document.getElementById('reviewComment').value.trim();
+            
+            if (!comment) {
+                showToast('请输入评价内容');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/bookings/${currentReviewBooking}/review`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        rating: selectedRating,
+                        comment: comment
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.code === 200) {
+                    showToast('评价成功，感谢您的反馈!');
+                    closeModal('reviewModal');
+                    loadOrders();
+                    loadAunts();
+                    loadStats();
+                } else {
+                    showToast(data.message);
+                }
+            } catch (e) {
+                showToast('提交失败，请重试');
+            }
+        }
+
+        // 显示Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // 点击弹窗背景关闭
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'detailModal') closeModal('detailModal');
+        });
+        document.getElementById('bookingModal').addEventListener('click', (e) => {
+            if (e.target.id === 'bookingModal') closeModal('bookingModal');
+        });
+        document.getElementById('reviewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'reviewModal') closeModal('reviewModal');
+        });
+    </script>
+</body>
+</html>

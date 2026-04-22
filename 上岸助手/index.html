@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上岸助手 - 考公考编智能备考平台</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🎯</span>
+                    <span class="logo-text">上岸助手</span>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-item active" data-page="dashboard">首页</a>
+                    <a href="#" class="nav-item" data-page="calendar">考试日历</a>
+                    <a href="#" class="nav-item" data-page="posts">岗位分析</a>
+                    <a href="#" class="nav-item" data-page="study">学习打卡</a>
+                    <a href="#" class="nav-item" data-page="wrong">错题本</a>
+                </nav>
+                <div class="header-right">
+                    <span class="vip-badge">
+                        <span class="vip-icon">👑</span>
+                        <span class="vip-text">年卡会员</span>
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 页面容器 -->
+        <main class="main">
+            <!-- 首页/仪表盘 -->
+            <section id="page-dashboard" class="page active">
+                <div class="container">
+                    <!-- 统计卡片 -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-blue">📅</div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-exams">0</span>
+                                <span class="stat-label">考试总数</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-green">🔥</div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-upcoming">0</span>
+                                <span class="stat-label">即将报名</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-purple">📊</div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-posts">0</span>
+                                <span class="stat-label">可报岗位</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon bg-orange">⏰</div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="stat-days">0</span>
+                                <span class="stat-label">学习天数</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 倒计时与进度 -->
+                    <div class="main-content-grid">
+                        <div class="card exam-countdown">
+                            <h3 class="card-title">🔥 备考倒计时</h3>
+                            <div class="countdown-content">
+                                <div class="next-exam" id="next-exam">
+                                    <div class="exam-name">2026年国家公务员考试</div>
+                                    <div class="countdown-timer">
+                                        <span class="countdown-num" id="countdown-days">00</span>
+                                        <span class="countdown-unit">天</span>
+                                        <span class="countdown-num" id="countdown-hours">00</span>
+                                        <span class="countdown-unit">时</span>
+                                    </div>
+                                    <div class="exam-date">考试日期: 2025-11-24</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card study-progress">
+                            <h3 class="card-title">📈 学习进度</h3>
+                            <div class="progress-bars" id="progress-bars">
+                                <div class="progress-item">
+                                    <div class="progress-header">
+                                        <span>行政职业能力测验</span>
+                                        <span>78%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                                <div class="progress-item">
+                                    <div class="progress-header">
+                                        <span>申论</span>
+                                        <span>73%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 73%"></div>
+                                    </div>
+                                </div>
+                                <div class="progress-item">
+                                    <div class="progress-header">
+                                        <span>面试技巧</span>
+                                        <span>20%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="progress-summary">
+                                <div class="summary-item">
+                                    <span class="summary-icon">⏱️</span>
+                                    <span>总学习时长: <strong>326</strong> 小时</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-icon">📝</span>
+                                    <span>已做题量: <strong>1580</strong> 道</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-icon">✅</span>
+                                    <span>正确率: <strong>68.5%</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 每日学习趋势 -->
+                    <div class="card weekly-chart">
+                        <h3 class="card-title">📊 近7日学习趋势</h3>
+                        <div class="chart-container" id="weekly-chart"></div>
+                    </div>
+
+                    <!-- 快捷入口 -->
+                    <div class="quick-actions">
+                        <h3 class="section-title">🚀 快捷功能</h3>
+                        <div class="actions-grid">
+                            <div class="action-card" data-action="plan">
+                                <div class="action-icon">📋</div>
+                                <div class="action-text">智能规划</div>
+                                <div class="action-desc">生成备考计划</div>
+                            </div>
+                            <div class="action-card" data-action="checkin">
+                                <div class="action-icon">📍</div>
+                                <div class="action-text">学习打卡</div>
+                                <div class="action-desc">记录今日学习</div>
+                            </div>
+                            <div class="action-card" data-action="vip">
+                                <div class="action-icon">👑</div>
+                                <div class="action-text">开通会员</div>
+                                <div class="action-desc">解锁全部功能</div>
+                            </div>
+                            <div class="action-card" data-action="analysis">
+                                <div class="action-icon">🔍</div>
+                                <div class="action-text">岗位分析</div>
+                                <div class="action-desc">筛选合适岗位</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 考试日历页面 -->
+            <section id="page-calendar" class="page">
+                <div class="container">
+                    <div class="page-header">
+                        <h2 class="page-title">📅 考试日历</h2>
+                        <p class="page-desc">2026年考公考编重要时间节点一览</p>
+                    </div>
+                    <div class="calendar-list" id="calendar-list"></div>
+                </div>
+            </section>
+
+            <!-- 岗位分析页面 -->
+            <section id="page-posts" class="page">
+                <div class="container">
+                    <div class="page-header">
+                        <h2 class="page-title">🔍 岗位分析</h2>
+                        <p class="page-desc">筛选心仪岗位，理性报考</p>
+                    </div>
+                    
+                    <!-- 筛选器 -->
+                    <div class="filter-section">
+                        <div class="filter-row">
+                            <div class="filter-item">
+                                <label>考试类型</label>
+                                <select id="filter-exam">
+                                    <option value="">全部</option>
+                                    <option value="1">国考</option>
+                                    <option value="2">省考</option>
+                                    <option value="3">事业编</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label>地区</label>
+                                <select id="filter-location">
+                                    <option value="">全部</option>
+                                    <option value="成都">成都</option>
+                                    <option value="四川">四川其他</option>
+                                    <option value="全国">全国</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label>竞争比上限</label>
+                                <select id="filter-ratio">
+                                    <option value="">不限</option>
+                                    <option value="50">≤50:1</option>
+                                    <option value="100">≤100:1</option>
+                                    <option value="150">≤150:1</option>
+                                </select>
+                            </div>
+                            <div class="filter-item">
+                                <label>分数线下限</label>
+                                <select id="filter-score">
+                                    <option value="">不限</option>
+                                    <option value="100">≥100分</option>
+                                    <option value="110">≥110分</option>
+                                    <option value="120">≥120分</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="filterPosts()">筛选</button>
+                        </div>
+                    </div>
+
+                    <!-- 统计概览 -->
+                    <div class="posts-stats">
+                        <div class="stat-box">
+                            <span class="stat-box-label">岗位总数</span>
+                            <span class="stat-box-value" id="posts-total">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-label">平均竞争比</span>
+                            <span class="stat-box-value" id="posts-avg-ratio">0:1</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-label">最低竞争比</span>
+                            <span class="stat-box-value" id="posts-min-ratio">0:1</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-label">平均进面分</span>
+                            <span class="stat-box-value" id="posts-avg-score">0分</span>
+                        </div>
+                    </div>
+
+                    <!-- 岗位列表 -->
+                    <div class="posts-list" id="posts-list"></div>
+                </div>
+            </section>
+
+            <!-- 学习打卡页面 -->
+            <section id="page-study" class="page">
+                <div class="container">
+                    <div class="page-header">
+                        <h2 class="page-title">📍 学习打卡</h2>
+                        <p class="page-desc">记录每日学习，保持备考节奏</p>
+                    </div>
+
+                    <div class="study-grid">
+                        <!-- 打卡表单 -->
+                        <div class="card checkin-form">
+                            <h3 class="card-title">📝 今日打卡</h3>
+                            <form id="checkin-form">
+                                <div class="form-group">
+                                    <label>学习时长（小时）</label>
+                                    <input type="number" id="study-hours" min="0" max="24" step="0.5" value="6" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>完成题目数</label>
+                                    <input type="number" id="tasks-done" min="0" value="50" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>学习备注（选填）</label>
+                                    <textarea id="study-note" placeholder="今天的学习心得或遇到的问题..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <span>🎯</span> 确认打卡
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- 打卡记录 -->
+                        <div class="card checkin-history">
+                            <h3 class="card-title">📜 打卡记录</h3>
+                            <div class="history-list" id="history-list">
+                                <div class="history-item">
+                                    <div class="history-date">今天</div>
+                                    <div class="history-content">
+                                        <span class="history-hours">6.5 小时</span>
+                                        <span class="history-tasks">78 道题</span>
+                                    </div>
+                                    <div class="history-note">资料分析专项训练</div>
+                                </div>
+                                <div class="history-item">
+                                    <div class="history-date">昨天</div>
+                                    <div class="history-content">
+                                        <span class="history-hours">5 小时</span>
+                                        <span class="history-tasks">62 道题</span>
+                                    </div>
+                                    <div class="history-note">言语理解刷题</div>
+                                </div>
+                                <div class="history-item">
+                                    <div class="history-date">前天</div>
+                                    <div class="history-content">
+                                        <span class="history-hours">7 小时</span>
+                                        <span class="history-tasks">95 道题</span>
+                                    </div>
+                                    <div class="history-note">判断推理突破</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 错题本页面 -->
+            <section id="page-wrong" class="page">
+                <div class="container">
+                    <div class="page-header">
+                        <h2 class="page-title">📚 错题本</h2>
+                        <p class="page-desc">查漏补缺，重点突破</p>
+                    </div>
+
+                    <div class="wrong-stats">
+                        <div class="wrong-stat-card">
+                            <div class="wrong-stat-num">156</div>
+                            <div class="wrong-stat-label">错题总数</div>
+                        </div>
+                        <div class="wrong-stat-card">
+                            <div class="wrong-stat-num">42</div>
+                            <div class="wrong-stat-label">言语理解</div>
+                        </div>
+                        <div class="wrong-stat-card">
+                            <div class="wrong-stat-num">38</div>
+                            <div class="wrong-stat-label">数量关系</div>
+                        </div>
+                        <div class="wrong-stat-card">
+                            <div class="wrong-stat-num">35</div>
+                            <div class="wrong-stat-label">判断推理</div>
+                        </div>
+                        <div class="wrong-stat-card">
+                            <div class="wrong-stat-num">28</div>
+                            <div class="wrong-stat-label">资料分析</div>
+                        </div>
+                    </div>
+
+                    <div class="wrong-list" id="wrong-list"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 模态框：智能规划 -->
+        <div class="modal" id="modal-plan">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📋 智能备考规划</h3>
+                    <button class="modal-close" onclick="closeModal('modal-plan')">&times;</button>
+                </div>
+                <div class="modal-body" id="plan-content">
+                    <div class="plan-form">
+                        <div class="form-group">
+                            <label>目标考试</label>
+                            <select id="plan-exam">
+                                <option value="2025-11-24">2026年国考 (2025-11-24)</option>
+                                <option value="2025-12-15">四川省考 (2025-12-15)</option>
+                                <option value="2025-11-16">下半年事业编 (2025-11-16)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>每日可学习时长</label>
+                            <select id="plan-hours">
+                                <option value="4">4小时</option>
+                                <option value="5">5小时</option>
+                                <option value="6" selected>6小时</option>
+                                <option value="8">8小时</option>
+                                <option value="10">10小时</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="generatePlan()">
+                            🎯 生成备考规划
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模态框：VIP开通 -->
+        <div class="modal" id="modal-vip">
+            <div class="modal-content modal-lg">
+                <div class="modal-header">
+                    <h3>👑 开通会员</h3>
+                    <button class="modal-close" onclick="closeModal('modal-vip')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="vip-plans" id="vip-plans"></div>
+                    <div class="vip-features">
+                        <h4>👑 会员专属权益</h4>
+                        <ul>
+                            <li>✅ 智能备考规划 - 根据个人基础定制学习方案</li>
+                            <li>✅ 全功能数据分析 - 深度分析报考竞争比</li>
+                            <li>✅ 历年真题库 - 完整收录2015-2024年真题</li>
+                            <li>✅ 一对一答疑 - 专业老师全程指导</li>
+                            <li>✅ 优先更新提醒 - 新功能第一时间体验</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提示消息 -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

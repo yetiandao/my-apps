@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅行攻略通 - 你的智能旅行助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #4A90E2;
+            --secondary: #50C878;
+            --accent: #FF6B6B;
+            --dark: #2C3E50;
+            --light: #ECF0F1;
+            --white: #FFFFFF;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 15px;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item .icon {
+            font-size: 22px;
+            margin-bottom: 2px;
+        }
+        
+        .nav-item span {
+            font-size: 11px;
+        }
+        
+        /* 页面容器 */
+        .page {
+            display: none;
+            padding: 15px;
+            padding-bottom: 80px;
+            max-width: 100%;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* 首页头部 */
+        .home-header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0 20px 20px;
+            margin: -15px -15px 15px -15px;
+        }
+        
+        .home-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .home-header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            display: flex;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 10px 15px;
+            margin-top: 15px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .search-box button {
+            background: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: var(--primary);
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* 功能卡片网格 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .feature-card span {
+            font-size: 12px;
+            color: var(--dark);
+        }
+        
+        /* 目的地卡片 */
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title .more {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: normal;
+        }
+        
+        .destination-list {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding-bottom: 10px;
+            scroll-snap-type: x mandatory;
+        }
+        
+        .destination-card {
+            min-width: 160px;
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+            scroll-snap-align: start;
+        }
+        
+        .destination-card:hover {
+            transform: scale(1.02);
+        }
+        
+        .destination-card img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+        
+        .destination-info {
+            padding: 12px;
+        }
+        
+        .destination-info h4 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .destination-info .meta {
+            font-size: 11px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .destination-info .rating {
+            color: #FF9500;
+        }
+        
+        /* VIP卡片 */
+        .vip-banner {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vip-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #FFD700, transparent);
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+        
+        .vip-banner h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .vip-banner .price {
+            font-size: 28px;
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .vip-banner .price del {
+            font-size: 14px;
+            color: #888;
+            margin-left: 10px;
+        }
+        
+        .vip-banner button {
+            margin-top: 12px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            color: #1a1a2e;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* 攻略详情页 */
+        .detail-header {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .detail-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .detail-header .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 36px;
+            height: 36px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .detail-content {
+            background: var(--white);
+            margin: -30px 15px 0;
+            border-radius: 20px 20px 0 0;
+            padding: 25px 20px;
+            position: relative;
+        }
+        
+        .detail-content h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .detail-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        
+        .tag {
+            background: #f0f4ff;
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        .detail-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+        
+        .highlight-list {
+            margin: 15px 0;
+        }
+        
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .highlight-item .emoji {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+        
+        /* 行程规划页 */
+        .plan-form {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+        
+        .btn-primary {
+            width: 100%;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* 行程卡片 */
+        .itinerary-day {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .day-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .day-number {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .day-number span {
+            font-size: 10px;
+            line-height: 1.2;
+        }
+        
+        .day-number strong {
+            font-size: 16px;
+        }
+        
+        .day-theme {
+            flex: 1;
+        }
+        
+        .day-theme h4 {
+            font-size: 15px;
+            color: var(--dark);
+        }
+        
+        .activity-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-time {
+            width: 55px;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-content .place {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .activity-content .tip {
+            font-size: 12px;
+            color: #888;
+            margin-top: 3px;
+        }
+        
+        /* 门票比价页 */
+        .compare-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .compare-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .compare-header h4 {
+            font-size: 16px;
+        }
+        
+        .price-list {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .price-item:last-child {
+            border-bottom: none;
+        }
+        
+        .price-item .platform {
+            font-weight: 500;
+        }
+        
+        .price-item .price {
+            font-size: 18px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .price-item .note {
+            font-size: 11px;
+            color: #888;
+        }
+        
+        .cheapest-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+        
+        /* 记账页 */
+        .expense-summary {
+            background: var(--gradient);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .expense-summary h4 {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .expense-summary .amount {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .expense-summary .budget {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .expense-list {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .expense-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        
+        .expense-item .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+        
+        .expense-item .info {
+            flex: 1;
+        }
+        
+        .expense-item .info .note {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .expense-item .info .date {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .expense-item .amount {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .add-expense-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 85px;
+            width: 55px;
+            height: 55px;
+            background: var(--gradient);
+            border-radius: 50%;
+            color: white;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+            cursor: pointer;
+        }
+        
+        /* 游记页 */
+        .travel-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .travel-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .travel-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .travel-info {
+            padding: 15px;
+        }
+        
+        .travel-info h4 {
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .travel-info .summary {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .travel-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .travel-meta .likes {
+            color: var(--accent);
+        }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: flex-end;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+            padding: 25px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h3 {
+            font-size: 18px;
+        }
+        
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            z-index: 3000;
+            display: none;
+        }
+        
+        .toast.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        /* 我的页面 */
+        .profile-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--gradient);
+            color: white;
+            margin: -15px -15px 20px -15px;
+            border-radius: 0 0 30px 30px;
+        }
+        
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        .profile-menu {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-item .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+        
+        .menu-item .text {
+            flex: 1;
+            font-size: 15px;
+        }
+        
+        .menu-item .arrow {
+            color: #ccc;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        
+        .loading::after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 响应式 */
+        @media (max-width: 360px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 首页 -->
+    <div id="homePage" class="page active">
+        <div class="home-header">
+            <h1>🌴 旅行攻略通</h1>
+            <p>智能规划，让旅行更简单</p>
+            <div class="search-box">
+                <input type="text" placeholder="搜索目的地、景点..." id="searchInput">
+                <button onclick="searchDest()">搜索</button>
+            </div>
+        </div>
+        
+        <!-- 功能入口 -->
+        <div class="feature-grid">
+            <div class="feature-card" onclick="switchTab('plan')">
+                <div class="icon">🗺️</div>
+                <span>行程规划</span>
+            </div>
+            <div class="feature-card" onclick="switchTab('compare')">
+                <div class="icon">🎫</div>
+                <span>门票比价</span>
+            </div>
+            <div class="feature-card" onclick="switchTab('expense')">
+                <div class="icon">💰</div>
+                <span>旅行记账</span>
+            </div>
+            <div class="feature-card" onclick="switchTab('travels')">
+                <div class="icon">📖</div>
+                <span>游记分享</span>
+            </div>
+        </div>
+        
+        <!-- VIP卡片 -->
+        <div class="vip-banner">
+            <h3>👑 开通VIP会员</h3>
+            <div class="price">¥25<span class="price"><del>¥68</del></span>/月</div>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 5px;">解锁完整攻略 + 智能行程定制</p>
+            <button onclick="showVipModal()">立即开通</button>
+        </div>
+        
+        <!-- 热门目的地 -->
+        <div class="section-title">
+            热门目的地
+            <span class="more" onclick="switchTab('dest')">查看全部 ></span>
+        </div>
+        <div class="destination-list" id="destinationList"></div>
+    </div>
+    
+    <!-- 目的地页 -->
+    <div id="destPage" class="page">
+        <h2 class="section-title" style="margin-top:0;">🏝️ 目的地攻略</h2>
+        <div id="destinationDetail"></div>
+    </div>
+    
+    <!-- 行程规划页 -->
+    <div id="planPage" class="page">
+        <h2 class="section-title" style="margin-top:0;">🗺️ 智能行程规划</h2>
+        
+        <div class="plan-form">
+            <div class="form-group">
+                <label>选择目的地</label>
+                <select id="planDestination">
+                    <option value="">请选择目的地</option>
+                    <option value="三亚">三亚</option>
+                    <option value="丽江">丽江</option>
+                    <option value="厦门">厦门</option>
+                    <option value="成都">成都</option>
+                    <option value="西安">西安</option>
+                    <option value="张家界">张家界</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>旅行天数</label>
+                <select id="planDays">
+                    <option value="2">2天</option>
+                    <option value="3" selected>3天</option>
+                    <option value="4">4天</option>
+                    <option value="5">5天</option>
+                    <option value="6">6天</option>
+                    <option value="7">7天</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>旅行类型</label>
+                <select id="planType">
+                    <option value="family">家庭亲子游</option>
+                    <option value="couple">情侣游</option>
+                    <option value="friend">朋友闺蜜游</option>
+                    <option value="solo">独自旅行</option>
+                    <option value="business">商务差旅</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="generatePlan()">生成行程</button>
+        </div>
+        
+        <div id="planResult"></div>
+    </div>
+    
+    <!-- 门票比价页 -->
+    <div id="comparePage" class="page">
+        <h2 class="section-title" style="margin-top:0;">🎫 景点门票比价</h2>
+        <div id="compareResult"></div>
+    </div>
+    
+    <!-- 记账页 -->
+    <div id="expensePage" class="page">
+        <h2 class="section-title" style="margin-top:0;">💰 旅行记账</h2>
+        <div id="expenseSummary"></div>
+        <div id="expenseList"></div>
+        <div class="add-expense-btn" onclick="showAddExpenseModal()">+</div>
+    </div>
+    
+    <!-- 游记页 -->
+    <div id="travelsPage" class="page">
+        <h2 class="section-title" style="margin-top:0;">📖 旅行游记</h2>
+        <div id="travelsList"></div>
+    </div>
+    
+    <!-- 我的页面 -->
+    <div id="profilePage" class="page">
+        <div class="profile-header">
+            <div class="avatar">🧳</div>
+            <h3>旅行者</h3>
+            <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">探索世界，记录美好</p>
+        </div>
+        
+        <div class="profile-menu">
+            <div class="menu-item" onclick="showVipModal()">
+                <div class="icon" style="background: linear-gradient(135deg, #FFD700, #FFA500);">👑</div>
+                <div class="text">VIP会员</div>
+                <div class="arrow">¥25/月 ></div>
+            </div>
+            <div class="menu-item">
+                <div class="icon" style="background: #e8f4fd; color: #3498db;">📊</div>
+                <div class="text">我的行程</div>
+                <div class="arrow">></div>
+            </div>
+            <div class="menu-item">
+                <div class="icon" style="background: #fef5e7; color: #f39c12;">⭐</div>
+                <div class="text">我的收藏</div>
+                <div class="arrow">></div>
+            </div>
+            <div class="menu-item">
+                <div class="icon" style="background: #fdedec; color: #e74c3c;">📝</div>
+                <div class="text">意见反馈</div>
+                <div class="arrow">></div>
+            </div>
+            <div class="menu-item">
+                <div class="icon" style="background: #f5f5f5; color: #666;">⚙️</div>
+                <div class="text">设置</div>
+                <div class="arrow">></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home')">
+            <div class="icon">🏠</div>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('dest')">
+            <div class="icon">🗺️</div>
+            <span>目的地</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('plan')">
+            <div class="icon">📅</div>
+            <span>行程</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('expense')">
+            <div class="icon">💰</div>
+            <span>记账</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('profile')">
+            <div class="icon">👤</div>
+            <span>我的</span>
+        </div>
+    </div>
+    
+    <!-- 添加记账模态框 -->
+    <div class="modal" id="expenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加支出</h3>
+                <div class="modal-close" onclick="closeExpenseModal()">✕</div>
+            </div>
+            <div class="form-group">
+                <label>消费类别</label>
+                <select id="expenseCategory">
+                    <option value="transport">🚗 交通</option>
+                    <option value="accommodation">🏨 住宿</option>
+                    <option value="food">🍜 餐饮</option>
+                    <option value="ticket">🎫 门票</option>
+                    <option value="shopping">🛍️ 购物</option>
+                    <option value="other">📝 其他</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>金额（元）</label>
+                <input type="number" id="expenseAmount" placeholder="请输入金额">
+            </div>
+            <div class="form-group">
+                <label>备注</label>
+                <input type="text" id="expenseNote" placeholder="简短描述">
+            </div>
+            <button class="btn-primary" onclick="addExpense()">确认添加</button>
+        </div>
+    </div>
+    
+    <!-- VIP模态框 -->
+    <div class="modal" id="vipModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👑 VIP会员</h3>
+                <div class="modal-close" onclick="closeVipModal()">✕</div>
+            </div>
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 48px; margin-bottom: 15px;">👑</div>
+                <h2 style="margin-bottom: 10px;">开通旅行攻略通VIP</h2>
+                <p style="color: #888; margin-bottom: 20px;">解锁全部高级功能</p>
+                
+                <div style="background: #f8f8f8; border-radius: 12px; padding: 20px; text-align: left; margin-bottom: 20px;">
+                    <div style="margin-bottom: 12px;">✅ <strong>完整版攻略</strong> - 查看所有目的地深度攻略</div>
+                    <div style="margin-bottom: 12px;">✅ <strong>智能行程定制</strong> - AI个性化行程规划</div>
+                    <div style="margin-bottom: 12px;">✅ <strong>专属客服</strong> - 7×24小时人工客服</div>
+                    <div>✅ <strong>门票优惠提醒</strong> - 实时价格监控</div>
+                </div>
+                
+                <div style="font-size: 32px; color: var(--accent); font-weight: bold; margin-bottom: 5px;">¥25<span style="font-size: 14px; color: #888;">/月</span></div>
+                <del style="color: #ccc;">原价 ¥68/月</del>
+            </div>
+            <button class="btn-primary" onclick="purchaseVip()">立即开通</button>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+        
+        // 分类配置
+        const CATEGORIES = {
+            transport: { icon: '🚗', color: '#3498db', name: '交通' },
+            accommodation: { icon: '🏨', color: '#e74c3c', name: '住宿' },
+            food: { icon: '🍜', color: '#f39c12', name: '餐饮' },
+            ticket: { icon: '🎫', color: '#9b59b6', name: '门票' },
+            shopping: { icon: '🛍️', color: '#e91e63', name: '购物' },
+            other: { icon: '📝', color: '#95a5a6', name: '其他' }
+        };
+        
+        // 目的地图片
+        const DEST_IMAGES = {
+            '三亚': 'https://images.unsplash.com/photo-1559628233-100c798642d4?w=400&h=300&fit=crop',
+            '丽江': 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=400&h=300&fit=crop',
+            '厦门': 'https://images.unsplash.com/photo-1569074187119-c87815b476da?w=400&h=300&fit=crop',
+            '成都': 'https://images.unsplash.com/photo-1591050939791-f5891d0d4d1c?w=400&h=300&fit=crop',
+            '西安': 'https://images.unsplash.com/photo-1549683842-6e9F8F9B6E0B?w=400&h=300&fit=crop',
+            '张家界': 'https://images.unsplash.com/photo-1529903384028-929ae5dccdfc?w=400&h=300&fit=crop'
+        };
+        
+        // 页面切换
+        function switchTab(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            const pageMap = {
+                'home': 'homePage',
+                'dest': 'destPage',
+                'plan': 'planPage',
+                'compare': 'comparePage',
+                'expense': 'expensePage',
+                'travels': 'travelsPage',
+                'profile': 'profilePage'
+            };
+            
+            const pageId = pageMap[page] || 'homePage';
+            document.getElementById(pageId).classList.add('active');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            const navIndex = ['home', 'dest', 'plan', 'expense', 'profile'].indexOf(page);
+            if (navIndex >= 0) {
+                navItems[navIndex].classList.add('active');
+            }
+            
+            // 加载对应页面数据
+            if (page === 'home') loadHomeData();
+            if (page === 'dest') loadDestinations();
+            if (page === 'compare') loadCompare();
+            if (page === 'expense') loadExpenses();
+            if (page === 'travels') loadTravels();
+        }
+        
+        // Toast提示
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+        
+        // 加载首页数据
+        async function loadHomeData() {
+            try {
+                const res = await fetch(`${API_BASE}/destinations`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderDestinations(data.data);
+                }
+            } catch (e) {
+                // 使用本地数据
+                renderDestinations([
+                    { name: '三亚', province: '海南', rating: 4.8, avg_cost: 3000 },
+                    { name: '丽江', province: '云南', rating: 4.6, avg_cost: 2500 },
+                    { name: '厦门', province: '福建', rating: 4.7, avg_cost: 2200 },
+                    { name: '成都', province: '四川', rating: 4.8, avg_cost: 2000 }
+                ]);
+            }
+        }
+        
+        // 渲染目的地列表
+        function renderDestinations(destinations) {
+            const container = document.getElementById('destinationList');
+            container.innerHTML = destinations.map(dest => `
+                <div class="destination-card" onclick="showDestDetail('${dest.name}')">
+                    <img src="${DEST_IMAGES[dest.name] || 'https://picsum.photos/400/300'}" alt="${dest.name}">
+                    <div class="destination-info">
+                        <h4>${dest.name}</h4>
+                        <div class="meta">
+                            <span>${dest.province || ''}</span>
+                            <span class="rating">★ ${dest.rating || '4.5'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 加载目的地详情
+        async function loadDestinations() {
+            try {
+                const res = await fetch(`${API_BASE}/destinations`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderDestDetail(data.data);
+                }
+            } catch (e) {
+                // 使用本地数据
+                renderDestDetail([
+                    { name: '三亚', province: '海南', rating: 4.8, avg_cost: 3000, recommended_days: 4, best_season: '10月-次年3月', description: '中国最南端的热带海滨城市', highlights: ['亚龙湾', '天涯海角', '蜈支洲岛'] },
+                    { name: '丽江', province: '云南', rating: 4.6, avg_cost: 2500, recommended_days: 3, best_season: '3月-5月', description: '古城风情与玉龙雪山交相辉映', highlights: ['丽江古城', '玉龙雪山', '泸沽湖'] },
+                    { name: '厦门', province: '福建', rating: 4.7, avg_cost: 2200, recommended_days: 3, best_season: '3月-5月', description: '海上花园城市，文艺气息浓厚', highlights: ['鼓浪屿', '厦门大学', '南普陀寺'] },
+                    { name: '成都', province: '四川', rating: 4.8, avg_cost: 2000, recommended_days: 3, best_season: '3月-6月', description: '天府之国，美食之都', highlights: ['大熊猫基地', '宽窄巷子', '锦里'] },
+                    { name: '西安', province: '陕西', rating: 4.7, avg_cost: 1800, recommended_days: 3, best_season: '3月-5月', description: '十三朝古都', highlights: ['兵马俑', '古城墙', '大雁塔'] },
+                    { name: '张家界', province: '湖南', rating: 4.6, avg_cost: 1500, recommended_days: 2, best_season: '4月-6月', description: '世界自然遗产', highlights: ['天门山', '张家界国家森林公园', '玻璃栈道'] }
+                ]);
+            }
+        }
+        
+        function renderDestDetail(destinations) {
+            const container = document.getElementById('destinationDetail');
+            container.innerHTML = destinations.map(dest => `
+                <div class="compare-card" onclick="showDestDetail('${dest.name}')">
+                    <div style="display:flex; gap:15px;">
+                        <img src="${DEST_IMAGES[dest.name] || 'https://picsum.photos/400/300'}" style="width:100px;height:80px;border-radius:10px;object-fit:cover;">
+                        <div style="flex:1;">
+                            <h4 style="font-size:16px;margin-bottom:5px;">${dest.name}</h4>
+                            <div style="font-size:12px;color:#888;">
+                                <span>★ ${dest.rating || '4.5'}</span> · 
+                                <span>${dest.province || ''}</span> · 
+                                <span>人均 ¥${dest.avg_cost || 2000}</span>
+                            </div>
+                            <div style="font-size:12px;color:#666;margin-top:8px;">${dest.description || ''}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+                        ${(dest.highlights || []).slice(0, 3).map(h => `<span class="tag">${h}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 显示目的地详情
+        function showDestDetail(name) {
+            const dest = {
+                '三亚': { name: '三亚', province: '海南', rating: 4.8, avg_cost: 3000, recommended_days: 4, best_season: '10月-次年3月', description: '中国最南端的热带海滨城市，拥有天涯海角、亚龙湾等知名景点，海水清澈，沙滩细腻，是度假胜地。', highlights: ['亚龙湾', '天涯海角', '南山寺', '蜈支洲岛', '鹿回头公园'], tips: ['带好防晒霜SPF50+', '提前预订酒店', '避开春节旺季', '尝试海鲜加工'] },
+                '丽江': { name: '丽江', province: '云南', rating: 4.6, avg_cost: 2500, recommended_days: 3, best_season: '3月-5月', description: '古城风情与玉龙雪山交相辉映，是感受纳西族文化的绝佳之地。', highlights: ['丽江古城', '玉龙雪山', '泸沽湖', '束河古镇', '拉市海'], tips: ['高原气候注意高反', '古城内住宿体验更佳', '注意防蚊虫'] },
+                '成都': { name: '成都', province: '四川', rating: 4.8, avg_cost: 2000, recommended_days: 3, best_season: '3月-6月', description: '天府之国，美食之都，大熊猫的故乡。', highlights: ['大熊猫基地', '宽窄巷子', '锦里', '都江堰', '青城山'], tips: ['火锅微辣也很辣', '建议早起看熊猫', '带好雨具'] },
+                '西安': { name: '西安', province: '陕西', rating: 4.7, avg_cost: 1800, recommended_days: 3, best_season: '3月-5月', description: '十三朝古都，历史遗迹丰富，美食文化底蕴深厚。', highlights: ['兵马俑', '古城墙', '大雁塔', '回民街', '华清池'], tips: ['建议请导游讲解', '晚上城墙骑行别有风情', '回民街清真食品居多'] }
+            };
+            
+            const d = dest[name] || dest['三亚'];
+            const tips = d.tips || ['做好防晒', '提前规划行程'];
+            
+            document.getElementById('destPage').innerHTML = `
+                <div class="detail-header">
+                    <img src="${DEST_IMAGES[name] || 'https://picsum.photos/800/400'}" alt="${name}">
+                    <div class="back-btn" onclick="switchTab('dest')">←</div>
+                </div>
+                <div class="detail-content">
+                    <h2>${d.name}</h2>
+                    <div class="detail-tags">
+                        <span class="tag">★ ${d.rating}</span>
+                        <span class="tag">📍 ${d.province}</span>
+                        <span class="tag">💰 人均¥${d.avg_cost}</span>
+                        <span class="tag">📅 建议${d.recommended_days}天</span>
+                    </div>
+                    <p class="detail-desc">${d.description}</p>
+                    
+                    <h4 style="margin:20px 0 10px;">🏆 必游景点</h4>
+                    <div class="highlight-list">
+                        ${d.highlights.map((h, i) => `
+                            <div class="highlight-item">
+                                <div class="emoji">${['🗻', '🌊', '🏛️', '🎢', '🌸'][i] || '📍'}</div>
+                                <div>
+                                    <div style="font-weight:500;">${h}</div>
+                                    <div style="font-size:12px;color:#888;">${name}必打卡景点</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <h4 style="margin:20px 0 10px;">💡 旅行贴士</h4>
+                    <div style="background:#f8f9fa;padding:15px;border-radius:10px;">
+                        ${tips.map(t => `<div style="margin-bottom:8px;font-size:14px;">• ${t}</div>`).join('')}
+                    </div>
+                    
+                    <button class="btn-primary" style="margin-top:20px;" onclick="goPlan('${name}')">生成行程规划</button>
+                </div>
+            `;
+            switchTab('dest');
+        }
+        
+        // 跳转规划
+        function goPlan(dest) {
+            document.getElementById('planDestination').value = dest;
+            switchTab('plan');
+        }
+        
+        // 搜索目的地
+        function searchDest() {
+            const query = document.getElementById('searchInput').value;
+            if (!query) {
+                showToast('请输入搜索关键词');
+                return;
+            }
+            fetch(`${API_BASE}/destinations?search=${query}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.data && data.data.length > 0) {
+                        showDestDetail(data.data[0].name);
+                    } else {
+                        showToast('未找到相关目的地');
+                    }
+                })
+                .catch(() => showToast('搜索功能需要启动后端服务'));
+        }
+        
+        // 加载门票比价
+        async function loadCompare() {
+            try {
+                const res = await fetch(`${API_BASE}/attractions/all`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderCompare(data.data);
+                }
+            } catch (e) {
+                // 使用本地数据
+                renderCompare({
+                    '天涯海角': [
+                        { platform: '官方', price: 81, note: '淡季优惠' },
+                        { platform: '携程', price: 79, note: '需提前2小时预订' },
+                        { platform: '美团', price: 78, note: '学生票50元' }
+                    ],
+                    '蜈支洲岛': [
+                        { platform: '官方', price: 144, note: '门票+往返船票' },
+                        { platform: '携程', price: 138, note: '提前预订' },
+                        { platform: '飞猪', price: 136, note: '有优惠套餐' }
+                    ],
+                    '大熊猫基地': [
+                        { platform: '官方', price: 55, note: '学生票27元' },
+                        { platform: '携程', price: 52, note: '需预约' },
+                        { platform: '美团', price: 53, note: '含讲解器' }
+                    ],
+                    '兵马俑': [
+                        { platform: '官方', price: 120, note: '学生票60元' },
+                        { platform: '携程', price: 115, note: '含语音讲解' },
+                        { platform: '飞猪', price: 118, note: '含往返直通车' }
+                    ]
+                });
+            }
+        }
+        
+        function renderCompare(tickets) {
+            const container = document.getElementById('compareResult');
+            container.innerHTML = Object.entries(tickets).map(([name, items]) => {
+                const cheapest = items.reduce((a, b) => a.price < b.price ? a : b);
+                return `
+                    <div class="compare-card">
+                        <div class="compare-header">
+                            <h4>🎫 ${name}</h4>
+                            <span style="color:#50C878;font-size:13px;">最低 ¥${cheapest.price}</span>
+                        </div>
+                        <div class="price-list">
+                            ${items.map(item => `
+                                <div class="price-item">
+                                    <div>
+                                        <div class="platform">${item.platform}</div>
+                                        <div class="note">${item.note}</div>
+                                    </div>
+                                    <div>
+                                        <span class="price">¥${item.price}</span>
+                                        ${item === cheapest ? '<span class="cheapest-badge">最低</span>' : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 生成行程规划
+        async function generatePlan() {
+            const destination = document.getElementById('planDestination').value;
+            const days = document.getElementById('planDays').value;
+            
+            if (!destination) {
+                showToast('请选择目的地');
+                return;
+            }
+            
+            const container = document.getElementById('planResult');
+            container.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                const res = await fetch(`${API_BASE}/plan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ destination, days: parseInt(days) })
+                });
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderPlan(data.data);
+                }
+            } catch (e) {
+                // 本地模拟行程
+                renderPlan({
+                    destination,
+                    plan: generateMockPlan(destination, parseInt(days))
+                });
+            }
+        }
+        
+        function generateMockPlan(dest, days) {
+            const plans = [];
+            for (let i = 1; i <= days; i++) {
+                plans.push({
+                    day: i,
+                    theme: `第${i}天`,
+                    activities: [
+                        { time: '09:00', place: `${dest}必游景点`, duration: '3小时', tip: '建议早起错峰' },
+                        { time: '12:30', place: '当地特色餐厅', duration: '1.5小时', tip: '品尝地道美食' },
+                        { time: '14:30', place: '历史文化区', duration: '3小时', tip: '深度体验当地文化' },
+                        { time: '18:30', place: '夜市/商业街', duration: '2小时', tip: '购物休闲' }
+                    ]
+                });
+            }
+            return plans;
+        }
+        
+        function renderPlan(data) {
+            const container = document.getElementById('planResult');
+            container.innerHTML = `
+                <h3 style="margin-bottom:15px;">📍 ${data.destination} ${data.plan.length}日行程</h3>
+                ${data.plan.map(day => `
+                    <div class="itinerary-day">
+                        <div class="day-header">
+                            <div class="day-number">
+                                <span>DAY</span>
+                                <strong>${day.day}</strong>
+                            </div>
+                            <div class="day-theme">
+                                <h4>${day.theme}</h4>
+                            </div>
+                        </div>
+                        ${day.activities.map(act => `
+                            <div class="activity-item">
+                                <div class="activity-time">${act.time}</div>
+                                <div class="activity-content">
+                                    <div class="place">📍 ${act.place}</div>
+                                    <div class="tip">⏱ ${act.duration} · ${act.tip}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `).join('')}
+            `;
+        }
+        
+        // 加载记账数据
+        async function loadExpenses() {
+            try {
+                const res = await fetch(`${API_BASE}/expenses`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderExpenses(data.data);
+                }
+            } catch (e) {
+                renderExpenses({
+                    expenses: [
+                        { id: 1, category: 'transport', amount: 256, note: '机票', date: '2024-01-15' },
+                        { id: 2, category: 'accommodation', amount: 450, note: '酒店2晚', date: '2024-01-15' },
+                        { id: 3, category: 'food', amount: 186, note: '海鲜大餐', date: '2024-01-16' },
+                        { id: 4, category: 'ticket', amount: 162, note: '景点门票', date: '2024-01-16' },
+                        { id: 5, category: 'shopping', amount: 320, note: '特产购物', date: '2024-01-17' }
+                    ],
+                    total: 1374,
+                    budget: 2000,
+                    remaining: 626
+                });
+            }
+        }
+        
+        function renderExpenses(data) {
+            const summary = document.getElementById('expenseSummary');
+            summary.innerHTML = `
+                <div class="expense-summary">
+                    <h4>💸 本次旅行支出</h4>
+                    <div class="amount">¥${data.total}</div>
+                    <div class="budget">预算 ¥${data.budget} · 剩余 ¥${data.remaining}</div>
+                </div>
+            `;
+            
+            const list = document.getElementById('expenseList');
+            list.innerHTML = `
+                <div class="expense-list">
+                    ${data.expenses.map(e => `
+                        <div class="expense-item">
+                            <div class="icon" style="background:${CATEGORIES[e.category].color}20;color:${CATEGORIES[e.category].color};">
+                                ${CATEGORIES[e.category].icon}
+                            </div>
+                            <div class="info">
+                                <div class="note">${e.note}</div>
+                                <div class="date">${e.date}</div>
+                            </div>
+                            <div class="amount">-¥${e.amount}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // 添加记账
+        function showAddExpenseModal() {
+            document.getElementById('expenseModal').classList.add('active');
+        }
+        
+        function closeExpenseModal() {
+            document.getElementById('expenseModal').classList.remove('active');
+        }
+        
+        function addExpense() {
+            const category = document.getElementById('expenseCategory').value;
+            const amount = document.getElementById('expenseAmount').value;
+            const note = document.getElementById('expenseNote').value;
+            
+            if (!amount) {
+                showToast('请输入金额');
+                return;
+            }
+            
+            showToast('添加成功');
+            closeExpenseModal();
+            loadExpenses();
+            
+            // 清空表单
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expenseNote').value = '';
+        }
+        
+        // 加载游记
+        async function loadTravels() {
+            try {
+                const res = await fetch(`${API_BASE}/travels`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderTravels(data.data);
+                }
+            } catch (e) {
+                renderTravels([
+                    { id: 1, title: '三亚5天4晚亲子游攻略', author: '旅行家小王', likes: 1256, destination: '三亚', summary: '带娃必看！超详细的三亚亲子游攻略', cover: 'https://images.unsplash.com/photo-1559628233-100c798642d4?w=400&h=300&fit=crop' },
+                    { id: 2, title: '丽江古城深度游', author: '文艺青年', likes: 892, destination: '丽江', summary: '在丽江古城住了半个月的攻略', cover: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=400&h=300&fit=crop' },
+                    { id: 3, title: '成都3日游 | 吃货必打卡', author: '美食侦探', likes: 2103, destination: '成都', summary: '成都真的太好吃了！3天吃遍地道美食', cover: 'https://images.unsplash.com/photo-1591050939791-f5891d0d4d1c?w=400&h=300&fit=crop' }
+                ]);
+            }
+        }
+        
+        function renderTravels(travels) {
+            const container = document.getElementById('travelsList');
+            container.innerHTML = travels.map(t => `
+                <div class="travel-card">
+                    <img src="${t.cover}" alt="${t.title}">
+                    <div class="travel-info">
+                        <h4>${t.title}</h4>
+                        <div class="summary">${t.summary}</div>
+                        <div class="travel-meta">
+                            <span>👤 ${t.author}</span>
+                            <span class="likes">❤️ ${t.likes}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // VIP
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('active');
+        }
+        
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.remove('active');
+        }
+        
+        function purchaseVip() {
+            showToast('VIP功能开发中...');
+            closeVipModal();
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHomeData();
+        });
+    </script>
+</body>
+</html>

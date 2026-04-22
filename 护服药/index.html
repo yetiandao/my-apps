@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>护服药 - 守护家人健康</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #4A90D9;
+            --primary-dark: #3A7BC8;
+            --success: #52C41A;
+            --warning: #FAAD14;
+            --danger: #FF4D4F;
+            --bg: #F5F7FA;
+            --card-bg: #FFFFFF;
+            --text: #333333;
+            --text-secondary: #666666;
+            --text-light: #999999;
+            --border: #E8E8E8;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHe", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #6BA3E8 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(74, 144, 217, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .logo-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        /* 主容器 */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 16px;
+            padding-bottom: 100px;
+        }
+        
+        /* 今日概览卡片 */
+        .overview-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .overview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .overview-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .date-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 12px;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        .completion-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 12px;
+            position: relative;
+        }
+        
+        .completion-ring svg {
+            transform: rotate(-90deg);
+        }
+        
+        .completion-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        
+        .completion-ring .bg {
+            stroke: var(--border);
+        }
+        
+        .completion-ring .progress {
+            stroke: var(--success);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s;
+        }
+        
+        .completion-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--success);
+        }
+        
+        /* 快捷操作 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .action-btn {
+            background: var(--card-bg);
+            border: none;
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .action-btn .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .action-btn .label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        /* 药品列表 */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .medicine-list {
+            margin-bottom: 16px;
+        }
+        
+        .medicine-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .medicine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .medicine-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .medicine-dosage {
+            font-size: 14px;
+            color: var(--primary);
+            background: rgba(74, 144, 217, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        
+        .medicine-usage {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            padding-left: 8px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .medicine-times {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .time-tag {
+            background: var(--bg);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text);
+        }
+        
+        .time-tag.active {
+            background: var(--success);
+            color: white;
+        }
+        
+        .medicine-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        
+        .btn-danger {
+            background: rgba(255, 77, 79, 0.1);
+            color: var(--danger);
+        }
+        
+        /* 服药记录 */
+        .record-list {
+            margin-bottom: 16px;
+        }
+        
+        .record-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+        
+        .record-icon.taken {
+            background: rgba(82, 196, 26, 0.15);
+        }
+        
+        .record-info {
+            flex: 1;
+        }
+        
+        .record-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .record-time {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .record-status {
+            font-size: 14px;
+            color: var(--success);
+            font-weight: 500;
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 16px;
+            color: var(--text-light);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item .icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item .label {
+            font-size: 12px;
+        }
+        
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .time-inputs {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .time-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .time-input {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .add-time-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg);
+            border: 2px dashed var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            color: var(--primary);
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        /* 拍照识别区域 */
+        .scan-area {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            border: 2px dashed var(--border);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .scan-area:hover {
+            border-color: var(--primary);
+            background: rgba(74, 144, 217, 0.05);
+        }
+        
+        .scan-area .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        .scan-area p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        /* 识别结果 */
+        .recognition-result {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .confidence-badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* 订阅卡片 */
+        .subscription-card {
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .subscription-card .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        
+        .subscription-card h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .subscription-card .price {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .subscription-card .price span {
+            font-size: 16px;
+        }
+        
+        .subscription-features {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .subscription-features li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .subscription-features li::before {
+            content: "✓";
+            color: #52C41A;
+            font-weight: bold;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+        
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        /* 家人列表 */
+        .family-list {
+            margin-bottom: 16px;
+        }
+        
+        .family-member {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .member-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+        
+        .member-info {
+            flex: 1;
+        }
+        
+        .member-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .member-role {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 300;
+            transition: transform 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* 隐藏类 */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* 页面切换动画 */
+        .page {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 响应式 */
+        @media (max-width: 360px) {
+            .stats-row {
+                flex-direction: column;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="logo-icon">💊</div>
+        <h1>护服药</h1>
+        <p>守护家人健康每一天</p>
+    </header>
+    
+    <main class="container">
+        <!-- 首页 -->
+        <div id="page-home" class="page">
+            <!-- 今日概览 -->
+            <div class="overview-card">
+                <div class="overview-header">
+                    <span class="overview-title">📅 今日服药</span>
+                    <span class="date-badge" id="today-date"></span>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="completion-ring">
+                            <svg width="80" height="80">
+                                <circle class="bg" cx="40" cy="40" r="32"></circle>
+                                <circle class="progress" cx="40" cy="40" r="32" 
+                                    stroke-dasharray="201" stroke-dashoffset="100" id="progress-ring"></circle>
+                            </svg>
+                            <span class="completion-text" id="completion-rate">0%</span>
+                        </div>
+                        <div class="stat-label">完成率</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="taken-count">0</div>
+                        <div class="stat-label">已服药 / 共<span id="total-reminders">0</span>次</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 快捷操作 -->
+            <div class="quick-actions">
+                <button class="action-btn" onclick="showModal('scan')">
+                    <div class="icon">📷</div>
+                    <div class="label">拍照识别药品</div>
+                </button>
+                <button class="action-btn" onclick="showModal('add-medicine')">
+                    <div class="icon">➕</div>
+                    <div class="label">手动添加药品</div>
+                </button>
+                <button class="action-btn" onclick="showModal('family')">
+                    <div class="icon">👨‍👩‍👧</div>
+                    <div class="label">家人共享</div>
+                </button>
+                <button class="action-btn" onclick="switchPage('records')">
+                    <div class="icon">📋</div>
+                    <div class="label">服药记录</div>
+                </button>
+            </div>
+            
+            <!-- 药品列表 -->
+            <div class="section-title">💊 我的药品</div>
+            <div class="medicine-list" id="medicine-list">
+                <div class="empty-state">
+                    <div class="icon">💊</div>
+                    <p>还没有添加药品</p>
+                    <button class="btn btn-primary" onclick="showModal('add-medicine')">添加第一个药品</button>
+                </div>
+            </div>
+            
+            <!-- 订阅卡片 -->
+            <div class="subscription-card">
+                <div class="badge">🔥 早鸟优惠</div>
+                <h3>年卡会员</h3>
+                <div class="price">¥29.9 <span>/年</span></div>
+                <p style="font-size: 14px; opacity: 0.9;">无限药品 · 无限家人 · 永久记录</p>
+                <div class="subscription-features">
+                    <li>无限添加药品数量</li>
+                    <li>邀请无限家庭成员</li>
+                    <li>服药记录永久保存</li>
+                    <li>高级提醒功能</li>
+                </div>
+                <button class="btn btn-success" onclick="purchaseSubscription()">立即开通</button>
+            </div>
+        </div>
+        
+        <!-- 服药记录页 -->
+        <div id="page-records" class="page hidden">
+            <div class="section-title">📋 服药记录</div>
+            <div class="record-list" id="record-list">
+                <div class="empty-state">
+                    <div class="icon">📋</div>
+                    <p>暂无服药记录</p>
+                </div>
+            </div>
+            <button class="btn btn-outline" onclick="switchPage('home')" style="width: 100%; margin-top: 16px;">
+                返回首页
+            </button>
+        </div>
+    </main>
+    
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('home')">
+            <span class="icon">🏠</span>
+            <span class="label">首页</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('records')">
+            <span class="icon">📋</span>
+            <span class="label">记录</span>
+        </div>
+        <div class="nav-item" onclick="showModal('subscription')">
+            <span class="icon">👑</span>
+            <span class="label">会员</span>
+        </div>
+        <div class="nav-item" onclick="showModal('family')">
+            <span class="icon">👨‍👩‍👧</span>
+            <span class="label">家人</span>
+        </div>
+    </nav>
+    
+    <!-- 模态框: 拍照识别 -->
+    <div class="modal-overlay" id="modal-scan">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">📷 拍照识别药品</h2>
+                <button class="modal-close" onclick="closeModal('scan')">×</button>
+            </div>
+            <div class="scan-area" onclick="simulateScan()">
+                <div class="icon">📸</div>
+                <p>点击这里模拟拍照识别</p>
+            </div>
+            <div id="recognition-result" class="hidden">
+                <div class="recognition-result">
+                    <div class="result-header">
+                        <strong id="result-name"></strong>
+                        <span class="confidence-badge" id="result-confidence"></span>
+                    </div>
+                    <p id="result-usage" style="color: var(--text-secondary); margin-bottom: 8px;"></p>
+                    <p id="result-indications" style="font-size: 13px; color: var(--text-light);"></p>
+                </div>
+                <button class="btn btn-primary" onclick="addRecognizedDrug()" style="width: 100%; margin-top: 16px;">
+                    添加到我的药品
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模态框: 添加药品 -->
+    <div class="modal-overlay" id="modal-add-medicine">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">➕ 添加药品</h2>
+                <button class="modal-close" onclick="closeModal('add-medicine')">×</button>
+            </div>
+            <form id="add-medicine-form">
+                <div class="form-group">
+                    <label class="form-label">药品名称 *</label>
+                    <input type="text" class="form-input" id="medicine-name" placeholder="例如：阿司匹林肠溶片" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">规格剂量</label>
+                    <input type="text" class="form-input" id="medicine-dosage" placeholder="例如：50mg/片">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">服用方法</label>
+                    <input type="text" class="form-input" id="medicine-usage" placeholder="例如：每日一次，每次1片，餐后服用">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">服药时间</label>
+                    <div class="time-inputs" id="time-inputs">
+                        <div class="time-input-wrapper">
+                            <input type="time" class="time-input" value="08:00">
+                            <button type="button" class="btn btn-outline" onclick="removeTimeInput(this)" style="padding: 8px 12px;">×</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-time-btn" onclick="addTimeInput()">+ 添加服药时间</button>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">保存药品</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 模态框: 家人共享 -->
+    <div class="modal-overlay" id="modal-family">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">👨‍👩‍👧 家人共享</h2>
+                <button class="modal-close" onclick="closeModal('family')">×</button>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                邀请家人加入，一起监督服药情况
+            </p>
+            <div class="family-list" id="family-list">
+                <div class="family-member">
+                    <div class="member-avatar">👩</div>
+                    <div class="member-info">
+                        <div class="member-name">妈妈（我）</div>
+                        <div class="member-role">管理员</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">邀请家人</label>
+                <input type="text" class="form-input" id="family-name" placeholder="家人姓名">
+            </div>
+            <div class="form-group">
+                <label class="form-label">关系</label>
+                <select class="form-input" id="family-role">
+                    <option value="子女">子女</option>
+                    <option value="配偶">配偶</option>
+                    <option value="父母">父母</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="inviteFamily()" style="width: 100%;">发送邀请</button>
+            <p style="font-size: 13px; color: var(--text-light); margin-top: 12px; text-align: center;">
+                💡 分享邀请码给家人，他们即可加入监督
+            </p>
+        </div>
+    </div>
+    
+    <!-- 模态框: 订阅 -->
+    <div class="modal-overlay" id="modal-subscription">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">👑 开通会员</h2>
+                <button class="modal-close" onclick="closeModal('subscription')">×</button>
+            </div>
+            <div class="subscription-card" style="margin: 0;">
+                <div class="badge">🔥 早鸟特惠</div>
+                <h3>年卡会员</h3>
+                <div class="price">¥29.9 <span>/年</span></div>
+                <p style="font-size: 14px; opacity: 0.9;">每日不到 8 分钱</p>
+                <div class="subscription-features">
+                    <li>✓ 无限添加药品</li>
+                    <li>✓ 邀请无限家庭成员</li>
+                    <li>✓ 服药记录永久保存</li>
+                    <li>✓ 高级服药提醒</li>
+                    <li>✓ 优先接入AI识别</li>
+                </div>
+                <button class="btn btn-success" onclick="purchaseSubscription()" style="background: white; color: #667EEA;">
+                    立即开通 ¥29.9/年
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        // API基础URL
+        const API_BASE = '/api';
+        
+        // 当前识别的药品
+        let recognizedDrug = null;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            updateDate();
+        });
+        
+        // 更新日期显示
+        function updateDate() {
+            const now = new Date();
+            const options = { month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('today-date').textContent = now.toLocaleDateString('zh-CN', options);
+        }
+        
+        // 加载数据
+        async function loadData() {
+            await Promise.all([
+                loadMedicines(),
+                loadTodayStats(),
+                loadRecords(),
+                loadFamily()
+            ]);
+        }
+        
+        // 加载药品列表
+        async function loadMedicines() {
+            try {
+                const res = await fetch(`${API_BASE}/medicines`);
+                const data = await res.json();
+                renderMedicines(data.data || []);
+            } catch (e) {
+                console.error('加载药品失败', e);
+            }
+        }
+        
+        // 渲染药品列表
+        function renderMedicines(medicines) {
+            const container = document.getElementById('medicine-list');
+            
+            if (medicines.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">💊</div>
+                        <p>还没有添加药品</p>
+                        <button class="btn btn-primary" onclick="showModal('add-medicine')">添加第一个药品</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = medicines.map(m => `
+                <div class="medicine-card">
+                    <div class="medicine-header">
+                        <div>
+                            <div class="medicine-name">${m.name}</div>
+                            ${m.dosage ? `<div style="font-size: 13px; color: var(--text-light); margin-top: 4px;">${m.dosage}</div>` : ''}
+                        </div>
+                        ${m.indications ? `<span class="medicine-dosage">${m.indications}</span>` : ''}
+                    </div>
+                    ${m.usage ? `<div class="medicine-usage">${m.usage}</div>` : ''}
+                    ${m.times && m.times.length > 0 ? `
+                        <div class="medicine-times">
+                            ${m.times.map(t => `<span class="time-tag">🕐 ${t}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="medicine-actions">
+                        <button class="btn btn-success" onclick="takeMedicine('${m.id}', '${m.name}')">✅ 已服药</button>
+                        <button class="btn btn-outline" onclick="showReminderModal('${m.id}', '${m.name}')">⏰ 提醒</button>
+                        <button class="btn btn-danger" onclick="deleteMedicine('${m.id}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 加载今日统计
+        async function loadTodayStats() {
+            try {
+                const res = await fetch(`${API_BASE}/records/today`);
+                const data = await res.json();
+                if (data.success) {
+                    const { total, taken, completion_rate } = data.data;
+                    document.getElementById('taken-count').textContent = taken;
+                    document.getElementById('total-reminders').textContent = total;
+                    document.getElementById('completion-rate').textContent = completion_rate + '%';
+                    
+                    // 更新环形图
+                    const circumference = 2 * Math.PI * 32;
+                    const offset = circumference * (1 - completion_rate / 100);
+                    document.getElementById('progress-ring').style.strokeDashoffset = offset;
+                }
+            } catch (e) {
+                console.error('加载统计失败', e);
+            }
+        }
+        
+        // 加载服药记录
+        async function loadRecords() {
+            try {
+                const res = await fetch(`${API_BASE}/records`);
+                const data = await res.json();
+                renderRecords(data.data || []);
+            } catch (e) {
+                console.error('加载记录失败', e);
+            }
+        }
+        
+        // 渲染服药记录
+        function renderRecords(records) {
+            const container = document.getElementById('record-list');
+            
+            if (records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📋</div>
+                        <p>暂无服药记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = records.map(r => `
+                <div class="record-item">
+                    <div class="record-icon taken">💊</div>
+                    <div class="record-info">
+                        <div class="record-name">${r.medicine_name}</div>
+                        <div class="record-time">计划: ${r.scheduled_time || '随时'} · 实服: ${new Date(r.taken_at).toLocaleString('zh-CN')}</div>
+                    </div>
+                    <span class="record-status">已完成</span>
+                </div>
+            `).join('');
+        }
+        
+        // 加载家庭成员
+        async function loadFamily() {
+            try {
+                const res = await fetch(`${API_BASE}/family`);
+                const data = await res.json();
+                renderFamily(data.data || []);
+            } catch (e) {
+                console.error('加载家庭失败', e);
+            }
+        }
+        
+        // 渲染家庭成员
+        function renderFamily(members) {
+            const container = document.getElementById('family-list');
+            
+            if (members.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-light);">暂无家庭成员</p>';
+                return;
+            }
+            
+            container.innerHTML = members.map(m => `
+                <div class="family-member">
+                    <div class="member-avatar">${m.role === '父母' ? '👴' : m.role === '子女' ? '👶' : '👤'}</div>
+                    <div class="member-info">
+                        <div class="member-name">${m.name}</div>
+                        <div class="member-role">${m.role}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 模拟拍照识别
+        async function simulateScan() {
+            showToast('正在识别药品...');
+            
+            // 模拟API调用
+            setTimeout(async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/medicines/recognize`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ image: 'simulated' })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        recognizedDrug = data.drug;
+                        document.getElementById('result-name').textContent = data.drug.name;
+                        document.getElementById('result-confidence').textContent = '准确率 ' + (data.confidence * 100).toFixed(0) + '%';
+                        document.getElementById('result-usage').textContent = data.drug.usage;
+                        document.getElementById('result-indications').textContent = '适用: ' + data.drug.indications;
+                        document.getElementById('recognition-result').classList.remove('hidden');
+                        showToast('识别成功！');
+                    }
+                } catch (e) {
+                    showToast('识别失败，请重试');
+                }
+            }, 1000);
+        }
+        
+        // 添加识别的药品
+        async function addRecognizedDrug() {
+            if (!recognizedDrug) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/medicines/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: recognizedDrug.name,
+                        dosage: recognizedDrug.dosage,
+                        usage: recognizedDrug.usage,
+                        indications: recognizedDrug.indications,
+                        times: ['08:00', '20:00']
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('药品添加成功！');
+                    closeModal('scan');
+                    closeModal('add-medicine');
+                    loadMedicines();
+                    document.getElementById('recognition-result').classList.add('hidden');
+                    recognizedDrug = null;
+                }
+            } catch (e) {
+                showToast('添加失败，请重试');
+            }
+        }
+        
+        // 添加药品表单提交
+        document.getElementById('add-medicine-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const times = Array.from(document.querySelectorAll('#time-inputs .time-input'))
+                .map(input => input.value)
+                .filter(t => t);
+            
+            try {
+                const res = await fetch(`${API_BASE}/medicines/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('medicine-name').value,
+                        dosage: document.getElementById('medicine-dosage').value,
+                        usage: document.getElementById('medicine-usage').value,
+                        times: times
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('药品添加成功！');
+                    closeModal('add-medicine');
+                    loadMedicines();
+                    e.target.reset();
+                    // 重置时间输入
+                    document.getElementById('time-inputs').innerHTML = `
+                        <div class="time-input-wrapper">
+                            <input type="time" class="time-input" value="08:00">
+                            <button type="button" class="btn btn-outline" onclick="removeTimeInput(this)" style="padding: 8px 12px;">×</button>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                showToast('添加失败，请重试');
+            }
+        });
+        
+        // 添加时间输入
+        function addTimeInput() {
+            const container = document.getElementById('time-inputs');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'time-input-wrapper';
+            wrapper.innerHTML = `
+                <input type="time" class="time-input" value="12:00">
+                <button type="button" class="btn btn-outline" onclick="removeTimeInput(this)" style="padding: 8px 12px;">×</button>
+            `;
+            container.appendChild(wrapper);
+        }
+        
+        // 移除时间输入
+        function removeTimeInput(btn) {
+            const wrappers = document.querySelectorAll('#time-inputs .time-input-wrapper');
+            if (wrappers.length > 1) {
+                btn.parentElement.remove();
+            }
+        }
+        
+        // 服药操作
+        async function takeMedicine(id, name) {
+            try {
+                const res = await fetch(`${API_BASE}/records/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        medicine_id: id,
+                        medicine_name: name,
+                        scheduled_time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('服药记录已保存！');
+                    loadTodayStats();
+                    loadRecords();
+                }
+            } catch (e) {
+                showToast('记录失败，请重试');
+            }
+        }
+        
+        // 删除药品
+        async function deleteMedicine(id) {
+            if (!confirm('确定要删除这个药品吗？')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/medicines/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('药品已删除');
+                    loadMedicines();
+                }
+            } catch (e) {
+                showToast('删除失败，请重试');
+            }
+        }
+        
+        // 显示提醒设置弹窗
+        function showReminderModal(medicineId, medicineName) {
+            const time = prompt(`为 "${medicineName}" 设置服药提醒时间：`, '08:00');
+            if (time) {
+                setReminder(medicineId, medicineName, time);
+            }
+        }
+        
+        // 设置提醒
+        async function setReminder(medicineId, medicineName, time) {
+            try {
+                const res = await fetch(`${API_BASE}/reminders/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        medicine_id: medicineId,
+                        medicine_name: medicineName,
+                        time: time
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast('提醒已设置！');
+                }
+            } catch (e) {
+                showToast('设置失败，请重试');
+            }
+        }
+        
+        // 邀请家人
+        async function inviteFamily() {
+            const name = document.getElementById('family-name').value;
+            const role = document.getElementById('family-role').value;
+            
+            if (!name) {
+                showToast('请输入家人姓名');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/family/invite`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, role })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast(`邀请码: ${data.invite_code}`);
+                    document.getElementById('family-name').value = '';
+                    loadFamily();
+                }
+            } catch (e) {
+                showToast('邀请失败，请重试');
+            }
+        }
+        
+        // 购买订阅
+        async function purchaseSubscription() {
+            if (confirm('确认以 ¥29.9 开通年卡会员？')) {
+                showToast('支付中...');
+                // 模拟支付
+                setTimeout(() => {
+                    showToast('购买成功！欢迎开通年卡会员');
+                    closeModal('subscription');
+                }, 1500);
+            }
+        }
+        
+        // 页面切换
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`page-${page}`).classList.remove('hidden');
+            
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.target.closest('.nav-item')?.classList.add('active');
+        }
+        
+        // 显示模态框
+        function showModal(name) {
+            document.getElementById(`modal-${name}`).classList.add('active');
+        }
+        
+        // 关闭模态框
+        function closeModal(name) {
+            document.getElementById(`modal-${name}`).classList.remove('active');
+        }
+        
+        // 点击遮罩关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+        
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>
