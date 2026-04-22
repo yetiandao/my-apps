@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小工具箱 - 实用工具导航</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #f72585;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --bg-light: #f8f9fa;
+            --text-dark: #2d3436;
+            --text-muted: #636e72;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 1.8rem;
+        }
+        
+        .header-search {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .header-search input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            outline: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .header-search input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .header-search button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 50px 0 60px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        /* Hot Section */
+        .section {
+            padding: 50px 0;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--accent-color);
+        }
+        
+        .hot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .hot-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(67, 97, 238, 0.15);
+        }
+        
+        .hot-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .hot-card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .hot-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .hot-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+        
+        .hot-card .btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+        
+        /* Categories */
+        .category-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .category-btn {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .app-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        
+        .app-icon-sm {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .app-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .app-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .app-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+        
+        footer .footer-content {
+            text-align: center;
+        }
+        
+        footer .footer-links {
+            margin: 20px 0;
+        }
+        
+        footer .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9rem;
+        }
+        
+        footer .footer-links a:hover {
+            color: white;
+        }
+        
+        footer .copyright {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
+        
+        /* Colors */
+        .bg-blue { background: #4361ee; }
+        .bg-green { background: #06d6a0; }
+        .bg-orange { background: #ff9f43; }
+        .bg-purple { background: #9b59b6; }
+        .bg-teal { background: #00b894; }
+        .bg-pink { background: #f72585; }
+        .bg-indigo { background: #636e72; }
+        .bg-cyan { background: #00cec9; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header .container {
+                flex-direction: column;
+            }
+            
+            .header-search {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+            
+            .hero p {
+                font-size: 0.95rem;
+            }
+            
+            .hot-grid,
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-nav {
+                justify-content: center;
+            }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-toolbox"></i>
+                小工具箱
+            </a>
+            <div class="header-search">
+                <input type="text" id="searchInput" placeholder="搜索工具..." oninput="filterApps()">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>🧰 你的实用工具箱</h1>
+            <p>精选实用工具，让生活更高效</p>
+        </div>
+    </section>
+    
+    <div class="container">
+        <!-- Hot Section -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fas fa-fire"></i>
+                热门推荐
+            </h2>
+            <div class="hot-grid">
+                <a href="简历医生/index.html" class="hot-card">
+                    <span class="hot-badge">热门</span>
+                    <div class="hot-card-icon bg-blue">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>简历医生</h3>
+                    <p>AI智能简历优化，提升面试通过率300%</p>
+                    <button class="btn btn-primary">立即使用</button>
+                </a>
+                <a href="戒烟助手/index.html" class="hot-card">
+                    <span class="hot-badge">热门</span>
+                    <div class="hot-card-icon bg-green">
+                        <i class="fas fa-smoking-ban"></i>
+                    </div>
+                    <h3>戒烟助手</h3>
+                    <p>科学戒烟，21天摆脱烟瘾</p>
+                    <button class="btn btn-success">立即使用</button>
+                </a>
+                <a href="早起打卡/index.html" class="hot-card">
+                    <span class="hot-badge">热门</span>
+                    <div class="hot-card-icon bg-orange">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <h3>早起打卡</h3>
+                    <p>每天早起1小时，一年多出15天</p>
+                    <button class="btn btn-warning text-white">立即使用</button>
+                </a>
+                <a href="陪诊师预约/index.html" class="hot-card">
+                    <span class="hot-badge">热门</span>
+                    <div class="hot-card-icon bg-teal">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>陪诊师预约</h3>
+                    <p>异地就医不孤单，专业陪诊全程陪同</p>
+                    <button class="btn btn-info text-white">立即预约</button>
+                </a>
+                <a href="失眠自救/index.html" class="hot-card">
+                    <span class="hot-badge">热门</span>
+                    <div class="hot-card-icon bg-purple">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <h3>失眠自救</h3>
+                    <p>30天找回好睡眠，告别失眠困扰</p>
+                    <button class="btn btn-secondary">立即使用</button>
+                </a>
+                <a href="宠医宝/index.html" class="hot-card">
+                    <span class="hot-badge">热门</span>
+                    <div class="hot-card-icon bg-pink">
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <h3>宠医宝</h3>
+                    <p>宠物健康管家，24小时在线问诊</p>
+                    <button class="btn btn-danger">立即咨询</button>
+                </a>
+            </div>
+        </section>
+        
+        <!-- Category Tabs -->
+        <section class="section">
+            <h2 class="section-title">
+                <i class="fas fa-th-large"></i>
+                全部工具
+            </h2>
+            <div class="category-nav" id="categoryTabs">
+                <button class="category-btn active" data-category="all" onclick="filterByCategory('all')">
+                    <i class="fas fa-border-all"></i> 全部
+                </button>
+                <button class="category-btn" data-category="职场" onclick="filterByCategory('职场')">
+                    <i class="fas fa-briefcase"></i> 职场
+                </button>
+                <button class="category-btn" data-category="健康" onclick="filterByCategory('健康')">
+                    <i class="fas fa-heartbeat"></i> 健康
+                </button>
+                <button class="category-btn" data-category="生活" onclick="filterByCategory('生活')">
+                    <i class="fas fa-home"></i> 生活
+                </button>
+                <button class="category-btn" data-category="学习" onclick="filterByCategory('学习')">
+                    <i class="fas fa-graduation-cap"></i> 学习
+                </button>
+            </div>
+            
+            <div id="appsContainer">
+                <!-- 职场类 -->
+                <div class="app-item" data-category="职场" data-keywords="简历 求职 工作">
+                    <a href="简历医生/index.html" class="app-card">
+                        <div class="app-icon-sm bg-blue">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>简历医生</h4>
+                            <p>AI智能简历优化，提升面试通过率</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="职场" data-keywords="求职 上岸 考公">
+                    <a href="上岸助手/index.html" class="app-card">
+                        <div class="app-icon-sm bg-indigo">
+                            <i class="fas fa-anchor"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>上岸助手</h4>
+                            <p>公考/事业单位备考助手</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="职场" data-keywords="兼职 外快 副业">
+                    <a href="副业雷达/index.html" class="app-card">
+                        <div class="app-icon-sm bg-teal">
+                            <i class="fas fa-broadcast-tower"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>副业雷达</h4>
+                            <p>发现身边的兼职机会</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="职场" data-keywords="兼职 临时工">
+                    <a href="兼职信息聚合/index.html" class="app-card">
+                        <div class="app-icon-sm bg-green">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>兼职信息聚合</h4>
+                            <p>聚合全网兼职信息</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 健康类 -->
+                <div class="app-item" data-category="健康" data-keywords="戒烟 香烟 戒断">
+                    <a href="戒烟助手/index.html" class="app-card">
+                        <div class="app-icon-sm bg-green">
+                            <i class="fas fa-smoking-ban"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>戒烟助手</h4>
+                            <p>科学戒烟，21天摆脱烟瘾</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="健康" data-keywords="早起 打卡 习惯">
+                    <a href="早起打卡/index.html" class="app-card">
+                        <div class="app-icon-sm bg-orange">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>早起打卡</h4>
+                            <p>每天早起1小时，一年多出15天</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="健康" data-keywords="健身 运动 减肥">
+                    <a href="健身计划/index.html" class="app-card">
+                        <div class="app-icon-sm bg-pink">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>健身计划</h4>
+                            <p>个性化健身训练方案</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="健康" data-keywords="减肥 瘦身">
+                    <a href="减肥打卡/index.html" class="app-card">
+                        <div class="app-icon-sm bg-teal">
+                            <i class="fas fa-weight"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>减肥打卡</h4>
+                            <p>科学减肥，记录每一步</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="健康" data-keywords="健康 打卡">
+                    <a href="健康打卡/index.html" class="app-card">
+                        <div class="app-icon-sm bg-cyan">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>健康打卡</h4>
+                            <p>每日健康习惯养成</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="健康" data-keywords="失眠 睡眠">
+                    <a href="失眠自救/index.html" class="app-card">
+                        <div class="app-icon-sm bg-purple">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>失眠自救</h4>
+                            <p>科学助眠，改善睡眠质量</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 生活类 -->
+                <div class="app-item" data-category="生活" data-keywords="WiFi 密码 无线">
+                    <a href="WiFi密码查看/index.html" class="app-card">
+                        <div class="app-icon-sm bg-cyan">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>WiFi密码查看</h4>
+                            <p>快速查看已连接WiFi密码</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="生活" data-keywords="外卖 省钱 比价">
+                    <a href="外卖比价/index.html" class="app-card">
+                        <div class="app-icon-sm bg-orange">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>外卖比价</h4>
+                            <p>多平台外卖价格对比</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="生活" data-keywords="食谱 养生 美食">
+                    <a href="养生食谱/index.html" class="app-card">
+                        <div class="app-icon-sm bg-green">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>养生食谱</h4>
+                            <p>健康养生美食推荐</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="生活" data-keywords="宠物 猫 狗">
+                    <a href="宠物喂养指南/index.html" class="app-card">
+                        <div class="app-icon-sm bg-orange">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>宠物喂养指南</h4>
+                            <p>科学养宠全攻略</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="生活" data-keywords="充电桩 电动车">
+                    <a href="充电桩地图Pro/index.html" class="app-card">
+                        <div class="app-icon-sm bg-blue">
+                            <i class="fas fa-charging-station"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>充电桩地图Pro</h4>
+                            <p>附近充电桩快速查找</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 学习类 -->
+                <div class="app-item" data-category="学习" data-keywords="英语 儿童 启蒙">
+                    <a href="儿童英语启蒙/index.html" class="app-card">
+                        <div class="app-icon-sm bg-pink">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>儿童英语启蒙</h4>
+                            <p>趣味英语启蒙教育</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="学习" data-keywords="专注 效率">
+                    <a href="专注力训练营/index.html" class="app-card">
+                        <div class="app-icon-sm bg-purple">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>专注力训练营</h4>
+                            <p>提升专注力与效率</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="app-item" data-category="学习" data-keywords="课表 学生">
+                    <a href="学生课表/index.html" class="app-card">
+                        <div class="app-icon-sm bg-teal">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="app-info">
+                            <h4>学生课表</h4>
+                            <p>课程表管理小工具</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="no-results hidden" id="noResults">
+                <i class="fas fa-search"></i>
+                <p>没有找到相关工具</p>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="简历医生/index.html">简历医生</a>
+                <a href="戒烟助手/index.html">戒烟助手</a>
+                <a href="早起打卡/index.html">早起打卡</a>
+            </div>
+            <p class="copyright">&copy; 2024 小工具箱. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        function filterByCategory(category) {
+            // Update tab state
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.category === category) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Filter apps
+            const items = document.querySelectorAll('.app-item');
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+            
+            // Show/hide no results
+            const visibleItems = document.querySelectorAll('.app-item:not(.hidden)');
+            document.getElementById('noResults').classList.toggle('hidden', visibleItems.length > 0);
+        }
+        
+        function filterApps() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('.app-item');
+            
+            items.forEach(item => {
+                const text = (item.dataset.keywords + ' ' + item.querySelector('h4').textContent + ' ' + item.querySelector('p').textContent).toLowerCase();
+                item.classList.toggle('hidden', !text.includes(keyword));
+            });
+            
+            // Show/hide no results
+            const visibleItems = document.querySelectorAll('.app-item:not(.hidden)');
+            document.getElementById('noResults').classList.toggle('hidden', visibleItems.length > 0);
+        }
+    </script>
+</body>
+</html>

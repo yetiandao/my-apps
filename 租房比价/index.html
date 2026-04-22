@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>租房比价 - 找到最划算的租房</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --primary-light: #FFF0EB;
+            --secondary: #2D3436;
+            --success: #00B894;
+            --warning: #FDCB6E;
+            --danger: #E74C3C;
+            --gray-100: #F8F9FA;
+            --gray-200: #E9ECEF;
+            --gray-300: #DEE2E6;
+            --gray-400: #CED4DA;
+            --gray-500: #ADB5BD;
+            --gray-600: #6C757D;
+            --gray-700: #495057;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 24px rgba(0,0,0,0.12);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-100);
+            color: var(--secondary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5C 100%);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.95);
+            font-size: 14px;
+            color: var(--secondary);
+            outline: none;
+        }
+
+        .search-btn {
+            background: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 24px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            padding: 0 20px;
+            margin-top: 16px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-item.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 16px 16px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 12px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 8px 14px;
+            background: white;
+            border: 1px solid var(--gray-300);
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Listing Cards */
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .listing-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .listing-image {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .listing-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .listing-tags {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tag.new {
+            background: var(--success);
+        }
+
+        .tag.hot {
+            background: var(--danger);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            background: var(--danger);
+            color: white;
+        }
+
+        .listing-content {
+            padding: 14px;
+        }
+
+        .listing-price {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .price-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .price-unit {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .price-savings {
+            margin-left: auto;
+            background: var(--success);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .listing-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .listing-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-bottom: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .listing-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .metro-info {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .platform-prices {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .platform-price {
+            background: var(--gray-100);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .platform-price.best {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Compare Section */
+        .compare-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .compare-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .compare-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .compare-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .compare-item {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 12px;
+            background: var(--gray-100);
+            border-radius: 8px;
+        }
+
+        .compare-item-header {
+            grid-column: 1 / -1;
+            font-weight: 600;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        .compare-cell {
+            text-align: center;
+        }
+
+        .compare-cell-label {
+            font-size: 11px;
+            color: var(--gray-500);
+            margin-bottom: 4px;
+        }
+
+        .compare-cell-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .compare-cell-value.best {
+            color: var(--success);
+        }
+
+        /* Favorites Section */
+        .favorites-container {
+            margin-top: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .empty-hint {
+            font-size: 14px;
+        }
+
+        /* Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px 24px 0 0;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+        }
+
+        .detail-price-section {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .detail-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .detail-price-unit {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .detail-platforms {
+            flex: 1;
+        }
+
+        .platform-comparison {
+            margin-top: 20px;
+        }
+
+        .platform-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .platform-name {
+            font-weight: 600;
+        }
+
+        .platform-price-detail {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .platform-price-detail.lowest {
+            color: var(--success);
+        }
+
+        .platform-badge {
+            background: var(--success);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 200px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-500);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        /* VIP Modal */
+        .vip-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            width: 90%;
+            max-width: 360px;
+            border-radius: var(--radius);
+            padding: 30px 24px;
+            z-index: 300;
+            text-align: center;
+            display: none;
+        }
+
+        .vip-modal.active {
+            display: block;
+        }
+
+        .vip-header {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: var(--radius);
+            margin: -30px -24px 24px;
+        }
+
+        .vip-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+        }
+
+        .vip-features {
+            text-align: left;
+            margin: 24px 0;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .vip-feature:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature-icon {
+            color: var(--success);
+            font-size: 18px;
+        }
+
+        .vip-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8F5C 100%);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 400;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .listings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .compare-item {
+                grid-template-columns: 1fr;
+            }
+            
+            .compare-item-header {
+                grid-column: 1;
+            }
+        }
+
+        /* Price Trend Mini Chart */
+        .mini-chart {
+            height: 40px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            margin-top: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 4px;
+            gap: 2px;
+        }
+
+        .mini-chart-bar {
+            flex: 1;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: height 0.3s;
+        }
+
+        /* Commute Calculator */
+        .commute-calculator {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .commute-result {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .commute-item {
+            text-align: center;
+            padding: 16px;
+            background: var(--gray-100);
+            border-radius: 8px;
+        }
+
+        .commute-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .commute-time {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .commute-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        /* Community Rating */
+        .community-rating {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .rating-score {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--warning);
+        }
+
+        .rating-details {
+            flex: 1;
+        }
+
+        .rating-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            font-size: 13px;
+        }
+
+        .rating-bar {
+            width: 100px;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .rating-bar-fill {
+            height: 100%;
+            background: var(--warning);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">
+                <div class="logo-icon">🏠</div>
+                <span>租房比价</span>
+            </div>
+            <div class="vip-badge" onclick="showVipModal()">⭐ VIP会员</div>
+        </div>
+        <div class="search-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索小区、区域...">
+            <button class="search-btn" onclick="handleSearch()">搜索</button>
+        </div>
+        <nav class="tab-nav">
+            <div class="tab-item active" data-tab="listings">推荐房源</div>
+            <div class="tab-item" data-tab="compare">比价</div>
+            <div class="tab-item" data-tab="favorites">收藏</div>
+            <div class="tab-item" data-tab="tools">工具</div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Listings Section -->
+        <section id="listings-section" class="page-section active">
+            <div class="filter-bar" id="filterBar">
+                <div class="filter-chip active" data-filter="all">全部</div>
+                <div class="filter-chip" data-filter="price_asc">价格升序</div>
+                <div class="filter-chip" data-filter="distance">距离地铁近</div>
+                <div class="filter-chip" data-filter="rating">评分高</div>
+            </div>
+            <div class="listings-grid" id="listingsGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compare Section -->
+        <section id="compare-section" class="page-section">
+            <div class="compare-container">
+                <div class="compare-header">
+                    <h2 class="compare-title">房源比价</h2>
+                    <button class="filter-chip" onclick="loadFavoritesForCompare()">从收藏选择</button>
+                </div>
+                <div class="compare-list" id="compareList">
+                    <div class="empty-state">
+                        <div class="empty-icon">⚖️</div>
+                        <p class="empty-text">收藏房源后可进行比价</p>
+                        <p class="empty-hint">勾选多个房源的收藏按钮，即可加入比价</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Favorites Section -->
+        <section id="favorites-section" class="page-section">
+            <div class="favorites-container" id="favoritesContainer">
+                <div class="empty-state">
+                    <div class="empty-icon">❤️</div>
+                    <p class="empty-text">暂无收藏</p>
+                    <p class="empty-hint">点击房源的收藏按钮即可收藏</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools Section -->
+        <section id="tools-section" class="page-section">
+            <div class="commute-calculator">
+                <h3>🚇 通勤时间计算</h3>
+                <p style="color: var(--gray-600); margin-top: 8px; font-size: 14px;">
+                    输入您到地铁站的距离，计算最佳通勤方式
+                </p>
+                <div style="display: flex; gap: 8px; margin-top: 16px;">
+                    <input type="number" id="metroDistance" class="search-input" placeholder="距离(米)" value="500">
+                    <button class="search-btn" onclick="calculateCommute()">计算</button>
+                </div>
+                <div class="commute-result" id="commuteResult">
+                    <div class="commute-item">
+                        <div class="commute-icon">🚶</div>
+                        <div class="commute-time" id="walkingTime">-</div>
+                        <div class="commute-label">步行</div>
+                    </div>
+                    <div class="commute-item">
+                        <div class="commute-icon">🚲</div>
+                        <div class="commute-time" id="bicycleTime">-</div>
+                        <div class="commute-label">骑车</div>
+                    </div>
+                    <div class="commute-item">
+                        <div class="commute-icon">🚇</div>
+                        <div class="commute-time" id="metroTimeTotal">-</div>
+                        <div class="commute-label">地铁+步行</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container" style="margin-top: 16px;">
+                <div class="chart-header">
+                    <h3 class="chart-title">📊 小区评分查询</h3>
+                </div>
+                <select id="communitySelect" class="search-input" style="width: 100%; margin-bottom: 16px;" onchange="loadCommunityRating()">
+                    <option value="">选择小区查看评分</option>
+                </select>
+                <div id="communityRatingDetail" style="display: none;">
+                    <div class="community-rating">
+                        <div class="rating-score" id="totalRating">-</div>
+                        <div class="rating-details" id="ratingDetails"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container" style="margin-top: 16px;">
+                <div class="chart-header">
+                    <h3 class="chart-title">📈 价格走势查询</h3>
+                </div>
+                <select id="priceTrendSelect" class="search-input" style="width: 100%; margin-bottom: 16px;" onchange="loadPriceTrend()">
+                    <option value="">选择小区查看价格趋势</option>
+                </select>
+                <canvas id="priceChart" class="chart-canvas"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-tab="listings">
+            <span class="nav-icon">🏠</span>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" data-tab="compare">
+            <span class="nav-icon">⚖️</span>
+            <span>比价</span>
+        </div>
+        <div class="nav-item" data-tab="favorites">
+            <span class="nav-icon">❤️</span>
+            <span>收藏</span>
+        </div>
+        <div class="nav-item" data-tab="tools">
+            <span class="nav-icon">🛠️</span>
+            <span>工具</span>
+        </div>
+    </nav>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>房源详情</h3>
+                <div class="modal-close" onclick="closeModal('detailModal')">✕</div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- VIP Modal -->
+    <div class="modal-overlay" id="vipOverlay" onclick="closeModal('vipOverlay')">
+        <div class="vip-modal" onclick="event.stopPropagation()">
+            <div class="vip-header">
+                <div class="vip-title">⭐ VIP会员</div>
+                <div class="vip-price"><span>¥</span>19<span>/月</span></div>
+            </div>
+            <div class="vip-features">
+                <div class="vip-feature">
+                    <span class="vip-feature-icon">✓</span>
+                    <span>解锁全平台真实价格</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="vip-feature-icon">✓</span>
+                    <span>价格走势历史分析</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="vip-feature-icon">✓</span>
+                    <span>价格波动预警通知</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="vip-feature-icon">✓</span>
+                    <span>无限收藏与对比</span>
+                </div>
+                <div class="vip-feature">
+                    <span class="vip-feature-icon">✓</span>
+                    <span>优先客服支持</span>
+                </div>
+            </div>
+            <button class="vip-btn" onclick="purchaseVip()">立即开通</button>
+            <p style="color: var(--gray-500); font-size: 12px; margin-top: 12px;">当前为演示模式，已开通VIP</p>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let allListings = [];
+        let favorites = new Set();
+        let currentFilter = 'all';
+        let communities = [];
+
+        // ==================== API基础配置 ====================
+        const API_BASE = 'http://localhost:5000/api';
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initFilters();
+            loadListings();
+            loadCommunities();
+        });
+
+        // ==================== 导航功能 ====================
+        function initNavigation() {
+            // Tab导航
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    switchTab(tab.dataset.tab);
+                });
+            });
+
+            // 底部导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                    const tabName = item.dataset.tab;
+                    document.querySelector(`.tab-item[data-tab="${tabName}"]`)?.click();
+                });
+            });
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`${tabName}-section`).classList.add('active');
+            
+            if (tabName === 'favorites') {
+                loadFavorites();
+            } else if (tabName === 'compare') {
+                loadCompareView();
+            }
+        }
+
+        // ==================== 筛选功能 ====================
+        function initFilters() {
+            document.querySelectorAll('.filter-chip[data-filter]').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-chip[data-filter]').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentFilter = chip.dataset.filter;
+                    filterAndRenderListings();
+                });
+            });
+        }
+
+        // ==================== 数据加载 ====================
+        async function loadListings() {
+            try {
+                const response = await fetch(`${API_BASE}/listings?limit=50`);
+                const data = await response.json();
+                allListings = data.listings;
+                filterAndRenderListings();
+            } catch (error) {
+                console.error('加载失败:', error);
+                document.getElementById('listingsGrid').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <p class="empty-text">加载失败</p>
+                        <p class="empty-hint">请检查后端服务是否启动 (python app.py)</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadCommunities() {
+            try {
+                const response = await fetch(`${API_BASE}/communities`);
+                const data = await response.json();
+                communities = data;
+                
+                const options = communities.map(c => `<option value="${c.id}">${c.name} (${c.district})</option>`).join('');
+                document.getElementById('communitySelect').innerHTML = '<option value="">选择小区查看评分</option>' + options;
+                document.getElementById('priceTrendSelect').innerHTML = '<option value="">选择小区查看价格趋势</option>' + options;
+            } catch (error) {
+                console.error('加载小区失败:', error);
+            }
+        }
+
+        // ==================== 渲染功能 ====================
+        function filterAndRenderListings() {
+            let filtered = [...allListings];
+            
+            // 应用筛选
+            switch (currentFilter) {
+                case 'price_asc':
+                    filtered.sort((a, b) => a.lowest_price - b.lowest_price);
+                    break;
+                case 'distance':
+                    filtered.sort((a, b) => a.metro_distance - b.metro_distance);
+                    break;
+                case 'rating':
+                    filtered.sort((a, b) => b.rating - a.rating);
+                    break;
+            }
+            
+            renderListings(filtered);
+        }
+
+        function renderListings(listings) {
+            const grid = document.getElementById('listingsGrid');
+            
+            if (listings.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p class="empty-text">没有找到符合条件的房源</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = listings.map(listing => `
+                <div class="listing-card" onclick="showListingDetail('${listing.id}')">
+                    <div class="listing-image">
+                        <img src="${listing.images[0]}" alt="${listing.title}" onerror="this.src='https://via.placeholder.com/400x300/f5f5f5/999?text=房源图片'">
+                        <div class="listing-tags">
+                            ${listing.tags.map((tag, i) => `<span class="tag ${tag === '新上架' ? 'new' : tag === '降价' ? 'hot' : ''}">${tag}</span>`).join('')}
+                        </div>
+                        <div class="favorite-btn ${favorites.has(listing.id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${listing.id}')">
+                            ${favorites.has(listing.id) ? '❤️' : '🤍'}
+                        </div>
+                    </div>
+                    <div class="listing-content">
+                        <div class="listing-price">
+                            <span class="price-value">¥${listing.lowest_price}</span>
+                            <span class="price-unit">/月</span>
+                            ${renderSavingsBadge(listing)}
+                        </div>
+                        <h3 class="listing-title">${listing.title}</h3>
+                        <div class="listing-info">
+                            <span class="info-item">📐 ${listing.area}m²</span>
+                            <span class="info-item">🏢 ${listing.floor}/${listing.total_floor}层</span>
+                            <span class="info-item">📍 ${listing.district}</span>
+                        </div>
+                        <div class="listing-meta">
+                            <div class="rating">⭐ ${listing.rating}</div>
+                            <div class="metro-info">🚇 ${listing.metro_distance}m</div>
+                        </div>
+                        <div class="platform-prices">
+                            ${renderPlatformPrices(listing)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSavingsBadge(listing) {
+            const prices = Object.values(listing.price_per_platform);
+            const maxPrice = Math.max(...prices);
+            const minPrice = Math.min(...prices);
+            const savings = maxPrice - minPrice;
+            
+            if (savings > 0) {
+                return `<span class="price-savings">省¥${savings}</span>`;
+            }
+            return '';
+        }
+
+        function renderPlatformPrices(listing) {
+            return Object.entries(listing.price_per_platform)
+                .map(([platform, price]) => {
+                    const isLowest = price === listing.lowest_price;
+                    return `<span class="platform-price ${isLowest ? 'best' : ''}">${platform}: ¥${price}</span>`;
+                })
+                .join('');
+        }
+
+        // ==================== 详情弹窗 ====================
+        async function showListingDetail(listingId) {
+            const listing = allListings.find(l => l.id === listingId);
+            if (!listing) return;
+
+            const modal = document.getElementById('detailModal');
+            const body = document.getElementById('modalBody');
+
+            body.innerHTML = `
+                <img src="${listing.images[0]}" class="detail-image" alt="${listing.title}" onerror="this.src='https://via.placeholder.com/600x400/f5f5f5/999?text=房源图片'">
+                
+                <h2 style="margin-bottom: 8px;">${listing.title}</h2>
+                <p style="color: var(--gray-600); margin-bottom: 16px;">${listing.district} · 距地铁${listing.metro_distance}米</p>
+                
+                <div class="detail-price-section">
+                    <div>
+                        <span class="detail-price">¥${listing.lowest_price}</span>
+                        <span class="detail-price-unit">/月</span>
+                    </div>
+                    <div class="detail-platforms">
+                        <p style="font-size: 12px; color: var(--gray-500);">各平台价格对比</p>
+                    </div>
+                </div>
+                
+                <div class="platform-comparison">
+                    ${Object.entries(listing.price_per_platform)
+                        .sort((a, b) => a[1] - b[1])
+                        .map(([platform, price]) => `
+                            <div class="platform-row">
+                                <div class="platform-name">${platform}</div>
+                                <div>
+                                    <span class="platform-price-detail ${price === listing.lowest_price ? 'lowest' : ''}">¥${price}</span>
+                                    ${price === listing.lowest_price ? '<span class="platform-badge">最低价</span>' : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                </div>
+                
+                <div style="margin-top: 20px; padding: 16px; background: var(--gray-100); border-radius: 8px;">
+                    <h4 style="margin-bottom: 12px;">房源信息</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 14px;">
+                        <div>📐 面积: ${listing.area}m²</div>
+                        <div>🏢 楼层: ${listing.floor}/${listing.total_floor}</div>
+                        <div>🏠 户型: ${listing.layout}</div>
+                        <div>⭐ 评分: ${listing.rating}</div>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap;">
+                        ${listing.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <button class="vip-btn" onclick="showVipModal()" style="margin-top: 20px;">
+                    设置价格预警
+                </button>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        // ==================== 收藏功能 ====================
+        function toggleFavorite(listingId) {
+            if (favorites.has(listingId)) {
+                favorites.delete(listingId);
+                showToast('已取消收藏');
+            } else {
+                favorites.add(listingId);
+                showToast('已添加到收藏');
+            }
+            filterAndRenderListings();
+        }
+
+        function loadFavorites() {
+            const container = document.getElementById('favoritesContainer');
+            const favoriteListings = allListings.filter(l => favorites.has(l.id));
+            
+            if (favoriteListings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">❤️</div>
+                        <p class="empty-text">暂无收藏</p>
+                        <p class="empty-hint">点击房源的收藏按钮即可收藏</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `<div class="listings-grid">` + 
+                    favoriteListings.map(l => `
+                        <div class="listing-card" onclick="showListingDetail('${l.id}')">
+                            <div class="listing-image">
+                                <img src="${l.images[0]}" alt="${l.title}">
+                                <div class="favorite-btn active" onclick="event.stopPropagation(); toggleFavorite('${l.id}')">❤️</div>
+                            </div>
+                            <div class="listing-content">
+                                <div class="listing-price">
+                                    <span class="price-value">¥${l.lowest_price}</span>
+                                    <span class="price-unit">/月</span>
+                                </div>
+                                <h3 class="listing-title">${l.title}</h3>
+                                <div class="listing-meta">
+                                    <div class="rating">⭐ ${l.rating}</div>
+                                    <div class="metro-info">🚇 ${l.metro_distance}m</div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('') + `</div>`;
+            }
+        }
+
+        // ==================== 比价功能 ====================
+        function loadCompareView() {
+            const container = document.getElementById('compareList');
+            const favoriteListings = allListings.filter(l => favorites.has(l.id));
+            
+            if (favoriteListings.length < 2) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚖️</div>
+                        <p class="empty-text">收藏至少2个房源才能比价</p>
+                        <p class="empty-hint">当前收藏: ${favoriteListings.length}个</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const bestPrice = favoriteListings.reduce((a, b) => a.lowest_price < b.lowest_price ? a : b);
+            const bestRating = favoriteListings.reduce((a, b) => a.rating > b.rating ? a : b);
+            const nearest = favoriteListings.reduce((a, b) => a.metro_distance < b.metro_distance ? a : b);
+
+            container.innerHTML = `
+                <div class="compare-item">
+                    <div class="compare-item-header">🏆 推荐选择</div>
+                    <div class="compare-cell">
+                        <div class="compare-cell-label">最低价</div>
+                        <div class="compare-cell-value best">${bestPrice.lowest_price}元</div>
+                        <div style="font-size: 11px; color: var(--gray-500);">${bestPrice.title}</div>
+                    </div>
+                    <div class="compare-cell">
+                        <div class="compare-cell-label">评分最高</div>
+                        <div class="compare-cell-value best">${bestRating.rating}分</div>
+                        <div style="font-size: 11px; color: var(--gray-500);">${bestRating.title}</div>
+                    </div>
+                    <div class="compare-cell">
+                        <div class="compare-cell-label">距地铁近</div>
+                        <div class="compare-cell-value best">${nearest.metro_distance}m</div>
+                        <div style="font-size: 11px; color: var(--gray-500);">${nearest.title}</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4 style="margin-bottom: 12px;">📊 详细对比</h4>
+                    ${favoriteListings.map(l => `
+                        <div class="platform-comparison" style="margin-bottom: 12px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">${l.title}</div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 13px;">
+                                <div>💰 价格: ¥${l.lowest_price}</div>
+                                <div>⭐ 评分: ${l.rating}</div>
+                                <div>🚇 距离: ${l.metro_distance}m</div>
+                                <div>📐 面积: ${l.area}m²</div>
+                            </div>
+                            <div style="margin-top: 8px;">
+                                ${Object.entries(l.price_per_platform).map(([p, price]) => 
+                                    `<span class="platform-price ${price === l.lowest_price ? 'best' : ''}">${p}: ¥${price}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function loadFavoritesForCompare() {
+            switchTab('favorites');
+        }
+
+        // ==================== 工具功能 ====================
+        async function calculateCommute() {
+            const distance = parseInt(document.getElementById('metroDistance').value) || 500;
+            
+            try {
+                const response = await fetch(`${API_BASE}/commute?metro_distance=${distance}`);
+                const data = await response.json();
+                
+                document.getElementById('walkingTime').textContent = data.walking_time.time + '分钟';
+                document.getElementById('bicycleTime').textContent = data.bicycle_time.time + '分钟';
+                document.getElementById('metroTimeTotal').textContent = data.metro_time.time + '分钟';
+            } catch (error) {
+                showToast('计算失败，请重试');
+            }
+        }
+
+        async function loadCommunityRating() {
+            const communityId = document.getElementById('communitySelect').value;
+            if (!communityId) {
+                document.getElementById('communityRatingDetail').style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/communities/${communityId}`);
+                const data = await response.json();
+                
+                document.getElementById('totalRating').textContent = data.rating;
+                document.getElementById('ratingDetails').innerHTML = Object.entries(data.rating_details)
+                    .map(([key, value]) => `
+                        <div class="rating-item">
+                            <span>${getRatingName(key)}</span>
+                            <span style="color: var(--warning);">${value}</span>
+                            <div class="rating-bar">
+                                <div class="rating-bar-fill" style="width: ${value * 20}%;"></div>
+                            </div>
+                        </div>
+                    `).join('');
+                
+                document.getElementById('communityRatingDetail').style.display = 'block';
+            } catch (error) {
+                showToast('加载失败');
+            }
+        }
+
+        function getRatingName(key) {
+            const names = {
+                location: '🏙️ 位置',
+                facility: '🏢 设施',
+                service: '🤝 服务',
+                environment: '🌳 环境'
+            };
+            return names[key] || key;
+        }
+
+        async function loadPriceTrend() {
+            const communityId = document.getElementById('priceTrendSelect').value;
+            if (!communityId) return;
+
+            try {
+                const community = communities.find(c => c.id === communityId);
+                const response = await fetch(`${API_BASE}/price-trend?community_name=${encodeURIComponent(community.name)}`);
+                const data = await response.json();
+                
+                drawPriceChart(data.trend);
+            } catch (error) {
+                showToast('加载失败');
+            }
+        }
+
+        function drawPriceChart(trend) {
+            const canvas = document.getElementById('priceChart');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置canvas尺寸
+            canvas.width = canvas.offsetWidth * 2;
+            canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+            
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+            const padding = 40;
+            
+            const prices = trend.map(t => t.price);
+            const minPrice = Math.min(...prices) - 100;
+            const maxPrice = Math.max(...prices) + 100;
+            
+            // 清空画布
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制网格
+            ctx.strokeStyle = '#E9ECEF';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = padding + (height - 2 * padding) * i / 4;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+                
+                // 标注
+                const priceLabel = Math.round(maxPrice - (maxPrice - minPrice) * i / 4);
+                ctx.fillStyle = '#ADB5BD';
+                ctx.font = '10px sans-serif';
+                ctx.fillText('¥' + priceLabel, 5, y + 3);
+            }
+            
+            // 绘制价格线
+            ctx.strokeStyle = '#FF6B35';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            trend.forEach((point, i) => {
+                const x = padding + (width - 2 * padding) * i / (trend.length - 1);
+                const y = padding + (height - 2 * padding) * (1 - (point.price - minPrice) / (maxPrice - minPrice));
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+            
+            // 绘制数据点
+            ctx.fillStyle = '#FF6B35';
+            trend.forEach((point, i) => {
+                if (i % 7 === 0) { // 每7天一个点
+                    const x = padding + (width - 2 * padding) * i / (trend.length - 1);
+                    const y = padding + (height - 2 * padding) * (1 - (point.price - minPrice) / (maxPrice - minPrice));
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // 日期标签
+                    const date = new Date(point.date);
+                    ctx.fillStyle = '#ADB5BD';
+                    ctx.font = '9px sans-serif';
+                    ctx.fillText((date.getMonth() + 1) + '/' + date.getDate(), x - 8, height - 10);
+                }
+            });
+            
+            // 绘制标题
+            ctx.fillStyle = '#2D3436';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText('近30天价格走势', width / 2 - 40, 20);
+        }
+
+        // ==================== 搜索功能 ====================
+        function handleSearch() {
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            if (!keyword) {
+                filterAndRenderListings();
+                return;
+            }
+            
+            const filtered = allListings.filter(l => 
+                l.title.toLowerCase().includes(keyword) ||
+                l.community_name.toLowerCase().includes(keyword) ||
+                l.district.toLowerCase().includes(keyword)
+            );
+            
+            renderListings(filtered);
+            showToast(`找到 ${filtered.length} 个结果`);
+        }
+
+        // 搜索框回车事件
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
+        // ==================== 弹窗控制 ====================
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showVipModal() {
+            document.getElementById('vipOverlay').classList.add('active');
+        }
+
+        function purchaseVip() {
+            showToast('VIP开通成功（演示模式）');
+            closeModal('vipOverlay');
+        }
+
+        // ==================== 提示消息 ====================
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // ESC关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            }
+        });
+    </script>
+</body>
+</html>

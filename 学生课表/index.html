@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>学生课表 - 让学习更高效</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --primary: #4A90D9;
+            --primary-dark: #3A7BC8;
+            --success: #67C23A;
+            --warning: #E6A23C;
+            --danger: #F56C6C;
+            --purple: #9B59B6;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-light: #999;
+            --bg-light: #F5F7FA;
+            --bg-white: #FFF;
+            --border: #E4E7ED;
+            --shadow: 0 2px 12px rgba(0,0,0,0.1);
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding-bottom: calc(70px + var(--safe-bottom));
+            min-height: 100vh;
+        }
+        
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #6BA3E8);
+            color: white;
+            padding: calc(var(--safe-top) + 15px) 20px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header-sub {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+        
+        /* 主容器 */
+        .container {
+            padding: 15px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        
+        /* 底部导航 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 calc(8px + var(--safe-bottom));
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+        
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 11px;
+            padding: 5px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+        }
+        
+        .tab-item.active {
+            color: var(--primary);
+        }
+        
+        .tab-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+        }
+        
+        /* 卡片 */
+        .card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-title .more {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: normal;
+        }
+        
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .stat-item {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* 课程表 */
+        .week-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .week-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            border: 1px solid var(--border);
+            background: var(--bg-white);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .week-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .schedule-item {
+            display: flex;
+            padding: 12px;
+            border-radius: 10px;
+            background: var(--bg-light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .schedule-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+        
+        .schedule-time {
+            width: 60px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+        
+        .schedule-time .time {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .schedule-info {
+            flex: 1;
+        }
+        
+        .schedule-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        
+        .schedule-detail {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* 今日课表视图 */
+        .today-view {
+            display: grid;
+            grid-template-columns: 50px 1fr;
+            gap: 10px;
+        }
+        
+        .time-slot {
+            position: relative;
+        }
+        
+        .time-slot .hour {
+            font-size: 12px;
+            color: var(--text-light);
+            height: 60px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .time-slot .line {
+            position: absolute;
+            left: 30px;
+            right: 0;
+            top: 25px;
+            height: 1px;
+            background: var(--border);
+        }
+        
+        .course-block {
+            position: relative;
+            min-height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .course-card {
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+        
+        .course-card .name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .course-card .info {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+        
+        /* 考试倒计时 */
+        .exam-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 10px;
+            background: var(--bg-light);
+            margin-bottom: 10px;
+        }
+        
+        .exam-countdown {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .exam-countdown.danger {
+            background: linear-gradient(135deg, var(--danger), #FF7875);
+            color: white;
+        }
+        
+        .exam-countdown.warning {
+            background: linear-gradient(135deg, var(--warning), #FAD647);
+            color: white;
+        }
+        
+        .exam-countdown.normal {
+            background: linear-gradient(135deg, var(--primary), #7CB9F5);
+            color: white;
+        }
+        
+        .exam-countdown .num {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .exam-countdown .unit {
+            font-size: 10px;
+            opacity: 0.9;
+        }
+        
+        .exam-info {
+            flex: 1;
+        }
+        
+        .exam-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .exam-detail {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* 成绩列表 */
+        .grade-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--bg-light);
+            margin-bottom: 10px;
+        }
+        
+        .grade-course {
+            flex: 1;
+        }
+        
+        .grade-course .name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .grade-course .type {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .grade-score {
+            text-align: right;
+        }
+        
+        .grade-score .score {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .grade-score .total {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* 笔记列表 */
+        .note-item {
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--bg-light);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .note-item:hover {
+            background: var(--border);
+        }
+        
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .note-preview {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .note-meta {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+        
+        .note-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            padding: 2px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+        
+        /* 按钮 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        /* 浮动按钮 */
+        .fab {
+            position: fixed;
+            right: 20px;
+            bottom: calc(80px + var(--safe-bottom));
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(74, 144, 217, 0.4);
+            cursor: pointer;
+            z-index: 99;
+            transition: all 0.3s;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+        }
+        
+        .fab svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: var(--bg-white);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: var(--bg-white);
+        }
+        
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        /* 表单 */
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .color-option.selected {
+            border-color: var(--text-primary);
+            transform: scale(1.1);
+        }
+        
+        /* 页面视图 */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* VIP卡片 */
+        .vip-banner {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vip-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+        }
+        
+        .vip-banner h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .vip-banner p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+        
+        .vip-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: white;
+            color: #FFA500;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .vip-expired {
+            background: linear-gradient(135deg, #909399, #B0B8C4);
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+        
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+        }
+        
+        /* 课程管理列表 */
+        .course-list-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 10px;
+            background: var(--bg-light);
+            margin-bottom: 10px;
+        }
+        
+        .course-color {
+            width: 8px;
+            height: 40px;
+            border-radius: 4px;
+            margin-right: 12px;
+        }
+        
+        .course-info {
+            flex: 1;
+        }
+        
+        .course-info .name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .course-info .teacher {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .course-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .icon-btn:hover {
+            background: var(--border);
+        }
+        
+        .icon-btn.delete:hover {
+            background: #FEE;
+            color: var(--danger);
+        }
+        
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        /* 删除确认 */
+        .delete-confirm {
+            text-align: center;
+        }
+        
+        .delete-confirm p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+        }
+        
+        .delete-confirm .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .delete-confirm .btn {
+            flex: 1;
+        }
+        
+        /* 统计平均分 */
+        .avg-score-card {
+            background: linear-gradient(135deg, var(--primary), #6BA3E8);
+            color: white;
+            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .avg-score-card .label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .avg-score-card .value {
+            font-size: 48px;
+            font-weight: 700;
+        }
+        
+        .avg-score-card .sub {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <h1>学生课表</h1>
+        <div class="header-sub" id="currentDate"></div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="container">
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <!-- 统计概览 -->
+            <div class="stats-grid">
+                <div class="stat-item" onclick="switchTab('schedule')">
+                    <div class="stat-value" id="todayCount">0</div>
+                    <div class="stat-label">今日课程</div>
+                </div>
+                <div class="stat-item" onclick="switchTab('exam')">
+                    <div class="stat-value" id="examCount">0</div>
+                    <div class="stat-label">本周考试</div>
+                </div>
+            </div>
+            
+            <!-- VIPBanner -->
+            <div class="vip-banner" id="vipBanner">
+                <h3>🎓 开通会员</h3>
+                <p>去广告 + 云端同步，仅需 ¥6.9/月</p>
+                <button class="vip-btn" onclick="activateVip()">立即开通</button>
+            </div>
+            
+            <!-- 今日课程 -->
+            <div class="card">
+                <div class="card-title">
+                    今日课程
+                    <span class="more" onclick="switchTab('schedule')">查看全部</span>
+                </div>
+                <div class="schedule-list" id="todaySchedule">
+                    <div class="empty-state">
+                        <p>今日暂无课程</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 考试倒计时 -->
+            <div class="card">
+                <div class="card-title">
+                    考试倒计时
+                    <span class="more" onclick="switchTab('exam')">查看全部</span>
+                </div>
+                <div id="upcomingExams">
+                    <div class="empty-state">
+                        <p>暂无考试安排</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 课表页 -->
+        <div class="page" id="page-schedule">
+            <div class="week-tabs" id="weekTabs"></div>
+            <div class="card">
+                <div class="card-title">
+                    课程安排
+                    <span class="more" onclick="openCourseManage()">管理课程</span>
+                </div>
+                <div class="today-view" id="weeklySchedule"></div>
+            </div>
+        </div>
+
+        <!-- 考试页 -->
+        <div class="page" id="page-exam">
+            <div class="card">
+                <div class="card-title">考试安排</div>
+                <div id="examList"></div>
+            </div>
+        </div>
+
+        <!-- 成绩页 -->
+        <div class="page" id="page-grade">
+            <div class="avg-score-card">
+                <div class="label">加权平均分</div>
+                <div class="value" id="avgScore">--</div>
+                <div class="sub" id="gradeCount">共 0 门成绩</div>
+            </div>
+            <div class="card">
+                <div class="card-title">成绩记录</div>
+                <div id="gradeList"></div>
+            </div>
+        </div>
+
+        <!-- 笔记页 -->
+        <div class="page" id="page-note">
+            <div class="card">
+                <div class="card-title">课程笔记</div>
+                <div id="noteList"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 浮动添加按钮 -->
+    <div class="fab" id="fab" onclick="openAddModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="tab-bar">
+        <button class="tab-item active" onclick="switchTab('home')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            首页
+        </button>
+        <button class="tab-item" onclick="switchTab('schedule')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            课表
+        </button>
+        <button class="tab-item" onclick="switchTab('exam')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            考试
+        </button>
+        <button class="tab-item" onclick="switchTab('grade')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+            成绩
+        </button>
+        <button class="tab-item" onclick="switchTab('note')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            笔记
+        </button>
+    </nav>
+
+    <!-- 模态框 - 添加课表 -->
+    <div class="modal-overlay" id="modalAddSchedule">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">添加课程安排</span>
+                <button class="modal-close" onclick="closeModal('modalAddSchedule')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddSchedule">
+                    <div class="form-group">
+                        <label class="form-label">选择课程</label>
+                        <select class="form-select" id="scheduleCourse" required>
+                            <option value="">请选择课程</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">上课星期</label>
+                        <select class="form-select" id="scheduleDay" required>
+                            <option value="1">周一</option>
+                            <option value="2">周二</option>
+                            <option value="3">周三</option>
+                            <option value="4">周四</option>
+                            <option value="5">周五</option>
+                            <option value="6">周六</option>
+                            <option value="7">周日</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">开始时间</label>
+                            <input type="time" class="form-input" id="scheduleStart" value="08:00" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">结束时间</label>
+                            <input type="time" class="form-input" id="scheduleEnd" value="09:40" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">上课教室</label>
+                        <input type="text" class="form-input" id="scheduleRoom" placeholder="如：教学楼A101">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">上课周数</label>
+                        <select class="form-select" id="scheduleWeeks" multiple>
+                            <option value="1">第1周</option>
+                            <option value="2">第2周</option>
+                            <option value="3">第3周</option>
+                            <option value="4">第4周</option>
+                            <option value="5">第5周</option>
+                            <option value="6">第6周</option>
+                            <option value="7">第7周</option>
+                            <option value="8">第8周</option>
+                            <option value="9">第9周</option>
+                            <option value="10">第10周</option>
+                            <option value="11">第11周</option>
+                            <option value="12">第12周</option>
+                            <option value="13">第13周</option>
+                            <option value="14">第14周</option>
+                            <option value="15">第15周</option>
+                            <option value="16">第16周</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">添加</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 添加课程 -->
+    <div class="modal-overlay" id="modalAddCourse">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">添加新课程</span>
+                <button class="modal-close" onclick="closeModal('modalAddCourse')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddCourse">
+                    <div class="form-group">
+                        <label class="form-label">课程名称</label>
+                        <input type="text" class="form-input" id="courseName" placeholder="如：高等数学" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">授课教师</label>
+                        <input type="text" class="form-input" id="courseTeacher" placeholder="如：张教授">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">上课教室</label>
+                        <input type="text" class="form-input" id="courseRoom" placeholder="如：教学楼A101">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">课程颜色</label>
+                        <div class="color-picker">
+                            <div class="color-option selected" style="background:#4A90D9" data-color="#4A90D9"></div>
+                            <div class="color-option" style="background:#67C23A" data-color="#67C23A"></div>
+                            <div class="color-option" style="background:#E6A23C" data-color="#E6A23C"></div>
+                            <div class="color-option" style="background:#F56C6C" data-color="#F56C6C"></div>
+                            <div class="color-option" style="background:#9B59B6" data-color="#9B59B6"></div>
+                            <div class="color-option" style="background:#1ABC9C" data-color="#1ABC9C"></div>
+                            <div class="color-option" style="background:#3498DB" data-color="#3498DB"></div>
+                            <div class="color-option" style="background:#E74C3C" data-color="#E74C3C"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">添加</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 添加考试 -->
+    <div class="modal-overlay" id="modalAddExam">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">添加考试</span>
+                <button class="modal-close" onclick="closeModal('modalAddExam')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddExam">
+                    <div class="form-group">
+                        <label class="form-label">考试科目</label>
+                        <input type="text" class="form-input" id="examCourse" placeholder="如：高等数学" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">考试日期</label>
+                            <input type="date" class="form-input" id="examDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">考试时间</label>
+                            <input type="time" class="form-input" id="examTime" value="09:00">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">考试地点</label>
+                        <input type="text" class="form-input" id="examLocation" placeholder="如：教学楼A101">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">考试类型</label>
+                        <select class="form-select" id="examType">
+                            <option value="期末">期末考试</option>
+                            <option value="期中">期中考试</option>
+                            <option value="补考">补考</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">备注</label>
+                        <input type="text" class="form-input" id="examNotes" placeholder="如：带计算器">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">添加</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 添加成绩 -->
+    <div class="modal-overlay" id="modalAddGrade">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">添加成绩</span>
+                <button class="modal-close" onclick="closeModal('modalAddGrade')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddGrade">
+                    <div class="form-group">
+                        <label class="form-label">课程名称</label>
+                        <input type="text" class="form-input" id="gradeCourse" placeholder="如：高等数学" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">成绩类型</label>
+                        <select class="form-select" id="gradeType">
+                            <option value="期末考试">期末考试</option>
+                            <option value="期中考试">期中考试</option>
+                            <option value="平时作业">平时作业</option>
+                            <option value="实验">实验</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">得分</label>
+                            <input type="number" class="form-input" id="gradeScore" placeholder="85" min="0" max="150" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">满分</label>
+                            <input type="number" class="form-input" id="gradeTotal" value="100" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">权重 (%)</label>
+                        <input type="number" class="form-input" id="gradeWeight" value="100" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">备注</label>
+                        <input type="text" class="form-input" id="gradeNotes" placeholder="可选">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">添加</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 添加笔记 -->
+    <div class="modal-overlay" id="modalAddNote">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">添加笔记</span>
+                <button class="modal-close" onclick="closeModal('modalAddNote')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="formAddNote">
+                    <div class="form-group">
+                        <label class="form-label">笔记标题</label>
+                        <input type="text" class="form-input" id="noteTitle" placeholder="如：第一章重点公式" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">关联课程</label>
+                        <select class="form-select" id="noteCourse">
+                            <option value="">不关联</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">笔记内容</label>
+                        <textarea class="form-input" id="noteContent" rows="5" placeholder="输入笔记内容..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">标签（用逗号分隔）</label>
+                        <input type="text" class="form-input" id="noteTags" placeholder="如：公式,重点">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 课程管理 -->
+    <div class="modal-overlay" id="modalCourseManage">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">管理课程</span>
+                <button class="modal-close" onclick="closeModal('modalCourseManage')">✕</button>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-outline btn-block" onclick="closeModal('modalCourseManage');openModal('modalAddCourse')" style="margin-bottom:15px">
+                    + 添加新课程
+                </button>
+                <div id="courseManageList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div class="modal-overlay" id="modalDelete">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">确认删除</span>
+                <button class="modal-close" onclick="closeModal('modalDelete')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirm">
+                    <p>确定要删除这个项目吗？此操作不可撤销。</p>
+                    <div class="btn-group">
+                        <button class="btn btn-outline" onclick="closeModal('modalDelete')">取消</button>
+                        <button class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = '/api';
+        
+        // 当前状态
+        let currentPage = 'home';
+        let currentWeek = 1;
+        let isVip = false;
+        let vipExpireDate = null;
+        
+        // 数据存储
+        let courses = [];
+        let schedules = [];
+        let exams = [];
+        let grades = [];
+        let notes = [];
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initDate();
+            loadData();
+            initForms();
+            initColorPicker();
+        });
+        
+        // 初始化日期
+        function initDate() {
+            const now = new Date();
+            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            const dateStr = `${now.getMonth() + 1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
+            document.getElementById('currentDate').textContent = dateStr;
+            
+            // 计算当前周数
+            const yearStart = new Date(now.getFullYear(), 0, 1);
+            currentWeek = Math.ceil(((now - yearStart) / 86400000 + yearStart.getDay() + 1) / 7);
+        }
+        
+        // 加载数据
+        async function loadData() {
+            try {
+                const [coursesRes, schedulesRes, examsRes, gradesRes, notesRes, dashboardRes, vipRes] = await Promise.all([
+                    fetch(`${API_BASE}/courses`),
+                    fetch(`${API_BASE}/schedules`),
+                    fetch(`${API_BASE}/exams`),
+                    fetch(`${API_BASE}/grades`),
+                    fetch(`${API_BASE}/notes`),
+                    fetch(`${API_BASE}/dashboard`),
+                    fetch(`${API_BASE}/vip/check`)
+                ]);
+                
+                const coursesData = await coursesRes.json();
+                const schedulesData = await schedulesRes.json();
+                const examsData = await examsRes.json();
+                const gradesData = await gradesRes.json();
+                const notesData = await notesRes.json();
+                const dashboardData = await dashboardRes.json();
+                const vipData = await vipRes.json();
+                
+                courses = coursesData.data || [];
+                schedules = schedulesData.data || [];
+                exams = examsData.data || [];
+                grades = gradesData.data || [];
+                notes = notesData.data || [];
+                
+                // 更新VIP状态
+                if (vipData.data) {
+                    isVip = vipData.data.is_vip;
+                    vipExpireDate = vipData.data.expire_date;
+                    updateVipBanner();
+                }
+                
+                // 更新仪表盘
+                if (dashboardData.data) {
+                    document.getElementById('todayCount').textContent = dashboardData.data.today_schedule_count;
+                    document.getElementById('examCount').textContent = dashboardData.data.upcoming_exam_count;
+                }
+                
+                renderAll();
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                showToast('数据加载失败，请刷新重试');
+            }
+        }
+        
+        // 更新VIP Banner
+        function updateVipBanner() {
+            const banner = document.getElementById('vipBanner');
+            if (isVip) {
+                banner.classList.add('vip-expired');
+                banner.innerHTML = `
+                    <h3>🎓 会员已开通</h3>
+                    <p>有效期至：${vipExpireDate || '永久'}</p>
+                    <button class="vip-btn" onclick="showToast('感谢支持！')">已解锁全部功能</button>
+                `;
+            }
+        }
+        
+        // 激活VIP
+        async function activateVip() {
+            if (isVip) {
+                showToast('您已是会员');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_BASE}/vip/activate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ days: 30 })
+                });
+                
+                const data = await res.json();
+                if (data.code === 0) {
+                    isVip = true;
+                    vipExpireDate = data.data.expire_date;
+                    updateVipBanner();
+                    showToast('会员开通成功！');
+                }
+            } catch (error) {
+                console.error('VIP激活失败:', error);
+                showToast('开通失败，请重试');
+            }
+        }
+        
+        // 渲染所有
+        function renderAll() {
+            renderTodaySchedule();
+            renderUpcomingExams();
+            renderWeeklySchedule();
+            renderWeekTabs();
+            renderExamList();
+            renderGradeList();
+            renderNoteList();
+            renderCourseManageList();
+            updateCourseSelects();
+        }
+        
+        // 渲染今日课表
+        function renderTodaySchedule() {
+            const now = new Date();
+            const dayOfWeek = now.getDay() || 7; // 转换为1-7
+            const todaySchedules = schedules.filter(s => {
+                if (s.day_of_week !== dayOfWeek) return false;
+                if (!s.weeks || !s.weeks.includes(currentWeek)) return false;
+                return true;
+            });
+            
+            const container = document.getElementById('todaySchedule');
+            
+            if (todaySchedules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>今日暂无课程</p></div>';
+                return;
+            }
+            
+            container.innerHTML = todaySchedules.map(s => {
+                const course = courses.find(c => c.id === s.course_id) || {};
+                return `
+                    <div class="schedule-item" style="--item-color: ${course.color || '#4A90D9'}">
+                        <div class="schedule-item" style="border-left: 4px solid ${course.color || '#4A90D9'}">
+                            <div class="schedule-time">
+                                <div class="time">${s.start_time}</div>
+                                <div class="time">${s.end_time}</div>
+                            </div>
+                            <div class="schedule-info">
+                                <div class="schedule-name">${course.name || '未知课程'}</div>
+                                <div class="schedule-detail">${s.classroom || course.classroom || '待定'}｜${course.teacher || ''}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 渲染即将到来的考试
+        function renderUpcomingExams() {
+            const now = new Date();
+            const container = document.getElementById('upcomingExams');
+            
+            const upcoming = exams.filter(e => {
+                if (!e.exam_date) return false;
+                const examDate = new Date(e.exam_date);
+                const daysLeft = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+                return daysLeft >= 0 && daysLeft <= 30;
+            }).sort((a, b) => new Date(a.exam_date) - new Date(b.exam_date));
+            
+            if (upcoming.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>暂无考试安排</p></div>';
+                return;
+            }
+            
+            container.innerHTML = upcoming.slice(0, 3).map(e => {
+                const examDate = new Date(e.exam_date);
+                const daysLeft = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+                let levelClass = 'normal';
+                if (daysLeft <= 3) levelClass = 'danger';
+                else if (daysLeft <= 7) levelClass = 'warning';
+                
+                return `
+                    <div class="exam-item">
+                        <div class="exam-countdown ${levelClass}">
+                            <div class="num">${daysLeft}</div>
+                            <div class="unit">天</div>
+                        </div>
+                        <div class="exam-info">
+                            <div class="exam-name">${e.course_name}</div>
+                            <div class="exam-detail">${e.exam_date} ${e.exam_time}｜${e.exam_location || '待定'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 渲染周选择标签
+        function renderWeekTabs() {
+            const container = document.getElementById('weekTabs');
+            let html = '';
+            for (let i = 1; i <= 20; i++) {
+                html += `<button class="week-tab ${i === currentWeek ? 'active' : ''}" onclick="selectWeek(${i})">第${i}周</button>`;
+            }
+            container.innerHTML = html;
+        }
+        
+        // 选择周
+        function selectWeek(week) {
+            currentWeek = week;
+            document.querySelectorAll('.week-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            renderWeeklySchedule();
+        }
+        
+        // 渲染周课表
+        function renderWeeklySchedule() {
+            const container = document.getElementById('weeklySchedule');
+            const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            
+            let html = '<div class="time-slot"><div class="hour">08:00</div><div class="line"></div></div>';
+            html += '<div>';
+            
+            days.forEach((day, index) => {
+                const daySchedules = schedules.filter(s => {
+                    if (s.day_of_week !== index + 1) return false;
+                    if (!s.weeks || !s.weeks.includes(currentWeek)) return false;
+                    return true;
+                });
+                
+                html += `<div style="margin-bottom:15px"><strong>${day}</strong></div>`;
+                
+                if (daySchedules.length === 0) {
+                    html += '<div style="color:var(--text-light);font-size:13px;margin-bottom:15px">无课</div>';
+                } else {
+                    daySchedules.forEach(s => {
+                        const course = courses.find(c => c.id === s.course_id) || {};
+                        html += `
+                            <div class="course-block">
+                                <div class="course-card" style="background:${course.color || '#4A90D9'}">
+                                    <div class="name">${course.name || '未知课程'}</div>
+                                    <div class="info">${s.start_time}-${s.end_time}</div>
+                                    <div class="info">${s.classroom || course.classroom || ''}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // 渲染考试列表
+        function renderExamList() {
+            const container = document.getElementById('examList');
+            
+            if (exams.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>暂无考试安排</p></div>';
+                return;
+            }
+            
+            const now = new Date();
+            container.innerHTML = exams.map(e => {
+                const examDate = new Date(e.exam_date);
+                const daysLeft = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+                let levelClass = 'normal';
+                if (daysLeft <= 3) levelClass = 'danger';
+                else if (daysLeft <= 7) levelClass = 'warning';
+                
+                return `
+                    <div class="exam-item">
+                        <div class="exam-countdown ${levelClass}">
+                            <div class="num">${daysLeft}</div>
+                            <div class="unit">天</div>
+                        </div>
+                        <div class="exam-info">
+                            <div class="exam-name">${e.course_name}</div>
+                            <div class="exam-detail">${e.exam_date} ${e.exam_time}｜${e.exam_location || '待定'}｜${e.exam_type}</div>
+                            ${e.notes ? `<div class="exam-detail" style="color:var(--warning)">备注：${e.notes}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 渲染成绩列表
+        function renderGradeList() {
+            const container = document.getElementById('gradeList');
+            
+            // 计算加权平均分
+            let totalWeighted = 0;
+            let totalWeight = 0;
+            grades.forEach(g => {
+                totalWeighted += (g.score / g.total_score * 100) * g.weight / 100;
+                totalWeight += g.weight;
+            });
+            const avgScore = totalWeight > 0 ? totalWeighted.toFixed(1) : 0;
+            
+            document.getElementById('avgScore').textContent = avgScore;
+            document.getElementById('gradeCount').textContent = `共 ${grades.length} 门成绩`;
+            
+            if (grades.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>暂无成绩记录</p></div>';
+                return;
+            }
+            
+            container.innerHTML = grades.map(g => {
+                const percentage = (g.score / g.total_score * 100).toFixed(1);
+                return `
+                    <div class="grade-item">
+                        <div class="grade-course">
+                            <div class="name">${g.course_name}</div>
+                            <div class="type">${g.grade_type}｜权重${g.weight}%</div>
+                        </div>
+                        <div class="grade-score">
+                            <div class="score">${percentage}</div>
+                            <div class="total">/${g.total_score}分</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // 渲染笔记列表
+        function renderNoteList() {
+            const container = document.getElementById('noteList');
+            
+            if (notes.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>暂无笔记</p></div>';
+                return;
+            }
+            
+            container.innerHTML = notes.map(n => `
+                <div class="note-item" onclick="viewNote('${n.id}')">
+                    <div class="note-title">${n.title}</div>
+                    <div class="note-preview">${n.content}</div>
+                    ${n.tags && n.tags.length > 0 ? `
+                        <div class="note-tags">
+                            ${n.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="note-meta">${n.course_name || '通用'}｜${formatDate(n.created_at)}</div>
+                </div>
+            `).join('');
+        }
+        
+        // 渲染课程管理列表
+        function renderCourseManageList() {
+            const container = document.getElementById('courseManageList');
+            
+            if (courses.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>暂无课程</p></div>';
+                return;
+            }
+            
+            container.innerHTML = courses.map(c => `
+                <div class="course-list-item">
+                    <div class="course-color" style="background:${c.color}"></div>
+                    <div class="course-info">
+                        <div class="name">${c.name}</div>
+                        <div class="teacher">${c.teacher || '未设置教师'}｜${c.classroom || '未设置教室'}</div>
+                    </div>
+                    <div class="course-actions">
+                        <button class="icon-btn delete" onclick="confirmDelete('course', '${c.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 更新课程选择下拉框
+        function updateCourseSelects() {
+            const selects = ['scheduleCourse', 'noteCourse'];
+            selects.forEach(id => {
+                const select = document.getElementById(id);
+                if (!select) return;
+                
+                const currentValue = select.value;
+                let options = id === 'noteCourse' ? '<option value="">不关联</option>' : '<option value="">请选择课程</option>';
+                courses.forEach(c => {
+                    options += `<option value="${c.id}">${c.name}</option>`;
+                });
+                select.innerHTML = options;
+                select.value = currentValue;
+            });
+        }
+        
+        // 初始化表单
+        function initForms() {
+            // 添加课表
+            document.getElementById('formAddSchedule').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    course_id: document.getElementById('scheduleCourse').value,
+                    day_of_week: parseInt(document.getElementById('scheduleDay').value),
+                    start_time: document.getElementById('scheduleStart').value,
+                    end_time: document.getElementById('scheduleEnd').value,
+                    classroom: document.getElementById('scheduleRoom').value,
+                    weeks: Array.from(document.getElementById('scheduleWeeks').selectedOptions).map(o => parseInt(o.value))
+                };
+                
+                await saveData('/schedules', data);
+                closeModal('modalAddSchedule');
+                e.target.reset();
+            });
+            
+            // 添加课程
+            document.getElementById('formAddCourse').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const selectedColor = document.querySelector('.color-option.selected');
+                const data = {
+                    name: document.getElementById('courseName').value,
+                    teacher: document.getElementById('courseTeacher').value,
+                    classroom: document.getElementById('courseRoom').value,
+                    color: selectedColor ? selectedColor.dataset.color : '#4A90D9'
+                };
+                
+                await saveData('/courses', data);
+                closeModal('modalAddCourse');
+                e.target.reset();
+                initColorPicker();
+            });
+            
+            // 添加考试
+            document.getElementById('formAddExam').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    course_name: document.getElementById('examCourse').value,
+                    exam_date: document.getElementById('examDate').value,
+                    exam_time: document.getElementById('examTime').value,
+                    exam_location: document.getElementById('examLocation').value,
+                    exam_type: document.getElementById('examType').value,
+                    notes: document.getElementById('examNotes').value
+                };
+                
+                await saveData('/exams', data);
+                closeModal('modalAddExam');
+                e.target.reset();
+            });
+            
+            // 添加成绩
+            document.getElementById('formAddGrade').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    course_name: document.getElementById('gradeCourse').value,
+                    grade_type: document.getElementById('gradeType').value,
+                    score: parseFloat(document.getElementById('gradeScore').value),
+                    total_score: parseFloat(document.getElementById('gradeTotal').value),
+                    weight: parseFloat(document.getElementById('gradeWeight').value),
+                    notes: document.getElementById('gradeNotes').value
+                };
+                
+                await saveData('/grades', data);
+                closeModal('modalAddGrade');
+                e.target.reset();
+            });
+            
+            // 添加笔记
+            document.getElementById('formAddNote').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const courseId = document.getElementById('noteCourse').value;
+                const course = courses.find(c => c.id === courseId);
+                const tagsInput = document.getElementById('noteTags').value;
+                
+                const data = {
+                    title: document.getElementById('noteTitle').value,
+                    course_id: courseId,
+                    course_name: course ? course.name : '',
+                    content: document.getElementById('noteContent').value,
+                    tags: tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : []
+                };
+                
+                await saveData('/notes', data);
+                closeModal('modalAddNote');
+                e.target.reset();
+            });
+        }
+        
+        // 初始化颜色选择器
+        function initColorPicker() {
+            document.querySelectorAll('.color-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                });
+            });
+        }
+        
+        // 保存数据
+        async function saveData(endpoint, data) {
+            try {
+                const res = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await res.json();
+                if (result.code === 0) {
+                    showToast('保存成功');
+                    loadData();
+                } else {
+                    showToast(result.msg || '保存失败');
+                }
+            } catch (error) {
+                console.error('保存失败:', error);
+                showToast('保存失败，请重试');
+            }
+        }
+        
+        // 删除数据
+        async function deleteData(endpoint, id) {
+            try {
+                const res = await fetch(`${API_BASE}${endpoint}/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await res.json();
+                if (result.code === 0) {
+                    showToast('删除成功');
+                    loadData();
+                } else {
+                    showToast(result.msg || '删除失败');
+                }
+            } catch (error) {
+                console.error('删除失败:', error);
+                showToast('删除失败，请重试');
+            }
+        }
+        
+        // 确认删除
+        let deleteTarget = { type: '', id: '' };
+        
+        function confirmDelete(type, id) {
+            deleteTarget = { type, id };
+            
+            // 设置删除按钮的点击事件
+            document.getElementById('confirmDeleteBtn').onclick = () => {
+                const endpoints = {
+                    course: '/courses',
+                    exam: '/exams',
+                    grade: '/grades',
+                    note: '/notes',
+                    schedule: '/schedules'
+                };
+                
+                deleteData(endpoints[type], id);
+                closeModal('modalDelete');
+            };
+            
+            openModal('modalDelete');
+        }
+        
+        // 查看笔记
+        function viewNote(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+            
+            showToast(`${note.title}\n\n${note.content}`, 5000);
+        }
+        
+        // 切换标签页
+        function switchTab(tab) {
+            currentPage = tab;
+            
+            // 切换页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${tab}`).classList.add('active');
+            
+            // 切换导航
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // 调整浮动按钮
+            updateFab();
+        }
+        
+        // 更新浮动按钮
+        function updateFab() {
+            const fab = document.getElementById('fab');
+            const pagesWithAdd = {
+                schedule: 'modalAddSchedule',
+                exam: 'modalAddExam',
+                grade: 'modalAddGrade',
+                note: 'modalAddNote'
+            };
+            
+            fab.onclick = () => {
+                const modalId = pagesWithAdd[currentPage];
+                if (modalId) {
+                    openModal(modalId);
+                } else {
+                    openModal('modalAddSchedule');
+                }
+            };
+        }
+        
+        // 打开课程管理
+        function openCourseManage() {
+            openModal('modalCourseManage');
+        }
+        
+        // 打开添加模态框
+        function openAddModal() {
+            if (currentPage === 'schedule') {
+                openModal('modalAddSchedule');
+            } else if (currentPage === 'exam') {
+                openModal('modalAddExam');
+            } else if (currentPage === 'grade') {
+                openModal('modalAddGrade');
+            } else if (currentPage === 'note') {
+                openModal('modalAddNote');
+            } else {
+                // 首页默认添加课表
+                openModal('modalAddSchedule');
+            }
+        }
+        
+        // 打开模态框
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 关闭模态框
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        // 显示Toast
+        function showToast(message, duration = 2000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+        
+        // 格式化日期
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return `${date.getMonth() + 1}/${date.getDate()}`;
+        }
+        
+        // 关闭模态框的点击背景
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+        
+        // 初始化浮动按钮
+        updateFab();
+    </script>
+</body>
+</html>

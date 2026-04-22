@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>育儿补贴助手 - 一键申领育儿补贴</title>
+    <style>
+        :root {
+            --primary: #FF8FAB;
+            --primary-light: #FFE5EC;
+            --secondary: #7EC8E3;
+            --accent: #FFD93D;
+            --text: #4A4A4A;
+            --text-light: #888;
+            --bg: #FFF9FB;
+            --white: #FFFFFF;
+            --success: #6BCB77;
+            --warning: #FFB347;
+            --shadow: 0 4px 20px rgba(255, 143, 171, 0.15);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 头部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #FFB6C1 100%);
+            padding: 20px;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .vip-btn {
+            background: rgba(255,255,255,0.25);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .vip-btn span {
+            font-size: 16px;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF9E6 100%);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 2px dashed var(--primary-light);
+            text-align: center;
+        }
+
+        .banner-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .banner h2 {
+            color: var(--primary);
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .banner p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .banner-highlight {
+            background: linear-gradient(135deg, var(--primary), #FFB347);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 16px;
+            font-weight: 600;
+        }
+
+        /* 功能卡片网格 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(255, 143, 171, 0.25);
+        }
+
+        .feature-card.active {
+            background: linear-gradient(135deg, var(--primary-light), #FFF);
+            border: 2px solid var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .feature-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* 内容模块 */
+        .module {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .module.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .module-title {
+            font-size: 20px;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .module-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        /* 补贴计算器 */
+        .calculator-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #F0F0F0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        select.input-field {
+            cursor: pointer;
+            background: white;
+        }
+
+        .child-counter {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .counter-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .counter-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .counter-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .calc-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), #FF8FAB);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 143, 171, 0.4);
+            transition: all 0.3s;
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 143, 171, 0.5);
+        }
+
+        /* 计算结果 */
+        .result-card {
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF9E6 100%);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-card.show {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-main {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed var(--primary-light);
+        }
+
+        .result-main-label {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .result-main-amount {
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #FF8FAB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-main-unit {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            text-align: center;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .result-item-label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .result-item-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .coverage-bar {
+            margin-top: 20px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .coverage-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .coverage-label {
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .coverage-percent {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .coverage-track {
+            height: 8px;
+            background: #F0F0F0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .coverage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        /* 申领流程 */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 18px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        .step-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .step-card::before {
+            content: attr(data-step);
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), #FF8FAB);
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(255, 143, 171, 0.4);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .step-icon {
+            font-size: 24px;
+        }
+
+        .step-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .step-details {
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        .step-details li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .step-details li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .step-tips {
+            background: var(--primary-light);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--primary);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .step-tips::before {
+            content: '💡';
+        }
+
+        /* 政策列表 */
+        .policy-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .policy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .policy-badge {
+            background: linear-gradient(135deg, var(--primary-light), #FFF);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .policy-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .policy-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        .policy-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid #F0F0F0;
+        }
+
+        .policy-info-item {
+            text-align: center;
+        }
+
+        .policy-info-label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .policy-info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* 地区选择 */
+        .region-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .region-tab {
+            padding: 10px 18px;
+            background: var(--white);
+            border: 2px solid #F0F0F0;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .region-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* 育儿账本 */
+        .expense-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .expense-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .expense-month {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .expense-total {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .expense-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 120px;
+            padding: 10px 0;
+        }
+
+        .chart-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chart-fill {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            transition: height 0.5s ease;
+        }
+
+        .chart-label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .expense-list {
+            margin-top: 16px;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+
+        .expense-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-right: 12px;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .expense-date {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .expense-amount {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* 托育地图 */
+        .nursery-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 16px;
+        }
+
+        .nursery-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .nursery-badge.public {
+            background: #E8F5E9;
+            color: #4CAF50;
+        }
+
+        .nursery-badge.private {
+            background: #FFF3E0;
+            color: #FF9800;
+        }
+
+        .nursery-badge.international {
+            background: #E3F2FD;
+            color: #2196F3;
+        }
+
+        .nursery-content {
+            flex: 1;
+        }
+
+        .nursery-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .nursery-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .nursery-rating {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nursery-address {
+            font-size: 13px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nursery-price {
+            text-align: right;
+        }
+
+        .nursery-price-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nursery-price-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* VIP弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            padding: 32px 24px;
+            max-width: 340px;
+            width: 90%;
+            text-align: center;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        .modal-price {
+            background: linear-gradient(135deg, var(--primary-light), #FFF);
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .price-amount {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .price-period {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), #FF8FAB);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--primary-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        /* 响应式 */
+        @media (max-width: 400px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .result-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">👶</span>
+                <span class="logo-text">育儿补贴助手</span>
+            </div>
+            <button class="vip-btn" onclick="showVipModal()">
+                <span>👑</span> 月卡 ¥9.9
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Banner -->
+        <div class="banner">
+            <div class="banner-icon">🎉</div>
+            <h2>2025年育儿补贴开放申领</h2>
+            <p>每孩每年最高可领 <strong style="color: var(--primary);">万元+</strong> 补贴</p>
+            <div class="banner-highlight">💰 每孩每年 3600 元</div>
+        </div>
+
+        <!-- 功能导航 -->
+        <div class="feature-grid">
+            <div class="feature-card active" data-module="calculator" onclick="switchModule('calculator')">
+                <div class="feature-icon">🧮</div>
+                <div class="feature-name">补贴计算</div>
+            </div>
+            <div class="feature-card" data-module="guide" onclick="switchModule('guide')">
+                <div class="feature-icon">📋</div>
+                <div class="feature-name">申领指南</div>
+            </div>
+            <div class="feature-card" data-module="policies" onclick="switchModule('policies')">
+                <div class="feature-icon">📜</div>
+                <div class="feature-name">政策解读</div>
+            </div>
+            <div class="feature-card" data-module="expense" onclick="switchModule('expense')">
+                <div class="feature-icon">📒</div>
+                <div class="feature-name">育儿账本</div>
+            </div>
+            <div class="feature-card" data-module="nursery" onclick="switchModule('nursery')">
+                <div class="feature-icon">🗺️</div>
+                <div class="feature-name">托育地图</div>
+            </div>
+            <div class="feature-card" onclick="showVipModal()">
+                <div class="feature-icon">💎</div>
+                <div class="feature-name">解锁更多</div>
+            </div>
+        </div>
+
+        <!-- 补贴计算器 -->
+        <div id="calculator" class="module active">
+            <h3 class="module-title">补贴计算器</h3>
+            
+            <div class="calculator-card">
+                <div class="input-group">
+                    <label class="input-label">选择所在地区</label>
+                    <select class="input-field" id="region">
+                        <option value="national">全国（基础补贴）</option>
+                        <option value="sz">深圳（额外补贴）</option>
+                        <option value="gz">广州（额外补贴）</option>
+                        <option value="bj">北京</option>
+                        <option value="sh">上海</option>
+                        <option value="cd">成都</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">孩子数量</label>
+                    <div class="child-counter">
+                        <button class="counter-btn" onclick="changeChildren(-1)">−</button>
+                        <span class="counter-value" id="childCount">1</span>
+                        <button class="counter-btn" onclick="changeChildren(1)">+</button>
+                    </div>
+                </div>
+
+                <button class="calc-btn" onclick="calculateSubsidy()">
+                    一键计算可领金额 💡
+                </button>
+
+                <!-- 计算结果 -->
+                <div class="result-card" id="resultCard">
+                    <div class="result-main">
+                        <div class="result-main-label">您每年可领取</div>
+                        <div class="result-main-amount" id="totalAmount">0</div>
+                        <div class="result-main-unit">元/年</div>
+                    </div>
+                    
+                    <div class="result-details">
+                        <div class="result-item">
+                            <div class="result-item-label">国家基础补贴</div>
+                            <div class="result-item-value" id="nationalSubsidy">0元</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-item-label">地区额外补贴</div>
+                            <div class="result-item-value" id="regionalBonus">0元</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-item-label">月均到账</div>
+                            <div class="result-item-value" id="monthlyBenefit">0元</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-item-label">年育儿成本</div>
+                            <div class="result-item-value" id="annualCost">0元</div>
+                        </div>
+                    </div>
+
+                    <div class="coverage-bar">
+                        <div class="coverage-header">
+                            <span class="coverage-label">补贴覆盖育儿成本比例</span>
+                            <span class="coverage-percent" id="coverageRate">0%</span>
+                        </div>
+                        <div class="coverage-track">
+                            <div class="coverage-fill" id="coverageFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 温馨提示 -->
+            <div class="step-tips" style="margin-top: 16px;">
+                计算结果仅供参考，实际金额以当地政策为准。建议申领前咨询当地民政或卫健部门。
+            </div>
+        </div>
+
+        <!-- 申领指南 -->
+        <div id="guide" class="module">
+            <h3 class="module-title">申领指南</h3>
+            
+            <div class="step-card" data-step="1">
+                <div class="step-header">
+                    <span class="step-icon">📋</span>
+                    <span class="step-title">准备材料</span>
+                </div>
+                <ul class="step-details">
+                    <li>宝宝出生证明原件及复印件</li>
+                    <li>宝宝户口簿原件及复印件</li>
+                    <li>父母身份证原件及复印件</li>
+                    <li>父母结婚证（如有）</li>
+                    <li>居住证或房产证明</li>
+                    <li>银行卡（用于收款）</li>
+                </ul>
+                <div class="step-tips">建议提前准备好所有材料，避免多次往返</div>
+            </div>
+
+            <div class="step-card" data-step="2">
+                <div class="step-header">
+                    <span class="step-icon">📱</span>
+                    <span class="step-title">线上申请</span>
+                </div>
+                <ul class="step-details">
+                    <li>打开当地政务服务APP（粤省事/随申办等）</li>
+                    <li>搜索「育儿补贴申请」</li>
+                    <li>填写宝宝信息和银行卡信息</li>
+                    <li>上传证件照片</li>
+                    <li>确认信息无误后提交</li>
+                </ul>
+                <div class="step-tips">部分城市支持全程网办，审核周期7-15个工作日</div>
+            </div>
+
+            <div class="step-card" data-step="3">
+                <div class="step-header">
+                    <span class="step-icon">🏢</span>
+                    <span class="step-title">线下办理（如需要）</span>
+                </div>
+                <ul class="step-details">
+                    <li>前往户籍所在地街道办/社区服务中心</li>
+                    <li>取号等待办理</li>
+                    <li>提交材料原件核验</li>
+                    <li>填写申请表并签字</li>
+                </ul>
+                <div class="step-tips">建议提前电话咨询办理时间和所需材料</div>
+            </div>
+
+            <div class="step-card" data-step="4">
+                <div class="step-header">
+                    <span class="step-icon">⏳</span>
+                    <span class="step-title">等待审核</span>
+                </div>
+                <ul class="step-details">
+                    <li>审核周期：7-30个工作日</li>
+                    <li>可通过APP查询审核进度</li>
+                    <li>审核通过后会有短信通知</li>
+                </ul>
+                <div class="step-tips">保持手机畅通，留意审核状态</div>
+            </div>
+
+            <div class="step-card" data-step="5">
+                <div class="step-header">
+                    <span class="step-icon">💰</span>
+                    <span class="step-title">补贴到账</span>
+                </div>
+                <ul class="step-details">
+                    <li>一般按月或按季度发放</li>
+                    <li>发放至申请人绑定的银行卡</li>
+                    <li>每年需重新申请续期</li>
+                </ul>
+                <div class="step-tips">核对到账金额，如有疑问可联系发放部门</div>
+            </div>
+        </div>
+
+        <!-- 政策解读 -->
+        <div id="policies" class="module">
+            <h3 class="module-title">各地政策汇总</h3>
+            
+            <div class="region-tabs">
+                <div class="region-tab active" onclick="filterRegion('all')">全国</div>
+                <div class="region-tab" onclick="filterRegion('sz')">深圳</div>
+                <div class="region-tab" onclick="filterRegion('gz')">广州</div>
+                <div class="region-tab" onclick="filterRegion('bj')">北京</div>
+                <div class="region-tab" onclick="filterRegion('sh')">上海</div>
+                <div class="region-tab" onclick="filterRegion('cd')">成都</div>
+            </div>
+
+            <div id="policyList">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 育儿账本 -->
+        <div id="expense" class="module">
+            <h3 class="module-title">育儿账本</h3>
+            
+            <div class="expense-card">
+                <div class="expense-header">
+                    <div>
+                        <div class="expense-month">2025年1月支出</div>
+                        <div style="font-size: 12px; color: var(--text-light);">记录每一笔育儿花费</div>
+                    </div>
+                    <div class="expense-total">¥8,500</div>
+                </div>
+
+                <div class="expense-chart" id="expenseChart">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div class="expense-list">
+                    <div class="expense-item">
+                        <div class="expense-icon">🍼</div>
+                        <div class="expense-info">
+                            <div class="expense-name">奶粉尿布</div>
+                            <div class="expense-date">1月15日</div>
+                        </div>
+                        <div class="expense-amount">-¥498</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-icon">💊</div>
+                        <div class="expense-info">
+                            <div class="expense-name">医疗保健</div>
+                            <div class="expense-date">1月14日</div>
+                        </div>
+                        <div class="expense-amount">-¥200</div>
+                    </div>
+                    <div class="expense-item">
+                        <div class="expense-icon">👗</div>
+                        <div class="expense-info">
+                            <div class="expense-name">服装玩具</div>
+                            <div class="expense-date">1月12日</div>
+                        </div>
+                        <div class="expense-amount">-¥299</div>
+                    </div>
+                </div>
+
+                <button class="calc-btn" style="margin-top: 16px;" onclick="alert('功能开发中，敬请期待！')">
+                    ➕ 添加支出记录
+                </button>
+            </div>
+
+            <div class="step-tips" style="margin-top: 16px;">
+                温馨提醒：科学记账有助于合理规划育儿预算哦~
+            </div>
+        </div>
+
+        <!-- 托育地图 -->
+        <div id="nursery" class="module">
+            <h3 class="module-title">附近托育机构</h3>
+            
+            <div class="input-group" style="margin-bottom: 8px;">
+                <input type="text" class="input-field" placeholder="🔍 搜索托育机构名称或地址" id="nurserySearch">
+            </div>
+
+            <div id="nurseryList">
+                <div class="nursery-card">
+                    <div class="nursery-content">
+                        <div class="nursery-badge public">公立</div>
+                        <div class="nursery-name">智慧星幼儿园托班</div>
+                        <div class="nursery-meta">
+                            <span class="nursery-rating">⭐ 4.9</span>
+                            <span>📍 1.2km</span>
+                        </div>
+                        <div class="nursery-address">📌 海淀区中关村大街</div>
+                    </div>
+                    <div class="nursery-price">
+                        <div class="nursery-price-value">¥1200</div>
+                        <div class="nursery-price-label">/月起</div>
+                    </div>
+                </div>
+
+                <div class="nursery-card">
+                    <div class="nursery-content">
+                        <div class="nursery-badge private">私立</div>
+                        <div class="nursery-name">阳光宝贝托育中心</div>
+                        <div class="nursery-meta">
+                            <span class="nursery-rating">⭐ 4.8</span>
+                            <span>📍 0.5km</span>
+                        </div>
+                        <div class="nursery-address">📌 朝阳区望京SOHO</div>
+                    </div>
+                    <div class="nursery-price">
+                        <div class="nursery-price-value">¥3500</div>
+                        <div class="nursery-price-label">/月起</div>
+                    </div>
+                </div>
+
+                <div class="nursery-card">
+                    <div class="nursery-content">
+                        <div class="nursery-badge private">私立</div>
+                        <div class="nursery-name">童梦园托育馆</div>
+                        <div class="nursery-meta">
+                            <span class="nursery-rating">⭐ 4.6</span>
+                            <span>📍 1.5km</span>
+                        </div>
+                        <div class="nursery-address">📌 朝阳区三里屯</div>
+                    </div>
+                    <div class="nursery-price">
+                        <div class="nursery-price-value">¥2800</div>
+                        <div class="nursery-price-label">/月起</div>
+                    </div>
+                </div>
+
+                <div class="nursery-card">
+                    <div class="nursery-content">
+                        <div class="nursery-badge international">国际</div>
+                        <div class="nursery-name">蒙特梭利儿童之家</div>
+                        <div class="nursery-meta">
+                            <span class="nursery-rating">⭐ 4.9</span>
+                            <span>📍 2.0km</span>
+                        </div>
+                        <div class="nursery-address">📌 朝阳区国贸CBD</div>
+                    </div>
+                    <div class="nursery-price">
+                        <div class="nursery-price-value">¥8000</div>
+                        <div class="nursery-price-label">/月起</div>
+                    </div>
+                </div>
+
+                <div class="nursery-card">
+                    <div class="nursery-content">
+                        <div class="nursery-badge private">私立</div>
+                        <div class="nursery-name">爱加倍托育中心</div>
+                        <div class="nursery-meta">
+                            <span class="nursery-rating">⭐ 4.5</span>
+                            <span>📍 2.3km</span>
+                        </div>
+                        <div class="nursery-address">📌 东城区东直门</div>
+                    </div>
+                    <div class="nursery-price">
+                        <div class="nursery-price-value">¥2500</div>
+                        <div class="nursery-price-label">/月起</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-module="calculator" onclick="switchModule('calculator')">
+            <span class="nav-icon">🧮</span>
+            <span class="nav-label">计算</span>
+        </div>
+        <div class="nav-item" data-module="guide" onclick="switchModule('guide')">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">指南</span>
+        </div>
+        <div class="nav-item" data-module="policies" onclick="switchModule('policies')">
+            <span class="nav-icon">📜</span>
+            <span class="nav-label">政策</span>
+        </div>
+        <div class="nav-item" data-module="expense" onclick="switchModule('expense')">
+            <span class="nav-icon">📒</span>
+            <span class="nav-label">账本</span>
+        </div>
+        <div class="nav-item" data-module="nursery" onclick="switchModule('nursery')">
+            <span class="nav-icon">🗺️</span>
+            <span class="nav-label">托育</span>
+        </div>
+    </nav>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal">
+            <div class="modal-icon">👑</div>
+            <div class="modal-title">解锁全部功能</div>
+            <div class="modal-desc">成为VIP会员，畅享所有权益</div>
+            <div class="modal-price">
+                <span class="price-amount">¥9.9</span>
+                <span class="price-period">/月</span>
+            </div>
+            <button class="modal-btn" onclick="alert('支付功能开发中，感谢您的支持！')">
+                立即开通
+            </button>
+            <button class="modal-close" onclick="closeVipModal()">稍后再说</button>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let childCount = 1;
+        let currentRegion = 'national';
+
+        // 政策数据
+        const policiesData = {
+            national: {
+                name: '国家育儿补贴',
+                badge: '全国',
+                desc: '2025年起每孩每年3600元育儿补贴',
+                amount: '3,600元/年',
+                age: '0-3岁',
+                contact: '12333'
+            },
+            sz: {
+                name: '深圳育儿补贴',
+                badge: '深圳',
+                desc: '深圳额外补贴，一孩1500元/月起',
+                amount: '1,500-4,500元/月',
+                age: '0-3岁',
+                contact: '12345'
+            },
+            gz: {
+                name: '广州育儿补贴',
+                badge: '广州',
+                desc: '广州额外补贴，多孩家庭更高',
+                amount: '500-1,500元/月',
+                age: '0-3岁',
+                contact: '12345'
+            },
+            bj: {
+                name: '北京生育政策',
+                badge: '北京',
+                desc: '生育津贴+育儿补贴双重保障',
+                amount: '生育津贴+育儿',
+                age: '产假期间',
+                contact: '12333'
+            },
+            sh: {
+                name: '上海生育政策',
+                badge: '上海',
+                desc: '生育津贴按工资标准发放',
+                amount: '按工资标准',
+                age: '产假期间',
+                contact: '12345'
+            },
+            cd: {
+                name: '成都育儿补贴',
+                badge: '成都',
+                desc: '成都育儿补贴，一孩600元/月起',
+                amount: '600-2,000元/月',
+                age: '0-3岁',
+                contact: '12345'
+            }
+        };
+
+        // 支出数据
+        const expenseData = [
+            { name: '奶粉尿布', amount: 2500, icon: '🍼', color: '#FFB6C1' },
+            { name: '食品辅食', amount: 1500, icon: '🍎', color: '#98D8C8' },
+            { name: '服装玩具', amount: 1200, icon: '👗', color: '#F7DC6F' },
+            { name: '医疗保健', amount: 800, icon: '💊', color: '#BB8FCE' },
+            { name: '教育早教', amount: 1500, icon: '📚', color: '#85C1E9' },
+            { name: '其他', amount: 1000, icon: '📦', color: '#D5DBDB' }
+        ];
+
+        // 切换模块
+        function switchModule(moduleId) {
+            // 更新导航
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.classList.remove('active');
+                if (card.dataset.module === moduleId) {
+                    card.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.module === moduleId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 切换内容
+            document.querySelectorAll('.module').forEach(module => {
+                module.classList.remove('active');
+            });
+            document.getElementById(moduleId).classList.add('active');
+
+            // 加载对应模块数据
+            if (moduleId === 'policies') {
+                loadPolicies();
+            } else if (moduleId === 'expense') {
+                loadExpenseChart();
+            }
+        }
+
+        // 切换地区
+        function filterRegion(region) {
+            currentRegion = region;
+            document.querySelectorAll('.region-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent === (region === 'all' ? '全国' : policiesData[region]?.badge)) {
+                    tab.classList.add('active');
+                }
+            });
+            loadPolicies();
+        }
+
+        // 加载政策列表
+        function loadPolicies() {
+            const container = document.getElementById('policyList');
+            let html = '';
+
+            if (currentRegion === 'all') {
+                // 显示全国政策
+                const p = policiesData.national;
+                html += createPolicyCard(p);
+                // 显示地区政策
+                ['sz', 'gz', 'bj', 'sh', 'cd'].forEach(key => {
+                    html += createPolicyCard(policiesData[key]);
+                });
+            } else {
+                html += createPolicyCard(policiesData[currentRegion]);
+            }
+
+            container.innerHTML = html;
+        }
+
+        // 创建政策卡片
+        function createPolicyCard(policy) {
+            return `
+                <div class="policy-card">
+                    <div class="policy-header">
+                        <div class="policy-name">${policy.name}</div>
+                        <span class="policy-badge">${policy.badge}</span>
+                    </div>
+                    <div class="policy-desc">${policy.desc}</div>
+                    <div class="policy-info">
+                        <div class="policy-info-item">
+                            <div class="policy-info-label">补贴金额</div>
+                            <div class="policy-info-value">${policy.amount}</div>
+                        </div>
+                        <div class="policy-info-item">
+                            <div class="policy-info-label">适用年龄</div>
+                            <div class="policy-info-value">${policy.age}</div>
+                        </div>
+                        <div class="policy-info-item">
+                            <div class="policy-info-label">咨询电话</div>
+                            <div class="policy-info-value">${policy.contact}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 加载支出图表
+        function loadExpenseChart() {
+            const container = document.getElementById('expenseChart');
+            const maxAmount = Math.max(...expenseData.map(d => d.amount));
+            
+            let html = '';
+            expenseData.forEach(item => {
+                const height = (item.amount / maxAmount) * 80;
+                html += `
+                    <div class="chart-bar">
+                        <div class="chart-fill" style="height: ${height}px; background: ${item.color};"></div>
+                        <div class="chart-label">${item.name.substring(0, 2)}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // 改变孩子数量
+        function changeChildren(delta) {
+            childCount = Math.max(0, Math.min(5, childCount + delta));
+            document.getElementById('childCount').textContent = childCount;
+        }
+
+        // 计算补贴
+        function calculateSubsidy() {
+            const region = document.getElementById('region').value;
+            const childrenCount = childCount;
+
+            // 基础计算（模拟）
+            const baseSubsidy = 3600 * childrenCount;
+            
+            // 地区额外补贴
+            let regionalBonus = 0;
+            if (region === 'sz') {
+                if (childrenCount === 1) regionalBonus = 1500 * 12;
+                else if (childrenCount === 2) regionalBonus = 2500 * 12;
+                else if (childrenCount >= 3) regionalBonus = 4500 * 12;
+            } else if (region === 'gz') {
+                if (childrenCount === 1) regionalBonus = 500 * 12;
+                else if (childrenCount === 2) regionalBonus = 800 * 12;
+                else if (childrenCount >= 3) regionalBonus = 1500 * 12;
+            }
+
+            const totalAnnual = baseSubsidy + regionalBonus;
+            const annualCost = 25000 * childrenCount;
+            const coverageRate = (totalAnnual / annualCost * 100).toFixed(1);
+
+            // 显示结果
+            document.getElementById('totalAmount').textContent = totalAnnual.toLocaleString();
+            document.getElementById('nationalSubsidy').textContent = baseSubsidy.toLocaleString() + '元';
+            document.getElementById('regionalBonus').textContent = regionalBonus.toLocaleString() + '元';
+            document.getElementById('monthlyBenefit').textContent = (totalAnnual / 12).toFixed(0) + '元';
+            document.getElementById('annualCost').textContent = annualCost.toLocaleString() + '元';
+            document.getElementById('coverageRate').textContent = coverageRate + '%';
+
+            // 动画显示进度条
+            const resultCard = document.getElementById('resultCard');
+            resultCard.classList.add('show');
+            
+            setTimeout(() => {
+                document.getElementById('coverageFill').style.width = Math.min(coverageRate, 100) + '%';
+            }, 100);
+        }
+
+        // VIP弹窗
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('show');
+        }
+
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.remove('show');
+        }
+
+        // 点击弹窗外部关闭
+        document.getElementById('vipModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVipModal();
+            }
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPolicies();
+            loadExpenseChart();
+        });
+    </script>
+</body>
+</html>

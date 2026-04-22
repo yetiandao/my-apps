@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>学生党省钱攻略</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2C3E50;
+            --light: #F8F9FA;
+            --gray: #95A5A6;
+            --success: #2ECC71;
+            --warning: #F39C12;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        /* 头部区域 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #FF8E8E);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            display: flex;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 8px 16px;
+            gap: 8px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .search-bar button {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* 统计卡片 */
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* 导航栏 */
+        .nav-bar {
+            display: flex;
+            background: white;
+            padding: 8px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--gray);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+            transition: transform 0.3s;
+        }
+
+        .nav-text {
+            font-size: 11px;
+        }
+
+        /* 内容区域 */
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        /* Banner轮播 */
+        .banner-container {
+            margin: 12px 16px;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .banner {
+            display: flex;
+            transition: transform 0.3s;
+        }
+
+        .banner-slide {
+            min-width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            padding: 20px;
+        }
+
+        .banner-slide:nth-child(2) {
+            background: linear-gradient(135deg, #667EEA, #764BA2);
+        }
+
+        .banner-slide:nth-child(3) {
+            background: linear-gradient(135deg, #F093FB, #F5576C);
+        }
+
+        .banner-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .banner-desc {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* 快捷入口 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 12px 16px;
+        }
+
+        .quick-action {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .quick-action:active {
+            transform: scale(0.95);
+        }
+
+        .quick-action-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action-text {
+            font-size: 12px;
+            color: var(--dark);
+        }
+
+        /* 卡片标题 */
+        .section-title {
+            padding: 16px 16px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title h3 {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .section-title .more {
+            color: var(--gray);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* 优惠卡片 */
+        .discount-list {
+            padding: 0 16px;
+        }
+
+        .discount-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .discount-card:active {
+            transform: scale(0.98);
+        }
+
+        .discount-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #FFF5F5, #FFEEEE);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        .discount-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .discount-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hot-tag {
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-weight: normal;
+        }
+
+        .discount-brand {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 6px;
+        }
+
+        .discount-save {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* 技巧文章 */
+        .tips-list {
+            padding: 0 16px;
+        }
+
+        .tip-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tip-icon {
+            font-size: 32px;
+        }
+
+        .tip-title {
+            flex: 1;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .tip-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .tip-content {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .tip-tags {
+            margin-top: 10px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #F0F0F0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        /* 活动推送 */
+        .promotion-list {
+            padding: 0 16px;
+        }
+
+        .promotion-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+        }
+
+        .promotion-card.urgent {
+            border-left-color: var(--warning);
+            background: linear-gradient(90deg, #FFF9E6, white 20%);
+        }
+
+        .promotion-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .promotion-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .promotion-deadline {
+            font-size: 11px;
+            color: var(--warning);
+        }
+
+        /* 社区帖子 */
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .post-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667EEA, #764BA2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .post-author {
+            flex: 1;
+        }
+
+        .post-author-name {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .post-time {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        .post-top-badge {
+            background: var(--accent);
+            color: var(--dark);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .post-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .post-content {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .post-tags .tag {
+            background: #FFF0F0;
+            color: var(--primary);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            border-top: 1px solid #F0F0F0;
+            padding-top: 10px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .post-action:active {
+            color: var(--primary);
+        }
+
+        /* 学生认证 */
+        .verify-container {
+            padding: 16px;
+        }
+
+        .verify-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        .verify-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .verify-icon {
+            font-size: 60px;
+            margin-bottom: 12px;
+        }
+
+        .verify-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .verify-desc {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .verify-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), #FF8E8E);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .verify-btn:active {
+            transform: scale(0.98);
+        }
+
+        .verify-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .verify-benefits {
+            margin-top: 24px;
+            padding: 16px;
+            background: #FFF9F9;
+            border-radius: 12px;
+        }
+
+        .verify-benefits h4 {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .benefit-item::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* 会员卡片 */
+        .vip-page {
+            padding: 16px;
+        }
+
+        .vip-hero {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .vip-crown {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .vip-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+        }
+
+        .vip-features {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        .vip-features h3 {
+            font-size: 15px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .vip-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .vip-feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #FFF5F5, #FFEEEE);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .vip-feature-item.disabled .vip-feature-icon {
+            background: #F5F5F5;
+        }
+
+        .vip-feature-info {
+            flex: 1;
+        }
+
+        .vip-feature-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .vip-feature-desc {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .vip-feature-check {
+            font-size: 20px;
+            color: var(--success);
+        }
+
+        .vip-feature-item.disabled .vip-feature-check {
+            color: #DDD;
+        }
+
+        .subscribe-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 16px rgba(255, 165, 0, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .subscribe-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 分类标签 */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            padding: 6px 14px;
+            background: white;
+            border-radius: 16px;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid #E0E0E0;
+            transition: all 0.3s;
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 360px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 300;
+            transition: transform 0.3s;
+        }
+
+        .toast.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* 发布帖子 */
+        .publish-btn {
+            position: fixed;
+            right: 16px;
+            bottom: 80px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), #FF8E8E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            box-shadow: 0 4px 16px rgba(255, 107, 107, 0.4);
+            cursor: pointer;
+            z-index: 50;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .loading::after {
+            content: "";
+            width: 24px;
+            height: 24px;
+            border: 3px solid #F0F0F0;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 详情页样式 */
+        .detail-content {
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+
+        .detail-content strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <div class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span>🍱</span>
+                <span>学生党省钱攻略</span>
+            </div>
+            <div class="user-info">
+                <div class="vip-badge" onclick="showVip()">¥6.9开会员</div>
+                <div class="user-avatar" onclick="showVerify()">👤</div>
+            </div>
+        </div>
+        <div class="search-bar">
+            <span>🔍</span>
+            <input type="text" placeholder="搜索优惠、攻略..." id="searchInput">
+            <button onclick="search()">搜索</button>
+        </div>
+    </div>
+
+    <!-- 首页内容 -->
+    <div class="content active" id="homePage">
+        <!-- 统计数据 -->
+        <div class="stats-card">
+            <div class="stat-item">
+                <div class="stat-value" id="totalUsers">12,580</div>
+                <div class="stat-label">省钱用户</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="monthlySavings">358</div>
+                <div class="stat-label">月均节省(元)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="activeDiscounts">10</div>
+                <div class="stat-label">热门优惠</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="todayVisits">1,258</div>
+                <div class="stat-label">今日访问</div>
+            </div>
+        </div>
+
+        <!-- Banner -->
+        <div class="banner-container">
+            <div class="banner" id="banner">
+                <div class="banner-slide">
+                    <div class="banner-title">🎉 新用户首月会员仅¥1</div>
+                    <div class="banner-desc">开通即享专属省钱特权</div>
+                </div>
+                <div class="banner-slide">
+                    <div class="banner-title">🔥 海底捞69折限时优惠</div>
+                    <div class="banner-desc">大学生专属福利 立即认证</div>
+                </div>
+                <div class="banner-slide">
+                    <div class="banner-title">💰 每月省下300+的秘诀</div>
+                    <div class="banner-desc">学姐分享真实省钱经验</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快捷入口 -->
+        <div class="quick-actions">
+            <div class="quick-action" onclick="switchTab('discounts')">
+                <div class="quick-action-icon">🎫</div>
+                <div class="quick-action-text">学生优惠</div>
+            </div>
+            <div class="quick-action" onclick="switchTab('tips')">
+                <div class="quick-action-icon">📝</div>
+                <div class="quick-action-text">省钱技巧</div>
+            </div>
+            <div class="quick-action" onclick="showVerify()">
+                <div class="quick-action-icon">🎓</div>
+                <div class="quick-action-text">学生认证</div>
+            </div>
+            <div class="quick-action" onclick="switchTab('community')">
+                <div class="quick-action-icon">💬</div>
+                <div class="quick-action-text">省钱社区</div>
+            </div>
+        </div>
+
+        <!-- 热门优惠 -->
+        <div class="section-title">
+            <h3>🔥 热门优惠</h3>
+            <span class="more" onclick="switchTab('discounts')">查看更多 &gt;</span>
+        </div>
+        <div class="discount-list" id="hotDiscounts"></div>
+
+        <!-- 省钱技巧 -->
+        <div class="section-title">
+            <h3>📚 省钱技巧</h3>
+            <span class="more" onclick="switchTab('tips')">查看更多 &gt;</span>
+        </div>
+        <div class="tips-list" id="homeTips"></div>
+    </div>
+
+    <!-- 优惠页面 -->
+    <div class="content" id="discountsPage">
+        <div class="category-tabs" id="discountCategories">
+            <div class="category-tab active" data-category="">全部</div>
+        </div>
+        <div class="discount-list" id="discountList"></div>
+    </div>
+
+    <!-- 技巧页面 -->
+    <div class="content" id="tipsPage">
+        <div class="category-tabs" id="tipCategories">
+            <div class="category-tab active" data-category="">全部</div>
+        </div>
+        <div class="tips-list" id="tipsList"></div>
+    </div>
+
+    <!-- 活动页面 -->
+    <div class="content" id="activityPage">
+        <div class="section-title">
+            <h3>🎯 优惠活动</h3>
+        </div>
+        <div class="promotion-list" id="promotionList"></div>
+    </div>
+
+    <!-- 社区页面 -->
+    <div class="content" id="communityPage">
+        <div class="section-title">
+            <h3>💬 省钱社区</h3>
+        </div>
+        <div class="tips-list" id="communityList"></div>
+        <div class="publish-btn" onclick="showPublishPost()">+</div>
+    </div>
+
+    <!-- 认证页面 -->
+    <div class="content" id="verifyPage">
+        <div class="verify-container">
+            <div class="verify-card">
+                <div class="verify-header">
+                    <div class="verify-icon">🎓</div>
+                    <div class="verify-title">学生身份认证</div>
+                    <div class="verify-desc">完成认证 解锁专属学生优惠</div>
+                </div>
+                <form id="verifyForm">
+                    <div class="form-group">
+                        <label class="form-label">姓名</label>
+                        <input type="text" class="form-input" id="verifyName" placeholder="请输入真实姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">学校名称</label>
+                        <input type="text" class="form-input" id="verifySchool" placeholder="请输入学校名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">学号</label>
+                        <input type="text" class="form-input" id="verifyStudentId" placeholder="请输入学号" required>
+                    </div>
+                    <button type="submit" class="verify-btn">立即认证</button>
+                </form>
+                <div class="verify-benefits">
+                    <h4>认证即享以下特权：</h4>
+                    <div class="benefit-item">海底捞69折专属优惠</div>
+                    <div class="benefit-item">美团外卖满减红包</div>
+                    <div class="benefit-item">视频会员学生价</div>
+                    <div class="benefit-item">出行打车立减优惠</div>
+                    <div class="benefit-item">专属客服一对一服务</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="nav-bar">
+        <div class="nav-item active" data-tab="home" onclick="switchTab('home')">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-text">首页</div>
+        </div>
+        <div class="nav-item" data-tab="discounts" onclick="switchTab('discounts')">
+            <div class="nav-icon">🎫</div>
+            <div class="nav-text">优惠</div>
+        </div>
+        <div class="nav-item" data-tab="tips" onclick="switchTab('tips')">
+            <div class="nav-icon">📚</div>
+            <div class="nav-text">技巧</div>
+        </div>
+        <div class="nav-item" data-tab="community" onclick="switchTab('community')">
+            <div class="nav-icon">💬</div>
+            <div class="nav-text">社区</div>
+        </div>
+        <div class="nav-item" data-tab="verify" onclick="switchTab('verify')">
+            <div class="nav-icon">👤</div>
+            <div class="nav-text">我的</div>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">详情</span>
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- 发布帖子弹窗 -->
+    <div class="modal-overlay" id="publishModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">发布帖子</span>
+                <span class="modal-close" onclick="closePublishModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">标题</label>
+                    <input type="text" class="form-input" id="postTitle" placeholder="分享你的省钱心得...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">内容</label>
+                    <textarea class="form-input" id="postContent" rows="5" placeholder="详细描述你的省钱方法..."></textarea>
+                </div>
+                <button class="verify-btn" onclick="publishPost()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">开通会员</span>
+                <span class="modal-close" onclick="closeVipModal()">&times;</span>
+            </div>
+            <div class="modal-body vip-page">
+                <div class="vip-hero">
+                    <div class="vip-crown">👑</div>
+                    <div class="vip-name">省钱会员</div>
+                    <div class="vip-price"><span>¥</span>6.9<span>/月</span></div>
+                </div>
+                <div class="vip-features">
+                    <h3>会员特权</h3>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">🔔</div>
+                        <div class="vip-feature-info">
+                            <div class="vip-feature-name">专属优惠推送</div>
+                            <div class="vip-feature-desc">优先推送高额优惠</div>
+                        </div>
+                        <div class="vip-feature-check">✓</div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">🎁</div>
+                        <div class="vip-feature-info">
+                            <div class="vip-feature-name">会员专属福利</div>
+                            <div class="vip-feature-desc">独享学生党专属折扣</div>
+                        </div>
+                        <div class="vip-feature-check">✓</div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">🚫</div>
+                        <div class="vip-feature-info">
+                            <div class="vip-feature-name">无广告体验</div>
+                            <div class="vip-feature-desc">清爽界面无打扰</div>
+                        </div>
+                        <div class="vip-feature-check">✓</div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">📖</div>
+                        <div class="vip-feature-info">
+                            <div class="vip-feature-name">省钱攻略精讲</div>
+                            <div class="vip-feature-desc">VIP专属深度内容</div>
+                        </div>
+                        <div class="vip-feature-check">✓</div>
+                    </div>
+                    <div class="vip-feature-item disabled">
+                        <div class="vip-feature-icon">💬</div>
+                        <div class="vip-feature-info">
+                            <div class="vip-feature-name">一对一咨询</div>
+                            <div class="vip-feature-desc">个性化省钱方案</div>
+                        </div>
+                        <div class="vip-feature-check">×</div>
+                    </div>
+                </div>
+                <button class="subscribe-btn" onclick="subscribeVip()">立即开通 ¥6.9</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // 全局数据
+        let currentTab = 'home';
+        let discountsData = [];
+        let tipsData = [];
+        let communityData = [];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            loadHotDiscounts();
+            loadHomeTips();
+            loadPromotions();
+            initBanner();
+        });
+
+        // 加载统计数据
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const data = await res.json();
+                if (data.code === 200) {
+                    document.getElementById('totalUsers').textContent = data.data.total_users.toLocaleString();
+                    document.getElementById('monthlySavings').textContent = data.data.monthly_savings;
+                    document.getElementById('activeDiscounts').textContent = data.data.active_discounts;
+                    document.getElementById('todayVisits').textContent = data.data.today_visits.toLocaleString();
+                }
+            } catch (e) {
+                console.log('加载统计数据失败');
+            }
+        }
+
+        // 加载热门优惠
+        async function loadHotDiscounts() {
+            try {
+                const res = await fetch('/api/discounts?is_hot=true');
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderHotDiscounts(data.data.slice(0, 3));
+                }
+            } catch (e) {
+                console.log('加载热门优惠失败');
+            }
+        }
+
+        // 渲染热门优惠
+        function renderHotDiscounts(discounts) {
+            const container = document.getElementById('hotDiscounts');
+            container.innerHTML = discounts.map(d => `
+                <div class="discount-card" onclick="showDiscountDetail(${d.id})">
+                    <div class="discount-icon">${d.icon}</div>
+                    <div class="discount-info">
+                        <div class="discount-title">
+                            ${d.title}
+                            ${d.is_hot ? '<span class="hot-tag">热</span>' : ''}
+                        </div>
+                        <div class="discount-brand">${d.brand}</div>
+                        <span class="discount-save">省¥${d.save_amount}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载首页技巧
+        async function loadHomeTips() {
+            try {
+                const res = await fetch('/api/tips');
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderHomeTips(data.data.slice(0, 3));
+                }
+            } catch (e) {
+                console.log('加载技巧失败');
+            }
+        }
+
+        // 渲染首页技巧
+        function renderHomeTips(tips) {
+            const container = document.getElementById('homeTips');
+            container.innerHTML = tips.map(t => `
+                <div class="tip-card" onclick="showTipDetail(${t.id})">
+                    <div class="tip-header">
+                        <span class="tip-icon">${t.icon}</span>
+                        <div class="tip-title">${t.title}</div>
+                    </div>
+                    <div class="tip-meta">
+                        <span>${t.category}</span>
+                        <span>⏱ ${t.read_time}分钟</span>
+                        <span>❤️ ${t.likes}</span>
+                    </div>
+                    <div class="tip-content">${t.summary}</div>
+                    <div class="tip-tags">
+                        ${t.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载优惠活动
+        async function loadPromotions() {
+            try {
+                const res = await fetch('/api/promotions');
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderPromotions(data.data);
+                }
+            } catch (e) {
+                console.log('加载活动失败');
+            }
+        }
+
+        // 渲染优惠活动
+        function renderPromotions(promotions) {
+            const container = document.getElementById('promotionList');
+            container.innerHTML = promotions.map(p => `
+                <div class="promotion-card ${p.is_urgent ? 'urgent' : ''}" onclick="showToast('${p.title}')">
+                    <div class="promotion-title">${p.title}</div>
+                    <div class="promotion-desc">${p.description}</div>
+                    <div class="promotion-deadline">⏰ ${p.deadline}</div>
+                </div>
+            `).join('');
+        }
+
+        // 加载优惠列表
+        async function loadDiscounts(category = '') {
+            try {
+                const url = category ? `/api/discounts?category=${category}` : '/api/discounts';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.code === 200) {
+                    discountsData = data.data;
+                    renderDiscounts(discountsData);
+                }
+            } catch (e) {
+                console.log('加载优惠失败');
+            }
+        }
+
+        // 渲染优惠列表
+        function renderDiscounts(discounts) {
+            const container = document.getElementById('discountList');
+            if (discounts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <div>暂无相关优惠</div>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = discounts.map(d => `
+                <div class="discount-card" onclick="showDiscountDetail(${d.id})">
+                    <div class="discount-icon">${d.icon}</div>
+                    <div class="discount-info">
+                        <div class="discount-title">
+                            ${d.title}
+                            ${d.is_hot ? '<span class="hot-tag">热</span>' : ''}
+                        </div>
+                        <div class="discount-brand">${d.brand} · ${d.category}</div>
+                        <span class="discount-save">${d.discount} 省¥${d.save_amount}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载技巧列表
+        async function loadTips(category = '') {
+            try {
+                const url = category ? `/api/tips?category=${category}` : '/api/tips';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.code === 200) {
+                    tipsData = data.data;
+                    renderTips(tipsData);
+                }
+            } catch (e) {
+                console.log('加载技巧失败');
+            }
+        }
+
+        // 渲染技巧列表
+        function renderTips(tips) {
+            const container = document.getElementById('tipsList');
+            if (tips.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <div>暂无相关技巧</div>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = tips.map(t => `
+                <div class="tip-card" onclick="showTipDetail(${t.id})">
+                    <div class="tip-header">
+                        <span class="tip-icon">${t.icon}</span>
+                        <div class="tip-title">${t.title}</div>
+                    </div>
+                    <div class="tip-meta">
+                        <span>${t.category}</span>
+                        <span>⏱ ${t.read_time}分钟</span>
+                        <span>❤️ ${t.likes}</span>
+                    </div>
+                    <div class="tip-content">${t.summary}</div>
+                    <div class="tip-tags">
+                        ${t.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载社区帖子
+        async function loadCommunity() {
+            try {
+                const res = await fetch('/api/community');
+                const data = await res.json();
+                if (data.code === 200) {
+                    communityData = data.data;
+                    renderCommunity(communityData);
+                }
+            } catch (e) {
+                console.log('加载社区失败');
+            }
+        }
+
+        // 渲染社区帖子
+        function renderCommunity(posts) {
+            const container = document.getElementById('communityList');
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <div>暂无帖子 快来发布第一条吧</div>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = posts.map(p => `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">${p.avatar}</div>
+                        <div class="post-author">
+                            <div class="post-author-name">${p.author}</div>
+                            <div class="post-time">${p.time}</div>
+                        </div>
+                        ${p.is_top ? '<span class="post-top-badge">置顶</span>' : ''}
+                    </div>
+                    <div class="post-title">${p.title}</div>
+                    <div class="post-content">${p.content}</div>
+                    <div class="post-tags">
+                        ${p.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action" onclick="likePost(${p.id})">
+                            <span>❤️</span>
+                            <span>${p.likes}</span>
+                        </div>
+                        <div class="post-action">
+                            <span>💬</span>
+                            <span>${p.comments}</span>
+                        </div>
+                        <div class="post-action">
+                            <span>🔗</span>
+                            <span>分享</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 显示优惠详情
+        async function showDiscountDetail(id) {
+            try {
+                const res = await fetch(`/api/discounts/${id}`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    const d = data.data;
+                    document.getElementById('modalTitle').textContent = d.title;
+                    document.getElementById('modalBody').innerHTML = `
+                        <div style="text-align:center;margin-bottom:16px;">
+                            <span style="font-size:60px;">${d.icon}</span>
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <strong>品牌：</strong>${d.brand}
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <strong>优惠：</strong><span style="color:var(--primary);font-weight:bold;">${d.discount}</span>
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <strong>预计节省：</strong>¥${d.save_amount}
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <strong>有效期：</strong>${d.valid_until}
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <strong>详细介绍：</strong><br>${d.description}
+                        </div>
+                        <div style="margin-bottom:12px;color:#666;">
+                            <strong>使用技巧：</strong><br>${d.tips}
+                        </div>
+                        <button class="verify-btn" onclick="showToast('已领取 ${d.title} 优惠!');closeModal();">立即使用</button>
+                    `;
+                    document.getElementById('detailModal').classList.add('active');
+                }
+            } catch (e) {
+                showToast('加载失败');
+            }
+        }
+
+        // 显示技巧详情
+        async function showTipDetail(id) {
+            try {
+                const res = await fetch(`/api/tips/${id}`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    const t = data.data;
+                    document.getElementById('modalTitle').textContent = t.title;
+                    document.getElementById('modalBody').innerHTML = `
+                        <div style="margin-bottom:12px;">
+                            <span style="font-size:40px;">${t.icon}</span>
+                            <span style="margin-left:8px;color:var(--gray);">${t.category} · ${t.read_time}分钟阅读</span>
+                        </div>
+                        <div class="detail-content">${t.content}</div>
+                        <div style="margin-top:16px;">
+                            ${t.tags.map(tag => `<span class="tag">${tag}</span>`).join(' ')}
+                        </div>
+                        <div style="margin-top:12px;color:var(--gray);">
+                            ❤️ ${t.likes} 人阅读
+                        </div>
+                    `;
+                    document.getElementById('detailModal').classList.add('active');
+                }
+            } catch (e) {
+                showToast('加载失败');
+            }
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // 显示发布帖子弹窗
+        function showPublishPost() {
+            document.getElementById('publishModal').classList.add('active');
+        }
+
+        // 关闭发布弹窗
+        function closePublishModal() {
+            document.getElementById('publishModal').classList.remove('active');
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+        }
+
+        // 发布帖子
+        async function publishPost() {
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            
+            if (!title || !content) {
+                showToast('请填写标题和内容');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/community/post', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({title, content, author: '我'})
+                });
+                const data = await res.json();
+                if (data.code === 200) {
+                    showToast('发布成功!');
+                    closePublishModal();
+                    loadCommunity();
+                } else {
+                    showToast(data.message);
+                }
+            } catch (e) {
+                showToast('发布失败');
+            }
+        }
+
+        // 点赞帖子
+        async function likePost(id) {
+            try {
+                const res = await fetch(`/api/community/${id}/like`, {method: 'POST'});
+                const data = await res.json();
+                if (data.code === 200) {
+                    loadCommunity();
+                }
+            } catch (e) {
+                showToast('点赞失败');
+            }
+        }
+
+        // 切换标签页
+        function switchTab(tab) {
+            // 更新导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.tab === tab) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 更新内容
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tab + 'Page').classList.add('active');
+
+            currentTab = tab;
+
+            // 加载对应数据
+            switch (tab) {
+                case 'discounts':
+                    loadDiscountCategories();
+                    loadDiscounts();
+                    break;
+                case 'tips':
+                    loadTipCategories();
+                    loadTips();
+                    break;
+                case 'community':
+                    loadCommunity();
+                    break;
+            }
+
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+
+        // 加载优惠分类
+        async function loadDiscountCategories() {
+            try {
+                const res = await fetch('/api/categories');
+                const data = await res.json();
+                if (data.code === 200) {
+                    const container = document.getElementById('discountCategories');
+                    container.innerHTML = `
+                        <div class="category-tab active" data-category="" onclick="filterDiscounts('')">全部</div>
+                        ${data.data.map(c => `
+                            <div class="category-tab" data-category="${c.name}" onclick="filterDiscounts('${c.name}')">${c.name}</div>
+                        `).join('')}
+                    `;
+                }
+            } catch (e) {
+                console.log('加载分类失败');
+            }
+        }
+
+        // 加载技巧分类
+        async function loadTipCategories() {
+            try {
+                const res = await fetch('/api/tip-categories');
+                const data = await res.json();
+                if (data.code === 200) {
+                    const container = document.getElementById('tipCategories');
+                    container.innerHTML = `
+                        <div class="category-tab active" data-category="" onclick="filterTips('')">全部</div>
+                        ${data.data.map(c => `
+                            <div class="category-tab" data-category="${c.name}" onclick="filterTips('${c.name}')">${c.name}</div>
+                        `).join('')}
+                    `;
+                }
+            } catch (e) {
+                console.log('加载分类失败');
+            }
+        }
+
+        // 筛选优惠
+        function filterDiscounts(category) {
+            document.querySelectorAll('#discountCategories .category-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.category === category) {
+                    tab.classList.add('active');
+                }
+            });
+            loadDiscounts(category);
+        }
+
+        // 筛选技巧
+        function filterTips(category) {
+            document.querySelectorAll('#tipCategories .category-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.category === category) {
+                    tab.classList.add('active');
+                }
+            });
+            loadTips(category);
+        }
+
+        // 学生认证
+        document.getElementById('verifyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('verifyName').value;
+            const school = document.getElementById('verifySchool').value;
+            const student_id = document.getElementById('verifyStudentId').value;
+
+            try {
+                const res = await fetch('/api/student/verify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({name, school, student_id})
+                });
+                const data = await res.json();
+                if (data.code === 200) {
+                    showToast('认证成功！');
+                    document.querySelector('.user-avatar').textContent = '✅';
+                } else {
+                    showToast(data.message);
+                }
+            } catch (e) {
+                showToast('认证失败');
+            }
+        });
+
+        // 显示认证页面
+        function showVerify() {
+            switchTab('verify');
+        }
+
+        // 显示VIP弹窗
+        function showVip() {
+            document.getElementById('vipModal').classList.add('active');
+        }
+
+        // 关闭VIP弹窗
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.remove('active');
+        }
+
+        // 订阅VIP
+        async function subscribeVip() {
+            try {
+                const res = await fetch('/api/membership/subscribe', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({payment_method: 'alipay'})
+                });
+                const data = await res.json();
+                if (data.code === 200) {
+                    showToast('订阅成功！');
+                    closeVipModal();
+                    document.querySelector('.vip-badge').textContent = '已开通';
+                } else {
+                    showToast(data.message);
+                }
+            } catch (e) {
+                showToast('订阅失败');
+            }
+        }
+
+        // 搜索
+        function search() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                showToast(`搜索: ${query}`);
+            }
+        }
+
+        // Banner轮播
+        let bannerIndex = 0;
+        function initBanner() {
+            setInterval(() => {
+                bannerIndex = (bannerIndex + 1) % 3;
+                document.getElementById('banner').style.transform = `translateX(-${bannerIndex * 100}%)`;
+            }, 3000);
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 点击弹窗背景关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

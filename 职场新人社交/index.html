@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职场新人社交 - 告别社恐，快速融入职场</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --primary-light: #818CF8;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: var(--gray-900);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vip-badge:hover {
+            transform: scale(1.05);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 首页Banner */
+        .banner {
+            background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 100%);
+            border-radius: 16px;
+            padding: 40px 30px;
+            color: white;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .banner::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .banner h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .banner p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .banner-stats {
+            display: flex;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* 功能导航 */
+        .feature-nav {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .nav-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-light);
+        }
+
+        .nav-item.active {
+            border-color: var(--primary);
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+        }
+
+        .nav-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 10px;
+            background: var(--gray-100);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .nav-item h3 {
+            font-size: 14px;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .nav-item p {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        /* 内容区域 */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* 卡片通用样式 */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 筛选器 */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--gray-200);
+            background: white;
+            color: var(--gray-600);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 技巧卡片 */
+        .tip-card {
+            border-left: 4px solid var(--primary);
+        }
+
+        .tip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .tip-category {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .tip-difficulty {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .difficulty-easy {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+
+        .difficulty-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent);
+        }
+
+        .difficulty-hard {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .tip-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 10px;
+        }
+
+        .tip-content {
+            color: var(--gray-600);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .tip-scenario {
+            background: var(--gray-50);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-bottom: 12px;
+        }
+
+        .tip-scenario strong {
+            color: var(--gray-700);
+        }
+
+        .tip-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .tip-likes {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-400);
+            font-size: 13px;
+        }
+
+        /* 活动卡片 */
+        .activity-card {
+            display: flex;
+            gap: 16px;
+        }
+
+        .activity-image {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-type {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .type-online {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+
+        .type-offline {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .activity-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .activity-info {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+        }
+
+        .activity-info span {
+            margin-right: 12px;
+        }
+
+        .activity-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .activity-tag {
+            background: var(--gray-100);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--gray-600);
+        }
+
+        .activity-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .activity-price {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .activity-price.free {
+            color: var(--secondary);
+        }
+
+        .activity-participants {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* 社群卡片 */
+        .community-card {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .community-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .community-content {
+            flex: 1;
+        }
+
+        .community-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .community-desc {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .community-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        .community-activity {
+            background: var(--gray-50);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--gray-600);
+            margin-top: 8px;
+        }
+
+        /* 话题卡片 */
+        .topic-card {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .topic-category {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .topic-category.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .topic-question {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .topic-purpose {
+            color: var(--gray-600);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .topic-tips {
+            background: rgba(99, 102, 241, 0.05);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--gray-700);
+            border-left: 3px solid var(--primary);
+        }
+
+        .topic-best-for {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .topic-best-item {
+            background: var(--gray-100);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--gray-600);
+        }
+
+        /* 练习卡片 */
+        .practice-card {
+            border-left: 4px solid var(--accent);
+        }
+
+        .practice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .practice-scene {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .practice-situation {
+            background: var(--gray-50);
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--gray-700);
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .practice-goals {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .practice-goal {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .practice-section {
+            margin-bottom: 16px;
+        }
+
+        .practice-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .practice-approach {
+            background: rgba(16, 185, 129, 0.08);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .practice-script {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--primary-dark);
+            border-left: 3px solid var(--primary);
+        }
+
+        .practice-script-example {
+            font-style: italic;
+            margin-top: 8px;
+            padding-left: 12px;
+            border-left: 2px dashed var(--gray-300);
+        }
+
+        /* VIP弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 100%;
+            overflow: hidden;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--gray-900);
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .modal-header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .vip-features {
+            margin-bottom: 20px;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .vip-feature:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .vip-feature-text {
+            flex: 1;
+        }
+
+        .vip-feature-text h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .vip-feature-text p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .vip-price {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .vip-price .price {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .vip-price .period {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .vip-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vip-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--gray-400);
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 4px 12px;
+        }
+
+        .bottom-nav-item:hover,
+        .bottom-nav-item.active {
+            color: var(--primary);
+        }
+
+        .bottom-nav-item.active .nav-icon {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .bottom-nav-item .nav-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .bottom-nav-item span {
+            font-size: 10px;
+        }
+
+        /* 页面底部留白 */
+        .page-bottom {
+            height: 80px;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-400);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--gray-600);
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--gray-800);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .feature-nav {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .banner-stats {
+                gap: 20px;
+            }
+            
+            .stat-value {
+                font-size: 20px;
+            }
+            
+            .activity-card {
+                flex-direction: column;
+            }
+            
+            .activity-image {
+                width: 100%;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .feature-nav {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .banner {
+                padding: 30px 20px;
+            }
+            
+            .banner h1 {
+                font-size: 22px;
+            }
+            
+            .banner-stats {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+        }
+
+        /* 详情展开/收起 */
+        .card-content {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .card-content.collapsed {
+            max-height: 200px;
+        }
+
+        .expand-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: var(--gray-50);
+            border: none;
+            color: var(--primary);
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            transition: background 0.2s;
+        }
+
+        .expand-btn:hover {
+            background: var(--gray-100);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🤝</div>
+                <span class="logo-text">职场新人社交</span>
+            </div>
+            <div class="vip-badge" onclick="showVipModal()">
+                💎 开通月卡 ¥15
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Banner -->
+        <div class="banner">
+            <div class="banner-content">
+                <h1>告别社恐，快速融入职场 🎯</h1>
+                <p>职场社交技巧 | 社交活动推荐 | 同行社群 | 话题库 | 社交练习</p>
+                <div class="banner-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">12,580+</div>
+                        <div class="stat-label">正在使用</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2,341</div>
+                        <div class="stat-label">今日活跃</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">用户好评</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能导航 -->
+        <div class="feature-nav">
+            <div class="nav-item active" onclick="switchTab('tips')">
+                <div class="nav-icon">💡</div>
+                <h3>社交技巧</h3>
+                <p>12篇实用攻略</p>
+            </div>
+            <div class="nav-item" onclick="switchTab('activities')">
+                <div class="nav-icon">🎪</div>
+                <h3>活动推荐</h3>
+                <p>线下+线上活动</p>
+            </div>
+            <div class="nav-item" onclick="switchTab('communities')">
+                <div class="nav-icon">👥</div>
+                <h3>同行社群</h3>
+                <p>8个优质社群</p>
+            </div>
+            <div class="nav-item" onclick="switchTab('topics')">
+                <div class="nav-icon">💬</div>
+                <h3>话题库</h3>
+                <p>14个社交话题</p>
+            </div>
+            <div class="nav-item" onclick="switchTab('practice')">
+                <div class="nav-icon">🎭</div>
+                <h3>社交练习</h3>
+                <p>8个真实场景</p>
+            </div>
+        </div>
+
+        <!-- 社交技巧 -->
+        <div id="tips-section" class="content-section active">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterTips('all')">全部</button>
+                <button class="filter-btn" onclick="filterTips('破冰技巧')">破冰技巧</button>
+                <button class="filter-btn" onclick="filterTips('关系维护')">关系维护</button>
+                <button class="filter-btn" onclick="filterTips('职场礼仪')">职场礼仪</button>
+                <button class="filter-btn" onclick="filterTips('高阶社交')">高阶社交</button>
+            </div>
+            <div id="tips-list"></div>
+        </div>
+
+        <!-- 活动推荐 -->
+        <div id="activities-section" class="content-section">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterActivities('all')">全部</button>
+                <button class="filter-btn" onclick="filterActivities('线下活动')">线下活动</button>
+                <button class="filter-btn" onclick="filterActivities('线上活动')">线上活动</button>
+            </div>
+            <div id="activities-list"></div>
+        </div>
+
+        <!-- 同行社群 -->
+        <div id="communities-section" class="content-section">
+            <div id="communities-list"></div>
+        </div>
+
+        <!-- 社交话题库 -->
+        <div id="topics-section" class="content-section">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterTopics('all')">全部</button>
+                <button class="filter-btn" onclick="filterTopics('安全话题')">安全话题</button>
+                <button class="filter-btn" onclick="filterTopics('进阶话题')">进阶话题</button>
+                <button class="filter-btn" onclick="filterTopics('热门话题')">热门话题</button>
+                <button class="filter-btn" onclick="filterTopics('深度话题')">深度话题</button>
+                <button class="filter-btn" onclick="filterTopics('禁忌话题')">禁忌话题</button>
+            </div>
+            <div id="topics-list"></div>
+        </div>
+
+        <!-- 社交练习 -->
+        <div id="practice-section" class="content-section">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterPractice('all')">全部</button>
+                <button class="filter-btn" onclick="filterPractice('入门')">入门</button>
+                <button class="filter-btn" onclick="filterPractice('进阶')">进阶</button>
+                <button class="filter-btn" onclick="filterPractice('高阶')">高阶</button>
+            </div>
+            <div id="practice-list"></div>
+        </div>
+    </div>
+
+    <!-- 页面底部留白 -->
+    <div class="page-bottom"></div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-item active" onclick="switchTab('tips')">
+            <div class="nav-icon">💡</div>
+            <span>技巧</span>
+        </div>
+        <div class="bottom-nav-item" onclick="switchTab('activities')">
+            <div class="nav-icon">🎪</div>
+            <span>活动</span>
+        </div>
+        <div class="bottom-nav-item" onclick="switchTab('communities')">
+            <div class="nav-icon">👥</div>
+            <span>社群</span>
+        </div>
+        <div class="bottom-nav-item" onclick="switchTab('topics')">
+            <div class="nav-icon">💬</div>
+            <span>话题</span>
+        </div>
+        <div class="bottom-nav-item" onclick="switchTab('practice')">
+            <div class="nav-icon">🎭</div>
+            <span>练习</span>
+        </div>
+    </nav>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vip-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>🌟 解锁完整功能</h2>
+                <p>开通月卡，体验全部高级功能</p>
+            </div>
+            <div class="modal-body">
+                <div class="vip-features">
+                    <div class="vip-feature">
+                        <div class="vip-feature-icon">📚</div>
+                        <div class="vip-feature-text">
+                            <h4>完整内容库</h4>
+                            <p>解锁全部50+社交技巧</p>
+                        </div>
+                    </div>
+                    <div class="vip-feature">
+                        <div class="vip-feature-icon">👥</div>
+                        <div class="vip-feature-text">
+                            <h4>专属社群</h4>
+                            <p>加入高质量职场社交圈</p>
+                        </div>
+                    </div>
+                    <div class="vip-feature">
+                        <div class="vip-feature-icon">🎯</div>
+                        <div class="vip-feature-text">
+                            <h4>1对1练习</h4>
+                            <p>AI模拟真实社交场景</p>
+                        </div>
+                    </div>
+                    <div class="vip-feature">
+                        <div class="vip-feature-icon">📊</div>
+                        <div class="vip-feature-text">
+                            <h4>进度追踪</h4>
+                            <p>记录你的成长轨迹</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="vip-price">
+                    <span class="price">¥15</span>
+                    <span class="period">/月</span>
+                </div>
+                <button class="vip-btn" onclick="subscribeVip()">
+                    立即开通月卡
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // 数据存储
+        let tipsData = [];
+        let activitiesData = [];
+        let communitiesData = [];
+        let topicsData = [];
+        let practiceData = [];
+
+        // 当前筛选状态
+        let currentFilters = {
+            tips: 'all',
+            activities: 'all',
+            topics: 'all',
+            practice: 'all'
+        };
+
+        // 页面加载时获取数据
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllData();
+        });
+
+        // 加载所有数据
+        async function loadAllData() {
+            await Promise.all([
+                loadTips(),
+                loadActivities(),
+                loadCommunities(),
+                loadTopics(),
+                loadPractice()
+            ]);
+        }
+
+        // 通用fetch函数
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url);
+                const result = await response.json();
+                return result.code === 200 ? result.data : [];
+            } catch (error) {
+                console.error('Fetch error:', error);
+                return [];
+            }
+        }
+
+        // 加载社交技巧
+        async function loadTips() {
+            tipsData = await fetchData(`${API_BASE}/tips`);
+            renderTips(tipsData);
+        }
+
+        // 加载活动
+        async function loadActivities() {
+            activitiesData = await fetchData(`${API_BASE}/activities`);
+            renderActivities(activitiesData);
+        }
+
+        // 加载社群
+        async function loadCommunities() {
+            communitiesData = await fetchData(`${API_BASE}/communities`);
+            renderCommunities(communitiesData);
+        }
+
+        // 加载话题
+        async function loadTopics() {
+            topicsData = await fetchData(`${API_BASE}/topics`);
+            renderTopics(topicsData);
+        }
+
+        // 加载练习场景
+        async function loadPractice() {
+            practiceData = await fetchData(`${API_BASE}/practice/scenes`);
+            renderPractice(practiceData);
+        }
+
+        // 切换标签页
+        function switchTab(tab) {
+            // 更新导航高亮
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.bottom-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // 设置顶部导航
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if (item.onclick.toString().includes(`'${tab}'`)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 设置底部导航
+            const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+            bottomNavItems.forEach(item => {
+                if (item.onclick.toString().includes(`'${tab}'`)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 切换内容区域
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${tab}-section`).classList.add('active');
+
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 筛选社交技巧
+        function filterTips(category) {
+            currentFilters.tips = category;
+            updateFilterButtons('tips', category);
+            
+            const filtered = category === 'all' 
+                ? tipsData 
+                : tipsData.filter(tip => tip.category === category);
+            renderTips(filtered);
+        }
+
+        // 筛选活动
+        function filterActivities(type) {
+            currentFilters.activities = type;
+            updateFilterButtons('activities', type);
+            
+            const filtered = type === 'all' 
+                ? activitiesData 
+                : activitiesData.filter(act => act.type === type);
+            renderActivities(filtered);
+        }
+
+        // 筛选话题
+        function filterTopics(category) {
+            currentFilters.topics = category;
+            updateFilterButtons('topics', category);
+            
+            const filtered = category === 'all' 
+                ? topicsData 
+                : topicsData.filter(topic => topic.category === category);
+            renderTopics(filtered);
+        }
+
+        // 筛选练习
+        function filterPractice(difficulty) {
+            currentFilters.practice = difficulty;
+            updateFilterButtons('practice', difficulty);
+            
+            const filtered = difficulty === 'all' 
+                ? practiceData 
+                : practiceData.filter(scene => scene.difficulty === difficulty);
+            renderPractice(filtered);
+        }
+
+        // 更新筛选按钮状态
+        function updateFilterButtons(section, activeValue) {
+            const filterBar = document.querySelector(`#${section}-section .filter-bar`);
+            filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === (activeValue === 'all' ? '全部' : activeValue)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // 渲染社交技巧
+        function renderTips(tips) {
+            const container = document.getElementById('tips-list');
+            
+            if (tips.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💡</div>
+                        <h3>暂无相关技巧</h3>
+                        <p>试试其他筛选条件吧</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = tips.map(tip => `
+                <div class="card tip-card">
+                    <div class="tip-header">
+                        <span class="tip-category">${tip.category}</span>
+                        <span class="tip-difficulty difficulty-${getDifficultyClass(tip.difficulty)}">${tip.difficulty}</span>
+                    </div>
+                    <h3 class="tip-title">${tip.title}</h3>
+                    <p class="tip-content">${tip.content}</p>
+                    <div class="tip-scenario">
+                        <strong>适用场景：</strong>${tip.scenario}
+                    </div>
+                    <div class="tip-footer">
+                        <div class="tip-likes">
+                            <span>❤️</span>
+                            <span>${tip.likes} 人学习</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染活动
+        function renderActivities(activities) {
+            const container = document.getElementById('activities-list');
+            
+            if (activities.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎪</div>
+                        <h3>暂无相关活动</h3>
+                        <p>去看看其他活动吧</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = activities.map(act => `
+                <div class="card activity-card">
+                    <div class="activity-image">
+                        ${act.type === '线上活动' ? '🌐' : '📍'}
+                    </div>
+                    <div class="activity-content">
+                        <span class="activity-type ${act.type === '线上活动' ? 'type-online' : 'type-offline'}">${act.type}</span>
+                        <h3 class="activity-title">${act.title}</h3>
+                        <div class="activity-info">
+                            <span>📍 ${act.location}</span>
+                            <span>📅 ${act.date}</span>
+                            <span>🕐 ${act.time}</span>
+                        </div>
+                        <div class="activity-tags">
+                            ${act.tags.map(tag => `<span class="activity-tag">#${tag}</span>`).join('')}
+                        </div>
+                        <div class="activity-footer">
+                            <span class="activity-price ${act.price === 0 ? 'free' : ''}">
+                                ${act.price === 0 ? '免费' : '¥' + act.price}
+                            </span>
+                            <span class="activity-participants">
+                                👥 ${act.participants}/${act.max_participants}人
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染社群
+        function renderCommunities(communities) {
+            const container = document.getElementById('communities-list');
+            
+            if (communities.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👥</div>
+                        <h3>暂无相关社群</h3>
+                        <p>敬请期待更多社群</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = communities.map(community => `
+                <div class="card community-card">
+                    <div class="community-avatar" style="background: ${community.avatar_color}">
+                        ${community.name.substring(0, 2)}
+                    </div>
+                    <div class="community-content">
+                        <h3 class="community-name">${community.name}</h3>
+                        <p class="community-desc">${community.description}</p>
+                        <div class="community-meta">
+                            <span>👥 ${community.member_count}人</span>
+                            <span>🟢 ${community.daily_active}日活</span>
+                            <span>${community.activity_level}</span>
+                        </div>
+                        <div class="community-activity">
+                            💬 ${community.recent_topic}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染话题
+        function renderTopics(topics) {
+            const container = document.getElementById('topics-list');
+            
+            if (topics.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <h3>暂无相关话题</h3>
+                        <p>试试其他筛选条件</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = topics.map(topic => `
+                <div class="card topic-card">
+                    <span class="topic-category ${topic.category === '禁忌话题' ? 'danger' : ''}">${topic.category}</span>
+                    <h3 class="topic-question">"${topic.question}"</h3>
+                    <p class="topic-purpose"><strong>用途：</strong>${topic.purpose}</p>
+                    <div class="topic-tips">
+                        💡 ${topic.tips}
+                    </div>
+                    ${topic.best_for.length > 0 ? `
+                        <div class="topic-best-for">
+                            ${topic.best_for.map(item => `<span class="topic-best-item">适合：${item}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // 渲染练习场景
+        function renderPractice(scenes) {
+            const container = document.getElementById('practice-list');
+            
+            if (scenes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎭</div>
+                        <h3>暂无相关场景</h3>
+                        <p>试试其他难度</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = scenes.map(scene => `
+                <div class="card practice-card">
+                    <div class="practice-header">
+                        <h3 class="practice-scene">${scene.scene}</h3>
+                        <span class="tip-difficulty difficulty-${getDifficultyClass(scene.difficulty)}">${scene.difficulty}</span>
+                    </div>
+                    <div class="practice-situation">
+                        <strong>情境：</strong>${scene.situation}
+                    </div>
+                    <div class="practice-goals">
+                        ${scene.goals.map(goal => `<span class="practice-goal">🎯 ${goal}</span>`).join('')}
+                    </div>
+                    <div class="practice-section">
+                        <div class="practice-section-title">💭 建议策略</div>
+                        <div class="practice-approach">${scene.suggested_approach}</div>
+                    </div>
+                    <div class="practice-section">
+                        <div class="practice-section-title">💬 参考话术</div>
+                        <div class="practice-script">
+                            ${scene.example_script}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 获取难度样式类
+        function getDifficultyClass(difficulty) {
+            const map = {
+                '入门': 'easy',
+                '进阶': 'medium',
+                '高阶': 'hard'
+            };
+            return map[difficulty] || 'easy';
+        }
+
+        // 显示VIP弹窗
+        function showVipModal() {
+            document.getElementById('vip-modal').classList.add('show');
+        }
+
+        // 关闭VIP弹窗
+        function closeVipModal() {
+            document.getElementById('vip-modal').classList.remove('show');
+        }
+
+        // 订阅VIP
+        function subscribeVip() {
+            showToast('支付功能即将上线，敬请期待！');
+            closeVipModal();
+        }
+
+        // 显示Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 点击弹窗外部关闭
+        document.getElementById('vip-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeVipModal();
+            }
+        });
+
+        // 键盘ESC关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeVipModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>孕妇日记 - 您的孕期贴心助手</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF9AAE;
+            --primary-light: #FFB7C5;
+            --accent: #FF6B81;
+            --bg: #FFF5F7;
+            --text: #5A4A4A;
+            --text-light: #8A7A7A;
+            --white: #FFFFFF;
+            --shadow: 0 2px 10px rgba(255, 154, 174, 0.2);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 70px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-icons i {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .pregnancy-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .week-display {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .week-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .week-label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .week-label span {
+            display: block;
+            font-size: 18px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .countdown {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        /* Content Sections */
+        .content {
+            padding: 16px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-badge {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* Checkup List */
+        .checkup-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .checkup-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkup-week {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .checkup-week .week {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .checkup-week .label {
+            font-size: 10px;
+        }
+
+        .checkup-info {
+            flex: 1;
+        }
+
+        .checkup-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .checkup-desc {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .checkup-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .status-done {
+            background: #E8F5E9;
+            color: #4CAF50;
+        }
+
+        .status-upcoming {
+            background: #FFF3E0;
+            color: #FF9800;
+        }
+
+        .status-future {
+            background: #F5F5F5;
+            color: var(--text-light);
+        }
+
+        /* Record Section */
+        .record-form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E0E0E0;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #F5F5F5;
+            color: var(--text);
+        }
+
+        .record-list {
+            margin-top: 20px;
+        }
+
+        .record-item {
+            background: #FAFAFA;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .record-date {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .record-stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+        }
+
+        .stat-item i {
+            color: var(--primary);
+        }
+
+        .record-note {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* Articles */
+        .article-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .article-tab {
+            padding: 8px 16px;
+            background: var(--white);
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid #E0E0E0;
+            transition: all 0.3s;
+        }
+
+        .article-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .article-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #F0F0F0;
+            cursor: pointer;
+        }
+
+        .article-item:last-child {
+            border-bottom: none;
+        }
+
+        .article-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .article-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .article-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-meta {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        /* Community */
+        .post-item {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .post-user {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .post-week {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .post-content {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .post-tag {
+            background: var(--bg);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #F0F0F0;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .post-action i {
+            color: var(--primary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #F5F5F5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        .article-full-content {
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-item i {
+            font-size: 22px;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+        }
+
+        /* Onboarding */
+        .onboarding {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .onboarding-content {
+            text-align: center;
+            color: white;
+            max-width: 320px;
+        }
+
+        .onboarding-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+
+        .onboarding h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .onboarding p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 32px;
+        }
+
+        .onboarding-form {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+        }
+
+        .onboarding-form .form-group {
+            margin-bottom: 16px;
+        }
+
+        .onboarding-form .form-input {
+            border-color: var(--primary-light);
+        }
+
+        .onboarding-form .btn {
+            margin-top: 8px;
+        }
+
+        /* VIP Banner */
+        .vip-banner {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .vip-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .vip-info {
+            flex: 1;
+            color: white;
+        }
+
+        .vip-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .vip-desc {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .vip-arrow {
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Calendar Mini */
+        .mini-calendar {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .calendar-month {
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+        }
+
+        .calendar-day {
+            padding: 6px;
+            font-size: 12px;
+            border-radius: 50%;
+        }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: white;
+        }
+
+        .calendar-day.due {
+            background: var(--accent);
+            color: white;
+        }
+
+        .calendar-day.header {
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        /* Fetal Development Card */
+        .fetal-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 16px;
+            padding: 16px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .fetal-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .fetal-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .fetal-stat {
+            text-align: center;
+        }
+
+        .fetal-stat .value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .fetal-stat .label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .fetal-desc {
+            margin-top: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Onboarding Screen -->
+    <div class="onboarding" id="onboarding">
+        <div class="onboarding-content">
+            <div class="onboarding-icon">🤰</div>
+            <h2>欢迎使用孕妇日记</h2>
+            <p>记录孕期每一天，见证生命每一次跳动</p>
+            <div class="onboarding-form">
+                <div class="form-group">
+                    <label class="form-label">末次月经日期</label>
+                    <input type="date" class="form-input" id="lastPeriodInput">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">预产期（选填，自动计算）</label>
+                    <input type="date" class="form-input" id="dueDateInput">
+                </div>
+                <button class="btn btn-primary" onclick="startApp()">开始使用</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <h1>🤰 孕妇日记</h1>
+            <div class="header-icons">
+                <i class="fas fa-bell"></i>
+                <i class="fas fa-user" onclick="showProfile()"></i>
+            </div>
+        </div>
+        <div class="pregnancy-card">
+            <div class="week-display">
+                <div class="week-number" id="currentWeek">0</div>
+                <div class="week-label">
+                    <span id="weekText">孕早期 第0周</span>
+                    <span id="dayText">孕0周+0天</span>
+                </div>
+                <span class="stage-badge" id="stageBadge">孕早期</span>
+            </div>
+            <div class="countdown">
+                <i class="fas fa-baby"></i>
+                <span>距离预产期还有 <strong id="countdown">280</strong> 天</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+        <!-- Calendar Section -->
+        <section class="section active" id="calendarSection">
+            <div class="vip-banner" onclick="showVipInfo()">
+                <div class="vip-icon">👑</div>
+                <div class="vip-info">
+                    <div class="vip-title">开通月卡解锁完整功能</div>
+                    <div class="vip-desc">完整知识库 · 专家咨询 · 无限收藏</div>
+                </div>
+                <i class="fas fa-chevron-right vip-arrow"></i>
+            </div>
+
+            <div class="mini-calendar">
+                <div class="calendar-header">
+                    <i class="fas fa-chevron-left" onclick="changeMonth(-1)"></i>
+                    <span class="calendar-month" id="calendarMonth">2024年1月</span>
+                    <i class="fas fa-chevron-right" onclick="changeMonth(1)"></i>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <div class="calendar-day header">日</div>
+                    <div class="calendar-day header">一</div>
+                    <div class="calendar-day header">二</div>
+                    <div class="calendar-day header">三</div>
+                    <div class="calendar-day header">四</div>
+                    <div class="calendar-day header">五</div>
+                    <div class="calendar-day header">六</div>
+                </div>
+            </div>
+
+            <div class="fetal-card">
+                <div class="fetal-title">本周宝宝发育情况</div>
+                <div class="fetal-info">
+                    <div class="fetal-stat">
+                        <div class="value" id="fetalLength">-</div>
+                        <div class="label">身长</div>
+                    </div>
+                    <div class="fetal-stat">
+                        <div class="value" id="fetalWeight">-</div>
+                        <div class="label">体重</div>
+                    </div>
+                </div>
+                <div class="fetal-desc" id="fetalDesc">加载中...</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">📅 本月重要日程</span>
+                </div>
+                <div id="upcomingSchedule">
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-alt"></i>
+                        <p>暂无日程安排</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Checkup Section -->
+        <section class="section" id="checkupSection">
+            <h2 class="section-title"><i class="fas fa-stethoscope"></i> 产检提醒</h2>
+            <div id="checkupList"></div>
+        </section>
+
+        <!-- Record Section -->
+        <section class="section" id="recordSection">
+            <h2 class="section-title"><i class="fas fa-heart"></i> 发育记录</h2>
+            
+            <div class="record-form">
+                <div class="form-group">
+                    <label class="form-label">当前孕周</label>
+                    <input type="number" class="form-input" id="recordWeek" min="1" max="42" placeholder="如：28">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">体重 (kg)</label>
+                    <input type="number" class="form-input" id="recordWeight" step="0.1" placeholder="如：65.5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">腹围 (cm)</label>
+                    <input type="number" class="form-input" id="recordBelly" step="0.1" placeholder="如：85">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">记录备注</label>
+                    <input type="text" class="form-input" id="recordNote" placeholder="今天的感受、想法...">
+                </div>
+                <button class="btn btn-primary" onclick="addRecord()">保存记录</button>
+            </div>
+
+            <h3 style="font-size:16px;margin:20px 0 12px;">📈 历史记录</h3>
+            <div id="recordList">
+                <div class="empty-state">
+                    <i class="fas fa-chart-line"></i>
+                    <p>暂无记录，开始记录你的孕期吧</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Knowledge Section -->
+        <section class="section" id="knowledgeSection">
+            <h2 class="section-title"><i class="fas fa-book-open"></i> 孕期知识</h2>
+            
+            <div class="article-tabs" id="articleTabs">
+                <div class="article-tab active" data-category="all">全部</div>
+                <div class="article-tab" data-category="饮食">饮食</div>
+                <div class="article-tab" data-category="运动">运动</div>
+                <div class="article-tab" data-category="知识">知识</div>
+                <div class="article-tab" data-category="产检">产检</div>
+                <div class="article-tab" data-category="心理">心理</div>
+            </div>
+
+            <div id="articleList"></div>
+        </section>
+
+        <!-- Community Section -->
+        <section class="section" id="communitySection">
+            <h2 class="section-title"><i class="fas fa-users"></i> 孕妈社区</h2>
+            <div id="postList"></div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-section="calendarSection">
+            <i class="fas fa-calendar-alt"></i>
+            <span>日历</span>
+        </div>
+        <div class="nav-item" data-section="checkupSection">
+            <i class="fas fa-stethoscope"></i>
+            <span>产检</span>
+        </div>
+        <div class="nav-item" data-section="recordSection">
+            <i class="fas fa-heart"></i>
+            <span>记录</span>
+        </div>
+        <div class="nav-item" data-section="knowledgeSection">
+            <i class="fas fa-book-open"></i>
+            <span>知识</span>
+        </div>
+        <div class="nav-item" data-section="communitySection">
+            <i class="fas fa-comments"></i>
+            <span>社区</span>
+        </div>
+    </nav>
+
+    <!-- Article Modal -->
+    <div class="modal-overlay" id="articleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">文章详情</span>
+                <div class="modal-close" onclick="closeModal('articleModal')">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="article-full-content" id="articleContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App State
+        let appState = {
+            dueDate: null,
+            currentWeek: 0,
+            currentDay: 0,
+            records: [],
+            favorites: [],
+            articles: [],
+            posts: [],
+            checkups: [],
+            isVip: false
+        };
+
+        // API Base URL
+        const API_BASE = '';
+
+        // Initialize App
+        async function initApp() {
+            // Check if already set up
+            const savedData = localStorage.getItem('pregnancyData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                appState.dueDate = data.dueDate;
+                document.getElementById('onboarding').style.display = 'none';
+                await loadData();
+            } else {
+                // Set default dates
+                const today = new Date();
+                const lastPeriod = new Date(today);
+                lastPeriod.setDate(today.getDate() - 200);
+                document.getElementById('lastPeriodInput').value = formatDate(lastPeriod);
+                
+                const dueDate = new Date(today);
+                dueDate.setDate(today.getDate() + 80);
+                document.getElementById('dueDateInput').value = formatDate(dueDate);
+            }
+        }
+
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        async function startApp() {
+            const lastPeriod = document.getElementById('lastPeriodInput').value;
+            let dueDate = document.getElementById('dueDateInput').value;
+            
+            if (!dueDate && lastPeriod) {
+                // Calculate due date from last period (280 days = 40 weeks)
+                const lp = new Date(lastPeriod);
+                lp.setDate(lp.getDate() + 280);
+                dueDate = formatDate(lp);
+            }
+
+            appState.dueDate = dueDate;
+            localStorage.setItem('pregnancyData', JSON.stringify({
+                dueDate: dueDate,
+                lastPeriod: lastPeriod
+            }));
+
+            document.getElementById('onboarding').style.display = 'none';
+            await loadData();
+        }
+
+        async function loadData() {
+            await Promise.all([
+                loadPregnancyInfo(),
+                loadCheckups(),
+                loadArticles(),
+                loadPosts(),
+                loadRecords(),
+                renderCalendar()
+            ]);
+        }
+
+        async function loadPregnancyInfo() {
+            // Calculate locally since we don't have backend
+            const dueDate = new Date(appState.dueDate);
+            const today = new Date();
+            
+            // Calculate days from conception (assuming due date is 280 days from LMP)
+            const conceptionDays = 280 - Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+            
+            // More accurate: calculate from due date
+            const daysToDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+            const totalDaysPregnant = 280 - daysToDue;
+            
+            const weeks = Math.floor(totalDaysPregnant / 7);
+            const days = totalDaysPregnant % 7;
+
+            appState.currentWeek = Math.max(0, Math.min(weeks, 42));
+            appState.currentDay = Math.max(0, days);
+
+            // Update UI
+            document.getElementById('currentWeek').textContent = appState.currentWeek;
+            document.getElementById('weekText').textContent = `${getStage(weeks).name} 第${weeks}周`;
+            document.getElementById('dayText').textContent = `孕${weeks}周+${days}天`;
+            document.getElementById('stageBadge').textContent = getStage(weeks).name;
+            document.getElementById('countdown').textContent = Math.max(0, daysToDue);
+
+            // Update fetal info
+            updateFetalInfo(weeks);
+
+            // Update record week input
+            document.getElementById('recordWeek').value = weeks;
+
+            return appState;
+        }
+
+        function getStage(weeks) {
+            if (weeks < 13) return { name: '孕早期', desc: '胎儿器官发育关键期' };
+            if (weeks < 28) return { name: '孕中期', desc: '舒适的黄金期' };
+            return { name: '孕晚期', desc: '注意胎动，准备待产' };
+        }
+
+        function updateFetalInfo(week) {
+            const fetalData = {
+                4: { length: '1-2mm', weight: '<1g', desc: '心脏开始跳动，神经系统发育中' },
+                8: { length: '1.6cm', weight: '约1g', desc: '手指脚趾开始形成，面部器官显现' },
+                12: { length: '5.4cm', weight: '约14g', desc: '手指能张开闭合，性别可辨认' },
+                16: { length: '12cm', weight: '约100g', desc: '会做鬼脸，表情丰富' },
+                20: { length: '16cm', weight: '约300g', desc: '可以感受到胎动啦！' },
+                24: { length: '30cm', weight: '约600g', desc: '肺部发育，头发长出' },
+                28: { length: '35cm', weight: '约1000g', desc: '眼睛睁开，能看到光线' },
+                32: { length: '40cm', weight: '约1700g', desc: '身体圆润，指甲长成' },
+                36: { length: '45cm', weight: '约2700g', desc: '肾发育完全，随时可生' },
+                40: { length: '50cm', weight: '约3400g', desc: '发育完全，准备出生！' },
+            };
+
+            // Find closest week data
+            const weeks = Object.keys(fetalData).map(Number);
+            const closest = weeks.reduce((prev, curr) => 
+                Math.abs(curr - week) < Math.abs(prev - week) ? curr : prev
+            );
+
+            const data = fetalData[closest];
+            document.getElementById('fetalLength').textContent = data.length;
+            document.getElementById('fetalWeight').textContent = data.weight;
+            document.getElementById('fetalDesc').textContent = data.desc;
+        }
+
+        async function loadCheckups() {
+            const checkups = [
+                { week: 6, name: '第一次产检', description: '确认怀孕，B超检查胎心胎芽' },
+                { week: 12, name: '第二次产检', description: '建档，NT检查' },
+                { week: 16, name: '第三次产检', description: '唐氏筛查' },
+                { week: 20, name: '第四次产检', description: '大排畸B超' },
+                { week: 24, name: '第五次产检', description: '妊娠糖尿病筛查' },
+                { week: 28, name: '第六次产检', description: '乙肝、梅毒复查' },
+                { week: 32, name: '第七次产检', description: '小排畸B超' },
+                { week: 36, name: '第八次产检', description: '胎心监护，GBS筛查' },
+                { week: 37, name: '第九次产检', description: '骨盆测量' },
+                { week: 40, name: '第十二次产检', description: '足月评估' },
+            ];
+
+            appState.checkups = checkups;
+            renderCheckups();
+        }
+
+        function renderCheckups() {
+            const container = document.getElementById('checkupList');
+            const currentWeek = appState.currentWeek;
+
+            container.innerHTML = appState.checkups.map(checkup => {
+                let status, statusClass;
+                if (checkup.week < currentWeek) {
+                    status = '已完成';
+                    statusClass = 'status-done';
+                } else if (checkup.week === currentWeek || checkup.week === currentWeek + 1) {
+                    status = '即将到来';
+                    statusClass = 'status-upcoming';
+                } else {
+                    status = '待检查';
+                    statusClass = 'status-future';
+                }
+
+                return `
+                    <div class="checkup-item card">
+                        <div class="checkup-week">
+                            <span class="week">${checkup.week}</span>
+                            <span class="label">周</span>
+                        </div>
+                        <div class="checkup-info">
+                            <div class="checkup-name">${checkup.name}</div>
+                            <div class="checkup-desc">${checkup.description}</div>
+                        </div>
+                        <span class="checkup-status ${statusClass}">${status}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadArticles() {
+            appState.articles = [
+                { id: 1, title: '孕早期（1-12周）饮食指南', category: '饮食', summary: '孕早期营养摄入对胎儿发育至关重要', is_vip: false, week_range: [1, 12], content: '孕早期饮食注意事项：\n\n1. 叶酸补充：每天400-800μg，预防胎儿神经管畸形\n2. 少食多餐：孕吐反应时每日5-6餐\n3. 禁忌食物：生冷食物、高汞鱼类、酒精\n4. 推荐食物：鸡蛋、鱼肉、豆制品、新鲜果蔬\n5. 缓解孕吐：早起吃饼干、喝姜茶、避免油烟' },
+                { id: 2, title: '孕中期（13-27周）营养重点', category: '饮食', summary: '孕中期是胎儿快速发育期，营养需求大增', is_vip: true, week_range: [13, 27], content: '孕中期营养重点：\n\n1. 蛋白质：每天80-100g\n2. 钙质：每天1000-1200mg\n3. 铁元素：每天24-29mg\n4. DHA：促进大脑发育\n5. 体重管理：每周增重0.3-0.5kg' },
+                { id: 3, title: '孕晚期（28-40周）注意事项', category: '饮食', summary: '孕晚期需为分娩储备能量', is_vip: true, week_range: [28, 40], content: '孕晚期饮食指南：\n\n1. 少食多餐：子宫压迫胃部\n2. 控制盐分：预防妊娠高血压\n3. 补充维生素K：预防产后出血\n4. 锌元素：促进分娩顺利' },
+                { id: 4, title: '孕期适合的运动有哪些？', category: '运动', summary: '适度运动有助于分娩', is_vip: false, week_range: [1, 40], content: '孕期运动指南：\n\n推荐的运动：\n1. 散步：每天30分钟-1小时\n2. 孕妇瑜伽：增强柔韧性\n3. 游泳：对关节负担小\n4. 凯格尔运动：增强盆底肌\n\n禁忌运动：\n- 剧烈跑步、跳跃\n- 接触性运动\n- 高温瑜伽' },
+                { id: 5, title: '如何数胎动？', category: '知识', summary: '胎动是判断胎儿健康的重要指标', is_vip: false, week_range: [28, 40], content: '数胎动正确方法：\n\n何时开始数：孕28周后\n\n计数方法：\n1. 每天早、中、晚各数1小时\n2. 3次总和 × 4 = 12小时胎动\n3. 正常：12小时>30次\n\n异常信号：\n- 12小时<10次\n- 突然剧烈后不动\n- 胎动明显减少' },
+                { id: 6, title: '孕吐严重怎么办？', category: '知识', summary: '孕吐是正常反应，严重需警惕', is_vip: false, week_range: [1, 20], content: '孕吐缓解方法：\n\n饮食调节：\n1. 起床前吃些饼干\n2. 少食多餐\n3. 避免油腻辛辣\n4. 喝姜茶、柠檬水\n\n何时就医：\n- 频繁呕吐无法进食\n- 体重明显下降\n- 出现脱水症状' },
+                { id: 7, title: '待产包清单', category: '准备', summary: '产前必备物品清单', is_vip: true, week_range: [36, 40], content: '待产包清单：\n\n妈妈用品：\n- 产褥垫、产妇卫生巾\n- 一次性内裤、哺乳内衣\n- 吸奶器、洗漱用品\n\n宝宝用品：\n- 新生儿衣服3-4件\n- 包被、纸尿裤\n- 奶瓶、奶粉\n\n证件类：\n- 身份证、医保卡\n- 产检本、准生证' },
+                { id: 8, title: '产前检查全知道', category: '产检', summary: '孕期各项检查时间节点', is_vip: false, week_range: [1, 40], content: '产前检查时间表：\n\n孕早期：\n- 6周：B超确认胎心\n- 12周：建档、NT检查\n\n孕中期：\n- 16周：唐筛/无创DNA\n- 20周：大排畸\n- 24周：糖耐量试验\n\n孕晚期：\n- 28-36周：每4周一次\n- 37-40周：每周胎监' },
+                { id: 9, title: '孕期睡眠指南', category: '知识', summary: '孕期激素变化影响睡眠', is_vip: false, week_range: [1, 40], content: '孕期睡眠建议：\n\n最佳睡姿：左侧卧位\n\n改善睡眠：\n1. 睡前喝温牛奶\n2. 使用孕妇枕\n3. 保持房间凉爽\n4. 规律作息\n\n常见不适：\n- 尿频：睡前少喝水\n- 腿抽筋：补钙、热敷' },
+                { id: 10, title: '孕期心理调适', category: '心理', summary: '孕期情绪波动正常', is_vip: true, week_range: [1, 40], content: '孕期心理调适：\n\n常见情绪：\n- 焦虑：对胎儿健康的担忧\n- 敏感：激素变化导致\n- 疲惫：身体负担加重\n\n调适方法：\n1. 保持社交\n2. 听音乐放松\n3. 学习孕期知识\n4. 适度运动\n5. 写孕期日记' },
+            ];
+
+            renderArticles('all');
+        }
+
+        function renderArticles(category) {
+            const container = document.getElementById('articleList');
+            let filtered = appState.articles;
+
+            if (category !== 'all') {
+                filtered = appState.articles.filter(a => a.category === category);
+            }
+
+            const categoryIcons = {
+                '饮食': '🍎',
+                '运动': '🏃',
+                '知识': '📚',
+                '产检': '🏥',
+                '准备': '📦',
+                '心理': '💭'
+            };
+
+            container.innerHTML = filtered.map(article => `
+                <div class="card article-item" onclick="showArticle(${article.id})">
+                    <div class="article-icon">${categoryIcons[article.category] || '📖'}</div>
+                    <div class="article-content">
+                        <div class="article-title">${article.title}</div>
+                        <div class="article-meta">
+                            ${article.is_vip ? '<span class="vip-badge">👑 会员</span>' : ''}
+                            <span>${article.category}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showArticle(id) {
+            const article = appState.articles.find(a => a.id === id);
+            if (!article) return;
+
+            document.getElementById('modalTitle').textContent = article.title;
+            document.getElementById('articleContent').textContent = article.content;
+            document.getElementById('articleModal').classList.add('active');
+        }
+
+        async function loadPosts() {
+            appState.posts = [
+                { id: 1, user_name: '小美妈妈', user_avatar: '👩', week: 28, title: '孕28周了，分享一下孕期最难忘的瞬间', content: '今天去做大排畸，看到宝宝在肚子里打哈欠，太可爱了！医生说宝宝很健康，悬着的心终于放下了。', likes: 156, comments: 23, tags: ['孕28周', '大排畸'] },
+                { id: 2, user_name: '橙子准妈', user_avatar: '🍊', week: 16, title: '孕吐终于缓解了！这些方法真的有效', content: '从孕6周吐到孕14周，瘦了8斤。今天终于好多了！总结了几个亲测有效的方法：喝姜茶、闻柠檬、少吃多餐...', likes: 289, comments: 45, tags: ['孕吐', '经验分享'] },
+                { id: 3, user_name: '开心孕妈', user_avatar: '😊', week: 36, title: '待产包准备好了，给大家参考一下清单', content: '孕36周了，待产包终于准备齐全！给姐妹们分享一下我的清单，希望能帮到还没准备的孕妈。', likes: 412, comments: 67, tags: ['待产包', '孕36周'] },
+                { id: 4, user_name: '宝贝计划', user_avatar: '👶', week: 20, title: '第一次感受到胎动，像小鱼在游', content: '今天20周整，终于感受到胎动了！那种感觉太神奇了，像小鱼在肚子里游来游去。老公也感受到了！', likes: 523, comments: 89, tags: ['胎动', '孕20周'] },
+                { id: 5, user_name: '新手孕妈', user_avatar: '🌸', week: 8, title: '刚发现怀孕，需要注意什么？', content: '月经推迟了一周，验孕棒两条杠，明天去医院检查。想问问各位孕妈，刚怀孕要注意什么？', likes: 178, comments: 56, tags: ['备孕', '新手孕妈'] },
+            ];
+
+            renderPosts();
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('postList');
+            container.innerHTML = appState.posts.map(post => `
+                <div class="post-item">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.user_avatar}</div>
+                        <div class="post-user">
+                            <div class="post-username">${post.user_name}</div>
+                            <div class="post-week">孕${post.week}周</div>
+                        </div>
+                    </div>
+                    <div class="post-title">${post.title}</div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-tags">
+                        ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join('')}
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action"><i class="fas fa-heart"></i> ${post.likes}</div>
+                        <div class="post-action"><i class="fas fa-comment"></i> ${post.comments}</div>
+                        <div class="post-action"><i class="fas fa-share"></i> 分享</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadRecords() {
+            const saved = localStorage.getItem('pregnancyRecords');
+            appState.records = saved ? JSON.parse(saved) : [];
+            renderRecords();
+        }
+
+        function addRecord() {
+            const week = document.getElementById('recordWeek').value;
+            const weight = document.getElementById('recordWeight').value;
+            const belly = document.getElementById('recordBelly').value;
+            const note = document.getElementById('recordNote').value;
+
+            if (!week) {
+                alert('请输入孕周');
+                return;
+            }
+
+            const record = {
+                id: Date.now(),
+                week: parseInt(week),
+                weight: weight ? parseFloat(weight) : null,
+                belly: belly ? parseFloat(belly) : null,
+                note: note,
+                created_at: new Date().toISOString().split('T')[0]
+            };
+
+            appState.records.unshift(record);
+            localStorage.setItem('pregnancyRecords', JSON.stringify(appState.records));
+            renderRecords();
+
+            // Clear form
+            document.getElementById('recordWeight').value = '';
+            document.getElementById('recordBelly').value = '';
+            document.getElementById('recordNote').value = '';
+
+            alert('记录保存成功！');
+        }
+
+        function renderRecords() {
+            const container = document.getElementById('recordList');
+            
+            if (appState.records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-chart-line"></i>
+                        <p>暂无记录，开始记录你的孕期吧</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = appState.records.map(record => `
+                <div class="record-item">
+                    <div class="record-date">${record.created_at} · 孕${record.week}周</div>
+                    <div class="record-stats">
+                        ${record.weight ? `<div class="stat-item"><i class="fas fa-weight"></i> ${record.weight}kg</div>` : ''}
+                        ${record.belly ? `<div class="stat-item"><i class="fas fa-ruler"></i> ${record.belly}cm</div>` : ''}
+                    </div>
+                    ${record.note ? `<div class="record-note">${record.note}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Calendar Functions
+        let currentCalendarDate = new Date();
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const monthLabel = document.getElementById('calendarMonth');
+            
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            
+            monthLabel.textContent = `${year}年${month + 1}月`;
+
+            // Clear existing days (keep headers)
+            const headers = grid.querySelectorAll('.calendar-day.header');
+            grid.innerHTML = '';
+            headers.forEach(h => grid.appendChild(h));
+
+            // Get first day and days in month
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Get due date
+            const dueDate = appState.dueDate ? new Date(appState.dueDate) : null;
+            const dueDay = dueDate ? dueDate.getDate() : null;
+            const isCurrentMonth = dueDate && dueDate.getFullYear() === year && dueDate.getMonth() === month;
+
+            // Today
+            const today = new Date();
+            const isCurrentYearMonth = today.getFullYear() === year && today.getMonth() === month;
+            const todayDay = today.getDate();
+
+            // Empty cells
+            for (let i = 0; i < firstDay; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day';
+                grid.appendChild(cell);
+            }
+
+            // Day cells
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day';
+                cell.textContent = day;
+
+                if (isCurrentYearMonth && day === todayDay) {
+                    cell.classList.add('today');
+                }
+
+                if (isCurrentMonth && day === dueDay) {
+                    cell.classList.add('due');
+                }
+
+                grid.appendChild(cell);
+            }
+        }
+
+        function changeMonth(delta) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Update active nav
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+
+                // Update active section
+                const sectionId = item.dataset.section;
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Article tabs
+        document.querySelectorAll('.article-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.article-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderArticles(tab.dataset.category);
+            });
+        });
+
+        // Modal close on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showVipInfo() {
+            alert('👑 开通月卡 ¥18/月\n\n会员特权：\n• 完整知识库无限阅读\n• 专家在线咨询服务\n• 无限收藏文章\n• 专属孕妈礼包\n\n开通即享更多贴心功能！');
+        }
+
+        function showProfile() {
+            alert('👤 个人中心\n\n当前状态：孕' + appState.currentWeek + '周+' + appState.currentDay + '天\n预产期：' + appState.dueDate + '\n\n会员状态：基础版\n\n[升级月卡]');
+        }
+
+        // Initialize
+        initApp();
+    </script>
+</body>
+</html>

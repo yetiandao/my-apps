@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孕妇运动指导 - 安心孕期，活力妈妈</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #E91E63;
+            --primary-light: #FCE4EC;
+            --secondary: #9C27B0;
+            --accent: #FF4081;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --bg: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border: #F0E0E6;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+        
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(233, 30, 99, 0.3);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .app-title h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .app-icon {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .user-badge.vip {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+        }
+        
+        .profile-summary {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .profile-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .profile-info p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* 统计卡片 */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        
+        /* 主内容区 */
+        .main-content {
+            padding: 15px;
+            max-width: 100%;
+        }
+        
+        /* Tab导航 */
+        .tab-nav {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-item.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-item span {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        /* 页面容器 */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 孕期阶段选择器 */
+        .stage-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .stage-btn {
+            flex-shrink: 0;
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            border-radius: 25px;
+            background: var(--card-bg);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .stage-btn.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .card-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        /* 运动卡片 */
+        .exercise-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .exercise-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.15);
+        }
+        
+        .exercise-thumb {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #E1BEE7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            position: relative;
+        }
+        
+        .exercise-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .exercise-duration {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        
+        .exercise-info {
+            padding: 15px;
+        }
+        
+        .exercise-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .exercise-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .exercise-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .exercise-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .exercise-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #C2185B;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+        
+        /* 视频播放模拟 */
+        .video-placeholder {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.5);
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .video-lock {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #FFD700;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* 强度指示器 */
+        .intensity-bar {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        .intensity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+        
+        .intensity-dot.active {
+            background: var(--success);
+        }
+        
+        .intensity-dot.active.medium {
+            background: var(--warning);
+        }
+        
+        .intensity-dot.active.high {
+            background: var(--primary);
+        }
+        
+        /* 运动记录 */
+        .record-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--primary-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .record-content {
+            flex: 1;
+        }
+        
+        .record-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .record-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .record-duration {
+            text-align: right;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item span {
+            font-size: 22px;
+        }
+        
+        /* 弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--card-bg);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        /* VIP会员卡片 */
+        .vip-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vip-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #FFD700, transparent);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+        
+        .vip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .vip-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .vip-price {
+            text-align: right;
+        }
+        
+        .vip-price .amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FFD700;
+        }
+        
+        .vip-price .unit {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .vip-features {
+            list-style: none;
+        }
+        
+        .vip-features li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .vip-features li::before {
+            content: '✓';
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        /* 每日建议 */
+        .daily-tip {
+            background: linear-gradient(135deg, #FFF9C4 0%, #FFECB3 100%);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 20px;
+            border-left: 4px solid #FFC107;
+        }
+        
+        .daily-tip-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #F57C00;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .daily-tip-content {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* 打卡组件 */
+        .checkin-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .checkin-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border: none;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.4);
+            margin: 15px auto;
+            display: block;
+        }
+        
+        .checkin-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .checkin-btn.checked {
+            background: #ccc;
+            box-shadow: none;
+            cursor: default;
+        }
+        
+        .checkin-streak {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+        
+        .checkin-streak strong {
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        /* 动画效果 */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state span {
+            font-size: 60px;
+            display: block;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+        }
+        
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 响应式 */
+        @media (max-width: 375px) {
+            .header h1 {
+                font-size: 17px;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 5px;
+            }
+            
+            .stat-value {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-top">
+            <div class="app-title">
+                <div class="app-icon">🤰</div>
+                <h1>孕妇运动指导</h1>
+            </div>
+            <div class="user-badge vip" id="memberBadge" onclick="showMembership()">
+                <span>👑</span>
+                <span id="memberText">月卡会员</span>
+            </div>
+        </div>
+        <div class="profile-summary">
+            <div class="avatar">👩</div>
+            <div class="profile-info">
+                <h3 id="userStage">孕中期妈妈</h3>
+                <p id="userWeek">第20周 · 运动达人</p>
+            </div>
+        </div>
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="totalWorkouts">0</div>
+                <div class="stat-label">累计运动</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalMinutes">0</div>
+                <div class="stat-label">运动分钟</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="currentStreak">0</div>
+                <div class="stat-label">连续天数</div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- Tab导航 -->
+        <nav class="tab-nav">
+            <div class="tab-item active" data-page="home" onclick="switchTab('home')">
+                <span>🏠</span>
+                首页
+            </div>
+            <div class="tab-item" data-page="exercises" onclick="switchTab('exercises')">
+                <span>🧘</span>
+                运动库
+            </div>
+            <div class="tab-item" data-page="postpartum" onclick="switchTab('postpartum')">
+                <span>👶</span>
+                产后
+            </div>
+            <div class="tab-item" data-page="record" onclick="switchTab('record')">
+                <span>📊</span>
+                记录
+            </div>
+            <div class="tab-item" data-page="profile" onclick="switchTab('profile')">
+                <span>👤</span>
+                我的
+            </div>
+        </nav>
+        
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <!-- 每日打卡 -->
+            <div class="checkin-card">
+                <h3 style="font-size:15px;margin-bottom:5px;">今日运动打卡</h3>
+                <p style="font-size:12px;color:#999;margin-bottom:10px;" id="todayDate"></p>
+                <button class="checkin-btn pulse" id="checkinBtn" onclick="doCheckin()">✓</button>
+                <p style="font-size:13px;color:#666;" id="checkinStatus">点击完成今日打卡</p>
+                <div class="checkin-streak">
+                    连续打卡 <strong id="streakDays">0</strong> 天
+                </div>
+            </div>
+            
+            <!-- 每日建议 -->
+            <div class="daily-tip">
+                <div class="daily-tip-title">
+                    <span>💡</span> 今日建议
+                </div>
+                <p class="daily-tip-content" id="dailyTip">
+                    孕中期是运动的黄金期，建议每天保持30分钟适度运动，如瑜伽、散步等。运动时注意补充水分，如有不适立即停止。
+                </p>
+            </div>
+            
+            <!-- 推荐运动 -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🎯 为您推荐</h3>
+                    <span class="card-badge">个性化</span>
+                </div>
+                <div id="recommendedExercises">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <!-- 运动强度指南 -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">❤️ 运动强度参考</h3>
+                </div>
+                <div style="font-size:13px;color:#666;line-height:1.8;">
+                    <p style="margin-bottom:10px;"><strong>心率靶心率：</strong></p>
+                    <div style="background:#f9f9f9;padding:12px;border-radius:10px;margin-bottom:12px;">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>30岁以下</span>
+                            <span style="color:#E91E63;">120-140 次/分</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-top:8px;">
+                            <span>35岁以上</span>
+                            <span style="color:#E91E63;">115-135 次/分</span>
+                        </div>
+                    </div>
+                    <p style="margin-bottom:10px;"><strong>自我感觉：</strong></p>
+                    <div style="background:#f9f9f9;padding:12px;border-radius:10px;">
+                        <p>能正常对话但略有气息急促感</p>
+                        <p style="margin-top:8px;color:#4CAF50;">感觉：有点累但很舒服 😊</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ快捷入口 -->
+            <div class="card" onclick="showFAQ()" style="cursor:pointer;">
+                <div class="card-header">
+                    <h3 class="card-title">❓ 常见问题</h3>
+                    <span style="color:#999;font-size:20px;">→</span>
+                </div>
+                <div style="font-size:13px;color:#666;">
+                    <p style="margin-bottom:8px;">• 孕期可以运动吗？</p>
+                    <p style="margin-bottom:8px;">• 什么情况不能运动？</p>
+                    <p>• 产后多久可以运动？</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 运动库 -->
+        <div class="page" id="page-exercises">
+            <div class="stage-selector" id="stageSelector">
+                <button class="stage-btn" data-stage="first_trimester">孕早期</button>
+                <button class="stage-btn active" data-stage="second_trimester">孕中期</button>
+                <button class="stage-btn" data-stage="third_trimester">孕晚期</button>
+            </div>
+            
+            <div id="exerciseList">
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+        
+        <!-- 产后恢复 -->
+        <div class="page" id="page-postpartum">
+            <div class="stage-selector" id="postpartumSelector">
+                <button class="stage-btn" data-phase="early_recovery">产后1-4周</button>
+                <button class="stage-btn active" data-phase="mid_recovery">产后4-8周</button>
+                <button class="stage-btn" data-phase="late_recovery">产后8周后</button>
+            </div>
+            
+            <div id="postpartumList">
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+        
+        <!-- 运动记录 -->
+        <div class="page" id="page-record">
+            <div class="card" style="text-align:center;padding:30px;">
+                <h3 style="margin-bottom:20px;">📊 运动统计</h3>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:20px;">
+                    <div style="background:#FCE4EC;padding:20px;border-radius:12px;">
+                        <div style="font-size:28px;font-weight:700;color:#E91E63;" id="statTotalWorkouts">0</div>
+                        <div style="font-size:12px;color:#666;margin-top:5px;">总运动次数</div>
+                    </div>
+                    <div style="background:#E8F5E9;padding:20px;border-radius:12px;">
+                        <div style="font-size:28px;font-weight:700;color:#4CAF50;" id="statTotalMinutes">0</div>
+                        <div style="font-size:12px;color:#666;margin-top:5px;">总分钟数</div>
+                    </div>
+                    <div style="background:#FFF3E0;padding:20px;border-radius:12px;">
+                        <div style="font-size:28px;font-weight:700;color:#FF9800;" id="statAvgDuration">0</div>
+                        <div style="font-size:12px;color:#666;margin-top:5px;">平均时长(分钟)</div>
+                    </div>
+                    <div style="background:#E3F2FD;padding:20px;border-radius:12px;">
+                        <div style="font-size:28px;font-weight:700;color:#2196F3;" id="statFavorite">-</div>
+                        <div style="font-size:12px;color:#666;margin-top:5px;">最爱运动</div>
+                    </div>
+                </div>
+                <div style="background:#F5F5F5;padding:15px;border-radius:12px;margin-bottom:20px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <span style="font-size:13px;">本周目标进度</span>
+                        <span style="font-size:13px;color:#E91E63;" id="statProgress">0%</span>
+                    </div>
+                    <div style="background:#E0E0E0;height:8px;border-radius:4px;">
+                        <div id="progressBar" style="background:linear-gradient(90deg,#E91E63,#FF4081);height:100%;border-radius:4px;width:0%;transition:width 0.5s;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📝 最近记录</h3>
+                    <span class="card-badge" id="recordCount">0条</span>
+                </div>
+                <div id="recordList">
+                    <div class="empty-state">
+                        <span>📝</span>
+                        <h3>暂无运动记录</h3>
+                        <p>开始您的第一次运动吧！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 我的 -->
+        <div class="page" id="page-profile">
+            <!-- 会员卡片 -->
+            <div class="vip-card" id="vipCard" onclick="showMembership()">
+                <div class="vip-header">
+                    <div>
+                        <div class="vip-title">🌟 月卡会员</div>
+                        <div style="font-size:12px;opacity:0.8;margin-top:4px;">解锁全部运动视频</div>
+                    </div>
+                    <div class="vip-price">
+                        <span class="amount">¥18</span>
+                        <div class="unit">/月</div>
+                    </div>
+                </div>
+                <ul class="vip-features">
+                    <li>全部孕期运动视频</li>
+                    <li>产后恢复完整课程</li>
+                    <li>个性化运动方案</li>
+                    <li>专家答疑服务</li>
+                </ul>
+            </div>
+            
+            <!-- 孕期设置 -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🤰 孕期信息</h3>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">预产期</label>
+                    <input type="date" class="form-input" id="dueDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">当前孕期</label>
+                    <select class="form-select" id="currentWeek" onchange="updateProfile()">
+                        <option value="">请选择当前周数</option>
+                        <option value="8">孕早期 (1-12周)</option>
+                        <option value="20" selected>孕中期 (13-27周)</option>
+                        <option value="34">孕晚期 (28-40周)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">运动基础</label>
+                    <select class="form-select" id="fitnessLevel" onchange="updateProfile()">
+                        <option value="beginner">运动新手</option>
+                        <option value="normal" selected>偶尔运动</option>
+                        <option value="active">经常运动</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="width:100%;" onclick="updateProfile()">
+                    保存设置
+                </button>
+            </div>
+            
+            <!-- 其他设置 -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">⚙️ 其他设置</h3>
+                </div>
+                <div style="font-size:14px;">
+                    <div style="padding:15px 0;border-bottom:1px solid #f0f0f0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="showFAQ()">
+                        <span>❓ 常见问题</span>
+                        <span style="color:#999;">→</span>
+                    </div>
+                    <div style="padding:15px 0;border-bottom:1px solid #f0f0f0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                        <span>📞 联系客服</span>
+                        <span style="color:#999;">→</span>
+                    </div>
+                    <div style="padding:15px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                        <span>ℹ️ 关于我们</span>
+                        <span style="color:#999;">→</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="text-align:center;color:#999;font-size:12px;margin-top:20px;">
+                v1.0.0 · 孕妇运动指导
+            </p>
+        </div>
+    </main>
+    
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home" onclick="switchTab('home')">
+            <span>🏠</span>
+            首页
+        </div>
+        <div class="nav-item" data-page="exercises" onclick="switchTab('exercises')">
+            <span>🧘</span>
+            运动库
+        </div>
+        <div class="nav-item" data-page="postpartum" onclick="switchTab('postpartum')">
+            <span>👶</span>
+            产后
+        </div>
+        <div class="nav-item" data-page="record" onclick="switchTab('record')">
+            <span>📊</span>
+            记录
+        </div>
+        <div class="nav-item" data-page="profile" onclick="switchTab('profile')">
+            <span>👤</span>
+            我的
+        </div>
+    </nav>
+    
+    <!-- 运动详情弹窗 -->
+    <div class="modal-overlay" id="exerciseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">运动详情</h3>
+                <div class="modal-close" onclick="closeModal()">×</div>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 会员弹窗 -->
+    <div class="modal-overlay" id="membershipModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">🌟 开通会员</h3>
+                <div class="modal-close" onclick="closeMembership()">×</div>
+            </div>
+            <div class="modal-body">
+                <div class="vip-card" style="margin-bottom:20px;">
+                    <div class="vip-header">
+                        <div>
+                            <div class="vip-title">月卡会员</div>
+                            <div style="font-size:12px;opacity:0.8;margin-top:4px;">解锁全部功能</div>
+                        </div>
+                        <div class="vip-price">
+                            <span class="amount">¥18</span>
+                            <div class="unit">/30天</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 style="font-size:14px;margin-bottom:12px;">会员特权</h4>
+                <div style="background:#f9f9f9;padding:15px;border-radius:12px;margin-bottom:20px;">
+                    <p style="font-size:13px;margin-bottom:10px;">✓ 全部孕期运动视频</p>
+                    <p style="font-size:13px;margin-bottom:10px;">✓ 产后恢复完整课程</p>
+                    <p style="font-size:13px;margin-bottom:10px;">✓ 个性化运动方案</p>
+                    <p style="font-size:13px;margin-bottom:10px;">✓ 专家在线答疑</p>
+                    <p style="font-size:13px;">✓ 运动数据深度分析</p>
+                </div>
+                
+                <button class="btn btn-primary" style="width:100%;" onclick="subscribe()">
+                    立即开通 · ¥18/月
+                </button>
+                <p style="text-align:center;font-size:12px;color:#999;margin-top:10px;">
+                    支付成功即表示同意《会员协议》
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ弹窗 -->
+    <div class="modal-overlay" id="faqModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">❓ 常见问题</h3>
+                <div class="modal-close" onclick="closeFAQ()">×</div>
+            </div>
+            <div class="modal-body" id="faqBody">
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局状态
+        const API_BASE = 'http://localhost:5000/api';
+        let currentUser = {
+            id: 'user_' + Date.now(),
+            isVip: false,
+            stage: 'second_trimester',
+            currentWeek: 20
+        };
+        let exerciseData = {};
+        let postpartumData = {};
+        let userRecords = [];
+        let isCheckedIn = false;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTodayDate();
+            loadExerciseData();
+            loadPostpartumData();
+            loadFAQ();
+            loadUserRecords();
+            updateStats();
+            
+            // 设置Tab切换事件
+            document.querySelectorAll('.stage-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.parentElement.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const stage = this.dataset.stage;
+                    if (stage) {
+                        filterExercises(stage);
+                    }
+                    
+                    const phase = this.dataset.phase;
+                    if (phase) {
+                        filterPostpartum(phase);
+                    }
+                });
+            });
+        });
+        
+        // 显示日期
+        function loadTodayDate() {
+            const now = new Date();
+            const options = { month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('todayDate').textContent = now.toLocaleDateString('zh-CN', options);
+        }
+        
+        // Tab切换
+        function switchTab(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById('page-' + page).classList.add('active');
+            document.querySelectorAll(`[data-page="${page}"]`).forEach(el => el.classList.add('active'));
+        }
+        
+        // 加载孕期运动数据
+        async function loadExerciseData() {
+            try {
+                const response = await fetch(`${API_BASE}/exercises/pregnancy`);
+                const result = await response.json();
+                if (result.code === 200) {
+                    exerciseData = result.data;
+                    renderExercises('second_trimester');
+                    renderRecommendations();
+                }
+            } catch (error) {
+                console.error('加载运动数据失败:', error);
+                document.getElementById('exerciseList').innerHTML = `
+                    <div class="empty-state">
+                        <span>😢</span>
+                        <h3>加载失败</h3>
+                        <p>请检查后端服务是否启动</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // 加载产后运动数据
+        async function loadPostpartumData() {
+            try {
+                const response = await fetch(`${API_BASE}/exercises/postpartum`);
+                const result = await response.json();
+                if (result.code === 200) {
+                    postpartumData = result.data;
+                    renderPostpartum('mid_recovery');
+                }
+            } catch (error) {
+                console.error('加载产后数据失败:', error);
+            }
+        }
+        
+        // 渲染运动列表
+        function renderExercises(stage) {
+            const exercises = exerciseData[stage] || [];
+            const container = document.getElementById('exerciseList');
+            
+            if (exercises.length === 0) {
+                container.innerHTML = '<div class="empty-state"><span>🧘</span><h3>暂无运动</h3></div>';
+                return;
+            }
+            
+            container.innerHTML = exercises.map(ex => `
+                <div class="exercise-card">
+                    <div class="exercise-thumb">
+                        <span>${getCategoryEmoji(ex.category)}</span>
+                        <span class="exercise-tag">${ex.category}</span>
+                        <span class="exercise-duration">⏱ ${ex.duration}分钟</span>
+                        ${!currentUser.isVip ? '<div class="video-lock"><span>👑</span>会员</div>' : ''}
+                    </div>
+                    <div class="exercise-info">
+                        <h4 class="exercise-name">${ex.name}</h4>
+                        <p class="exercise-desc">${ex.description}</p>
+                        <div class="exercise-meta">
+                            <span>❤️ 强度: ${ex.intensity}</span>
+                            <span>✨ ${ex.benefits[0]}</span>
+                        </div>
+                        <div class="exercise-actions">
+                            <button class="btn ${currentUser.isVip ? 'btn-primary' : 'btn-outline'}" onclick="showExerciseDetail('${ex.id}', 'pregnancy')">
+                                ${currentUser.isVip ? '开始练习' : '查看详情'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 渲染产后运动
+        function renderPostpartum(phase) {
+            const exercises = postpartumData[phase] || [];
+            const container = document.getElementById('postpartumList');
+            
+            if (exercises.length === 0) {
+                container.innerHTML = '<div class="empty-state"><span>👶</span><h3>暂无运动</h3></div>';
+                return;
+            }
+            
+            container.innerHTML = exercises.map(ex => `
+                <div class="exercise-card">
+                    <div class="exercise-thumb" style="background:linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);">
+                        <span>${getCategoryEmoji(ex.category)}</span>
+                        <span class="exercise-tag" style="background:#4CAF50;">${ex.phase}</span>
+                        <span class="exercise-duration">⏱ ${ex.duration}分钟</span>
+                        ${!currentUser.isVip ? '<div class="video-lock"><span>👑</span>会员</div>' : ''}
+                    </div>
+                    <div class="exercise-info">
+                        <h4 class="exercise-name">${ex.name}</h4>
+                        <p class="exercise-desc">${ex.description}</p>
+                        <div class="exercise-meta">
+                            <span>❤️ ${ex.category}</span>
+                            <span>✨ ${ex.benefits[0]}</span>
+                        </div>
+                        <div class="exercise-actions">
+                            <button class="btn ${currentUser.isVip ? 'btn-primary' : 'btn-outline'}" onclick="showExerciseDetail('${ex.id}', 'postpartum')">
+                                ${currentUser.isVip ? '开始练习' : '查看详情'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 筛选运动
+        function filterExercises(stage) {
+            currentUser.stage = stage;
+            renderExercises(stage);
+        }
+        
+        function filterPostpartum(phase) {
+            renderPostpartum(phase);
+        }
+        
+        // 渲染推荐
+        function renderRecommendations() {
+            const container = document.getElementById('recommendedExercises');
+            const stage = currentUser.stage;
+            const exercises = exerciseData[stage] || [];
+            const recommended = exercises.slice(0, 2);
+            
+            if (recommended.length === 0) {
+                container.innerHTML = '<p style="color:#999;text-align:center;">暂无推荐</p>';
+                return;
+            }
+            
+            container.innerHTML = recommended.map(ex => `
+                <div class="exercise-card" style="margin-bottom:12px;">
+                    <div style="display:flex;gap:12px;padding:15px;align-items:center;">
+                        <div style="width:60px;height:60px;background:linear-gradient(135deg,#FCE4EC,#E1BEE7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">
+                            ${getCategoryEmoji(ex.category)}
+                        </div>
+                        <div style="flex:1;">
+                            <h4 style="font-size:14px;margin-bottom:4px;">${ex.name}</h4>
+                            <p style="font-size:12px;color:#666;">${ex.duration}分钟 · ${ex.intensity}强度</p>
+                        </div>
+                        <button class="btn btn-primary" style="padding:8px 15px;font-size:12px;" onclick="startExercise('${ex.id}')">
+                            开始
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 获取分类emoji
+        function getCategoryEmoji(category) {
+            const map = {
+                '瑜伽': '🧘‍♀️',
+                '有氧': '🚶‍♀️',
+                '力量': '💪',
+                '放松': '😌',
+                '舒展': '🌸',
+                '呼吸': '🌬️',
+                '待产准备': '🤱',
+                '凯格尔': '🎯'
+            };
+            return map[category] || '🏃‍♀️';
+        }
+        
+        // 显示运动详情
+        async function showExerciseDetail(id, type) {
+            const modal = document.getElementById('exerciseModal');
+            const body = document.getElementById('modalBody');
+            
+            try {
+                const response = await fetch(`${API_BASE}/exercises/${id}`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    const ex = result.data;
+                    document.getElementById('modalTitle').textContent = ex.name;
+                    
+                    body.innerHTML = `
+                        <div class="video-placeholder" style="margin-bottom:20px;">
+                            <div class="play-btn">▶</div>
+                            ${!currentUser.isVip ? '<div class="video-lock"><span>👑</span>开通会员观看</div>' : ''}
+                        </div>
+                        
+                        <div style="display:flex;gap:10px;margin-bottom:20px;">
+                            <span style="background:#FCE4EC;color:#E91E63;padding:6px 12px;border-radius:20px;font-size:12px;">
+                                ⏱ ${ex.duration}分钟
+                            </span>
+                            <span style="background:#E8F5E9;color:#4CAF50;padding:6px 12px;border-radius:20px;font-size:12px;">
+                                ❤️ ${ex.intensity}强度
+                            </span>
+                            <span style="background:#FFF3E0;color:#FF9800;padding:6px 12px;border-radius:20px;font-size:12px;">
+                                🏷️ ${ex.category}
+                            </span>
+                        </div>
+                        
+                        <h4 style="font-size:14px;margin-bottom:10px;">📝 运动描述</h4>
+                        <p style="font-size:14px;color:#666;line-height:1.7;margin-bottom:20px;">${ex.description}</p>
+                        
+                        <h4 style="font-size:14px;margin-bottom:10px;">✨ 运动益处</h4>
+                        <div style="margin-bottom:20px;">
+                            ${ex.benefits.map(b => `<span style="display:inline-block;background:#f5f5f5;padding:6px 12px;border-radius:8px;font-size:13px;margin:4px;">${b}</span>`).join('')}
+                        </div>
+                        
+                        <h4 style="font-size:14px;margin-bottom:10px;">⚠️ 注意事项</h4>
+                        <div style="background:#FFF3E0;padding:15px;border-radius:12px;margin-bottom:20px;">
+                            ${ex.precautions.map(p => `<p style="font-size:13px;margin-bottom:8px;">• ${p}</p>`).join('')}
+                        </div>
+                        
+                        <button class="btn btn-primary" style="width:100%;" onclick="startExercise('${id}')">
+                            ${currentUser.isVip ? '🎬 开始跟练' : '👑 开通会员解锁完整视频'}
+                        </button>
+                    `;
+                    
+                    modal.classList.add('active');
+                }
+            } catch (error) {
+                console.error('获取运动详情失败:', error);
+            }
+        }
+        
+        // 开始运动
+        function startExercise(id) {
+            if (!currentUser.isVip) {
+                showMembership();
+                return;
+            }
+            
+            // 查找运动信息
+            let exercise = null;
+            for (const stage in exerciseData) {
+                const found = exerciseData[stage].find(e => e.id === id);
+                if (found) {
+                    exercise = found;
+                    break;
+                }
+            }
+            
+            if (!exercise) {
+                for (const phase in postpartumData) {
+                    const found = postpartumData[phase].find(e => e.id === id);
+                    if (found) {
+                        exercise = found;
+                        break;
+                    }
+                }
+            }
+            
+            if (exercise) {
+                // 记录运动
+                logExercise(exercise);
+                
+                // 模拟播放（实际应跳转到视频页面）
+                document.getElementById('modalBody').innerHTML = `
+                    <div style="text-align:center;padding:40px 0;">
+                        <div style="font-size:60px;margin-bottom:20px;">🎬</div>
+                        <h3 style="margin-bottom:10px;">${exercise.name}</h3>
+                        <p style="color:#666;margin-bottom:20px;">正在播放练习视频...</p>
+                        <div style="background:#f5f5f5;height:8px;border-radius:4px;margin-bottom:10px;">
+                            <div style="background:#E91E63;height:100%;border-radius:4px;width:30%;animation:progress 30s linear forwards;"></div>
+                        </div>
+                        <p style="font-size:12px;color:#999;">${exercise.duration}:00 / ${exercise.duration}:00</p>
+                    </div>
+                    <style>
+                        @keyframes progress {
+                            to { width: 100%; }
+                        }
+                    </style>
+                `;
+                
+                // 3秒后自动关闭
+                setTimeout(() => {
+                    closeModal();
+                }, 3000);
+            }
+        }
+        
+        // 记录运动
+        async function logExercise(exercise) {
+            const record = {
+                user_id: currentUser.id,
+                exercise_id: exercise.id,
+                exercise_name: exercise.name,
+                duration: exercise.duration,
+                intensity: exercise.intensity
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/records/log`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(record)
+                });
+                
+                const result = await response.json();
+                if (result.code === 200) {
+                    currentUser.streak = result.streak;
+                    updateStats();
+                    loadUserRecords();
+                }
+            } catch (error) {
+                console.error('记录运动失败:', error);
+            }
+        }
+        
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('exerciseModal').classList.remove('active');
+        }
+        
+        // 打卡
+        async function doCheckin() {
+            if (isCheckedIn) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/checkin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUser.id })
+                });
+                
+                const result = await response.json();
+                if (result.code === 200) {
+                    isCheckedIn = true;
+                    const btn = document.getElementById('checkinBtn');
+                    btn.classList.remove('pulse');
+                    btn.classList.add('checked');
+                    btn.textContent = '✓';
+                    
+                    document.getElementById('checkinStatus').textContent = '今日已完成打卡！';
+                    document.getElementById('streakDays').textContent = result.data.streak;
+                    
+                    if (result.data.badge) {
+                        alert(`🎉 恭喜获得：${result.data.badge}`);
+                    }
+                }
+            } catch (error) {
+                console.error('打卡失败:', error);
+            }
+        }
+        
+        // 加载运动记录
+        async function loadUserRecords() {
+            try {
+                const response = await fetch(`${API_BASE}/records?user_id=${currentUser.id}&days=30`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    userRecords = result.data.records;
+                    renderRecords(result.data);
+                }
+            } catch (error) {
+                console.error('加载记录失败:', error);
+            }
+        }
+        
+        // 渲染记录
+        function renderRecords(data) {
+            const stats = data.stats;
+            document.getElementById('statTotalWorkouts').textContent = stats.total_workouts;
+            document.getElementById('statTotalMinutes').textContent = stats.total_minutes;
+            document.getElementById('statAvgDuration').textContent = stats.avg_duration;
+            document.getElementById('statFavorite').textContent = stats.favorite_exercise ? '🏃' : '-';
+            document.getElementById('statProgress').textContent = stats.weekly_goal_progress + '%';
+            document.getElementById('progressBar').style.width = stats.weekly_goal_progress + '%';
+            
+            document.getElementById('totalWorkouts').textContent = stats.total_workouts;
+            document.getElementById('totalMinutes').textContent = stats.total_minutes;
+            document.getElementById('currentStreak').textContent = data.records.length > 0 ? Math.min(data.records.length, 30) : 0;
+            
+            const container = document.getElementById('recordList');
+            document.getElementById('recordCount').textContent = data.records.length + '条';
+            
+            if (data.records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span>📝</span>
+                        <h3>暂无运动记录</h3>
+                        <p>开始您的第一次运动吧！</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = data.records.slice(0, 10).map(r => `
+                <div class="record-item">
+                    <div class="record-icon">🏃</div>
+                    <div class="record-content">
+                        <div class="record-title">${r.exercise_name}</div>
+                        <div class="record-time">${r.date} · ${r.feeling === 'good' ? '感觉很好 😊' : '完成打卡'}</div>
+                    </div>
+                    <div class="record-duration">${r.duration}分钟</div>
+                </div>
+            `).join('');
+        }
+        
+        // 更新统计
+        function updateStats() {
+            document.getElementById('totalWorkouts').textContent = userRecords.length;
+            const totalMins = userRecords.reduce((sum, r) => sum + (r.duration || 0), 0);
+            document.getElementById('totalMinutes').textContent = totalMins;
+            document.getElementById('currentStreak').textContent = Math.min(userRecords.length, 30);
+        }
+        
+        // 加载FAQ
+        async function loadFAQ() {
+            try {
+                const response = await fetch(`${API_BASE}/faq`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    const container = document.getElementById('faqBody');
+                    container.innerHTML = result.data.map((item, i) => `
+                        <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #f0f0f0;">
+                            <h4 style="font-size:14px;margin-bottom:10px;color:#E91E63;">Q${i+1}: ${item.question}</h4>
+                            <p style="font-size:14px;color:#666;line-height:1.7;">${item.answer}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('加载FAQ失败:', error);
+            }
+        }
+        
+        // 显示FAQ
+        function showFAQ() {
+            document.getElementById('faqModal').classList.add('active');
+        }
+        
+        function closeFAQ() {
+            document.getElementById('faqModal').classList.remove('active');
+        }
+        
+        // 显示会员
+        function showMembership() {
+            document.getElementById('membershipModal').classList.add('active');
+        }
+        
+        function closeMembership() {
+            document.getElementById('membershipModal').classList.remove('active');
+        }
+        
+        // 订阅会员（模拟）
+        function subscribe() {
+            // 模拟支付流程
+            if (confirm('确认支付 ¥18 开通月卡会员？')) {
+                currentUser.isVip = true;
+                document.getElementById('memberBadge').classList.add('vip');
+                document.getElementById('memberText').textContent = '月卡会员';
+                document.getElementById('vipCard').innerHTML = `
+                    <div class="vip-header">
+                        <div>
+                            <div class="vip-title">🌟 月卡会员</div>
+                            <div style="font-size:12px;opacity:0.8;margin-top:4px;">已开通 · 剩余30天</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="color:#4CAF50;font-size:24px;">✓</span>
+                        </div>
+                    </div>
+                    <ul class="vip-features">
+                        <li>全部孕期运动视频 ✓</li>
+                        <li>产后恢复完整课程 ✓</li>
+                        <li>个性化运动方案 ✓</li>
+                        <li>专家答疑服务 ✓</li>
+                    </ul>
+                `;
+                closeMembership();
+                alert('🎉 恭喜！会员开通成功！');
+                
+                // 刷新当前页面内容
+                renderExercises(currentUser.stage);
+                renderPostpartum('mid_recovery');
+            }
+        }
+        
+        // 更新用户信息
+        async function updateProfile() {
+            const dueDate = document.getElementById('dueDate').value;
+            const currentWeek = document.getElementById('currentWeek').value;
+            const fitnessLevel = document.getElementById('fitnessLevel').value;
+            
+            if (currentWeek) {
+                currentUser.currentWeek = parseInt(currentWeek);
+                if (currentWeek <= 12) {
+                    currentUser.stage = 'first_trimester';
+                    document.getElementById('userStage').textContent = '孕早期妈妈';
+                    document.getElementById('userWeek').textContent = `第${currentWeek}周 · 安心养胎`;
+                } else if (currentWeek <= 27) {
+                    currentUser.stage = 'second_trimester';
+                    document.getElementById('userStage').textContent = '孕中期妈妈';
+                    document.getElementById('userWeek').textContent = `第${currentWeek}周 · 运动黄金期`;
+                } else {
+                    currentUser.stage = 'third_trimester';
+                    document.getElementById('userStage').textContent = '孕晚期妈妈';
+                    document.getElementById('userWeek').textContent = `第${currentWeek}周 · 加油待产`;
+                }
+            }
+            
+            try {
+                await fetch(`${API_BASE}/user/profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        due_date: dueDate,
+                        current_week: currentUser.currentWeek,
+                        fitness_level: fitnessLevel
+                    })
+                });
+                
+                // 更新推荐和运动列表
+                renderRecommendations();
+                renderExercises(currentUser.stage);
+                
+                alert('✅ 设置已保存！');
+            } catch (error) {
+                console.error('保存失败:', error);
+            }
+        }
+        
+        // 点击弹窗背景关闭
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

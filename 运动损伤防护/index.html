@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>运动损伤防护 - 专业运动保护助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10B981;
+            --primary-dark: #059669;
+            --secondary: #3B82F6;
+            --accent: #F59E0B;
+            --danger: #EF4444;
+            --bg-light: #F9FAFB;
+            --bg-card: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .vip-badge {
+            background: var(--accent);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* Tab导航 */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.15);
+            padding: 4px;
+            border-radius: 12px;
+            margin-top: 12px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            flex: 1;
+            min-width: max-content;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            background: transparent;
+            color: rgba(255,255,255,0.8);
+            border: none;
+        }
+
+        .tab-item.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        /* Banner轮播 */
+        .banner {
+            background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+            border-radius: 16px;
+            padding: 24px 20px;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .banner h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .banner p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .banner-cta {
+            margin-top: 12px;
+            display: inline-block;
+            background: white;
+            color: #667EEA;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* 快捷入口 */
+        .quick-entry {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .entry-item {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+        }
+
+        .entry-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .entry-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 20px;
+        }
+
+        .entry-item:nth-child(1) .entry-icon { background: #FEF3C7; }
+        .entry-item:nth-child(2) .entry-icon { background: #DBEAFE; }
+        .entry-item:nth-child(3) .entry-icon { background: #FEE2E2; }
+        .entry-item:nth-child(4) .entry-icon { background: #D1FAE5; }
+
+        .entry-title {
+            font-size: 12px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* 卡片样式 */
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title .more {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: normal;
+        }
+
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateX(4px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-tag {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .tag-category {
+            background: #E0E7FF;
+            color: #4F46E5;
+        }
+
+        .tag-severity {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .tag-easy {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .tag-medium {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .tag-hard {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .card-content {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 详情弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-section h4 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .detail-section p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .tips-list {
+            list-style: none;
+        }
+
+        .tips-list li {
+            padding: 10px 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .tips-list li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .step-list {
+            counter-reset: step;
+        }
+
+        .step-item {
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            counter-increment: step;
+        }
+
+        .step-item::before {
+            content: counter(step);
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-detail {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-left: 34px;
+        }
+
+        .warning-box {
+            background: #FEF2F2;
+            border-left: 4px solid var(--danger);
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            color: #B91C1C;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 11px;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 2px;
+        }
+
+        /* VIP弹窗 */
+        .vip-banner {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .vip-banner h3 {
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .vip-banner p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .vip-btn {
+            margin-top: 10px;
+            background: white;
+            color: #D97706;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 会员权益卡片 */
+        .membership-card {
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .membership-card.recommended {
+            border-color: var(--accent);
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: -10px;
+            right: 16px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .membership-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .membership-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .membership-price span {
+            font-size: 13px;
+            font-weight: normal;
+            color: var(--text-secondary);
+        }
+
+        .membership-features {
+            list-style: none;
+            margin-top: 16px;
+        }
+
+        .membership-features li {
+            padding: 8px 0;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .membership-features li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .subscribe-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        .subscribe-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .subscribe-btn.secondary {
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        /* 动作步骤 */
+        .exercise-steps {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .exercise-step {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .exercise-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 隐藏内容区 */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* 康复训练卡片 */
+        .rehab-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 12px;
+        }
+
+        .rehab-header {
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .rehab-header h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .rehab-header .meta {
+            font-size: 12px;
+            opacity: 0.9;
+            display: flex;
+            gap: 12px;
+        }
+
+        .rehab-body {
+            padding: 16px;
+        }
+
+        .rehab-exercise {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rehab-exercise:last-child {
+            border-bottom: none;
+        }
+
+        .rehab-exercise h4 {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .rehab-exercise .info {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .rehab-exercise p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .premium-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent) 0%, #F59E0B 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* 运动建议 */
+        .advice-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .advice-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: 1px solid var(--border);
+            background: white;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .advice-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .advice-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .advice-content h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .advice-list {
+            list-style: none;
+        }
+
+        .advice-list li {
+            padding: 10px 0;
+            font-size: 13px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .advice-list li:last-child {
+            border-bottom: none;
+        }
+
+        .advice-list li::before {
+            content: '●';
+            color: var(--primary);
+            font-size: 6px;
+            margin-top: 6px;
+        }
+
+        .advice-frequency {
+            background: var(--bg-light);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .advice-frequency::before {
+            content: '📅';
+        }
+
+        /* 动画 */
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span class="logo-icon">🏥</span>
+                <span>运动损伤防护</span>
+            </div>
+            <div class="user-info">
+                <span class="vip-badge" id="vipBadge">免费版</span>
+            </div>
+        </div>
+        <div class="header-subtitle">专业运动保护，让伤害远离你</div>
+        <nav class="tab-nav" id="mainNav">
+            <button class="tab-item active" data-tab="home">首页</button>
+            <button class="tab-item" data-tab="prevention">预防</button>
+            <button class="tab-item" data-tab="warmup">热身</button>
+            <button class="tab-item" data-tab="firstaid">急救</button>
+            <button class="tab-item" data-tab="rehab">康复</button>
+            <button class="tab-item" data-tab="advice">建议</button>
+            <button class="tab-item" data-tab="vip">会员</button>
+        </nav>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <section id="home" class="content-section active">
+            <div class="banner fade-in">
+                <h2>⚡ 运动安全，从预防开始</h2>
+                <p>专业运动损伤知识，守护你的每一次训练</p>
+                <span class="banner-cta" onclick="switchTab('prevention')">立即了解 →</span>
+            </div>
+
+            <div class="vip-banner fade-in">
+                <h3>🌟 开通会员，解锁全部功能</h3>
+                <p>仅需¥15/月，获取完整康复计划和专业指导</p>
+                <button class="vip-btn" onclick="switchTab('vip')">立即开通</button>
+            </div>
+
+            <div class="quick-entry">
+                <button class="entry-item" onclick="switchTab('prevention')">
+                    <div class="entry-icon">🛡️</div>
+                    <div class="entry-title">损伤预防</div>
+                </button>
+                <button class="entry-item" onclick="switchTab('warmup')">
+                    <div class="entry-icon">🔥</div>
+                    <div class="entry-title">热身动作</div>
+                </button>
+                <button class="entry-item" onclick="switchTab('firstaid')">
+                    <div class="entry-icon">🚑</div>
+                    <div class="entry-title">急救指南</div>
+                </button>
+                <button class="entry-item" onclick="switchTab('rehab')">
+                    <div class="entry-icon">💪</div>
+                    <div class="entry-title">康复训练</div>
+                </button>
+            </div>
+
+            <div class="section-title">
+                <span>📚 最新预防知识</span>
+                <span class="more" onclick="switchTab('prevention')">更多 ></span>
+            </div>
+            <div class="card-list" id="homePrevention"></div>
+        </section>
+
+        <!-- 损伤预防 -->
+        <section id="prevention" class="content-section">
+            <div class="section-title">🛡️ 损伤预防知识</div>
+            <div class="card-list" id="preventionList"></div>
+        </section>
+
+        <!-- 热身动作 -->
+        <section id="warmup" class="content-section">
+            <div class="section-title">🔥 热身动作库</div>
+            <div class="card-list" id="warmupList"></div>
+        </section>
+
+        <!-- 急救指南 -->
+        <section id="firstaid" class="content-section">
+            <div class="section-title">🚑 损伤急救指南</div>
+            <div class="card-list" id="firstaidList"></div>
+        </section>
+
+        <!-- 康复训练 -->
+        <section id="rehab" class="content-section">
+            <div class="section-title">💪 康复训练课程</div>
+            <div id="rehabList"></div>
+        </section>
+
+        <!-- 运动建议 -->
+        <section id="advice" class="content-section">
+            <div class="section-title">💡 运动建议</div>
+            <div class="advice-tabs" id="adviceTabs"></div>
+            <div class="advice-content" id="adviceContent"></div>
+        </section>
+
+        <!-- 会员中心 -->
+        <section id="vip" class="content-section">
+            <div class="section-title">🌟 开通会员</div>
+            <div class="vip-banner fade-in">
+                <h3>解锁全部高级功能</h3>
+                <p>完整知识库 + 个性化康复计划 + 专属客服</p>
+            </div>
+            <div id="membershipList"></div>
+        </section>
+    </main>
+
+    <!-- 详情弹窗 -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">详情</span>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-tab="home">
+            <span class="nav-icon">🏠</span>
+            <span>首页</span>
+        </button>
+        <button class="nav-item" data-tab="prevention">
+            <span class="nav-icon">🛡️</span>
+            <span>预防</span>
+        </button>
+        <button class="nav-item" data-tab="warmup">
+            <span class="nav-icon">🔥</span>
+            <span>热身</span>
+        </button>
+        <button class="nav-item" data-tab="firstaid">
+            <span class="nav-icon">🚑</span>
+            <span>急救</span>
+        </button>
+        <button class="nav-item" data-tab="rehab">
+            <span class="nav-icon">💪</span>
+            <span>康复</span>
+        </button>
+    </nav>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // 当前会员状态
+        let isVip = false;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            loadHomeData();
+        });
+
+        // 初始化导航
+        function initNavigation() {
+            // 顶部Tab导航
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.dataset.tab;
+                    switchTab(tabId);
+                });
+            });
+
+            // 底部导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const tabId = item.dataset.tab;
+                    
+                    // 更新底部导航状态
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // 切换内容区
+                    switchTab(tabId);
+                });
+            });
+        }
+
+        // 切换Tab
+        function switchTab(tabId) {
+            // 隐藏所有内容区
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // 显示目标内容区
+            const targetSection = document.getElementById(tabId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // 更新顶部导航状态
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tab === tabId) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // 加载对应数据
+            switch (tabId) {
+                case 'home':
+                    loadHomeData();
+                    break;
+                case 'prevention':
+                    loadPreventionData();
+                    break;
+                case 'warmup':
+                    loadWarmupData();
+                    break;
+                case 'firstaid':
+                    loadFirstaidData();
+                    break;
+                case 'rehab':
+                    loadRehabData();
+                    break;
+                case 'advice':
+                    loadAdviceData();
+                    break;
+                case 'vip':
+                    loadMembershipData();
+                    break;
+            }
+        }
+
+        // 加载首页数据
+        async function loadHomeData() {
+            const container = document.getElementById('homePrevention');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/prevention`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    const items = result.data.slice(0, 3);
+                    container.innerHTML = items.map(item => createCard(item, 'prevention')).join('');
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">🔄</div><p>数据加载失败，请确保后端服务已启动</p></div>';
+            }
+        }
+
+        // 加载预防知识
+        async function loadPreventionData() {
+            const container = document.getElementById('preventionList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/prevention`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    container.innerHTML = result.data.map(item => createCard(item, 'prevention')).join('');
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">🔄</div><p>数据加载失败</p></div>';
+            }
+        }
+
+        // 加载热身动作
+        async function loadWarmupData() {
+            const container = document.getElementById('warmupList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/warmup`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    container.innerHTML = result.data.map(item => createWarmupCard(item)).join('');
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">🔄</div><p>数据加载失败</p></div>';
+            }
+        }
+
+        // 加载急救指南
+        async function loadFirstaidData() {
+            const container = document.getElementById('firstaidList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/firstaid`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    container.innerHTML = result.data.map(item => createFirstaidCard(item)).join('');
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">🔄</div><p>数据加载失败</p></div>';
+            }
+        }
+
+        // 加载康复训练
+        async function loadRehabData() {
+            const container = document.getElementById('rehabList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/rehabilitation`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    container.innerHTML = result.data.map(item => createRehabCard(item)).join('');
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">🔄</div><p>数据加载失败</p></div>';
+            }
+        }
+
+        // 加载运动建议
+        async function loadAdviceData() {
+            const tabsContainer = document.getElementById('adviceTabs');
+            const contentContainer = document.getElementById('adviceContent');
+            
+            tabsContainer.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            contentContainer.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_BASE}/advice?sport=all`);
+                const result = await response.json();
+                
+                if (result.code === 200 && result.data.length > 0) {
+                    const sports = result.data;
+                    const sportIcons = {
+                        '跑步运动建议': { icon: '🏃', id: 'running' },
+                        '健身房训练建议': { icon: '🏋️', id: 'gym' },
+                        '游泳运动建议': { icon: '🏊', id: 'swimming' },
+                        '篮球运动建议': { icon: '🏀', id: 'basketball' },
+                        '瑜伽练习建议': { icon: '🧘', id: 'yoga' }
+                    };
+
+                    // 渲染Tab
+                    tabsContainer.innerHTML = sports.map((sport, index) => {
+                        const info = sportIcons[sport.title] || { icon: '●', id: 'sport' + index };
+                        return `<button class="advice-tab ${index === 0 ? 'active' : ''}" data-sport="${info.id}">${info.icon} ${sport.title.replace('运动建议', '').replace('练习建议', '')}</button>`;
+                    }).join('');
+
+                    // Tab点击事件
+                    tabsContainer.querySelectorAll('.advice-tab').forEach(tab => {
+                        tab.addEventListener('click', () => {
+                            tabsContainer.querySelectorAll('.advice-tab').forEach(t => t.classList.remove('active'));
+                            tab.classList.add('active');
+                            renderAdviceContent(tab.dataset.sport, sports);
+                        });
+                    });
+
+                    // 渲染第一个内容
+                    const firstSport = sports[0];
+                    const firstId = sportIcons[firstSport.title]?.id || 'sport0';
+                    renderAdviceContent(firstId, sports);
+                }
+            } catch (error) {
+                tabsContainer.innerHTML = '<div class="empty-state"><div class="icon">🔄</div><p>数据加载失败</p></div>';
+            }
+        }
+
+        // 渲染运动建议内容
+        function renderAdviceContent(sportId, sports) {
+            const contentContainer = document.getElementById('adviceContent');
+            const sportData = sports.find(s => {
+                const icons = {
+                    'running': '跑步运动建议',
+                    'gym': '健身房训练建议',
+                    'swimming': '游泳运动建议',
+                    'basketball': '篮球运动建议',
+                    'yoga': '瑜伽练习建议'
+                };
+                return s.title === icons[sportId];
+            });
+
+            if (sportData) {
+                contentContainer.innerHTML = `
+                    <h3>${sportData.title}</h3>
+                    <ul class="advice-list">
+                        ${sportData.tips.map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                    <div class="advice-frequency">推荐频率：${sportData.frequency}</div>
+                `;
+            }
+        }
+
+        // 加载会员信息
+        async function loadMembershipData() {
+            const container = document.getElementById('membershipList');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/membership`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    container.innerHTML = Object.values(result.data).map((plan, index) => `
+                        <div class="membership-card ${index === 1 ? 'recommended' : ''}">
+                            ${index === 1 ? '<span class="recommended-badge">推荐</span>' : ''}
+                            <div class="membership-title">${plan.name}</div>
+                            <div class="membership-price">
+                                ${plan.price === 0 ? '免费' : `¥${plan.price}`}
+                                ${plan.duration ? `<span>/${plan.duration}</span>` : ''}
+                            </div>
+                            <ul class="membership-features">
+                                ${plan.features.map(f => `<li>${f}</li>`).join('')}
+                            </ul>
+                            <button class="subscribe-btn ${plan.price === 0 ? 'secondary' : 'primary'}" 
+                                    onclick="${plan.price > 0 ? `subscribe('monthly')` : 'alert(\"您已是免费用户\")'}">
+                                ${plan.price === 0 ? '当前方案' : '立即开通'}
+                            </button>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">🔄</div><p>数据加载失败</p></div>';
+            }
+        }
+
+        // 创建预防知识卡片
+        function createCard(item, type) {
+            return `
+                <div class="card" onclick="showPreventionDetail(${item.id})">
+                    <div class="card-header">
+                        <div class="card-title">${item.title}</div>
+                        <span class="card-tag tag-category">${item.category}</span>
+                    </div>
+                    <div class="card-content">${item.content.substring(0, 80)}...</div>
+                    <div class="card-meta">
+                        <span>📖 ${item.tips.length}个预防要点</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建热身动作卡片
+        function createWarmupCard(item) {
+            const difficultyClass = item.difficulty === '简单' ? 'tag-easy' : 
+                                   item.difficulty === '中等' ? 'tag-medium' : 'tag-hard';
+            return `
+                <div class="card" onclick="showWarmupDetail(${item.id})">
+                    <div class="card-header">
+                        <div class="card-title">${item.name}</div>
+                        <span class="card-tag ${difficultyClass}">${item.difficulty}</span>
+                    </div>
+                    <div class="card-content">${item.description.substring(0, 60)}...</div>
+                    <div class="card-meta">
+                        <span>⏱️ ${item.duration}</span>
+                        <span>🎯 ${item.target}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建急救指南卡片
+        function createFirstaidCard(item) {
+            return `
+                <div class="card" onclick="showFirstaidDetail(${item.id})">
+                    <div class="card-header">
+                        <div class="card-title">${item.title}</div>
+                        <span class="card-tag tag-severity">${item.severity}</span>
+                    </div>
+                    <div class="card-content">${item.content}</div>
+                    <div class="card-meta">
+                        <span>📋 ${item.steps.length}个步骤</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 创建康复训练卡片
+        function createRehabCard(item) {
+            return `
+                <div class="rehab-card">
+                    <div class="rehab-header">
+                        <h3>${item.name} ${item.is_premium ? '<span class="premium-tag">会员专享</span>' : ''}</h3>
+                        <div class="meta">
+                            <span>🏥 ${item.injury}</span>
+                            <span>📅 ${item.phase}期</span>
+                        </div>
+                    </div>
+                    <div class="rehab-body">
+                        <div class="rehab-exercise">
+                            <h4>训练周期</h4>
+                            <p>建议训练时长：${item.duration}</p>
+                        </div>
+                        <div class="rehab-exercise">
+                            <h4>包含训练动作</h4>
+                            ${item.exercises.map((ex, i) => `
+                                <div style="margin-top: 8px;">
+                                    <div class="info">${i + 1}. ${ex.name} | ${ex.duration} | ${ex.frequency}</div>
+                                    <p>${ex.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${item.note ? `<div class="warning-box" style="margin-top: 12px;">⚠️ ${item.note}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 显示预防知识详情
+        async function showPreventionDetail(id) {
+            try {
+                const response = await fetch(`${API_BASE}/prevention/${id}`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    const item = result.data;
+                    document.getElementById('modalTitle').textContent = item.title;
+                    document.getElementById('modalBody').innerHTML = `
+                        <div class="detail-section">
+                            <span class="card-tag tag-category">${item.category}</span>
+                        </div>
+                        <div class="detail-section">
+                            <h4>📖 详细说明</h4>
+                            <p>${item.content}</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>💡 预防要点</h4>
+                            <ul class="tips-list">
+                                ${item.tips.map(tip => `<li>${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    openModal();
+                }
+            } catch (error) {
+                alert('加载详情失败');
+            }
+        }
+
+        // 显示热身动作详情
+        async function showWarmupDetail(id) {
+            try {
+                const response = await fetch(`${API_BASE}/warmup`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    const item = result.data.find(x => x.id === id);
+                    if (item) {
+                        const difficultyClass = item.difficulty === '简单' ? 'tag-easy' : 
+                                               item.difficulty === '中等' ? 'tag-medium' : 'tag-hard';
+                        document.getElementById('modalTitle').textContent = item.name;
+                        document.getElementById('modalBody').innerHTML = `
+                            <div class="detail-section">
+                                <span class="card-tag ${difficultyClass}">${item.difficulty}</span>
+                                <span style="margin-left: 8px;">⏱️ ${item.duration}</span>
+                                <span style="margin-left: 8px;">🎯 ${item.target}</span>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📝 动作描述</h4>
+                                <p>${item.description}</p>
+                            </div>
+                            <div class="detail-section">
+                                <h4>📋 动作步骤</h4>
+                                <div class="exercise-steps">
+                                    ${item.steps.map((step, i) => `
+                                        <div class="exercise-step">
+                                            <span class="step-num">${i + 1}</span>
+                                            <span class="step-text">${step}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                        openModal();
+                    }
+                }
+            } catch (error) {
+                alert('加载详情失败');
+            }
+        }
+
+        // 显示急救指南详情
+        async function showFirstaidDetail(id) {
+            try {
+                const response = await fetch(`${API_BASE}/firstaid/${id}`);
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    const item = result.data;
+                    document.getElementById('modalTitle').textContent = item.title;
+                    document.getElementById('modalBody').innerHTML = `
+                        <div class="detail-section">
+                            <span class="card-tag tag-severity">${item.severity}</span>
+                        </div>
+                        <div class="detail-section">
+                            <h4>📖 概述</h4>
+                            <p>${item.content}</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>📋 急救步骤</h4>
+                            <div class="step-list">
+                                ${item.steps.map(step => `
+                                    <div class="step-item">
+                                        <span class="step-title">${step.step}</span>
+                                        <p class="step-detail">${step.detail}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="warning-box">
+                            ⚠️ ${item.warning}
+                        </div>
+                    `;
+                    openModal();
+                }
+            } catch (error) {
+                alert('加载详情失败');
+            }
+        }
+
+        // 打开弹窗
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭弹窗
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('modalOverlay')) {
+                document.getElementById('modalOverlay').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // 订阅会员（模拟）
+        async function subscribe(plan) {
+            if (!confirm('确定要开通月度会员吗？\n\n会员权益：\n- 完整损伤预防知识库\n- 全部热身动作\n- 个性化康复计划\n- 无广告体验\n\n价格：¥15/月')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/subscribe`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ plan })
+                });
+                const result = await response.json();
+                
+                if (result.code === 200) {
+                    isVip = true;
+                    document.getElementById('vipBadge').textContent = '月度会员';
+                    alert('恭喜！会员开通成功！\n\n订单号：' + result.data.order_id + '\n有效期至：' + result.data.expires_at);
+                    loadMembershipData();
+                }
+            } catch (error) {
+                alert('开通失败，请稍后重试');
+            }
+        }
+    </script>
+</body>
+</html>

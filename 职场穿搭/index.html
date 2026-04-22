@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职场穿搭 - 你的专属穿搭顾问</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --gold: #f0a500;
+            --text: #333;
+            --text-light: #666;
+            --bg: #f8f9fa;
+            --white: #fff;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 70px;
+        }
+
+        /* 头部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .vip-btn {
+            background: linear-gradient(135deg, var(--gold), #ffcc00);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        .vip-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* 每日推荐 */
+        .daily-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--white);
+            padding: 24px;
+            margin: 16px 0;
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .daily-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .daily-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .daily-outfit {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .daily-img {
+            width: 100px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .daily-info {
+            flex: 1;
+        }
+
+        .daily-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .daily-tip {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* 场景选择 */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 24px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scenes-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .scene-card {
+            background: var(--white);
+            padding: 14px 8px;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+        }
+
+        .scene-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .scene-card.active {
+            border-color: var(--accent);
+            background: #fff5f7;
+        }
+
+        .scene-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .scene-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* 穿搭推荐 */
+        .outfits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .outfit-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .outfit-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .outfit-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .outfit-content {
+            padding: 12px;
+        }
+
+        .outfit-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .outfit-desc {
+            font-size: 12px;
+            color: var(--text-light);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .outfit-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .outfit-tag {
+            background: #f0f0f5;
+            color: var(--text-light);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        .outfit-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--gold);
+        }
+
+        /* 单品推荐 */
+        .items-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 8px 0 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .items-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .item-card {
+            flex-shrink: 0;
+            width: 140px;
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        .item-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .item-content {
+            padding: 10px;
+        }
+
+        .item-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .item-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .item-shop {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* 社区 */
+        .post-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-user {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .post-images {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+        }
+
+        .post-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .post-tag {
+            background: #f0f0f5;
+            color: #667eea;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 24px;
+            border-top: 1px solid #f0f0f5;
+            padding-top: 12px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .post-action:hover {
+            color: var(--accent);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 6px 16px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: #f5f5f5;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .nav-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 100%;
+            max-width: 600px;
+            max-height: 85vh;
+            border-radius: 20px 20px 0 0;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 穿搭详情 */
+        .detail-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+
+        .detail-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 16px 0 8px;
+        }
+
+        .detail-scene {
+            display: inline-block;
+            background: #667eea;
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        .detail-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+        }
+
+        .detail-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .detail-item {
+            background: #f5f5f5;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .detail-tags {
+            display: flex;
+            gap: 8px;
+        }
+
+        .detail-tag {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: var(--white);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+
+        /* VIP弹窗 */
+        .vip-modal .modal-content {
+            background: linear-gradient(180deg, #1a1a2e 0%, #2d2d44 100%);
+            color: var(--white);
+        }
+
+        .vip-header {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .vip-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        .vip-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .vip-price {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .vip-price span {
+            font-size: 18px;
+        }
+
+        .vip-features {
+            padding: 20px;
+        }
+
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .vip-feature:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        .vip-feature-text {
+            font-size: 14px;
+        }
+
+        .vip-buy-btn {
+            display: block;
+            width: 90%;
+            margin: 20px auto;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold), #ffcc00);
+            color: var(--primary);
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* 搜索栏 */
+        .search-bar {
+            background: var(--white);
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            background: transparent;
+        }
+
+        .search-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            color: var(--white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tab切换 */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background: var(--white);
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f0f0f5;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 页面隐藏 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">👔</div>
+                <span class="logo-text">职场穿搭</span>
+            </div>
+            <button class="vip-btn" onclick="showVipModal()">
+                💎 开通会员
+            </button>
+        </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="container">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <!-- 每日推荐 -->
+            <section class="daily-section" id="dailySection">
+                <div class="daily-label">✨ 今日推荐</div>
+                <div class="daily-title" id="dailyTitle">根据今天的日程推荐</div>
+                <div class="daily-outfit">
+                    <img class="daily-img" id="dailyImg" src="" alt="今日穿搭">
+                    <div class="daily-info">
+                        <div class="daily-name" id="dailyName"></div>
+                        <div class="daily-tip" id="dailyTip"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 场合选择 -->
+            <h3 class="section-title">🧥 场合搭配</h3>
+            <div class="scenes-grid" id="scenesGrid">
+                <!-- 动态渲染 -->
+            </div>
+
+            <!-- 穿搭推荐 -->
+            <h3 class="section-title">👗 穿搭推荐</h3>
+            <div class="outfits-grid" id="outfitsGrid">
+                <div class="loading">加载中</div>
+            </div>
+
+            <!-- 单品推荐 -->
+            <h3 class="section-title">🛍️ 单品推荐</h3>
+            <div class="tabs" id="itemTabs">
+                <button class="tab active" data-category="">全部</button>
+                <button class="tab" data-category="上装">上装</button>
+                <button class="tab" data-category="下装">下装</button>
+                <button class="tab" data-category="鞋履">鞋履</button>
+                <button class="tab" data-category="配饰">配饰</button>
+            </div>
+            <div class="items-scroll" id="itemsGrid">
+                <div class="loading">加载中</div>
+            </div>
+        </div>
+
+        <!-- 社区页 -->
+        <div id="page-community" class="page">
+            <h3 class="section-title">👥 穿搭社区</h3>
+            <div id="postsGrid">
+                <div class="loading">加载中</div>
+            </div>
+        </div>
+
+        <!-- 我的页 -->
+        <div id="page-profile" class="page">
+            <h3 class="section-title">👤 我的</h3>
+            
+            <div class="post-card" style="text-align: center; padding: 40px;">
+                <div style="font-size: 60px; margin-bottom: 16px;">👤</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">职场穿搭用户</div>
+                <div style="font-size: 13px; color: var(--text-light);">加入我们，提升职场形象</div>
+            </div>
+
+            <div class="post-card">
+                <div style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">会员状态</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 14px; color: var(--text-light);">当前版本</div>
+                        <div style="font-size: 16px; font-weight: 600;">免费版</div>
+                    </div>
+                    <button class="vip-btn" onclick="showVipModal()">
+                        💎 升级月卡 ¥12
+                    </button>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <div style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">功能说明</div>
+                <div style="font-size: 13px; color: var(--text-light); line-height: 2;">
+                    <div>✓ 穿搭推荐（每日3次）</div>
+                    <div>✓ 场合搭配</div>
+                    <div>✓ 单品推荐（基础款）</div>
+                    <div>✓ 社区浏览</div>
+                    <div style="margin-top: 12px; color: var(--gold);">🌟 解锁全部穿搭推荐</div>
+                    <div>🌟 专属购物折扣码</div>
+                    <div>🌟 无限社区浏览</div>
+                    <div>🌟 每日穿搭提醒</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">首页</span>
+        </div>
+        <div class="nav-item" data-page="community">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">社区</span>
+        </div>
+        <div class="nav-item" data-page="profile">
+            <span class="nav-icon">👤</span>
+            <span class="nav-text">我的</span>
+        </div>
+    </nav>
+
+    <!-- 穿搭详情弹窗 -->
+    <div class="modal" id="outfitModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">穿搭详情</span>
+                <span class="modal-close" onclick="closeModal('outfitModal')">✕</span>
+            </div>
+            <div class="modal-body" id="outfitDetail">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal vip-modal" id="vipModal">
+        <div class="modal-content">
+            <div class="vip-header">
+                <div class="vip-icon">💎</div>
+                <div class="vip-name">职场穿搭会员</div>
+                <div class="vip-price"><span>¥</span>12<span>/月</span></div>
+            </div>
+            <div class="vip-features">
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">解锁全部穿搭推荐（100+套搭配）</div>
+                </div>
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">获取专属购物折扣码（8折起）</div>
+                </div>
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">无限浏览社区内容</div>
+                </div>
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">每日穿搭提醒</div>
+                </div>
+                <div class="vip-feature">
+                    <div class="vip-feature-icon">✓</div>
+                    <div class="vip-feature-text">专属客服服务</div>
+                </div>
+            </div>
+            <button class="vip-buy-btn" onclick="buyVip()">
+                立即开通会员
+            </button>
+            <p style="text-align: center; font-size: 12px; color: rgba(255,255,255,0.6); padding-bottom: 20px;">
+                支付即表示同意《会员服务协议》
+            </p>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let currentScene = '';
+        let currentCategory = '';
+
+        // ==================== API请求 ====================
+        const API_BASE = '';
+
+        async function fetchAPI(url) {
+            try {
+                const res = await fetch(API_BASE + url);
+                const data = await res.json();
+                return data.code === 0 ? data.data : null;
+            } catch (e) {
+                console.error('API请求失败:', e);
+                return null;
+            }
+        }
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadDailyRecommend();
+            await loadScenes();
+            await loadOutfits();
+            await loadItems();
+            await loadPosts();
+            initNavigation();
+            initTabs();
+        });
+
+        // ==================== 每日推荐 ====================
+        async function loadDailyRecommend() {
+            const data = await fetchAPI('/api/recommend/daily');
+            if (!data) return;
+
+            document.getElementById('dailyImg').src = data.outfit.image;
+            document.getElementById('dailyName').textContent = data.outfit.name;
+            document.getElementById('dailyTip').textContent = data.tip;
+            document.getElementById('dailyTitle').textContent = `📅 ${data.scene.icon} ${data.scene.name}穿搭推荐`;
+
+            document.getElementById('dailySection').onclick = () => showOutfitDetail(data.outfit.id);
+        }
+
+        // ==================== 场合选择 ====================
+        async function loadScenes() {
+            const scenes = await fetchAPI('/api/scenes');
+            if (!scenes) return;
+
+            const grid = document.getElementById('scenesGrid');
+            grid.innerHTML = scenes.map(scene => `
+                <div class="scene-card" data-scene="${scene.id}" onclick="selectScene('${scene.id}')">
+                    <div class="scene-icon">${scene.icon}</div>
+                    <div class="scene-name">${scene.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectScene(sceneId) {
+            document.querySelectorAll('.scene-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.scene === sceneId);
+            });
+            currentScene = sceneId;
+            loadOutfits();
+        }
+
+        // ==================== 穿搭推荐 ====================
+        async function loadOutfits() {
+            const grid = document.getElementById('outfitsGrid');
+            grid.innerHTML = '<div class="loading">加载中</div>';
+
+            let url = '/api/outfits';
+            if (currentScene) url += `?scene=${currentScene}`;
+
+            const outfits = await fetchAPI(url);
+            if (!outfits || outfits.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-icon">👔</div><div>暂无相关穿搭推荐</div></div>';
+                return;
+            }
+
+            grid.innerHTML = outfits.slice(0, 6).map(outfit => `
+                <div class="outfit-card" onclick="showOutfitDetail(${outfit.id})">
+                    <img class="outfit-img" src="${outfit.image}" alt="${outfit.name}">
+                    <div class="outfit-content">
+                        <div class="outfit-name">${outfit.name}</div>
+                        <div class="outfit-desc">${outfit.description}</div>
+                        <div class="outfit-tags">
+                            ${outfit.tags.map(t => `<span class="outfit-tag">${t}</span>`).join('')}
+                        </div>
+                        <div class="outfit-rating">⭐ ${outfit.rating}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function showOutfitDetail(outfitId) {
+            const outfit = await fetchAPI(`/api/outfit/${outfitId}`);
+            if (!outfit) return;
+
+            const sceneName = {
+                'interview': '面试',
+                'daily': '日常办公',
+                'meeting': '商务会议',
+                'outing': '外出办公',
+                'party': '公司团建'
+            }[outfit.scene] || outfit.scene;
+
+            document.getElementById('outfitDetail').innerHTML = `
+                <img class="detail-img" src="${outfit.image}" alt="${outfit.name}">
+                <div class="detail-name">${outfit.name}</div>
+                <span class="detail-scene">${sceneName}</span>
+                <div class="detail-desc">${outfit.description}</div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">👔 单品清单</div>
+                    <div class="detail-items">
+                        ${outfit.items.map(item => `<span class="detail-item">${item}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">🏷️ 风格标签</div>
+                    <div class="detail-tags">
+                        ${outfit.tags.map(t => `<span class="detail-tag">${t}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-section-title">⭐ 用户评分</div>
+                    <div style="font-size: 24px; color: var(--gold);">${outfit.rating}</div>
+                </div>
+            `;
+
+            openModal('outfitModal');
+        }
+
+        // ==================== 单品推荐 ====================
+        async function loadItems() {
+            const grid = document.getElementById('itemsGrid');
+            grid.innerHTML = '<div class="loading">加载中</div>';
+
+            let url = '/api/items';
+            if (currentCategory) url += `?category=${currentCategory}`;
+
+            const items = await fetchAPI(url);
+            if (!items || items.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🛍️</div><div>暂无单品推荐</div></div>';
+                return;
+            }
+
+            grid.innerHTML = items.map(item => `
+                <div class="item-card" onclick="window.open('${item.link}', '_blank')">
+                    <img class="item-img" src="${item.image}" alt="${item.name}">
+                    <div class="item-content">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">¥${item.price}</div>
+                        <div class="item-shop">${item.shop}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initTabs() {
+            document.querySelectorAll('#itemTabs .tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('#itemTabs .tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentCategory = tab.dataset.category;
+                    loadItems();
+                });
+            });
+        }
+
+        // ==================== 社区 ====================
+        async function loadPosts() {
+            const grid = document.getElementById('postsGrid');
+            grid.innerHTML = '<div class="loading">加载中</div>';
+
+            const posts = await fetchAPI('/api/posts');
+            if (!posts || posts.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><div>暂无社区内容</div></div>';
+                return;
+            }
+
+            grid.innerHTML = posts.map(post => `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.avatar}</div>
+                        <div class="post-user-info">
+                            <div class="post-user">${post.user}</div>
+                            <div class="post-time">${post.time}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                    ${post.images.length > 0 ? `
+                        <div class="post-images">
+                            ${post.images.map(img => `<img class="post-image" src="${img}" alt="穿搭图片">`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="post-tags">
+                        ${post.tags.map(t => `<span class="post-tag"># ${t}</span>`).join('')}
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action" onclick="likePost(${post.id})">
+                            <span>👍</span>
+                            <span>${post.likes}</span>
+                        </div>
+                        <div class="post-action" onclick="commentPost(${post.id})">
+                            <span>💬</span>
+                            <span>${post.comments}</span>
+                        </div>
+                        <div class="post-action" onclick="sharePost(${post.id})">
+                            <span>📤</span>
+                            <span>分享</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function likePost(id) {
+            showToast('❤️ 感谢点赞！');
+        }
+
+        function commentPost(id) {
+            showToast('💬 评论功能开发中...');
+        }
+
+        function sharePost(id) {
+            showToast('📤 分享链接已复制！');
+        }
+
+        // ==================== 导航 ====================
+        function initNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    document.getElementById(`page-${page}`).classList.add('active');
+                });
+            });
+        }
+
+        // ==================== 弹窗 ====================
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // 点击背景关闭
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        // ==================== VIP ====================
+        function showVipModal() {
+            openModal('vipModal');
+        }
+
+        function buyVip() {
+            showToast('💎 支付功能开发中，敬请期待！');
+            closeModal('vipModal');
+        }
+
+        // ==================== 工具函数 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>

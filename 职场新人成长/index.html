@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>职场新人成长 - 让你的职场之路更顺畅</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366F1;
+            --primary-light: #818CF8;
+            --primary-dark: #4F46E5;
+            --secondary: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --bg-color: #F9FAFB;
+            --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+            z-index: 1000;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 16px;
+            cursor: pointer;
+            color: var(--gray-500);
+            transition: all 0.2s;
+            border: none;
+            background: none;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 2px;
+            transition: transform 0.2s;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* 页面容器 */
+        .page-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 16px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        /* 页面隐藏 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 首页 */
+        .home-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .greeting {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .main-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 8px 0 16px;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        /* VIP Banner */
+        .vip-banner {
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            border: 1px solid #FCD34D;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .vip-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+        }
+
+        .vip-icon {
+            font-size: 36px;
+        }
+
+        .vip-content {
+            flex: 1;
+        }
+
+        .vip-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .vip-desc {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .vip-btn {
+            background: linear-gradient(135deg, var(--secondary) 0%, #D97706 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 功能入口 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            width: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .feature-card:active {
+            transform: scale(0.98);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .feature-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .feature-desc {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        /* 热门文章 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-more {
+            font-size: 13px;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .article-card:hover {
+            transform: translateX(4px);
+        }
+
+        .article-category {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 知识库页面 */
+        .knowledge-header {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .knowledge-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .knowledge-desc {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .category-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 0 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-chip {
+            flex-shrink: 0;
+            background: white;
+            border: 1px solid var(--gray-200);
+            padding: 10px 18px;
+            border-radius: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .category-chip:not(.active):hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .article-content-page {
+            display: none;
+        }
+
+        .article-content-page.active {
+            display: block;
+        }
+
+        .article-detail-header {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .article-content {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .article-content h1 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: var(--gray-900);
+        }
+
+        .article-content h2 {
+            font-size: 17px;
+            margin: 20px 0 12px;
+            color: var(--gray-900);
+        }
+
+        .article-content p {
+            margin-bottom: 12px;
+            color: var(--gray-700);
+        }
+
+        .article-content ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .article-content li {
+            margin-bottom: 8px;
+            color: var(--gray-700);
+        }
+
+        .article-content .highlight {
+            background: #FEF3C7;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 技能页面 */
+        .skill-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .skill-header-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .skill-header h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .skill-header p {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .skill-path-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .skill-path-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .skill-path-icon {
+            font-size: 40px;
+        }
+
+        .skill-path-info h3 {
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .skill-path-level {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .skill-progress {
+            background: var(--gray-100);
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .skill-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .skill-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .skill-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .skill-step::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            right: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--gray-200);
+            z-index: 0;
+        }
+
+        .skill-step:first-child::after {
+            display: none;
+        }
+
+        .step-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-icon.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .step-icon.in_progress {
+            background: var(--primary);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .step-icon.locked {
+            background: var(--gray-200);
+            color: var(--gray-500);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+        }
+
+        .step-name {
+            font-size: 11px;
+            color: var(--gray-700);
+            margin-top: 6px;
+        }
+
+        .step-desc {
+            font-size: 10px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .skill-resources {
+            border-top: 1px solid var(--gray-100);
+            padding-top: 12px;
+        }
+
+        .resources-title {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .resource-item:hover {
+            background: var(--gray-200);
+        }
+
+        .resource-type {
+            font-size: 16px;
+        }
+
+        /* 职业规划页面 */
+        .career-header {
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .career-header h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .career-header p {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .career-path-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .career-path-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .career-path-card.selected {
+            border-color: var(--primary);
+        }
+
+        .career-path-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        .career-path-icon {
+            font-size: 36px;
+        }
+
+        .career-path-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .career-path-desc {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .milestone-timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .milestone-timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--success));
+            border-radius: 1px;
+        }
+
+        .milestone-item {
+            position: relative;
+            padding: 12px 0;
+        }
+
+        .milestone-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 16px;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+        }
+
+        .milestone-year {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .milestone-goal {
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .career-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .career-skill-tag {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 16px;
+        }
+
+        /* 导师页面 */
+        .mentor-header {
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .mentor-header h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .mentor-header p {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .mentor-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mentor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .mentor-avatar {
+            font-size: 48px;
+            width: 72px;
+            height: 72px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mentor-info {
+            flex: 1;
+        }
+
+        .mentor-name {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .mentor-title {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 8px;
+        }
+
+        .mentor-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .mentor-tag {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .mentor-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mentor-rating {
+            color: var(--secondary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .mentor-rating span {
+            color: var(--gray-500);
+            font-weight: 400;
+        }
+
+        .mentor-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+        /* 我的页面 */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 24px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-avatar {
+            font-size: 56px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-info h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .vip-badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 6px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .profile-stat-label {
+            font-size: 11px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .growth-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .growth-section h3 {
+            font-size: 16px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .milestone-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .milestone-entry {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: var(--gray-100);
+            border-radius: 10px;
+        }
+
+        .milestone-icon {
+            font-size: 24px;
+        }
+
+        .milestone-content {
+            flex: 1;
+        }
+
+        .milestone-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .milestone-date {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .assessment-card {
+            background: var(--gray-100);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+
+        .assessment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .assessment-type {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .assessment-date {
+            font-size: 11px;
+            color: var(--gray-500);
+        }
+
+        .assessment-result {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .assessment-summary {
+            font-size: 12px;
+            color: var(--gray-500);
+            line-height: 1.5;
+        }
+
+        .assessment-score {
+            width: 100%;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .assessment-score-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success) 0%, var(--primary) 100%);
+            border-radius: 3px;
+        }
+
+        /* VIP弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .vip-modal {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--gray-300);
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+
+        .vip-modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .vip-modal-icon {
+            font-size: 56px;
+            margin-bottom: 12px;
+        }
+
+        .vip-modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .vip-modal-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--danger);
+            margin: 8px 0;
+        }
+
+        .vip-modal-price span {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--gray-500);
+        }
+
+        .vip-features {
+            margin: 20px 0;
+        }
+
+        .vip-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .vip-feature-icon {
+            font-size: 20px;
+            color: var(--success);
+        }
+
+        .vip-feature-text {
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        .vip-benefits {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .vip-benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .vip-benefit-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .vip-purchase-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--secondary) 0%, #D97706 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: transform 0.2s;
+        }
+
+        .vip-purchase-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .vip-purchase-btn:active {
+            transform: scale(0.98);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 导师详情弹窗 */
+        .mentor-modal {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .mentor-modal-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .mentor-modal-avatar {
+            font-size: 56px;
+            width: 80px;
+            height: 80px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mentor-modal-info h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .mentor-modal-info p {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .mentor-bio {
+            background: var(--gray-100);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .mentor-expertise {
+            margin-bottom: 20px;
+        }
+
+        .mentor-expertise h4 {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .mentor-expertise-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .expertise-tag {
+            background: var(--primary);
+            color: white;
+            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        .mentor-reviews {
+            margin-bottom: 20px;
+        }
+
+        .mentor-reviews h4 {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .review-summary {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .review-score {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .review-count {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .mentor-consult-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 3000;
+            animation: toastFade 2s ease forwards;
+        }
+
+        @keyframes toastFade {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            15% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            85% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            font-size: 14px;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-500);
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 360px) {
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-page="home">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">首页</span>
+        </button>
+        <button class="nav-item" data-page="knowledge">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">知识库</span>
+        </button>
+        <button class="nav-item" data-page="skills">
+            <span class="nav-icon">🚀</span>
+            <span class="nav-label">技能</span>
+        </button>
+        <button class="nav-item" data-page="career">
+            <span class="nav-icon">🎯</span>
+            <span class="nav-label">规划</span>
+        </button>
+        <button class="nav-item" data-page="profile">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">我的</span>
+        </button>
+    </nav>
+
+    <!-- 页面容器 -->
+    <div class="page-container">
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <div class="home-header">
+                <div class="greeting">👋 你好，职场新人</div>
+                <h1 class="main-title">让成长有迹可循</h1>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="home-articles-read">23</div>
+                        <div class="stat-label">文章已读</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="home-days-active">15</div>
+                        <div class="stat-label">活跃天数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="home-skill-progress">42%</div>
+                        <div class="stat-label">技能进度</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIP Banner -->
+            <div class="vip-banner" onclick="showVipModal()">
+                <div class="vip-icon">👑</div>
+                <div class="vip-content">
+                    <div class="vip-title">开通会员 · 解锁全部内容</div>
+                    <div class="vip-desc\">导师1对1咨询 · 500+篇职场干货</div>
+                </div>
+                <button class="vip-btn">¥19/月</button>
+            </div>
+
+            <!-- 功能入口 -->
+            <div class="feature-grid">
+                <button class="feature-card" onclick="switchPage('knowledge')">
+                    <div class="feature-icon">📚</div>
+                    <div class="feature-name\">职场知识库</div>
+                    <div class="feature-desc\">500+职场干货</div>
+                </button>
+                <button class="feature-card" onclick="switchPage('skills')">
+                    <div class="feature-icon\">🚀</div>
+                    <div class="feature-name\">技能提升</div>
+                    <div class="feature-desc\">系统化成长路径</div>
+                </button>
+                <button class="feature-card" onclick="switchPage('career')">
+                    <div class="feature-icon\">🎯</div>
+                    <div class="feature-name\">职业规划</div>
+                    <div class="feature-desc\">明确发展方向</div>
+                </button>
+                <button class="feature-card" onclick="showMentorsPage()">
+                    <div class="feature-icon\">👨‍🏫</div>
+                    <div class="feature-name\">导师推荐</div>
+                    <div class="feature-desc\">1对1专业指导</div>
+                </button>
+            </div>
+
+            <!-- 热门文章 -->
+            <div class="section-header">
+                <h2 class="section-title\">🔥 热门文章</h2>
+                <span class="section-more" onclick="switchPage('knowledge')">查看更多</span>
+            </div>
+            <div class="article-list" id="home-articles">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 知识库页面 -->
+        <div class="page" id="page-knowledge">
+            <div class="knowledge-header">
+                <h1 class="knowledge-title\">📚 职场知识库</h1>
+                <p class="knowledge-desc\">500+篇职场干货，助你职场之路畅通无阻</p>
+            </div>
+
+            <!-- 分类筛选 -->
+            <div class="category-scroll" id="knowledge-categories">
+                <div class="category-chip active" data-category="0">全部</div>
+            </div>
+
+            <!-- 文章列表 -->
+            <div class="article-list" id="knowledge-articles">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 文章详情 -->
+        <div class="page" id="page-article-detail">
+            <div class="article-detail-header">
+                <div class="back-btn" onclick="backFromArticle()">
+                    ← 返回
+                </div>
+                <div class="article-category" id="article-detail-category">职场礼仪</div>
+                <h1 class="article-title" id="article-detail-title">文章标题</h1>
+                <div class="article-meta">
+                    <span>👁️ <span id="article-detail-reads">0</span>阅读</span>
+                    <span>❤️ <span id="article-detail-likes">0</span>点赞</span>
+                </div>
+            </div>
+            <div class="article-content" id="article-detail-content">
+                <!-- 文章内容 -->
+            </div>
+        </div>
+
+        <!-- 技能提升页面 -->
+        <div class="page" id="page-skills">
+            <div class="skill-header">
+                <div class="skill-header-icon">🚀</div>
+                <h2>技能提升路径</h2>
+                <p>系统化学习，稳步提升职场竞争力</p>
+            </div>
+            <div id="skill-paths-container">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 职业规划页面 -->
+        <div class="page" id="page-career">
+            <div class="career-header">
+                <h2>🎯 职业发展路径</h2>
+                <p>选择适合你的职业方向，明确成长里程碑</p>
+            </div>
+            <div id="career-paths-container">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 导师页面 -->
+        <div class="page" id="page-mentors">
+            <div class="mentor-header">
+                <h2>👨‍🏫 导师推荐</h2>
+                <p>行业大咖1对1指导，让成长少走弯路</p>
+            </div>
+            <div id="mentors-container">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 我的页面 -->
+        <div class="page" id="page-profile">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profile-avatar">🌱</div>
+                <div class="profile-info">
+                    <h2 id="profile-username">职场小白</h2>
+                    <p>加入于 <span id="profile-join-date">2024-01-01</span></p>
+                    <span class="vip-badge" id="profile-vip-badge" style="display:none;">VIP会员</span>
+                </div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="profile-articles">23</div>
+                    <div class="profile-stat-label">文章已读</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="profile-days">15</div>
+                    <div class="profile-stat-label\">活跃天数</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="profile-skills">42%</div>
+                    <div class="profile-stat-label">技能进度</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="profile-assessments">3</div>
+                    <div class="profile-stat-label\">测评次数</div>
+                </div>
+            </div>
+
+            <div class="growth-section">
+                <h3>🏆 成长里程碑</h3>
+                <div class="milestone-list" id="milestone-list">
+                    <!-- 动态加载 -->
+                </div>
+            </div>
+
+            <div class="growth-section">
+                <h3>📊 能力评估</h3>
+                <div id="assessment-list">
+                    <!-- 动态加载 -->
+                </div>
+            </div>
+
+            <div class="growth-section">
+                <h3>⚙️ 设置</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="feature-card" onclick="showVipModal()" style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                        <span style="font-size: 24px;">👑</span>
+                        <div>
+                            <div class="feature-name">开通会员</div>
+                            <div class="feature-desc">解锁全部功能</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vip-modal">
+        <div class="vip-modal">
+            <div class="modal-handle"></div>
+            <div class="vip-modal-header">
+                <div class="vip-modal-icon">👑</div>
+                <h2 class="vip-modal-title">职场新人成长会员</h2>
+                <div class="vip-modal-price">¥19<span>/月</span></div>
+            </div>
+
+            <div class="vip-features">
+                <h4 style="font-size: 15px; margin-bottom: 12px;">✨ 会员特权</h4>
+                <div class="vip-feature-item">
+                    <span class="vip-feature-icon">✅</span>
+                    <span class="vip-feature-text">解锁全部职场知识库（500+篇文章）</span>
+                </div>
+                <div class="vip-feature-item">
+                    <span class="vip-feature-icon">✅</span>
+                    <span class="vip-feature-text">解锁全部技能提升课程</span>
+                </div>
+                <div class="vip-feature-item">
+                    <span class="vip-feature-icon">✅</span>
+                    <span class="vip-feature-text\">解锁职业规划测评工具</span>
+                </div>
+                <div class="vip-feature-item">
+                    <span class="vip-feature-icon">✅</span>
+                    <span class="vip-feature-text">导师1对1咨询服务</span>
+                </div>
+                <div class="vip-feature-item">
+                    <span class="vip-feature-icon">✅</span>
+                    <span class="vip-feature-text\">专属学习计划定制</span>
+                </div>
+            </div>
+
+            <div class="vip-benefits">
+                <div class="vip-benefit-item">🎯 快速掌握职场生存法则</div>
+                <div class="vip-benefit-item">📈 明确职业发展方向</div>
+                <div class="vip-benefit-item">💬 专业导师1对1指导</div>
+                <div class="vip-benefit-item">📊 可视化成长轨迹</div>
+            </div>
+
+            <button class="vip-purchase-btn" onclick="purchaseVip()">
+                立即开通 · ¥19/月
+            </button>
+            <p style="text-align: center; font-size: 12px; color: #9CA3AF; margin-top: 12px;">
+                支付成功即表示同意《会员服务协议》
+            </p>
+        </div>
+    </div>
+
+    <!-- 导师详情弹窗 -->
+    <div class="modal-overlay" id="mentor-modal">
+        <div class="mentor-modal">
+            <div class="modal-handle"></div>
+            <div class="mentor-modal-header">
+                <div class="mentor-modal-avatar" id="mentor-detail-avatar">👨‍💼</div>
+                <div class="mentor-modal-info">
+                    <h2 id="mentor-detail-name">导师姓名</h2>
+                    <p id="mentor-detail-title">职位 · 公司</p>
+                    <p style="font-size: 12px; color: #9CA3AF;" id="mentor-detail-experience">10年经验</p>
+                </div>
+            </div>
+
+            <div class="mentor-bio" id="mentor-detail-bio">
+                导师简介内容...
+            </div>
+
+            <div class="mentor-expertise">
+                <h4>擅长领域</h4>
+                <div class="mentor-expertise-tags" id="mentor-detail-tags">
+                    <span class="expertise-tag">产品规划</span>
+                </div>
+            </div>
+
+            <div class="mentor-reviews">
+                <h4>用户评价</h4>
+                <div class="review-summary">
+                    <span class="review-score" id="mentor-detail-rating">4.9</span>
+                    <span class="review-count" id="mentor-detail-reviews">128条评价</span>
+                </div>
+            </div>
+
+            <button class="mentor-consult-btn" onclick="consultMentor()">
+                立即咨询 · ¥<span id="mentor-detail-price">299</span>
+            </button>
+            <p style="text-align: center; font-size: 12px; color: #9CA3AF; margin-top: 12px;">
+                * 咨询服务需要开通会员
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://localhost:5000/api';
+
+        // 全局数据
+        let currentPage = 'home';
+        let articles = [];
+        let categories = [];
+        let mentors = [];
+        let skillPaths = [];
+        let careerPaths = [];
+        let selectedMentorId = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            loadHomeData();
+        });
+
+        // 导航初始化
+        function initNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    switchPage(page);
+                });
+            });
+        }
+
+        // 切换页面
+        function switchPage(page) {
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.page === page);
+            });
+
+            // 更新页面显示
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+            });
+            document.getElementById(`page-${page}`).classList.add('active');
+
+            currentPage = page;
+
+            // 加载页面数据
+            switch (page) {
+                case 'home':
+                    loadHomeData();
+                    break;
+                case 'knowledge':
+                    loadKnowledgeData();
+                    break;
+                case 'skills':
+                    loadSkillsData();
+                    break;
+                case 'career':
+                    loadCareerData();
+                    break;
+                case 'mentors':
+                    loadMentorsData();
+                    break;
+                case 'profile':
+                    loadProfileData();
+                    break;
+            }
+        }
+
+        // 显示导师页面
+        function showMentorsPage() {
+            switchPage('mentors');
+        }
+
+        // 加载首页数据
+        async function loadHomeData() {
+            try {
+                const response = await fetch(`${API_BASE}/growth/profile`);
+                const profile = await response.json();
+                
+                document.getElementById('home-articles-read').textContent = profile.stats.articles_read;
+                document.getElementById('home-days-active').textContent = profile.stats.days_active;
+                document.getElementById('home-skill-progress').textContent = profile.stats.skills_progress + '%';
+            } catch (e) {
+                console.log('使用模拟数据');
+            }
+
+            // 加载热门文章
+            try {
+                const response = await fetch(`${API_BASE}/knowledge/articles`);
+                articles = await response.json();
+            } catch (e) {
+                articles = getMockArticles();
+            }
+            renderHomeArticles();
+        }
+
+        // 渲染首页文章
+        function renderHomeArticles() {
+            const container = document.getElementById('home-articles');
+            const topArticles = articles.slice(0, 3);
+            
+            container.innerHTML = topArticles.map(article => `
+                <div class="article-card" onclick="showArticleDetail(${article.id})">
+                    <span class="article-category">${getCategoryName(article.category_id)}</span>
+                    <h3 class="article-title">${article.title}</h3>
+                    <div class="article-meta">
+                        <span>👁️ ${article.read_count}阅读</span>
+                        <span>❤️ ${article.like_count}点赞</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载知识库数据
+        async function loadKnowledgeData() {
+            try {
+                const catResponse = await fetch(`${API_BASE}/knowledge/categories`);
+                categories = await catResponse.json();
+                
+                const artResponse = await fetch(`${API_BASE}/knowledge/articles`);
+                articles = await artResponse.json();
+            } catch (e) {
+                categories = getMockCategories();
+                articles = getMockArticles();
+            }
+            
+            renderKnowledgeCategories();
+            renderKnowledgeArticles();
+        }
+
+        // 渲染知识库分类
+        function renderKnowledgeCategories() {
+            const container = document.getElementById('knowledge-categories');
+            container.innerHTML = `
+                <div class="category-chip active" data-category="0" onclick="filterByCategory(0)">全部</div>
+                ${categories.map(cat => `
+                    <div class="category-chip" data-category="${cat.id}" onclick="filterByCategory(${cat.id})">
+                        ${cat.icon} ${cat.name}
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // 渲染知识库文章
+        function renderKnowledgeArticles(filterCategory = 0) {
+            const container = document.getElementById('knowledge-articles');
+            const filtered = filterCategory === 0 
+                ? articles 
+                : articles.filter(a => a.category_id === filterCategory);
+            
+            container.innerHTML = filtered.map(article => `
+                <div class="article-card" onclick="showArticleDetail(${article.id})">
+                    <span class="article-category">${getCategoryName(article.category_id)}</span>
+                    <h3 class="article-title">${article.title}</h3>
+                    <p style="font-size: 13px; color: #6B7280; margin-bottom: 8px;">${article.summary}</p>
+                    <div class="article-meta">
+                        <span>👁️ ${article.read_count}阅读</span>
+                        <span>❤️ ${article.like_count}点赞</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 分类筛选
+        function filterByCategory(categoryId) {
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.classList.toggle('active', parseInt(chip.dataset.category) === categoryId);
+            });
+            renderKnowledgeArticles(categoryId);
+        }
+
+        // 显示文章详情
+        async function showArticleDetail(articleId) {
+            let article = articles.find(a => a.id === articleId);
+            
+            if (!article) {
+                try {
+                    const response = await fetch(`${API_BASE}/knowledge/article/${articleId}`);
+                    article = await response.json();
+                } catch (e) {
+                    article = getMockArticles().find(a => a.id === articleId);
+                }
+            }
+
+            document.getElementById('article-detail-category').textContent = getCategoryName(article.category_id);
+            document.getElementById('article-detail-title').textContent = article.title;
+            document.getElementById('article-detail-reads').textContent = article.read_count;
+            document.getElementById('article-detail-likes').textContent = article.like_count;
+            document.getElementById('article-detail-content').innerHTML = formatContent(article.content);
+
+            // 切换到详情页
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-article-detail').classList.add('active');
+        }
+
+        // 返回文章列表
+        function backFromArticle() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-knowledge').classList.add('active');
+        }
+
+        // 加载技能数据
+        async function loadSkillsData() {
+            try {
+                const response = await fetch(`${API_BASE}/skills/paths`);
+                skillPaths = await response.json();
+            } catch (e) {
+                skillPaths = getMockSkillPaths();
+            }
+            renderSkillPaths();
+        }
+
+        // 渲染技能路径
+        function renderSkillPaths() {
+            const container = document.getElementById('skill-paths-container');
+            container.innerHTML = skillPaths.map(path => `
+                <div class="skill-path-card">
+                    <div class="skill-path-header">
+                        <div class="skill-path-icon">${path.icon}</div>
+                        <div class="skill-path-info">
+                            <h3>${path.name}</h3>
+                            <div class="skill-path-level">Lv.${path.level} · ${path.progress}%完成</div>
+                        </div>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar" style="width: ${path.progress}%"></div>
+                    </div>
+                    <div class="skill-steps">
+                        ${path.skills.map((skill, idx) => `
+                            <div class="skill-step">
+                                <div class="step-icon ${skill.status}">
+                                    ${skill.status === 'completed' ? '✓' : skill.status === 'in_progress' ? '▶' : '🔒'}
+                                </div>
+                                <div class="step-name">${skill.name}</div>
+                                <div class="step-desc">${skill.desc}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="skill-resources">
+                        <div class="resources-title">📚 学习资源</div>
+                        ${path.resources.map(res => `
+                            <div class="resource-item">
+                                <span class="resource-type">${res.type === 'book' ? '📖' : res.type === 'video' ? '🎬' : '📄'}</span>
+                                <span>${res.title}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载职业规划数据
+        async function loadCareerData() {
+            try {
+                const response = await fetch(`${API_BASE}/career/paths`);
+                careerPaths = await response.json();
+            } catch (e) {
+                careerPaths = getMockCareerPaths();
+            }
+            renderCareerPaths();
+        }
+
+        // 渲染职业路径
+        function renderCareerPaths() {
+            const container = document.getElementById('career-paths-container');
+            container.innerHTML = careerPaths.map(path => `
+                <div class="career-path-card" onclick="this.classList.toggle('selected')">
+                    <div class="career-path-header">
+                        <div class="career-path-icon">${path.icon}</div>
+                        <div>
+                            <div class="career-path-title">${path.title}</div>
+                            <div class="career-path-desc">${path.desc}</div>
+                        </div>
+                    </div>
+                    <div class="milestone-timeline">
+                        ${path.milestones.map(m => `
+                            <div class="milestone-item">
+                                <div class="milestone-year">${m.year}</div>
+                                <div class="milestone-goal">${m.goal}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="career-skills">
+                        ${path.skills.map(s => `<span class="career-skill-tag">${s}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载导师数据
+        async function loadMentorsData() {
+            try {
+                const response = await fetch(`${API_BASE}/mentors`);
+                mentors = await response.json();
+            } catch (e) {
+                mentors = getMockMentors();
+            }
+            renderMentors();
+        }
+
+        // 渲染导师列表
+        function renderMentors() {
+            const container = document.getElementById('mentors-container');
+            container.innerHTML = mentors.map(mentor => `
+                <div class="mentor-card" onclick="showMentorDetail(${mentor.id})">
+                    <div class="mentor-avatar">${mentor.avatar}</div>
+                    <div class="mentor-info">
+                        <div class="mentor-name">${mentor.name}</div>
+                        <div class="mentor-title">${mentor.title} · ${mentor.company}</div>
+                        <div class="mentor-tags">
+                            ${mentor.tags.map(tag => `<span class="mentor-tag">${tag}</span>`).join('')}
+                        </div>
+                        <div class="mentor-footer">
+                            <div class="mentor-rating">⭐ ${mentor.rating} <span>(${mentor.review_count}条评价)</span></div>
+                            <div class="mentor-price">¥${mentor.price}起</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 显示导师详情
+        function showMentorDetail(mentorId) {
+            const mentor = mentors.find(m => m.id === mentorId);
+            if (!mentor) return;
+
+            selectedMentorId = mentorId;
+            document.getElementById('mentor-detail-avatar').textContent = mentor.avatar;
+            document.getElementById('mentor-detail-name').textContent = mentor.name;
+            document.getElementById('mentor-detail-title').textContent = `${mentor.title} · ${mentor.company}`;
+            document.getElementById('mentor-detail-experience').textContent = mentor.experience;
+            document.getElementById('mentor-detail-bio').textContent = mentor.bio;
+            document.getElementById('mentor-detail-tags').innerHTML = mentor.expertise.map(e => 
+                `<span class="expertise-tag">${e}</span>`
+            ).join('');
+            document.getElementById('mentor-detail-rating').textContent = mentor.rating;
+            document.getElementById('mentor-detail-reviews').textContent = `${mentor.review_count}条评价`;
+            document.getElementById('mentor-detail-price').textContent = mentor.price;
+
+            document.getElementById('mentor-modal').classList.add('active');
+        }
+
+        // 咨询导师
+        function consultMentor() {
+            showVipModal();
+        }
+
+        // 加载个人数据
+        async function loadProfileData() {
+            try {
+                const profileRes = await fetch(`${API_BASE}/growth/profile`);
+                const profile = await profileRes.json();
+                
+                document.getElementById('profile-avatar').textContent = profile.avatar;
+                document.getElementById('profile-username').textContent = profile.username;
+                document.getElementById('profile-join-date').textContent = profile.join_date;
+                document.getElementById('profile-articles').textContent = profile.stats.articles_read;
+                document.getElementById('profile-days').textContent = profile.stats.days_active;
+                document.getElementById('profile-skills').textContent = profile.stats.skills_progress + '%';
+                document.getElementById('profile-assessments').textContent = profile.stats.assessments;
+
+                if (profile.vip_level !== 'free') {
+                    document.getElementById('profile-vip-badge').style.display = 'inline-block';
+                }
+            } catch (e) {
+                console.log('使用模拟数据');
+            }
+
+            // 加载里程碑
+            try {
+                const milestoneRes = await fetch(`${API_BASE}/growth/milestones`);
+                const milestones = await milestoneRes.json();
+                renderMilestones(milestones);
+            } catch (e) {
+                renderMilestones(getMockMilestones());
+            }
+
+            // 加载评估
+            try {
+                const assessRes = await fetch(`${API_BASE}/growth/assessments`);
+                const assessments = await assessRes.json();
+                renderAssessments(assessments);
+            } catch (e) {
+                renderAssessments(getMockAssessments());
+            }
+        }
+
+        // 渲染里程碑
+        function renderMilestones(milestones) {
+            const container = document.getElementById('milestone-list');
+            container.innerHTML = milestones.map(m => `
+                <div class="milestone-entry">
+                    <div class="milestone-icon">${m.icon}</div>
+                    <div class="milestone-content">
+                        <div class="milestone-title">${m.title}</div>
+                        <div class="milestone-date">${m.date}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染评估
+        function renderAssessments(assessments) {
+            const container = document.getElementById('assessment-list');
+            container.innerHTML = assessments.map(a => `
+                <div class="assessment-card">
+                    <div class="assessment-header">
+                        <span class="assessment-type">${a.type}</span>
+                        <span class="assessment-date">${a.date}</span>
+                    </div>
+                    <div class="assessment-result">${a.result}</div>
+                    <div class="assessment-score">
+                        <div class="assessment-score-bar" style="width: ${a.score}%"></div>
+                    </div>
+                    <div class="assessment-summary">${a.summary}</div>
+                </div>
+            `).join('');
+        }
+
+        // 显示VIP弹窗
+        function showVipModal() {
+            document.getElementById('vip-modal').classList.add('active');
+        }
+
+        // 购买VIP
+        async function purchaseVip() {
+            try {
+                const response = await fetch(`${API_BASE}/vip/purchase`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan: 'monthly' })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast('购买成功！');
+                    document.getElementById('vip-modal').classList.remove('active');
+                    document.getElementById('profile-vip-badge').style.display = 'inline-block';
+                }
+            } catch (e) {
+                // 模拟购买成功
+                showToast('购买成功！');
+                document.getElementById('vip-modal').classList.remove('active');
+                document.getElementById('profile-vip-badge').style.display = 'inline-block';
+            }
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // 点击弹窗背景关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // 工具函数
+        function getCategoryName(categoryId) {
+            const names = {
+                1: '职场礼仪',
+                2: '沟通技巧',
+                3: '时间管理',
+                4: '团队协作',
+                5: '职业素养',
+                6: '职场法律'
+            };
+            return names[categoryId] || '其他';
+        }
+
+        function formatContent(content) {
+            if (!content) return '';
+            
+            // 简单的Markdown转换
+            return content
+                .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/^- (.+)$/gm, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/^(.+)$/gm, (match) => {
+                    if (match.startsWith('<')) return match;
+                    return `<p>${match}</p>`;
+                });
+        }
+
+        // 模拟数据
+        function getMockArticles() {
+            return [
+                { id: 1, category_id: 1, title: '新人入职第一周必知的10条职场礼仪', summary: '初入职场，这些礼仪细节决定你的第一印象...', content: '# 新人入职第一周必知的10条职场礼仪\n\n## 1. 准时到达\n提前5-10分钟到达办公室，展现你的积极态度。\n\n## 2. 主动自我介绍\n见到同事主动微笑点头，简单的自我介绍。\n\n## 3. 观察学习\n第一天多看少说，观察办公室的工作氛围。', read_count: 2580, like_count: 456 },
+                { id: 2, category_id: 1, title: 'Email写得好，加班走得早', summary: '高效邮件沟通让你的工作事半功倍', content: '# Email写得好，加班走得早\n\n## 为什么邮件如此重要？\n- 邮件是职场最正式的沟通方式\n- 好的邮件能减少80%的无效沟通', read_count: 1890, like_count: 320 },
+                { id: 3, category_id: 2, title: '向上沟通的三个黄金法则', summary: '如何与领导高效沟通，让你的工作被看见', content: '# 向上沟通的三个黄金法则\n\n## 法则一：结论先行\n领导通常很忙，汇报时先说结论，再说原因。\n\n## 法则二：带着方案提问\n不要只抛问题，要带1-2个解决方案让领导选择。', read_count: 3200, like_count: 580 },
+                { id: 4, category_id: 3, title: '番茄工作法详解', summary: '简单高效的时间管理方法', content: '# 番茄工作法详解\n\n## 什么是番茄工作法？\n将工作时间划分为25分钟的专注时段。\n\n## 具体操作\n1. 选择一个待完成的任务\n2. 设置25分钟倒计时', read_count: 2100, like_count: 380 },
+                { id: 5, category_id: 4, title: '跨部门协作的5个技巧', summary: '打通部门墙，高效协作', content: '# 跨部门协作的5个技巧\n\n## 1. 找对人\n明确对接窗口是谁。\n\n## 2. 说清楚\n用对方能理解的语言沟通。', read_count: 1750, like_count: 290 },
+                { id: 6, category_id: 5, title: '职场新人最易犯的5个错误', summary: '避开这些坑，少走3年弯路', content: '# 职场新人最易犯的5个错误\n\n## 错误1：只执行，不思考\n领导交代什么就做什么，从不问"为什么"。\n\n## 错误2：不敢提问\n怕暴露自己不懂，结果做出来的完全不对。', read_count: 4500, like_count: 720 }
+            ];
+        }
+
+        function getMockCategories() {
+            return [
+                { id: 1, name: '职场礼仪', icon: '💼', article_count: 12 },
+                { id: 2, name: '沟通技巧', icon: '💬', article_count: 15 },
+                { id: 3, name: '时间管理', icon: '⏰', article_count: 10 },
+                { id: 4, name: '团队协作', icon: '🤝', article_count: 8 },
+                { id: 5, name: '职业素养', icon: '⭐', article_count: 14 },
+                { id: 6, name: '职场法律', icon: '⚖️', article_count: 9 }
+            ];
+        }
+
+        function getMockSkillPaths() {
+            return [
+                { id: 1, name: '职场沟通能力', icon: '🗣️', level: 3, total_level: 5, progress: 60, skills: [
+                    { name: '基础表达', status: 'completed', desc: '清晰表达自己的想法' },
+                    { name: '倾听技巧', status: 'completed', desc: '理解对方的真实需求' },
+                    { name: '说服技巧', status: 'in_progress', desc: '让他人接受你的观点' },
+                    { name: '谈判能力', status: 'locked', desc: '在冲突中找到双赢' },
+                    { name: '演讲汇报', status: 'locked', desc: '自信地面对众人演讲' }
+                ], resources: [
+                    { title: '《非暴力沟通》读书笔记', type: 'book' },
+                    { title: '向上沟通实战课', type: 'video' },
+                    { title: '30个沟通话术模板', type: 'doc' }
+                ]},
+                { id: 2, name: '时间管理能力', icon: '⏱️', level: 2, total_level: 5, progress: 40, skills: [
+                    { name: '日程规划', status: 'completed', desc: '合理安排每日工作' },
+                    { name: '优先级判断', status: 'completed', desc: '四象限法则应用' },
+                    { name: '效率工具', status: 'in_progress', desc: '善用工具提升效率' },
+                    { name: '专注力训练', status: 'locked', desc: '深度工作能力' },
+                    { name: '精力管理', status: 'locked', desc: '保持可持续的高效' }
+                ], resources: [
+                    { title: '番茄工作法实操指南', type: 'doc' },
+                    { title: 'GTD时间管理课程', type: 'video' }
+                ]}
+            ];
+        }
+
+        function getMockCareerPaths() {
+            return [
+                { id: 1, title: '技术专家路线', icon: '🖥️', desc: '深耕技术，成为领域专家', milestones: [
+                    { year: '1-2年', goal: '夯实基础，成为独当一面的工程师' },
+                    { year: '3-4年', goal: '成为团队技术骨干' },
+                    { year: '5-7年', goal: '成为技术专家或架构师' },
+                    { year: '8年+', goal: '首席技术专家或CTO' }
+                ], skills: ['技术深度', '架构能力', '问题解决', '技术创新'] },
+                { id: 2, title: '管理路线', icon: '👔', desc: '带团队，向管理岗发展', milestones: [
+                    { year: '1-2年', goal: '成为团队核心成员' },
+                    { year: '3-4年', goal: '晋升为小组负责人' },
+                    { year: '5-7年', goal: '成为部门经理' },
+                    { year: '8年+', goal: '总监或VP' }
+                ], skills: ['领导力', '沟通协调', '战略思维', '团队建设'] }
+            ];
+        }
+
+        function getMockMentors() {
+            return [
+                { id: 1, name: '陈明远', avatar: '👨‍💼', title: '前产品总监', company: '某大厂', expertise: ['产品规划', '团队管理'], rating: 4.9, review_count: 128, price: 299, bio: '曾任某大厂产品总监，主导过多个千万级用户产品。' },
+                { id: 2, name: '林思涵', avatar: '👩‍💻', title: '资深HRBP', company: '世界500强', expertise: ['简历优化', '面试技巧'], rating: 4.8, review_count: 256, price: 199, bio: '世界500强企业HRBP，面试过500+候选人。' }
+            ];
+        }
+
+        function getMockMilestones() {
+            return [
+                { id: 1, title: '完成第一篇职场礼仪学习', date: '2024-01-05', icon: '📚' },
+                { id: 2, title: '完成职业性格测试', date: '2024-01-08', icon: '🧪' },
+                { id: 3, title: '解锁沟通技巧课程', date: '2024-01-10', icon: '🔓' }
+            ];
+        }
+
+        function getMockAssessments() {
+            return [
+                { id: 1, type: '职业性格测试', date: '2024-01-08', result: 'INTJ - 策略型', score: 85, summary: '你是一个善于思考、追求独立的职场人。' },
+                { id: 2, type: '沟通能力评估', date: '2024-01-12', result: 'B+', score: 72, summary: '你的沟通基础较好，但在说服力上还有提升空间。' }
+            ];
+        }
+    </script>
+</body>
+</html>

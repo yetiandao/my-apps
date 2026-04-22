@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>租房装修 - 让出租屋变成家</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --dark: #2C3E50;
+            --light: #F8F9FA;
+            --accent: #FFE66D;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light);
+            padding-bottom: 70px;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #FF8E53);
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .header-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+        
+        /* VIP标识 */
+        .vip-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        /* Tab导航 */
+        .nav-tabs-custom {
+            display: flex;
+            background: white;
+            padding: 10px 15px;
+            gap: 8px;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .nav-tabs-custom::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .nav-tab {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .nav-tab i {
+            margin-right: 5px;
+        }
+        
+        /* 内容区域 */
+        .content {
+            padding: 15px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        /* 卡片样式 */
+        .card-custom {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .card-custom:active {
+            transform: scale(0.98);
+        }
+        
+        .card-cover {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+        
+        .card-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .card-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: #FFF0F0;
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        
+        /* 筛选标签 */
+        .filter-section {
+            margin-bottom: 15px;
+        }
+        
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .filter-tag {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 13px;
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-tag.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        /* 商品网格 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 10px;
+        }
+        
+        .product-name {
+            font-size: 13px;
+            color: var(--dark);
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 36px;
+        }
+        
+        .product-price {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .product-price::before {
+            content: '¥';
+            font-size: 12px;
+        }
+        
+        .product-rating {
+            font-size: 11px;
+            color: #FFB800;
+        }
+        
+        /* 表单样式 */
+        .form-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        
+        .form-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .style-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .style-option {
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .style-option.active {
+            border-color: var(--primary);
+            background: #FFF5F5;
+        }
+        
+        .style-option i {
+            font-size: 24px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .style-option span {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .style-option.active span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* 按钮样式 */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #FF8E53);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* 结果展示 */
+        .result-card {
+            background: linear-gradient(135deg, #FFF5F5, #FFF9F0);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-total {
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+            margin-bottom: 15px;
+        }
+        
+        .result-total .label {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .result-total .amount {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .result-breakdown {
+            margin-bottom: 15px;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .breakdown-item .name {
+            color: #666;
+        }
+        
+        .breakdown-item .value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        /* 清单样式 */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .checklist-priority {
+            width: 8px;
+            height: 40px;
+            border-radius: 4px;
+            margin-right: 12px;
+        }
+        
+        .priority-high { background: #FF4757; }
+        .priority-medium { background: #FFA502; }
+        .priority-low { background: #2ED573; }
+        
+        .checklist-content {
+            flex: 1;
+        }
+        
+        .checklist-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+        
+        .checklist-price {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checklist-checkbox.checked {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        /* 社区帖子 */
+        .post-card {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .post-user {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .post-time {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .post-content {
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        
+        .post-images {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+        }
+        
+        .post-image {
+            width: 120px;
+            height: 90px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        
+        .post-tags {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        
+        .post-tag {
+            padding: 4px 10px;
+            background: #F0F0F0;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 20px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: #888;
+            cursor: pointer;
+        }
+        
+        .post-action i {
+            font-size: 18px;
+        }
+        
+        /* 发布按钮 */
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), #FF8E53);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.5);
+            cursor: pointer;
+            z-index: 99;
+            transition: transform 0.3s;
+        }
+        
+        .fab:active {
+            transform: scale(0.9);
+        }
+        
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #999;
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+        }
+        
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 20px;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        /* VIP弹窗 */
+        .vip-modal {
+            text-align: center;
+        }
+        
+        .vip-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        .vip-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .vip-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .vip-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .vip-price span {
+            font-size: 16px;
+        }
+        
+        .vip-features {
+            text-align: left;
+            background: #FFF9F0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .vip-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .vip-feature i {
+            color: var(--secondary);
+        }
+        
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f0f0f0;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+        }
+        
+        /* 分类选择器 */
+        .category-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .category-item {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            background: white;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            border: 1px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .category-item.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>🏠 租房装修</h1>
+                <div class="header-subtitle">让出租屋变成家</div>
+            </div>
+            <div class="vip-badge" onclick="showVipModal()">
+                <i class="bi bi-crown-fill"></i>
+                <span>VIP会员</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="nav-tabs-custom">
+        <a href="#" class="nav-tab active" data-tab="cases">
+            <i class="bi bi-house-heart"></i>案例
+        </a>
+        <a href="#" class="nav-tab" data-tab="products">
+            <i class="bi bi-bag-heart"></i>软装
+        </a>
+        <a href="#" class="nav-tab" data-tab="calculator">
+            <i class="bi bi-calculator"></i>预算
+        </a>
+        <a href="#" class="nav-tab" data-tab="checklist">
+            <i class="bi bi-check2-square"></i>清单
+        </a>
+        <a href="#" class="nav-tab" data-tab="community">
+            <i class="bi bi-people"></i>社区
+        </a>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- 案例列表 -->
+        <section id="cases" class="section active">
+            <div class="filter-section">
+                <div class="filter-tags">
+                    <span class="filter-tag active" data-filter="all">全部</span>
+                    <span class="filter-tag" data-filter="北欧风">北欧风</span>
+                    <span class="filter-tag" data-filter="日式">日式</span>
+                    <span class="filter-tag" data-filter="简约">简约</span>
+                    <span class="filter-tag" data-filter="ins风">ins风</span>
+                    <span class="filter-tag" data-filter="复古">复古</span>
+                </div>
+            </div>
+            <div id="cases-list">
+                <!-- 动态加载 -->
+            </div>
+        </section>
+
+        <!-- 软装推荐 -->
+        <section id="products" class="section">
+            <div class="category-scroll" id="category-list">
+                <span class="category-item active" data-category="">全部</span>
+            </div>
+            <div class="product-grid" id="products-list">
+                <!-- 动态加载 -->
+            </div>
+        </section>
+
+        <!-- 预算计算 -->
+        <section id="calculator" class="section">
+            <div class="form-section">
+                <div class="form-title">
+                    <i class="bi bi-calculator" style="color: var(--primary)"></i>
+                    输入房间信息
+                </div>
+                <div class="form-group">
+                    <label class="form-label">房间面积（平方米）</label>
+                    <input type="number" class="form-input" id="room-area" placeholder="例如：20" value="20">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">装修风格</label>
+                    <div class="style-options">
+                        <div class="style-option active" data-style="简约">
+                            <i class="bi bi-grid-3x3"></i>
+                            <span>简约</span>
+                        </div>
+                        <div class="style-option" data-style="北欧">
+                            <i class="bi bi-snow2"></i>
+                            <span>北欧</span>
+                        </div>
+                        <div class="style-option" data-style="日式">
+                            <i class="bi bi-flower1"></i>
+                            <span>日式</span>
+                        </div>
+                        <div class="style-option" data-style="轻奢">
+                            <i class="bi bi-stars"></i>
+                            <span>轻奢</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="calculateBudget()">
+                    <i class="bi bi-magic"></i> 计算预算
+                </button>
+            </div>
+            
+            <div id="budget-result" style="display: none;">
+                <div class="result-card">
+                    <div class="result-total">
+                        <div class="label">建议装修预算</div>
+                        <div class="amount" id="total-budget">0</div>
+                    </div>
+                    <div class="result-breakdown" id="budget-breakdown">
+                        <!-- 动态加载 -->
+                    </div>
+                    <div class="tips-section">
+                        <div class="form-title" style="margin-bottom: 10px;">
+                            <i class="bi bi-lightbulb" style="color: var(--accent)"></i>
+                            省钱小贴士
+                        </div>
+                        <ul id="tips-list" style="font-size: 13px; color: #666; padding-left: 20px;">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 改造清单 -->
+        <section id="checklist" class="section">
+            <div class="form-section">
+                <div class="form-title">
+                    <i class="bi bi-list-check" style="color: var(--secondary)"></i>
+                    生成你的改造清单
+                </div>
+                <div class="form-group">
+                    <label class="form-label">房间面积（平方米）</label>
+                    <input type="number" class="form-input" id="checklist-area" placeholder="例如：20" value="20">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">预算范围（元）</label>
+                    <input type="number" class="form-input" id="checklist-budget" placeholder="例如：2000" value="2000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">想要的风格</label>
+                    <div class="style-options" id="checklist-style-options">
+                        <div class="style-option active" data-style="简约">
+                            <i class="bi bi-grid-3x3"></i>
+                            <span>简约</span>
+                        </div>
+                        <div class="style-option" data-style="北欧">
+                            <i class="bi bi-snow2"></i>
+                            <span>北欧</span>
+                        </div>
+                        <div class="style-option" data-style="日式">
+                            <i class="bi bi-flower1"></i>
+                            <span>日式</span>
+                        </div>
+                        <div class="style-option" data-style="轻奢">
+                            <i class="bi bi-stars"></i>
+                            <span>轻奢</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="generateChecklist()">
+                    <i class="bi bi-magic"></i> 生成清单
+                </button>
+            </div>
+            
+            <div id="checklist-result" style="display: none;">
+                <h5 class="mb-3" style="color: var(--dark);">
+                    <i class="bi bi-clipboard-check"></i> 改造清单
+                </h5>
+                <div id="checklist-items">
+                    <!-- 动态加载 -->
+                </div>
+                <div class="result-card mt-3">
+                    <div id="checklist-summary" style="text-align: center;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 社区 -->
+        <section id="community" class="section">
+            <div id="posts-list">
+                <!-- 动态加载 -->
+            </div>
+        </section>
+    </div>
+
+    <!-- FAB -->
+    <div class="fab" onclick="showPostModal()">
+        <i class="bi bi-pencil-square"></i>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-tab="cases">
+            <i class="bi bi-house-heart"></i>
+            <span>案例</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="products">
+            <i class="bi bi-bag-heart"></i>
+            <span>软装</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="calculator">
+            <i class="bi bi-calculator"></i>
+            <span>预算</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="checklist">
+            <i class="bi bi-check2-square"></i>
+            <span>清单</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="community">
+            <i class="bi bi-people"></i>
+            <span>社区</span>
+        </a>
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 发布弹窗 -->
+    <div class="modal-overlay" id="post-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">发布动态</div>
+                <div class="modal-close" onclick="closeModal('post-modal')">
+                    <i class="bi bi-x-lg"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">分享你的改造心得</label>
+                <textarea class="form-input" id="post-content" rows="4" placeholder="说点什么吧..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">添加标签</label>
+                <input type="text" class="form-input" id="post-tags" placeholder="多个标签用逗号分隔，如：改造分享,租房心得">
+            </div>
+            <button class="btn-primary" onclick="submitPost()">
+                <i class="bi bi-send"></i> 发布
+            </button>
+        </div>
+    </div>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vip-modal">
+        <div class="modal-content vip-modal">
+            <div class="modal-header">
+                <div class="modal-title">开通VIP会员</div>
+                <div class="modal-close" onclick="closeModal('vip-modal')">
+                    <i class="bi bi-x-lg"></i>
+                </div>
+            </div>
+            <div class="vip-icon">
+                <i class="bi bi-crown-fill"></i>
+            </div>
+            <div class="vip-title">尊享VIP会员</div>
+            <div class="vip-desc">
+                解锁全部改造案例<br>
+                无限生成个性化清单<br>
+                专属VIP模板特权
+            </div>
+            <div class="vip-price">
+                <span>¥</span>12<span style="font-size: 14px; color: #888;">/月</span>
+            </div>
+            <div class="vip-features">
+                <div class="vip-feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>查看完整改造案例</span>
+                </div>
+                <div class="vip-feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>无限生成改造清单</span>
+                </div>
+                <div class="vip-feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>专属软装搭配方案</span>
+                </div>
+                <div class="vip-feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>装修预算优化建议</span>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="purchaseVip()">
+                <i class="bi bi-lightning-fill"></i> 立即开通
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // API基础路径
+        const API_BASE = '';
+        
+        // 全局状态
+        let currentTab = 'cases';
+        let currentFilter = 'all';
+        let currentCategory = '';
+        let currentStyle = '简约';
+        let isVip = true; // 演示模式默认VIP
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+            initFilters();
+            initStyleOptions();
+            loadCases();
+            loadProducts();
+            loadCategories();
+            loadPosts();
+        });
+
+        // Tab切换
+        function initTabs() {
+            document.querySelectorAll('.nav-tab, .nav-item').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabName = tab.dataset.tab;
+                    switchTab(tabName);
+                });
+            });
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // 更新顶部Tab
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === tabName);
+            });
+            
+            // 更新底部导航
+            document.querySelectorAll('.nav-item').forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === tabName);
+            });
+            
+            // 切换内容
+            document.querySelectorAll('.section').forEach(s => {
+                s.classList.toggle('active', s.id === tabName);
+            });
+        }
+
+        // 筛选标签
+        function initFilters() {
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                    tag.classList.add('active');
+                    currentFilter = tag.dataset.filter;
+                    loadCases();
+                });
+            });
+        }
+
+        // 风格选择
+        function initStyleOptions() {
+            document.querySelectorAll('.style-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const parent = option.closest('.style-options');
+                    parent.querySelectorAll('.style-option').forEach(o => o.classList.remove('active'));
+                    option.classList.add('active');
+                    currentStyle = option.dataset.style;
+                });
+            });
+        }
+
+        // 加载案例
+        async function loadCases() {
+            const container = document.getElementById('cases-list');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            
+            try {
+                const params = new URLSearchParams();
+                if (currentFilter !== 'all') {
+                    params.append('tag', currentFilter);
+                }
+                
+                const res = await fetch(`${API_BASE}/api/cases?${params}`);
+                const { data } = await res.json();
+                
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="bi bi-house-x"></i>
+                            <p>暂无相关案例</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = data.map(item => `
+                    <div class="card-custom" onclick="showCaseDetail(${item.id})">
+                        <img src="${item.cover}" class="card-cover" alt="${item.title}">
+                        <div class="card-body">
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-meta">
+                                <span><i class="bi bi-currency-yen"></i> ${item.budget}元</span>
+                                <span><i class="bi bi-arrows-angle-expand"></i> ${item.area}㎡</span>
+                                <span><i class="bi bi-clock"></i> ${item.time}</span>
+                            </div>
+                            <div class="card-tags">
+                                ${item.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><p>加载失败，请重试</p></div>';
+            }
+        }
+
+        // 加载商品
+        async function loadProducts() {
+            const container = document.getElementById('products-list');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            
+            try {
+                const params = new URLSearchParams();
+                if (currentCategory) {
+                    params.append('category', currentCategory);
+                }
+                
+                const res = await fetch(`${API_BASE}/api/products?${params}`);
+                const { data } = await res.json();
+                
+                container.innerHTML = data.map(item => `
+                    <div class="product-card">
+                        <img src="${item.image}" class="product-image" alt="${item.name}">
+                        <div class="product-info">
+                            <div class="product-name">${item.name}</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="product-price">${item.price}</span>
+                                <span class="product-rating">
+                                    <i class="bi bi-star-fill"></i> ${item.rating}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><p>加载失败，请重试</p></div>';
+            }
+        }
+
+        // 加载分类
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${API_BASE}/api/products/categories`);
+                const { data } = await res.json();
+                
+                const container = document.getElementById('category-list');
+                container.innerHTML = `
+                    <span class="category-item active" data-category="">全部</span>
+                    ${data.map(cat => `
+                        <span class="category-item" data-category="${cat}">${cat}</span>
+                    `).join('')}
+                `;
+                
+                container.querySelectorAll('.category-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        container.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        currentCategory = item.dataset.category;
+                        loadProducts();
+                    });
+                });
+            } catch (err) {
+                console.error('加载分类失败');
+            }
+        }
+
+        // 加载帖子
+        async function loadPosts() {
+            const container = document.getElementById('posts-list');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/community/posts`);
+                const { data } = await res.json();
+                
+                container.innerHTML = data.map(post => `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <img src="${post.avatar}" class="post-avatar" alt="${post.user}">
+                            <div>
+                                <div class="post-user">${post.user}</div>
+                                <div class="post-time">${post.time}</div>
+                            </div>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        ${post.images.length > 0 ? `
+                            <div class="post-images">
+                                ${post.images.map(img => `<img src="${img}" class="post-image" alt="图片">`).join('')}
+                            </div>
+                        ` : ''}
+                        <div class="post-tags">
+                            ${post.tags.map(t => `<span class="post-tag">${t}</span>`).join('')}
+                        </div>
+                        <div class="post-actions">
+                            <div class="post-action" onclick="likePost(${post.id})">
+                                <i class="bi bi-heart"></i>
+                                <span>${post.likes}</span>
+                            </div>
+                            <div class="post-action">
+                                <i class="bi bi-chat"></i>
+                                <span>${post.comments}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state"><p>加载失败，请重试</p></div>';
+            }
+        }
+
+        // 计算预算
+        async function calculateBudget() {
+            const roomArea = document.getElementById('room-area').value;
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/calculator`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ room_area: parseInt(roomArea), style: currentStyle })
+                });
+                
+                const { data } = await res.json();
+                
+                document.getElementById('total-budget').textContent = `¥${data.total.toFixed(0)}`;
+                
+                const breakdown = document.getElementById('budget-breakdown');
+                breakdown.innerHTML = Object.entries(data.breakdown).map(([name, value]) => `
+                    <div class="breakdown-item">
+                        <span class="name">${name}</span>
+                        <span class="value">¥${value.toFixed(0)}</span>
+                    </div>
+                `).join('');
+                
+                const tips = document.getElementById('tips-list');
+                tips.innerHTML = data.tips.map(tip => `<li style="margin-bottom: 8px;">${tip}</li>`).join('');
+                
+                document.getElementById('budget-result').style.display = 'block';
+                showToast('预算计算完成！');
+            } catch (err) {
+                showToast('计算失败，请重试');
+            }
+        }
+
+        // 生成清单
+        async function generateChecklist() {
+            const roomArea = document.getElementById('checklist-area').value;
+            const budget = document.getElementById('checklist-budget').value;
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/checklist`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        room_area: parseInt(roomArea),
+                        budget: parseInt(budget),
+                        style: currentStyle
+                    })
+                });
+                
+                const { data } = await res.json();
+                
+                const container = document.getElementById('checklist-items');
+                container.innerHTML = data.checklist.map(item => `
+                    <div class="checklist-item">
+                        <div class="checklist-priority priority-${item.priority}"></div>
+                        <div class="checklist-content">
+                            <div class="checklist-name">${item.name}</div>
+                            <div class="checklist-price">参考价格：${item.price_range}元</div>
+                        </div>
+                        <div class="checklist-checkbox" onclick="toggleCheck(this)"></div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('checklist-summary').innerHTML = `
+                    <div class="label" style="font-size: 14px; color: #888;">预估总价</div>
+                    <div style="font-size: 28px; font-weight: 700; color: var(--primary);">
+                        ¥${data.total_estimate.toFixed(0)}
+                    </div>
+                `;
+                
+                document.getElementById('checklist-result').style.display = 'block';
+                showToast('清单生成成功！');
+            } catch (err) {
+                showToast('生成失败，请重试');
+            }
+        }
+
+        // 勾选清单项
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+        }
+
+        // 显示案例详情
+        function showCaseDetail(caseId) {
+            if (!isVip) {
+                showVipModal();
+                return;
+            }
+            // 简化版：直接显示提示
+            showToast('查看完整案例详情');
+        }
+
+        // 点赞
+        function likePost(postId) {
+            showToast('点赞成功！');
+        }
+
+        // 发布动态
+        function showPostModal() {
+            document.getElementById('post-modal').classList.add('active');
+        }
+
+        async function submitPost() {
+            const content = document.getElementById('post-content').value;
+            const tagsInput = document.getElementById('post-tags').value;
+            
+            if (!content.trim()) {
+                showToast('请输入内容');
+                return;
+            }
+            
+            const tags = tagsInput.split(',').map(t => t.trim()).filter(t => t);
+            
+            try {
+                await fetch(`${API_BASE}/api/community/posts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, tags })
+                });
+                
+                closeModal('post-modal');
+                document.getElementById('post-content').value = '';
+                document.getElementById('post-tags').value = '';
+                loadPosts();
+                showToast('发布成功！');
+            } catch (err) {
+                showToast('发布失败，请重试');
+            }
+        }
+
+        // VIP弹窗
+        function showVipModal() {
+            document.getElementById('vip-modal').classList.add('active');
+        }
+
+        async function purchaseVip() {
+            try {
+                const res = await fetch(`${API_BASE}/api/vip/purchase`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const { data } = await res.json();
+                closeModal('vip-modal');
+                isVip = true;
+                showToast('购买成功！');
+            } catch (err) {
+                showToast('购买失败，请重试');
+            }
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // 点击遮罩关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

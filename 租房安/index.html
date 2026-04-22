@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>租房安 - 让租房更安心</title>
+    <style>
+        /* ==================== 全局样式 ==================== */
+        :root {
+            --primary: #1890ff;
+            --primary-dark: #096dd9;
+            --success: #52c41a;
+            --warning: #faad14;
+            --danger: #ff4d4f;
+            --bg-color: #f5f7fa;
+            --text-primary: #1f1f1f;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --border-color: #e8e8e8;
+            --card-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --safe-color: #52c41a;
+            --warning-color: #faad14;
+            --danger-color: #ff4d4f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ==================== 头部导航 ==================== */
+        .header {
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            color: white;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(24,144,255,0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #ffd700, #ffb700);
+            color: #7c5900;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            opacity: 0.95;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ==================== 底部导航 ==================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .nav-icon {
+            font-size: 22px;
+        }
+
+        .nav-item .nav-label {
+            font-size: 11px;
+        }
+
+        /* ==================== 主内容区 ==================== */
+        .main-content {
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== 首页 ==================== */
+        .banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .banner-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .banner-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .banner-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .banner-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 功能入口网格 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 8px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .feature-item:active {
+            transform: scale(0.95);
+        }
+
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .feature-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 快捷工具卡片 */
+        .tools-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .tool-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tool-card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .tool-tag {
+            background: #fff7e6;
+            color: #fa8c16;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .tool-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .tool-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #1890ff, #096dd9);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tool-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ==================== 合同审核页 ==================== */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .contract-input-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .contract-textarea {
+            width: 100%;
+            min-height: 200px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 14px;
+            line-height: 1.8;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .contract-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(24,144,255,0.1);
+        }
+
+        .input-tips {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #1890ff, #096dd9);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .analyze-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* 风险结果显示 */
+        .result-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .result-card.show {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .risk-score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .risk-score-circle.safe { background: linear-gradient(135deg, #b7eb8f, #52c41a); }
+        .risk-score-circle.warning { background: linear-gradient(135deg, #ffe58f, #faad14); }
+        .risk-score-circle.danger { background: linear-gradient(135deg, #ffccc7, #ff4d4f); }
+
+        .score-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .score-label {
+            font-size: 14px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .result-summary {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* 风险列表 */
+        .risk-list {
+            margin-top: 20px;
+        }
+
+        .risk-category {
+            margin-bottom: 16px;
+        }
+
+        .risk-category-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .risk-category-title.high { color: var(--danger-color); }
+        .risk-category-title.medium { color: var(--warning-color); }
+        .risk-category-title.low { color: var(--text-secondary); }
+
+        .risk-item {
+            background: #fafafa;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border-left: 4px solid;
+        }
+
+        .risk-item.high { border-left-color: var(--danger-color); }
+        .risk-item.medium { border-left-color: var(--warning-color); }
+        .risk-item.low { border-left-color: var(--text-muted); }
+
+        .risk-keyword {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .risk-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* 建议列表 */
+        .suggestion-list {
+            background: #f6ffed;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 16px;
+        }
+
+        .suggestion-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+
+        .suggestion-item {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .suggestion-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+        }
+
+        /* ==================== 房源验证页 ==================== */
+        .verify-form {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .verify-result {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .verify-result.show {
+            display: block;
+        }
+
+        .verify-score-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .verify-badge {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .verify-badge.reliable { background: linear-gradient(135deg, #b7eb8f, #52c41a); }
+        .verify-badge.warning { background: linear-gradient(135deg, #ffe58f, #faad14); }
+        .verify-badge.danger { background: linear-gradient(135deg, #ffccc7, #ff4d4f); }
+
+        .verify-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .verify-score {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .risk-factors {
+            background: #fff7e6;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 16px;
+            text-align: left;
+        }
+
+        .risk-factors-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fa8c16;
+            margin-bottom: 10px;
+        }
+
+        .risk-factor-item {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 4px 0;
+        }
+
+        /* ==================== 房源比价页 ==================== */
+        .filter-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 房源卡片 */
+        .house-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 16px;
+        }
+
+        .house-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .house-content {
+            padding: 16px;
+        }
+
+        .house-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .house-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .house-info span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .house-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .house-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--danger-color);
+        }
+
+        .house-price span {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .verify-score-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .verify-score-badge.high { background: #f6ffed; color: var(--success); }
+        .verify-score-badge.medium { background: #fffbe6; color: var(--warning); }
+        .verify-score-badge.low { background: #fff2f0; color: var(--danger); }
+
+        .house-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .house-tag {
+            background: #f0f5ff;
+            color: var(--primary);
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .house-risks {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff7e6;
+            border-radius: 8px;
+        }
+
+        .house-risk-item {
+            font-size: 12px;
+            color: #fa8c16;
+            padding: 2px 0;
+        }
+
+        /* ==================== 社区页 ==================== */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
+            background: white;
+            color: var(--text-secondary);
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s;
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .post-author {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .post-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .post-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 6px;
+        }
+
+        .post-tag {
+            background: #f0f5ff;
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .post-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ==================== 维权指南页 ==================== */
+        .guide-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .guide-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1890ff, #096dd9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .guide-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .guide-category {
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        .guide-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+
+        /* ==================== 会员页 ==================== */
+        .membership-hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            padding: 30px 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .membership-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .membership-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .package-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .package-card.recommended {
+            border-color: var(--primary);
+            position: relative;
+        }
+
+        .package-badge {
+            position: absolute;
+            top: -10px;
+            right: 16px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .package-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .package-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .package-price span {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .package-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .package-features li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .package-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .package-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .package-btn.primary {
+            background: linear-gradient(135deg, #1890ff, #096dd9);
+            color: white;
+            border: none;
+        }
+
+        .package-btn.outline {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .package-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ==================== Toast提示 ==================== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ==================== Loading ==================== */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ==================== 模态框 ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 360px;
+            padding: 30px 24px;
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #1890ff, #096dd9);
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 支付成功模态框 -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal">
+            <div class="modal-icon">🎉</div>
+            <div class="modal-title">支付成功！</div>
+            <div class="modal-desc" id="modalDesc">您已成为尊贵的会员，感谢您的支持</div>
+            <button class="modal-btn" onclick="closeModal()">我知道了</button>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">租房安</span>
+            </div>
+            <div class="vip-badge" onclick="switchTab('membership')">开通会员</div>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span>🛡️</span>
+                <span>已保护</span>
+                <span id="totalChecks">15,680</span>
+                <span>次</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <div class="banner">
+                <div class="banner-title">让租房更安心 🔒</div>
+                <div class="banner-subtitle">AI智能检测合同风险，远离租房陷阱</div>
+                <button class="banner-btn" onclick="switchTab('contract')">立即检测合同</button>
+            </div>
+
+            <div class="feature-grid">
+                <button class="feature-item" onclick="switchTab('contract')">
+                    <div class="feature-icon">📋</div>
+                    <div class="feature-label">合同检测</div>
+                </button>
+                <button class="feature-item" onclick="switchTab('verify')">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-label">房源验证</div>
+                </button>
+                <button class="feature-item" onclick="switchTab('compare')">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-label">房源比价</div>
+                </button>
+                <button class="feature-item" onclick="switchTab('community')">
+                    <div class="feature-icon">💬</div>
+                    <div class="feature-label">避坑社区</div>
+                </button>
+            </div>
+
+            <div class="tools-section">
+                <div class="section-title">
+                    <span>🛡️</span>
+                    <span>维权利器</span>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-title">押金维权指南</div>
+                        <span class="tool-tag">必看</span>
+                    </div>
+                    <div class="tool-desc">从入住检查到维权全流程，助你拿回每一分押金</div>
+                    <button class="tool-btn" onclick="switchTab('guide')">查看详情 →</button>
+                </div>
+
+                <div class="tool-card">
+                    <div class="tool-card-header">
+                        <div class="tool-card-title">月卡会员</div>
+                        <span class="tool-tag">超值</span>
+                    </div>
+                    <div class="tool-desc">¥19/月，无限次合同审核 + 优先维权咨询</div>
+                    <button class="tool-btn" onclick="switchTab('membership')">立即开通 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 合同审核页 -->
+        <div class="page" id="page-contract">
+            <div class="page-header">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="page-title">合同风险检测</div>
+            </div>
+
+            <div class="contract-input-card">
+                <label class="input-label">粘贴租房合同文本</label>
+                <textarea class="contract-textarea" id="contractInput" placeholder="请粘贴房东提供的租房合同内容...
+
+示例关键词供参考：
+- 押金条款（金额、退还条件）
+- 违约金约定
+- 维修责任划分
+- 提前解约条款
+- 涨租机制"></textarea>
+                <div class="input-tips">💡 支持复制合同截图文字后粘贴</div>
+            </div>
+
+            <button class="analyze-btn" id="analyzeBtn" onclick="analyzeContract()">
+                <span>🔍</span>
+                <span>开始智能检测</span>
+            </button>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>正在分析合同风险...</div>
+            </div>
+
+            <div class="result-card" id="resultCard">
+                <div class="risk-score-circle" id="scoreCircle">
+                    <div class="score-number" id="scoreNumber">85</div>
+                    <div class="score-label" id="scoreLabel">安全</div>
+                </div>
+
+                <div class="result-summary">
+                    <div class="result-title" id="resultTitle">合同风险检测完成</div>
+                    <div class="result-desc" id="resultDesc">共检测到0处潜在风险</div>
+                </div>
+
+                <div class="risk-list" id="riskList"></div>
+                <div class="suggestion-list" id="suggestionList"></div>
+            </div>
+        </div>
+
+        <!-- 房源验证页 -->
+        <div class="page" id="page-verify">
+            <div class="page-header">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="page-title">房源真实性验证</div>
+            </div>
+
+            <div class="verify-form">
+                <div class="form-group">
+                    <label class="form-label">房源标题</label>
+                    <input type="text" class="form-input" id="verifyTitle" placeholder="如：精装两居室 近地铁 押一付一">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">月租金（元）</label>
+                    <input type="number" class="form-input" id="verifyPrice" placeholder="请输入租金金额">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">所在区域</label>
+                    <input type="text" class="form-input" id="verifyDistrict" placeholder="如：朝阳区、海淀区">
+                </div>
+
+                <button class="analyze-btn" onclick="verifyHouse()">
+                    <span>🔍</span>
+                    <span>立即验证</span>
+                </button>
+
+                <div class="verify-result" id="verifyResult">
+                    <div class="verify-score-card">
+                        <div class="verify-badge" id="verifyBadge">✓</div>
+                        <div class="verify-title" id="verifyTitle2">可信度较高</div>
+                        <div class="verify-score">可信度：<span id="verifyScoreNum">82</span>分</div>
+                        <div class="risk-factors" id="riskFactors">
+                            <div class="risk-factors-title">⚠️ 风险提示</div>
+                            <div id="riskFactorsList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 房源比价页 -->
+        <div class="page" id="page-compare">
+            <div class="page-header">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="page-title">附近房源比价</div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filter-row">
+                    <button class="filter-chip active" onclick="filterHouse('all', this)">全部</button>
+                    <button class="filter-chip" onclick="filterHouse('整租', this)">整租</button>
+                    <button class="filter-chip" onclick="filterHouse('合租', this)">合租</button>
+                    <button class="filter-chip" onclick="filterHouse('公寓', this)">公寓</button>
+                    <button class="filter-chip" onclick="filterHouse('朝阳区', this)">朝阳区</button>
+                    <button class="filter-chip" onclick="filterHouse('海淀区', this)">海淀区</button>
+                </div>
+            </div>
+
+            <div id="houseList"></div>
+        </div>
+
+        <!-- 社区页 -->
+        <div class="page" id="page-community">
+            <div class="page-header">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="page-title">租房避坑社区</div>
+            </div>
+
+            <div class="category-tabs">
+                <button class="category-tab active" onclick="filterPost('全部', this)">全部</button>
+                <button class="category-tab" onclick="filterPost('经验分享', this)">经验分享</button>
+                <button class="category-tab" onclick="filterPost('法律科普', this)">法律科普</button>
+                <button class="category-tab" onclick="filterPost('维权记录', this)">维权记录</button>
+            </div>
+
+            <div id="postList"></div>
+        </div>
+
+        <!-- 维权指南页 -->
+        <div class="page" id="page-guide">
+            <div class="page-header">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="page-title">押金维权指南</div>
+            </div>
+
+            <div id="guideList"></div>
+        </div>
+
+        <!-- 会员页 -->
+        <div class="page" id="page-membership">
+            <div class="page-header">
+                <button class="back-btn" onclick="switchTab('home')">←</button>
+                <div class="page-title">会员中心</div>
+            </div>
+
+            <div class="membership-hero">
+                <div class="membership-title">🏆 租房安会员</div>
+                <div class="membership-subtitle">全方位守护你的租房权益</div>
+            </div>
+
+            <div class="package-grid">
+                <div class="package-card">
+                    <div class="package-name">单次审核</div>
+                    <div class="package-price">¥9.9 <span>永久有效</span></div>
+                    <ul class="package-features">
+                        <li>合同风险检测1次</li>
+                        <li>详细风险报告</li>
+                        <li>专业修改建议</li>
+                    </ul>
+                    <button class="package-btn outline" onclick="purchasePackage('single')">立即购买</button>
+                </div>
+
+                <div class="package-card recommended">
+                    <div class="package-badge">推荐</div>
+                    <div class="package-name">月卡会员</div>
+                    <div class="package-price">¥19 <span>/30天</span></div>
+                    <ul class="package-features">
+                        <li>无限次合同审核</li>
+                        <li>优先维权咨询</li>
+                        <li>专属客服支持</li>
+                        <li>社区特权身份</li>
+                        <li>房源验证加速</li>
+                    </ul>
+                    <button class="package-btn primary" onclick="purchasePackage('monthly')">立即开通</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('home')" data-tab="home">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">首页</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('contract')" data-tab="contract">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">合同检测</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('compare')" data-tab="compare">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">房源</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('community')" data-tab="community">
+            <span class="nav-icon">💬</span>
+            <span class="nav-label">社区</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('membership')" data-tab="membership">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">我的</span>
+        </button>
+    </nav>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let currentTab = 'home';
+        let currentFilter = 'all';
+        let currentPostFilter = '全部';
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadHouseList();
+            loadPostList();
+            loadGuideList();
+        });
+
+        // ==================== 页面切换 ====================
+        function switchTab(tabName) {
+            // 更新导航
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.tab === tabName);
+            });
+
+            // 更新页面显示
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('page-' + tabName).classList.add('active');
+
+            currentTab = tabName;
+
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+
+        // ==================== 统计数据 ====================
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('totalChecks').textContent = 
+                        data.data.total_checks.toLocaleString();
+                }
+            } catch (e) {
+                console.log('Stats API not available');
+            }
+        }
+
+        // ==================== 合同分析 ====================
+        async function analyzeContract() {
+            const content = document.getElementById('contractInput').value.trim();
+            
+            if (!content) {
+                showToast('请输入合同内容');
+                return;
+            }
+
+            if (content.length < 50) {
+                showToast('合同内容过短，请提供更完整的内容');
+                return;
+            }
+
+            const btn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loading');
+            const resultCard = document.getElementById('resultCard');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span><span>分析中...</span>';
+            loading.classList.add('show');
+            resultCard.classList.remove('show');
+
+            try {
+                const res = await fetch('/api/contract/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    displayResult(data.data);
+                } else {
+                    showToast(data.error || '分析失败，请重试');
+                }
+            } catch (e) {
+                // 模拟数据（后端不可用时）
+                simulateResult(content);
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<span>🔍</span><span>开始智能检测</span>';
+            loading.classList.remove('show');
+        }
+
+        function displayResult(data) {
+            const resultCard = document.getElementById('resultCard');
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreNumber = document.getElementById('scoreNumber');
+            const scoreLabel = document.getElementById('scoreLabel');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDesc = document.getElementById('resultDesc');
+            const riskList = document.getElementById('riskList');
+            const suggestionList = document.getElementById('suggestionList');
+
+            // 更新分数
+            scoreNumber.textContent = data.risk_score;
+            scoreLabel.textContent = data.risk_label;
+
+            scoreCircle.className = 'risk-score-circle ' + data.risk_level;
+
+            // 更新标题描述
+            resultTitle.textContent = '合同风险检测完成';
+            resultDesc.textContent = `共检测到 ${data.risk_count} 处潜在风险，其中高风险 ${data.high_risk_count} 处`;
+
+            // 渲染风险列表
+            const highRisks = data.risks.filter(r => r.severity === 'high');
+            const mediumRisks = data.risks.filter(r => r.severity === 'medium');
+            const lowRisks = data.risks.filter(r => r.severity === 'low');
+
+            let html = '';
+
+            if (highRisks.length > 0) {
+                html += `<div class="risk-category">
+                    <div class="risk-category-title high">🔴 高风险（${highRisks.length}处）</div>`;
+                highRisks.forEach(r => {
+                    html += `<div class="risk-item high">
+                        <div class="risk-keyword">"${r.keyword}"</div>
+                        <div class="risk-desc">${r.description}</div>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+
+            if (mediumRisks.length > 0) {
+                html += `<div class="risk-category">
+                    <div class="risk-category-title medium">🟡 中风险（${mediumRisks.length}处）</div>`;
+                mediumRisks.forEach(r => {
+                    html += `<div class="risk-item medium">
+                        <div class="risk-keyword">"${r.keyword}"</div>
+                        <div class="risk-desc">${r.description}</div>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+
+            if (lowRisks.length > 0) {
+                html += `<div class="risk-category">
+                    <div class="risk-category-title low">⚪ 建议关注（${lowRisks.length}处）</div>`;
+                lowRisks.forEach(r => {
+                    html += `<div class="risk-item low">
+                        <div class="risk-keyword">"${r.keyword}"</div>
+                        <div class="risk-desc">${r.description}</div>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+
+            riskList.innerHTML = html;
+
+            // 渲染建议
+            if (data.suggestions && data.suggestions.length > 0) {
+                let sugHtml = '<div class="suggestion-title">💡 修改建议</div>';
+                data.suggestions.forEach(s => {
+                    sugHtml += `<div class="suggestion-item">${s}</div>`;
+                });
+                suggestionList.innerHTML = sugHtml;
+                suggestionList.style.display = 'block';
+            } else {
+                suggestionList.style.display = 'none';
+            }
+
+            resultCard.classList.add('show');
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 模拟结果（后端不可用时）
+        function simulateResult(content) {
+            const risks = [];
+            const keywords = ['无条件驱逐', '押金不退', '不得转租', '涨租无限制', '违约金', '物业费'];
+            const found = keywords.filter(k => content.includes(k));
+
+            if (found.length === 0) {
+                displayResult({
+                    risk_score: 95,
+                    risk_level: 'safe',
+                    risk_label: '低风险',
+                    risk_count: 0,
+                    high_risk_count: 0,
+                    risks: [],
+                    suggestions: ['合同整体较为规范，建议关注入住检查清单']
+                });
+            } else {
+                found.forEach(k => {
+                    risks.push({
+                        keyword: k,
+                        description: `检测到关键词"${k}"，建议仔细核实相关条款`,
+                        severity: ['无条件驱逐', '押金不退', '涨租无限制'].includes(k) ? 'high' : 'medium'
+                    });
+                });
+
+                displayResult({
+                    risk_score: Math.max(20, 100 - found.length * 15),
+                    risk_level: found.length > 2 ? 'danger' : 'warning',
+                    risk_label: found.length > 2 ? '高风险' : '中风险',
+                    risk_count: found.length,
+                    high_risk_count: risks.filter(r => r.severity === 'high').length,
+                    risks: risks,
+                    suggestions: [
+                        '建议与房东协商修改相关条款',
+                        '必要时可咨询专业律师意见'
+                    ]
+                });
+            }
+        }
+
+        // ==================== 房源验证 ====================
+        async function verifyHouse() {
+            const title = document.getElementById('verifyTitle').value.trim();
+            const price = document.getElementById('verifyPrice').value;
+            const district = document.getElementById('verifyDistrict').value.trim();
+
+            if (!title || !price) {
+                showToast('请填写房源标题和租金');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/house/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, price: parseInt(price), district })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    displayVerifyResult(data.data);
+                }
+            } catch (e) {
+                // 模拟
+                const score = price < 2000 ? 45 : (price > 8000 ? 65 : 82);
+                displayVerifyResult({
+                    verify_result: score >= 80 ? 'reliable' : (score >= 60 ? 'warning' : 'danger'),
+                    result_label: score >= 80 ? '可信度较高' : (score >= 60 ? '存在风险' : '高风险房源'),
+                    verify_score: score,
+                    risk_factors: score < 80 ? ['价格异常，建议实地核实'] : []
+                });
+            }
+        }
+
+        function displayVerifyResult(data) {
+            const resultDiv = document.getElementById('verifyResult');
+            const badge = document.getElementById('verifyBadge');
+            const title = document.getElementById('verifyTitle2');
+            const scoreNum = document.getElementById('verifyScoreNum');
+            const factorsList = document.getElementById('riskFactorsList');
+
+            badge.className = 'verify-badge ' + data.verify_result;
+            badge.textContent = data.verify_result === 'reliable' ? '✓' : (data.verify_result === 'warning' ? '⚠' : '✗');
+            title.textContent = data.result_label;
+            scoreNum.textContent = data.verify_score;
+
+            if (data.risk_factors && data.risk_factors.length > 0) {
+                document.getElementById('riskFactors').style.display = 'block';
+                factorsList.innerHTML = data.risk_factors.map(f => 
+                    `<div class="risk-factor-item">• ${f}</div>`
+                ).join('');
+            } else {
+                document.getElementById('riskFactors').style.display = 'none';
+            }
+
+            resultDiv.classList.add('show');
+        }
+
+        // ==================== 房源列表 ====================
+        async function loadHouseList() {
+            try {
+                const res = await fetch('/api/house/list');
+                const data = await res.json();
+                if (data.success) {
+                    renderHouseList(data.data);
+                }
+            } catch (e) {
+                // 使用默认数据
+                renderHouseList([
+                    { id: '1', title: '精装两居室 近地铁 押一付一', district: '朝阳区', area: '60㎡', price: 4500, deposit: 4500, floor: '15/25层', tags: ['近地铁', '精装修'], verify_score: 85, risks: [] },
+                    { id: '2', title: '主卧带独卫 首次出租 随时看房', district: '海淀区', area: '25㎡', price: 3200, deposit: 3200, floor: '6/18层', tags: ['主卧独卫', '首次出租'], verify_score: 92, risks: [] },
+                    { id: '3', title: ' loft公寓 复式设计 网红小区', district: '东城区', area: '45㎡', price: 2800, deposit: 2800, floor: '10/20层', tags: ['loft', '网红小区'], verify_score: 58, risks: ['价格明显偏低', '需核实真实性'] },
+                    { id: '4', title: '次卧出租 交通便利 限女生', district: '丰台区', area: '15㎡', price: 2200, deposit: 2200, floor: '3/6层', tags: ['限女生', '交通便利'], verify_score: 78, risks: [] }
+                ]);
+            }
+        }
+
+        function renderHouseList(houses) {
+            const container = document.getElementById('houseList');
+            container.innerHTML = houses.map(house => {
+                const scoreClass = house.verify_score >= 80 ? 'high' : (house.verify_score >= 60 ? 'medium' : 'low');
+                return `
+                    <div class="house-card">
+                        <img class="house-image" src="https://picsum.photos/400/300?random=${house.id}" alt="房源图片">
+                        <div class="house-content">
+                            <div class="house-title">${house.title}</div>
+                            <div class="house-info">
+                                <span>📍 ${house.district}</span>
+                                <span>📐 ${house.area}</span>
+                                <span>🏢 ${house.floor}</span>
+                            </div>
+                            <div class="house-price-row">
+                                <div class="house-price">¥${house.price}<span>/月</span></div>
+                                <div class="verify-score-badge ${scoreClass}">可信度 ${house.verify_score}</div>
+                            </div>
+                            <div class="house-tags">
+                                ${house.tags.map(t => `<span class="house-tag">${t}</span>`).join('')}
+                            </div>
+                            ${house.risks && house.risks.length > 0 ? `
+                                <div class="house-risks">
+                                    ${house.risks.map(r => `<div class="house-risk-item">⚠️ ${r}</div>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterHouse(type, btn) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+
+            // 筛选逻辑
+            fetch('/api/house/list?type=' + encodeURIComponent(type === 'all' ? '' : type))
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        renderHouseList(data.data);
+                    }
+                })
+                .catch(() => {
+                    // 本地筛选
+                    const allHouses = [
+                        { id: '1', title: '精装两居室 近地铁 押一付一', district: '朝阳区', area: '60㎡', price: 4500, deposit: 4500, floor: '15/25层', tags: ['近地铁', '精装修'], verify_score: 85, risks: [], type: '整租' },
+                        { id: '2', title: '主卧带独卫 首次出租 随时看房', district: '海淀区', area: '25㎡', price: 3200, deposit: 3200, floor: '6/18层', tags: ['主卧独卫', '首次出租'], verify_score: 92, risks: [], type: '公寓' },
+                        { id: '3', title: ' loft公寓 复式设计 网红小区', district: '东城区', area: '45㎡', price: 2800, deposit: 2800, floor: '10/20层', tags: ['loft', '网红小区'], verify_score: 58, risks: ['价格明显偏低'], type: '公寓' },
+                        { id: '4', title: '次卧出租 交通便利 限女生', district: '丰台区', area: '15㎡', price: 2200, deposit: 2200, floor: '3/6层', tags: ['限女生', '交通便利'], verify_score: 78, risks: [], type: '合租' }
+                    ];
+                    const filtered = type === 'all' ? allHouses : allHouses.filter(h => 
+                        h.type === type || h.district === type
+                    );
+                    renderHouseList(filtered);
+                });
+        }
+
+        // ==================== 社区帖子 ====================
+        async function loadPostList() {
+            try {
+                const res = await fetch('/api/community/posts');
+                const data = await res.json();
+                if (data.success) {
+                    renderPostList(data.data);
+                }
+            } catch (e) {
+                renderPostList([
+                    { id: '1', author: '租房小白', avatar: '👤', title: '的血泪教训！押金被扣的N种理由', content: '本人亲身经历，押金被扣了2000块，理由是"墙面轻微污渍"...', category: '经验分享', likes: 328, comments: 56, time: '2小时前', tags: ['押金', '维权'] },
+                    { id: '2', author: '法律达人', avatar: '⚖️', title: '租房合同必看！这些条款千万不能签', content: '整理了租房合同中常见的霸王条款...', category: '法律科普', likes: 892, comments: 124, time: '5小时前', tags: ['合同', '避坑'] },
+                    { id: '3', author: '维权斗士', avatar: '🛡️', title: '房东不退押金？我是这样拿回来的', content: '被扣押金3500，通过投诉和起诉成功维权...', category: '维权记录', likes: 1203, comments: 201, time: '3天前', tags: ['维权', '成功'] }
+                ]);
+            }
+        }
+
+        function renderPostList(posts) {
+            const container = document.getElementById('postList');
+            container.innerHTML = posts.map(post => `
+                <div class="post-card" onclick="showToast('帖子详情开发中...')">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.avatar}</div>
+                        <div>
+                            <div class="post-author">${post.author}</div>
+                            <div class="post-meta">${post.category} · ${post.time}</div>
+                        </div>
+                    </div>
+                    <div class="post-title">${post.title}</div>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-footer">
+                        <div class="post-tags">
+                            ${post.tags.map(t => `<span class="post-tag">${t}</span>`).join('')}
+                        </div>
+                        <div class="post-stats">
+                            <span class="post-stat">❤️ ${post.likes}</span>
+                            <span class="post-stat">💬 ${post.comments}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterPost(category, btn) {
+            currentPostFilter = category;
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            fetch('/api/community/posts?category=' + encodeURIComponent(category === '全部' ? '' : category))
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        renderPostList(data.data);
+                    }
+                })
+                .catch(() => {
+                    const allPosts = [
+                        { id: '1', author: '租房小白', avatar: '👤', title: '的血泪教训！押金被扣的N种理由', content: '本人亲身经历，押金被扣了2000块...', category: '经验分享', likes: 328, comments: 56, time: '2小时前', tags: ['押金', '维权'] },
+                        { id: '2', author: '法律达人', avatar: '⚖️', title: '租房合同必看！这些条款千万不能签', content: '整理了租房合同中常见的霸王条款...', category: '法律科普', likes: 892, comments: 124, time: '5小时前', tags: ['合同', '避坑'] },
+                        { id: '3', author: '维权斗士', avatar: '🛡️', title: '房东不退押金？我是这样拿回来的', content: '被扣押金3500，成功维权...', category: '维权记录', likes: 1203, comments: 201, time: '3天前', tags: ['维权', '成功'] }
+                    ];
+                    const filtered = category === '全部' ? allPosts : allPosts.filter(p => p.category === category);
+                    renderPostList(filtered);
+                });
+        }
+
+        // ==================== 维权指南 ====================
+        async function loadGuideList() {
+            try {
+                const res = await fetch('/api/deposit/guides');
+                const data = await res.json();
+                if (data.success) {
+                    renderGuideList(data.data);
+                }
+            } catch (e) {
+                renderGuideList([
+                    { id: '1', title: '入住前必做清单', icon: '📋', content: '1. 全屋拍照录像\n2. 检查水电燃气表\n3. 核对家具清单\n4. 签订交接清单', category: '预防篇' },
+                    { id: '2', title: '押金不退应对策略', icon: '💪', content: '1. 友好协商\n2. 发送书面催款函\n3. 拨打12345投诉\n4. 必要时起诉（费用50元）', category: '维权篇' }
+                ]);
+            }
+        }
+
+        function renderGuideList(guides) {
+            const container = document.getElementById('guideList');
+            container.innerHTML = guides.map(guide => `
+                <div class="guide-card">
+                    <div class="guide-header">
+                        <div class="guide-icon">${guide.icon}</div>
+                        <div>
+                            <div class="guide-title">${guide.title}</div>
+                            <div class="guide-category">${guide.category}</div>
+                        </div>
+                    </div>
+                    <div class="guide-content">${guide.content}</div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 会员购买 ====================
+        async function purchasePackage(type) {
+            try {
+                const res = await fetch('/api/membership/purchase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ package_type: type })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showPaymentModal(data.data.package_name);
+                } else {
+                    showToast(data.error || '购买失败，请重试');
+                }
+            } catch (e) {
+                // 模拟购买成功
+                showPaymentModal(type === 'monthly' ? '月卡会员' : '单次审核');
+            }
+        }
+
+        function showPaymentModal(packageName) {
+            document.getElementById('modalDesc').textContent = 
+                `您已成功购买${packageName}，感谢您的支持！`;
+            document.getElementById('paymentModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').classList.remove('show');
+            showToast('🎉 恭喜成为尊贵的会员！');
+        }
+
+        // ==================== 工具函数 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

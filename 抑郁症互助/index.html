@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>抑郁互助 - 温暖陪伴，陪你走过低谷</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #7C9EE5;
+            --primary-light: #E8EFF9;
+            --secondary: #F5A962;
+            --success: #6DD4A3;
+            --danger: #E57C7C;
+            --text: #333;
+            --text-light: #888;
+            --bg: #F7F8FC;
+            --white: #fff;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --radius: 16px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #9BB5F0 100%);
+            padding: 20px 16px 40px;
+            color: white;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .header-icon {
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .greeting {
+            font-size: 15px;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            max-width: 480px;
+            margin: -30px auto 0;
+            padding: 0 16px;
+        }
+
+        /* 卡片通用样式 */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        /* 首页问候卡片 */
+        .welcome-card {
+            background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%);
+            border: 1px solid rgba(124, 158, 229, 0.2);
+        }
+
+        .welcome-card .tip {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 12px;
+        }
+
+        /* 快速记录 */
+        .quick-record {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .mood-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 4px;
+            background: var(--bg);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mood-btn:hover, .mood-btn.active {
+            background: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        .mood-btn .emoji {
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+
+        .mood-btn .label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* 功能入口 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 8px;
+            background: var(--bg);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .feature-item .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .feature-item .name {
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        /* 标签页 */
+        .tabs {
+            display: flex;
+            background: var(--white);
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px 8px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-light);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            padding: 16px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 情绪记录页面 */
+        .mood-history {
+            margin-top: 16px;
+        }
+
+        .mood-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .mood-item .emoji {
+            font-size: 32px;
+            margin-right: 12px;
+        }
+
+        .mood-item .info {
+            flex: 1;
+        }
+
+        .mood-item .emotion {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .mood-item .note {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .mood-item .date {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 情绪统计 */
+        .stats-card {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* 抑郁自测 */
+        .test-progress {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .test-progress .bar {
+            flex: 1;
+            height: 6px;
+            background: var(--bg);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .test-progress .fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .test-progress .text {
+            margin-left: 12px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .question-card {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .question-text {
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 16px;
+            background: var(--bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .option-btn.selected {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .test-nav {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .test-nav button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6B8ED5;
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* 测试结果 */
+        .result-card {
+            text-align: center;
+            padding: 32px 24px;
+        }
+
+        .result-score {
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .result-level {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        .result-desc {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .result-suggestion {
+            background: var(--primary-light);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.7;
+            text-align: left;
+        }
+
+        /* 正念冥想 */
+        .meditation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .meditation-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .meditation-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .meditation-cover {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .meditation-info {
+            padding: 16px;
+        }
+
+        .meditation-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .meditation-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .meditation-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .meditation-meta span {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .meditation-meta .tag {
+            padding: 4px 10px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 20px;
+        }
+
+        .player-bar {
+            position: fixed;
+            bottom: 70px;
+            left: 16px;
+            right: 16px;
+            max-width: 448px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .player-bar.show {
+            display: flex;
+        }
+
+        .player-cover {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .player-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .player-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* 匿名社区 */
+        .post-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-right: 12px;
+        }
+
+        .post-author {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .post-tag {
+            padding: 4px 10px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 24px;
+            padding-top: 12px;
+            border-top: 1px solid var(--bg);
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .post-action.liked {
+            color: var(--danger);
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 28px;
+            border: none;
+            box-shadow: 0 4px 16px rgba(124, 158, 229, 0.4);
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* 心理咨询师 */
+        .counselor-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .counselor-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .counselor-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .counselor-info {
+            flex: 1;
+        }
+
+        .counselor-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .counselor-title {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .counselor-stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .counselor-stat {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .counselor-stat strong {
+            color: var(--text);
+        }
+
+        .counselor-specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .specialty-tag {
+            padding: 6px 12px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        .counselor-intro {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .counselor-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .counselor-price {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .price-now {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+        .price-original {
+            font-size: 14px;
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+
+        .book-btn {
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            color: var(--text-light);
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item .label {
+            font-size: 11px;
+        }
+
+        /* 会员卡片 */
+        .member-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #9BB5F0 100%);
+            border-radius: var(--radius);
+            padding: 24px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .member-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .member-badge {
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .member-price {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .member-price span {
+            font-size: 16px;
+        }
+
+        .member-original {
+            font-size: 14px;
+            opacity: 0.8;
+            text-decoration: line-through;
+            margin-bottom: 16px;
+        }
+
+        .member-benefits {
+            list-style: none;
+        }
+
+        .member-benefits li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .member-benefits li::before {
+            content: '✓';
+            font-weight: bold;
+        }
+
+        .member-buy-btn {
+            width: 100%;
+            padding: 16px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--bg);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 时间选择 */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .time-slot {
+            padding: 12px;
+            text-align: center;
+            background: var(--bg);
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .time-slot:hover {
+            border-color: var(--primary);
+        }
+
+        .time-slot.selected {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state .text {
+            font-size: 15px;
+        }
+
+        /* 紧急求助 */
+        .emergency-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--danger) 0%, #F08C8C 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 2000;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* 筛选标签 */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--bg);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-top">
+            <h1>🌸 抑郁互助</h1>
+            <div class="header-icons">
+                <span class="header-icon" onclick="showMembership()">👑</span>
+                <span class="header-icon" onclick="showEmergency()">🆘</span>
+            </div>
+        </div>
+        <p class="greeting" id="greeting">你好，今天也要好好照顾自己</p>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 首页卡片 -->
+        <div class="card welcome-card" id="welcomeCard">
+            <h3>👋 记录此刻心情</h3>
+            <p style="font-size: 14px; color: var(--text-light); margin-top: 8px;">
+                每一个情绪都值得被看见
+            </p>
+            <div class="quick-record" id="quickRecord">
+                <button class="mood-btn" onclick="recordMood(1, '很糟')">
+                    <span class="emoji">😢</span>
+                    <span class="label">很糟</span>
+                </button>
+                <button class="mood-btn" onclick="recordMood(2, '不佳')">
+                    <span class="emoji">😔</span>
+                    <span class="label">不佳</span>
+                </button>
+                <button class="mood-btn" onclick="recordMood(3, '一般')">
+                    <span class="emoji">😐</span>
+                    <span class="label">一般</span>
+                </button>
+                <button class="mood-btn" onclick="recordMood(4, '不错')">
+                    <span class="emoji">🙂</span>
+                    <span class="label">不错</span>
+                </button>
+                <button class="mood-btn" onclick="recordMood(5, '很好')">
+                    <span class="emoji">😊</span>
+                    <span class="label">很好</span>
+                </button>
+            </div>
+            <div class="tip" id="dailyTip">
+                💡 今天天气不错，记得开窗通风，让阳光照进来
+            </div>
+        </div>
+
+        <!-- 功能入口 -->
+        <div class="card">
+            <h3>快速入口</h3>
+            <div class="feature-grid">
+                <button class="feature-item" onclick="switchTab('test')">
+                    <span class="icon">📋</span>
+                    <span class="name">抑郁自测</span>
+                </button>
+                <button class="feature-item" onclick="switchTab('meditation')">
+                    <span class="icon">🎧</span>
+                    <span class="name">正念冥想</span>
+                </button>
+                <button class="feature-item" onclick="switchTab('community')">
+                    <span class="icon">💬</span>
+                    <span class="name">互助社区</span>
+                </button>
+                <button class="feature-item" onclick="switchTab('counselor')">
+                    <span class="icon">👩‍⚕️</span>
+                    <span class="name">咨询预约</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 情绪统计预览 -->
+        <div class="card" id="moodStatsPreview" onclick="switchTab('mood')">
+            <h3>📊 情绪趋势</h3>
+            <div class="stats-card" style="margin-top: 16px;">
+                <div class="stat-item">
+                    <div class="value" id="avgScore">--</div>
+                    <div class="label">平均情绪</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="recordCount">0</div>
+                    <div class="label">记录次数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="consecutiveDays">0</div>
+                    <div class="label">连续天数</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 会员卡片预览 -->
+        <div class="member-card" id="memberPreview" onclick="showMembership()">
+            <div class="member-header">
+                <span class="member-title">🌟 开通月卡会员</span>
+                <span class="member-badge">限时特惠</span>
+            </div>
+            <div class="member-price">¥29 <span>/月</span></div>
+            <div class="member-original">原价 ¥99/月</div>
+            <ul class="member-benefits">
+                <li>解锁全部正念冥想课程</li>
+                <li>专业心理咨询师在线咨询</li>
+                <li>专属情绪分析报告</li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- 标签页 -->
+    <nav class="tabs">
+        <button class="tab active" onclick="switchTab('home')">
+            <span>🏠</span><br>首页
+        </button>
+        <button class="tab" onclick="switchTab('mood')">
+            <span>📝</span><br>情绪
+        </button>
+        <button class="tab" onclick="switchTab('test')">
+            <span>📋</span><br>自测
+        </button>
+        <button class="tab" onclick="switchTab('meditation')">
+            <span>🎧</span><br>冥想
+        </button>
+        <button class="tab" onclick="switchTab('more')">
+            <span>更多</span><br>
+        </button>
+    </nav>
+
+    <!-- 情绪记录页面 -->
+    <div class="page" id="page-mood">
+        <h2 style="margin-bottom: 16px;">📝 情绪记录</h2>
+        
+        <div class="emergency-btn" onclick="showEmergency()">
+            🆘 紧急求助 - 点击获取帮助热线
+        </div>
+
+        <div class="card">
+            <h3>记录今日心情</h3>
+            <div class="quick-record" style="margin-top: 16px;">
+                <button class="mood-btn" onclick="recordMood(1, '很糟')">
+                    <span class="emoji">😢</span>
+                    <span class="label">很糟</span>
+                </button>
+                <button class="mood-btn" onclick="recordMood(2, '不佳')">
+                    <span class="emoji">😔</span>
+                    <span class="label">不佳</span>
+                </button>
+                <button class="mood-btn" onclick="recordMood(3, '一般')">
+                    <span class="emoji">😐</span>
+                    <span class="label">一般</span>
+                </button>
+                <button class="mood-btn" onclick="recordMood(4, '不错')">
+                    <span class="emoji">🙂</span>
+                    <span class="label">不错</span>
+                </button>
+                <button class="mood-btn" onclick="recordMood(5, '很好')">
+                    <span class="emoji">😊</span>
+                    <span class="label">很好</span>
+                </button>
+            </div>
+            <textarea id="moodNote" placeholder="写下此刻的想法...（可选）" style="
+                width: 100%;
+                height: 80px;
+                padding: 12px;
+                border: 1px solid #eee;
+                border-radius: 12px;
+                margin-top: 16px;
+                font-size: 14px;
+                resize: none;
+            "></textarea>
+            <button class="test-nav" style="margin-top: 12px;">
+                <button class="btn-primary" onclick="saveMoodRecord()" style="flex: 1;">保存记录</button>
+            </button>
+        </div>
+
+        <h3 style="margin: 24px 0 16px;">📅 历史记录</h3>
+        <div id="moodHistory">
+            <div class="empty-state">
+                <div class="icon">📝</div>
+                <p class="text">还没有记录，开始记录你的情绪吧</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 抑郁自测页面 -->
+    <div class="page" id="page-test">
+        <h2 style="margin-bottom: 16px;">📋 抑郁自测 (PHQ-9)</h2>
+        
+        <div class="card" id="testIntro">
+            <h3>关于 PHQ-9 量表</h3>
+            <p style="font-size: 14px; color: var(--text-light); line-height: 1.7; margin-top: 12px;">
+                PHQ-9是国际通用的抑郁症筛查量表，共9个问题在过去两周内您的情况。测试大约需要3-5分钟。
+            </p>
+            <p style="font-size: 14px; color: var(--text-light); line-height: 1.7; margin-top: 12px;">
+                ⚠️ 此测试仅供参考，不能替代专业诊断。如有需要，请寻求专业帮助。
+            </p>
+            <button class="btn-primary" style="width: 100%; margin-top: 20px;" onclick="startTest()">
+                开始测试
+            </button>
+        </div>
+
+        <div class="card" id="testQuestion" style="display: none;">
+            <div class="test-progress">
+                <div class="bar">
+                    <div class="fill" id="testProgress"></div>
+                </div>
+                <span class="text" id="testProgressText">1/9</span>
+            </div>
+            <div class="question-card">
+                <p class="question-text" id="questionText"></p>
+                <div class="option-list" id="optionList"></div>
+            </div>
+            <div class="test-nav">
+                <button class="btn-secondary" id="prevBtn" onclick="prevQuestion()">上一题</button>
+                <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">下一题</button>
+            </div>
+        </div>
+
+        <div class="card" id="testResult" style="display: none;">
+            <div class="result-card">
+                <div class="result-score" id="resultScore">0</div>
+                <div class="result-level" id="resultLevel">轻度</div>
+                <p class="result-desc" id="resultDesc"></p>
+                <div class="result-suggestion" id="resultSuggestion"></div>
+                <div class="test-nav" style="margin-top: 24px;">
+                    <button class="btn-secondary" onclick="resetTest()">重新测试</button>
+                    <button class="btn-primary" onclick="switchTab('counselor')">预约咨询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 正念冥想页面 -->
+    <div class="page" id="page-meditation">
+        <h2 style="margin-bottom: 16px;">🎧 正念冥想</h2>
+        
+        <div class="filter-tabs" id="meditationFilters">
+            <button class="filter-tab active" onclick="filterMeditation('全部')">全部</button>
+            <button class="filter-tab" onclick="filterMeditation('唤醒')">🌅 唤醒</button>
+            <button class="filter-tab" onclick="filterMeditation('放松')">😌 放松</button>
+            <button class="filter-tab" onclick="filterMeditation('睡眠')">🌙 睡眠</button>
+            <button class="filter-tab" onclick="filterMeditation('情绪')">💝 情绪</button>
+        </div>
+
+        <div class="meditation-list" id="meditationList"></div>
+    </div>
+
+    <!-- 更多页面 -->
+    <div class="page" id="page-more">
+        <h2 style="margin-bottom: 16px;">更多</h2>
+
+        <div class="emergency-btn" onclick="showEmergency()">
+            🆘 紧急求助热线
+        </div>
+
+        <div class="card" onclick="switchTab('community')">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <span style="font-size: 32px;">💬</span>
+                <div>
+                    <h3 style="font-size: 16px;">互助社区</h3>
+                    <p style="font-size: 13px; color: var(--text-light);">与同路人分享交流</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" onclick="switchTab('counselor')">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <span style="font-size: 32px;">👩‍⚕️</span>
+                <div>
+                    <h3 style="font-size: 16px;">心理咨询师</h3>
+                    <p style="font-size: 13px; color: var(--text-light);">专业咨询，温暖陪伴</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" onclick="showMembership()">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <span style="font-size: 32px;">👑</span>
+                <div>
+                    <h3 style="font-size: 16px;">开通会员</h3>
+                    <p style="font-size: 13px; color: var(--text-light);">解锁全部课程和服务</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 社区页面 -->
+    <div class="page" id="page-community">
+        <h2 style="margin-bottom: 16px;">💬 互助社区</h2>
+        
+        <div class="card" style="background: var(--primary-light); border: 1px solid rgba(124,158,229,0.2);">
+            <p style="font-size: 14px; line-height: 1.6;">
+                🌸 这是一个安全、温暖的社区。<br>
+                在这里，你可以倾诉、分享、互相支持。<br>
+                所有内容匿名发布，请互相尊重。
+            </p>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab active">最新</button>
+            <button class="filter-tab">热门</button>
+            <button class="filter-tab">鼓励</button>
+            <button class="filter-tab">求助</button>
+        </div>
+
+        <div id="communityPosts"></div>
+
+        <button class="fab" onclick="showPostModal()">+</button>
+    </div>
+
+    <!-- 心理咨询师页面 -->
+    <div class="page" id="page-counselor">
+        <h2 style="margin-bottom: 16px;">👩‍⚕️ 专业咨询师</h2>
+        
+        <div class="card" style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);">
+            <p style="font-size: 14px; line-height: 1.6;">
+                🤝 我们的咨询师均持有国家认可的心理咨询师资质，<br>
+                拥有丰富的抑郁情绪疏导经验。
+            </p>
+        </div>
+
+        <div id="counselorList"></div>
+    </div>
+
+    <!-- 播放器 -->
+    <div class="player-bar" id="playerBar">
+        <div class="player-cover" id="playerCover">🎧</div>
+        <div class="player-info">
+            <div class="player-title" id="playerTitle">选择一首冥想</div>
+            <div class="player-time" id="playerTime">00:00 / 00:00</div>
+        </div>
+        <button class="player-btn" id="playerBtn" onclick="togglePlayer()">▶</button>
+    </div>
+
+    <!-- 发帖模态框 -->
+    <div class="modal-overlay" id="postModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">发布帖子</span>
+                <button class="modal-close" onclick="closePostModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="postContent" placeholder="分享你的心情或经历..." style="
+                    width: 100%;
+                    height: 150px;
+                    padding: 12px;
+                    border: 1px solid #eee;
+                    border-radius: 12px;
+                    font-size: 14px;
+                    resize: none;
+                "></textarea>
+                <div style="margin-top: 16px;">
+                    <p style="font-size: 13px; color: var(--text-light); margin-bottom: 8px;">选择标签（可选）</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button class="filter-tab" onclick="togglePostTag(this)">心理咨询</button>
+                        <button class="filter-tab" onclick="togglePostTag(this)">求助</button>
+                        <button class="filter-tab" onclick="togglePostTag(this)">鼓励</button>
+                        <button class="filter-tab" onclick="togglePostTag(this)">分享</button>
+                    </div>
+                </div>
+                <button class="btn-primary" style="width: 100%; margin-top: 20px;" onclick="submitPost()">
+                    发布
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 预约模态框 -->
+    <div class="modal-overlay" id="appointmentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">预约咨询</span>
+                <button class="modal-close" onclick="closeAppointmentModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+                    <div class="counselor-avatar" id="modalCounselorAvatar">👩‍⚕️</div>
+                    <div>
+                        <h3 id="modalCounselorName">陈心理</h3>
+                        <p style="font-size: 13px; color: var(--text-light);" id="modalCounselorTitle">国家二级心理咨询师</p>
+                    </div>
+                </div>
+                <div>
+                    <p style="font-size: 14px; margin-bottom: 12px;">选择日期</p>
+                    <div class="time-slots" id="dateSlots"></div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <p style="font-size: 14px; margin-bottom: 12px;">选择时间</p>
+                    <div class="time-slots" id="timeSlots"></div>
+                </div>
+                <textarea id="appointmentNote" placeholder="简单描述您想咨询的问题（可选）" style="
+                    width: 100%;
+                    height: 80px;
+                    padding: 12px;
+                    border: 1px solid #eee;
+                    border-radius: 12px;
+                    font-size: 14px;
+                    resize: none;
+                    margin-top: 20px;
+                "></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 16px; background: var(--bg); border-radius: 12px;">
+                    <span style="font-size: 14px;">咨询费用</span>
+                    <span style="font-size: 22px; font-weight: 700; color: var(--danger);" id="modalPrice">¥199</span>
+                </div>
+                <button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="confirmAppointment()">
+                    确认预约
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 会员模态框 -->
+    <div class="modal-overlay" id="membershipModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">开通会员</span>
+                <button class="modal-close" onclick="closeMembership()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="member-card" style="margin: -20px; margin-bottom: 0; border-radius: 0;">
+                    <div class="member-header">
+                        <span class="member-title">🌟 抑郁互助月卡</span>
+                        <span class="member-badge">限时特惠</span>
+                    </div>
+                    <div class="member-price">¥29 <span>/30天</span></div>
+                    <div class="member-original">原价 ¥99/月</div>
+                    <ul class="member-benefits">
+                        <li>解锁全部正念冥想课程（价值¥199）</li>
+                        <li>专业心理咨询师在线咨询8折</li>
+                        <li>无限次抑郁自测</li>
+                        <li>专属情绪分析报告</li>
+                        <li>优先预约热门咨询师</li>
+                        <li>7×24小时紧急求助通道</li>
+                    </ul>
+                </div>
+                <div style="margin-top: 20px; padding: 16px; background: var(--bg); border-radius: 12px;">
+                    <p style="font-size: 13px; color: var(--text-light);">
+                        当前已有 <strong style="color: var(--primary);">18人</strong> 开通 | 目标35人/月
+                    </p>
+                    <div style="margin-top: 12px; height: 8px; background: #eee; border-radius: 4px; overflow: hidden;">
+                        <div style="width: 51%; height: 100%; background: var(--primary);"></div>
+                    </div>
+                </div>
+                <button class="member-buy-btn" onclick="purchaseMembership()">
+                    立即开通 · ¥29
+                </button>
+                <p style="text-align: center; font-size: 12px; color: var(--text-light); margin-top: 12px;">
+                    支付成功即表示同意《会员服务协议》
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 紧急求助模态框 -->
+    <div class="modal-overlay" id="emergencyModal">
+        <div class="modal">
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--danger) 0%, #F08C8C 100%); color: white;">
+                <span class="modal-title">🆘 紧急求助</span>
+                <button class="modal-close" style="background: rgba(255,255,255,0.3); color: white;" onclick="closeEmergency()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="background: var(--danger); color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px;">
+                    <p style="font-size: 15px; line-height: 1.7;">
+                        如果您现在有自我伤害的想法，<br>
+                        请立即寻求帮助：
+                    </p>
+                </div>
+                <div class="card" style="cursor: pointer;" onclick="callHotline('400-161-9995')">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="font-size: 16px;">📞 全国心理援助热线</h3>
+                            <p style="font-size: 24px; font-weight: 700; color: var(--primary); margin-top: 8px;">400-161-9995</p>
+                        </div>
+                        <span style="font-size: 24px;">▶</span>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-light); margin-top: 8px;">24小时 · 免费</p>
+                </div>
+                <div class="card" style="cursor: pointer;" onclick="callHotline('010-82951332')">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="font-size: 16px;">📞 北京心理危机研究与干预中心</h3>
+                            <p style="font-size: 24px; font-weight: 700; color: var(--primary); margin-top: 8px;">010-82951332</p>
+                        </div>
+                        <span style="font-size: 24px;">▶</span>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-light); margin-top: 8px;">24小时</p>
+                </div>
+                <div class="card" style="cursor: pointer;" onclick="callHotline('400-821-1215')">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="font-size: 16px;">📞 生命热线</h3>
+                            <p style="font-size: 24px; font-weight: 700; color: var(--primary); margin-top: 8px;">400-821-1215</p>
+                        </div>
+                        <span style="font-size: 24px;">▶</span>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-light); margin-top: 8px;">24小时 · 专注自杀干预</p>
+                </div>
+                <p style="text-align: center; font-size: 14px; color: var(--text-light); margin-top: 20px; line-height: 1.7;">
+                    💙 您不是一个人，我们在这里陪伴您
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API 基础URL
+        const API_BASE = 'http://localhost:5000/api';
+
+        // 应用状态
+        let currentTab = 'home';
+        let currentQuestion = 0;
+        let testAnswers = [];
+        let testQuestions = [];
+        let meditationList = [];
+        let counselorList = [];
+        let communityPosts = [];
+        let moodRecords = [];
+        let selectedCounselor = null;
+        let selectedDate = null;
+        let selectedTime = null;
+        let selectedTags = [];
+        let isPlaying = false;
+        let currentAudio = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHomeData();
+            loadMeditationList();
+            loadCounselors();
+            loadCommunityPosts();
+            loadMoodRecords();
+        });
+
+        // 切换标签页
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // 更新导航高亮
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const tabMap = {
+                'home': 0,
+                'mood': 1,
+                'test': 2,
+                'meditation': 3,
+                'more': 4,
+                'community': 4,
+                'counselor': 4
+            };
+            document.querySelectorAll('.tab')[tabMap[tab] || 0]?.classList.add('active');
+
+            // 显示对应页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${tab}`)?.classList.add('active');
+
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+
+        // 加载首页数据
+        async function loadHomeData() {
+            try {
+                const res = await fetch(`${API_BASE}/home`);
+                const data = await res.json();
+                
+                document.getElementById('greeting').textContent = data.greeting;
+                document.getElementById('dailyTip').textContent = '💡 ' + data.quick_tips;
+                
+                if (data.today_mood?.has_data) {
+                    const emoji = data.today_mood.avg_score >= 4 ? '😊' : 
+                                  data.today_mood.avg_score >= 3 ? '😐' : '😔';
+                    document.getElementById('avgScore').textContent = emoji;
+                }
+                
+                document.getElementById('recordCount').textContent = data.stats.total_records;
+                document.getElementById('consecutiveDays').textContent = data.stats.consecutive_days;
+            } catch (e) {
+                console.log('API连接失败，使用本地数据');
+            }
+        }
+
+        // 加载冥想列表
+        async function loadMeditationList() {
+            try {
+                const res = await fetch(`${API_BASE}/meditation/list`);
+                const data = await res.json();
+                meditationList = data.audios;
+                renderMeditationList(meditationList);
+            } catch (e) {
+                console.error('加载冥想列表失败');
+            }
+        }
+
+        function renderMeditationList(list) {
+            const container = document.getElementById('meditationList');
+            container.innerHTML = list.map(item => `
+                <div class="meditation-card" onclick="playMeditation(${item.id})">
+                    <div class="meditation-cover" style="background: ${item.cover_color}">
+                        ${getMeditationIcon(item.category)}
+                    </div>
+                    <div class="meditation-info">
+                        <div class="meditation-title">${item.title}</div>
+                        <div class="meditation-desc">${item.description}</div>
+                        <div class="meditation-meta">
+                            <span class="tag">${item.category}</span>
+                            <span>⏱ ${item.duration}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getMeditationIcon(category) {
+            const icons = {
+                '唤醒': '🌅',
+                '放松': '😌',
+                '睡眠': '🌙',
+                '情绪': '💝'
+            };
+            return icons[category] || '🎧';
+        }
+
+        function filterMeditation(category) {
+            document.querySelectorAll('#meditationFilters .filter-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const filtered = category === '全部' ? meditationList : 
+                              meditationList.filter(m => m.category === category);
+            renderMeditationList(filtered);
+        }
+
+        function playMeditation(id) {
+            const audio = meditationList.find(m => m.id === id);
+            if (audio) {
+                document.getElementById('playerBar').classList.add('show');
+                document.getElementById('playerTitle').textContent = audio.title;
+                document.getElementById('playerCover').style.background = audio.cover_color;
+                showToast(`正在播放: ${audio.title}`);
+            }
+        }
+
+        function togglePlayer() {
+            isPlaying = !isPlaying;
+            document.getElementById('playerBtn').textContent = isPlaying ? '⏸' : '▶';
+        }
+
+        // 加载咨询师列表
+        async function loadCounselors() {
+            try {
+                const res = await fetch(`${API_BASE}/counselors`);
+                const data = await res.json();
+                counselorList = data.counselors;
+                renderCounselorList();
+            } catch (e) {
+                console.error('加载咨询师列表失败');
+            }
+        }
+
+        function renderCounselorList() {
+            const container = document.getElementById('counselorList');
+            container.innerHTML = counselorList.map(c => `
+                <div class="counselor-card">
+                    <div class="counselor-header">
+                        <div class="counselor-avatar">${c.avatar}</div>
+                        <div class="counselor-info">
+                            <div class="counselor-name">${c.name}</div>
+                            <div class="counselor-title">${c.title}</div>
+                            <div class="counselor-stats">
+                                <span class="counselor-stat"><strong>⭐ ${c.rating}</strong></span>
+                                <span class="counselor-stat">经验${c.experience}</span>
+                                <span class="counselor-stat">${c.consultations}次咨询</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="counselor-specialties">
+                        ${c.specialties.map(s => `<span class="specialty-tag">${s}</span>`).join('')}
+                    </div>
+                    <div class="counselor-intro">${c.intro}</div>
+                    <div class="counselor-footer">
+                        <div class="counselor-price">
+                            <span class="price-now">¥${c.price}</span>
+                            <span class="price-original">¥${c.original_price}</span>
+                        </div>
+                        <button class="book-btn" onclick="showAppointment(${c.id})">立即预约</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 加载社区帖子
+        async function loadCommunityPosts() {
+            try {
+                const res = await fetch(`${API_BASE}/community/posts`);
+                const data = await res.json();
+                communityPosts = data.posts;
+                renderCommunityPosts();
+            } catch (e) {
+                console.error('加载社区帖子失败');
+            }
+        }
+
+        function renderCommunityPosts() {
+            const container = document.getElementById('communityPosts');
+            container.innerHTML = communityPosts.map(p => `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">${getAvatarEmoji(p.author)}</div>
+                        <div>
+                            <div class="post-author">${p.author}</div>
+                            <div class="post-time">${p.time}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${p.content}</div>
+                    <div class="post-tags">
+                        ${p.tags.map(t => `<span class="post-tag">#${t}</span>`).join('')}
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action ${p.is_liked ? 'liked' : ''}" onclick="likePost(${p.id})">
+                            ${p.is_liked ? '❤️' : '🤍'} ${p.likes}
+                        </button>
+                        <button class="post-action">
+                            💬 ${p.comments}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getAvatarEmoji(name) {
+            const emojis = ['🌸', '🌻', '🦋', '🌈', '☀️', '🌙', '🍀', '🕊️'];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return emojis[Math.abs(hash) % emojis.length];
+        }
+
+        async function likePost(id) {
+            try {
+                await fetch(`${API_BASE}/community/like/${id}`, { method: 'POST' });
+                loadCommunityPosts();
+            } catch (e) {
+                // 本地更新
+                const post = communityPosts.find(p => p.id === id);
+                if (post) {
+                    post.is_liked = !post.is_liked;
+                    post.likes += post.is_liked ? 1 : -1;
+                    renderCommunityPosts();
+                }
+            }
+        }
+
+        // 加载情绪记录
+        async function loadMoodRecords() {
+            try {
+                const res = await fetch(`${API_BASE}/mood`);
+                const data = await res.json();
+                moodRecords = data.records;
+                renderMoodHistory();
+            } catch (e) {
+                console.error('加载情绪记录失败');
+            }
+        }
+
+        function renderMoodHistory() {
+            const container = document.getElementById('moodHistory');
+            if (moodRecords.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📝</div>
+                        <p class="text">还没有记录，开始记录你的情绪吧</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const moodEmojis = {1: '😢', 2: '😔', 3: '😐', 4: '🙂', 5: '😊'};
+            container.innerHTML = moodRecords.slice().reverse().map(r => `
+                <div class="mood-item">
+                    <span class="emoji">${moodEmojis[r.score] || '😐'}</span>
+                    <div class="info">
+                        <div class="emotion">${r.emotion} (${r.score}/5)</div>
+                        <div class="note">${r.note || '无备注'}</div>
+                    </div>
+                    <div class="date">${r.date}</div>
+                </div>
+            `).join('');
+        }
+
+        // 记录情绪
+        async function recordMood(score, emotion) {
+            // 视觉反馈
+            document.querySelectorAll('#quickRecord .mood-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            showToast(`已记录: ${emotion}`);
+        }
+
+        function saveMoodRecord() {
+            const note = document.getElementById('moodNote').value;
+            const activeBtn = document.querySelector('#quickRecord .mood-btn.active');
+            if (!activeBtn) {
+                showToast('请先选择情绪');
+                return;
+            }
+            
+            const score = parseInt(activeBtn.getAttribute('onclick').match(/\d+/)[0]);
+            const emotions = ['很糟', '不佳', '一般', '不错', '很好'];
+            const emotion = emotions[score - 1];
+            
+            const record = {
+                score,
+                emotion,
+                note,
+                date: new Date().toLocaleString('zh-CN')
+            };
+            
+            moodRecords.push(record);
+            document.getElementById('moodNote').value = '';
+            document.querySelectorAll('#quickRecord .mood-btn').forEach(btn => btn.classList.remove('active'));
+            
+            renderMoodHistory();
+            showToast('情绪记录已保存 💾');
+        }
+
+        // 抑郁自测
+        async function startTest() {
+            try {
+                const res = await fetch(`${API_BASE}/assessment/questions`);
+                const data = await res.json();
+                testQuestions = data.questions;
+                testAnswers = new Array(testQuestions.length).fill(-1);
+                currentQuestion = 0;
+                
+                document.getElementById('testIntro').style.display = 'none';
+                document.getElementById('testQuestion').style.display = 'block';
+                document.getElementById('testResult').style.display = 'none';
+                
+                renderQuestion();
+            } catch (e) {
+                showToast('加载测试失败，请重试');
+            }
+        }
+
+        function renderQuestion() {
+            const q = testQuestions[currentQuestion];
+            document.getElementById('questionText').textContent = `${currentQuestion + 1}. ${q.question}`;
+            document.getElementById('testProgress').style.width = `${((currentQuestion + 1) / testQuestions.length) * 100}%`;
+            document.getElementById('testProgressText').textContent = `${currentQuestion + 1}/${testQuestions.length}`;
+            
+            document.getElementById('optionList').innerHTML = q.options.map((opt, i) => `
+                <button class="option-btn ${testAnswers[currentQuestion] === i ? 'selected' : ''}" 
+                        onclick="selectAnswer(${i})">
+                    ${opt}
+                </button>
+            `).join('');
+            
+            document.getElementById('prevBtn').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').textContent = currentQuestion === testQuestions.length - 1 ? '查看结果' : '下一题';
+        }
+
+        function selectAnswer(index) {
+            testAnswers[currentQuestion] = index;
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (testAnswers[currentQuestion] === -1) {
+                showToast('请选择一个选项');
+                return;
+            }
+            
+            if (currentQuestion < testQuestions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                submitTest();
+            }
+        }
+
+        async function submitTest() {
+            try {
+                const res = await fetch(`${API_BASE}/assessment/submit`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({answers: testAnswers})
+                });
+                const data = await res.json();
+                
+                document.getElementById('testQuestion').style.display = 'none';
+                document.getElementById('testResult').style.display = 'block';
+                
+                document.getElementById('resultScore').textContent = data.result.score;
+                document.getElementById('resultLevel').textContent = data.result.level;
+                document.getElementById('resultDesc').textContent = data.result.description;
+                document.getElementById('resultSuggestion').innerHTML = `<strong>建议：</strong>${data.result.suggestion}`;
+            } catch (e) {
+                showToast('提交失败，请重试');
+            }
+        }
+
+        function resetTest() {
+            document.getElementById('testIntro').style.display = 'block';
+            document.getElementById('testQuestion').style.display = 'none';
+            document.getElementById('testResult').style.display = 'none';
+        }
+
+        // 发帖
+        function showPostModal() {
+            document.getElementById('postModal').classList.add('show');
+        }
+
+        function closePostModal() {
+            document.getElementById('postModal').classList.remove('show');
+        }
+
+        function togglePostTag(btn) {
+            btn.classList.toggle('active');
+            const tag = btn.textContent;
+            if (selectedTags.includes(tag)) {
+                selectedTags = selectedTags.filter(t => t !== tag);
+            } else {
+                selectedTags.push(tag);
+            }
+        }
+
+        async function submitPost() {
+            const content = document.getElementById('postContent').value.trim();
+            if (!content) {
+                showToast('请输入内容');
+                return;
+            }
+            
+            const post = {
+                content,
+                author: '匿名用户' + Math.floor(Math.random() * 1000),
+                tags: selectedTags
+            };
+            
+            try {
+                await fetch(`${API_BASE}/community/post`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(post)
+                });
+            } catch (e) {
+                communityPosts.unshift({
+                    ...post,
+                    id: Date.now(),
+                    time: '刚刚',
+                    likes: 0,
+                    comments: 0,
+                    is_liked: false
+                });
+            }
+            
+            renderCommunityPosts();
+            closePostModal();
+            document.getElementById('postContent').value = '';
+            selectedTags = [];
+            showToast('发布成功 🌸');
+        }
+
+        // 预约咨询
+        function showAppointment(id) {
+            selectedCounselor = counselorList.find(c => c.id === id);
+            if (!selectedCounselor) return;
+            
+            document.getElementById('modalCounselorAvatar').textContent = selectedCounselor.avatar;
+            document.getElementById('modalCounselorName').textContent = selectedCounselor.name;
+            document.getElementById('modalCounselorTitle').textContent = selectedCounselor.title;
+            document.getElementById('modalPrice').textContent = `¥${selectedCounselor.price}`;
+            
+            // 生成可预约日期
+            const dates = [];
+            for (let i = 1; i <= 7; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                dates.push({
+                    value: date.toISOString().split('T')[0],
+                    label: `${date.getMonth() + 1}/${date.getDate()}`
+                });
+            }
+            
+            document.getElementById('dateSlots').innerHTML = dates.map(d => `
+                <button class="time-slot" onclick="selectDate('${d.value}', '${d.label}')">${d.label}</button>
+            `).join('');
+            
+            document.getElementById('timeSlots').innerHTML = '';
+            document.getElementById('appointmentModal').classList.add('show');
+        }
+
+        function selectDate(value, label) {
+            selectedDate = value;
+            document.querySelectorAll('#dateSlots .time-slot').forEach(s => s.classList.remove('selected'));
+            event.target.classList.add('selected');
+            
+            // 生成时间槽
+            const times = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '19:00', '20:00'];
+            document.getElementById('timeSlots').innerHTML = times.map(t => `
+                <button class="time-slot" onclick="selectTime('${t}')">${t}</button>
+            `).join('');
+        }
+
+        function selectTime(time) {
+            selectedTime = time;
+            document.querySelectorAll('#timeSlots .time-slot').forEach(s => s.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function closeAppointmentModal() {
+            document.getElementById('appointmentModal').classList.remove('show');
+        }
+
+        async function confirmAppointment() {
+            if (!selectedDate || !selectedTime) {
+                showToast('请选择日期和时间');
+                return;
+            }
+            
+            try {
+                await fetch(`${API_BASE}/appointment`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        counselor_id: selectedCounselor.id,
+                        counselor_name: selectedCounselor.name,
+                        date: selectedDate,
+                        time: selectedTime
+                    })
+                });
+            } catch (e) {}
+            
+            closeAppointmentModal();
+            showToast('预约成功！我们会尽快与您确认 📞');
+        }
+
+        // 会员
+        function showMembership() {
+            document.getElementById('membershipModal').classList.add('show');
+        }
+
+        function closeMembership() {
+            document.getElementById('membershipModal').classList.remove('show');
+        }
+
+        async function purchaseMembership() {
+            showToast('正在跳转支付...');
+            setTimeout(() => {
+                closeMembership();
+                showToast('会员开通成功！🌟');
+            }, 1500);
+        }
+
+        // 紧急求助
+        function showEmergency() {
+            document.getElementById('emergencyModal').classList.add('show');
+        }
+
+        function closeEmergency() {
+            document.getElementById('emergencyModal').classList.remove('show');
+        }
+
+        function callHotline(phone) {
+            window.location.href = `tel:${phone}`;
+            showToast(`正在拨打 ${phone}...`);
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        // 关闭模态框（点击外部）
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

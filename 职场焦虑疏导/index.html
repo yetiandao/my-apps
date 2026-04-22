@@ -1,0 +1,2543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>职场焦虑疏导 - 你的心灵减压站</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --primary-dark: #5046E5;
+            --secondary: #FF6B6B;
+            --accent: #4ECDC4;
+            --success: #51CF66;
+            --warning: #FFD93D;
+            --danger: #FF6B6B;
+            --bg-primary: #F8F9FE;
+            --bg-secondary: #FFFFFF;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-primary: #2D3748;
+            --text-secondary: #718096;
+            --text-light: #A0AEC0;
+            --shadow-sm: 0 2px 8px rgba(108, 99, 255, 0.1);
+            --shadow-md: 0 4px 16px rgba(108, 99, 255, 0.15);
+            --shadow-lg: 0 8px 32px rgba(108, 99, 255, 0.2);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 50px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 头部导航 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 12px 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            background: var(--bg-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .vip-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: none;
+            border-radius: var(--radius-full);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 165, 0, 0.3);
+        }
+
+        .vip-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 80px 16px 100px;
+        }
+
+        /* 欢迎区域 */
+        .welcome-section {
+            padding: 24px;
+            background: var(--bg-gradient);
+            border-radius: var(--radius-lg);
+            color: #fff;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .welcome-emoji {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        /* 快速入口卡片 */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .quick-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 8px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .quick-action:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .quick-action:active {
+            transform: translateY(0);
+        }
+
+        .quick-action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action:nth-child(1) .quick-action-icon { background: #FFE5E5; }
+        .quick-action:nth-child(2) .quick-action-icon { background: #E5F3FF; }
+        .quick-action:nth-child(3) .quick-action-icon { background: #FFF3E5; }
+        .quick-action:nth-child(4) .quick-action-icon { background: #E5FFE9; }
+
+        .quick-action-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* 页面标题 */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title .more {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* 模块卡片 */
+        .module-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* 焦虑自测模块 */
+        .test-progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .progress-ring {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+        }
+
+        .progress-ring .bg {
+            stroke: #E8E8FF;
+        }
+
+        .progress-ring .progress {
+            stroke: var(--primary);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .progress-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .test-info {
+            flex: 1;
+        }
+
+        .test-info h4 {
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .test-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .start-test-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .start-test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* 文章卡片 */
+        .article-card {
+            display: flex;
+            gap: 14px;
+            padding: 16px 0;
+            border-bottom: 1px solid #F0F0F5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .article-card:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .article-card:hover {
+            opacity: 0.8;
+        }
+
+        .article-cover {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-gradient);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .article-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #F0E8FF;
+            color: var(--primary);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            width: fit-content;
+        }
+
+        .article-title {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 冥想卡片 */
+        .meditation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .meditation-card {
+            background: var(--bg-gradient);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .meditation-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .meditation-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .meditation-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .meditation-duration {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* 社区帖子 */
+        .post-card {
+            background: #FAFAFA;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .post-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .post-author {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .post-time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .post-tag {
+            padding: 4px 10px;
+            background: #F0E8FF;
+            color: var(--primary);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .post-action:hover {
+            color: var(--primary);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
+
+        .nav-items {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #F0F0F5;
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #F5F5F5;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* 焦虑测试页面 */
+        .test-container {
+            padding-bottom: 20px;
+        }
+
+        .test-progress-bar {
+            height: 6px;
+            background: #E8E8FF;
+            border-radius: 3px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .test-progress-fill {
+            height: 100%;
+            background: var(--bg-gradient);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .test-question {
+            font-size: 17px;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .test-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .test-option {
+            padding: 16px 20px;
+            background: #F8F9FE;
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .test-option:hover {
+            background: #F0E8FF;
+            border-color: var(--primary-light);
+        }
+
+        .test-option.selected {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .test-nav {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .test-nav-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-prev {
+            background: #F5F5F5;
+            border: none;
+            color: var(--text-secondary);
+        }
+
+        .test-next {
+            background: var(--bg-gradient);
+            border: none;
+            color: #fff;
+        }
+
+        .test-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 测试结果 */
+        .test-result {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .result-score {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+
+        .result-score svg {
+            transform: rotate(-90deg);
+        }
+
+        .result-score circle {
+            fill: none;
+            stroke-width: 10;
+        }
+
+        .result-score .bg {
+            stroke: #E8E8FF;
+        }
+
+        .result-score .score-circle {
+            stroke: var(--primary);
+            stroke-linecap: round;
+            stroke-dasharray: 339.292;
+            stroke-dashoffset: 339.292;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .result-score .score-circle.low { stroke: #51CF66; }
+        .result-score .score-circle.mild { stroke: #FFD93D; }
+        .result-score .score-circle.moderate { stroke: #FF9F43; }
+        .result-score .score-circle.high { stroke: #FF6B6B; }
+
+        .result-score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .result-score-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .result-score-max {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .result-level {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .result-level.low { color: #51CF66; }
+        .result-level.mild { color: #FFD93D; }
+        .result-level.moderate { color: #FF9F43; }
+        .result-level.high { color: #FF6B6B; }
+
+        .result-description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .result-suggestions {
+            text-align: left;
+            background: #F8F9FE;
+            border-radius: var(--radius-md);
+            padding: 20px;
+        }
+
+        .result-suggestions h4 {
+            font-size: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-suggestions ul {
+            list-style: none;
+        }
+
+        .result-suggestions li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .result-suggestions li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* 情绪记录 */
+        .emotion-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .emotion-tag {
+            padding: 10px 16px;
+            background: #F8F9FE;
+            border: 2px solid transparent;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .emotion-tag:hover {
+            background: #F0E8FF;
+            border-color: var(--primary-light);
+        }
+
+        .emotion-tag.selected {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .emotion-intensity {
+            margin-bottom: 20px;
+        }
+
+        .intensity-label {
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .intensity-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: linear-gradient(to right, #51CF66, #FFD93D, #FF6B6B);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .intensity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .emotion-note {
+            margin-bottom: 20px;
+        }
+
+        .emotion-note textarea {
+            width: 100%;
+            height: 100px;
+            padding: 14px;
+            border: 2px solid #E8E8FF;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .emotion-note textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .save-record-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 情绪记录列表 */
+        .record-list {
+            margin-top: 24px;
+        }
+
+        .record-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            background: #F8F9FE;
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+        }
+
+        .record-emoji {
+            font-size: 28px;
+        }
+
+        .record-content {
+            flex: 1;
+        }
+
+        .record-emotion {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .record-note {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .record-time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .record-delete {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* 文章详情 */
+        .article-detail {
+            text-align: left;
+        }
+
+        .article-detail-header {
+            margin-bottom: 24px;
+        }
+
+        .article-detail-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #F0E8FF;
+            color: var(--primary);
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .article-detail-title {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .article-detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .article-body {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .article-body h3 {
+            font-size: 18px;
+            margin: 24px 0 12px;
+        }
+
+        .article-body p {
+            margin-bottom: 16px;
+        }
+
+        .article-body strong {
+            color: var(--primary);
+        }
+
+        .article-body ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .article-body li {
+            margin-bottom: 8px;
+        }
+
+        /* 会员弹窗 */
+        .vip-modal {
+            text-align: center;
+        }
+
+        .vip-header {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B6B 100%);
+            color: #fff;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .vip-icon {
+            font-size: 60px;
+            margin-bottom: 12px;
+        }
+
+        .vip-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .vip-price {
+            font-size: 40px;
+            font-weight: 700;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+        }
+
+        .vip-features {
+            padding: 24px;
+            text-align: left;
+        }
+
+        .vip-features h4 {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .vip-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F5;
+        }
+
+        .vip-feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .vip-feature-icon {
+            width: 32px;
+            height: 32px;
+            background: #FFF3E0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .vip-feature-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .vip-btn-large {
+            width: calc(100% - 40px);
+            margin: 20px;
+            padding: 16px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border: none;
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+        }
+
+        /* 发布帖子 */
+        .post-form {
+            margin-bottom: 20px;
+        }
+
+        .post-form textarea {
+            width: 100%;
+            height: 120px;
+            padding: 14px;
+            border: 2px solid #E8E8FF;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .post-form textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .post-tags-select {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .post-tag-option {
+            padding: 6px 14px;
+            background: #F8F9FE;
+            border: 2px solid transparent;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .post-tag-option:hover {
+            background: #F0E8FF;
+        }
+
+        .post-tag-option.selected {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .post-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 页面隐藏 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty-text {
+            font-size: 14px;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #E8E8FF;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--text-primary);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            z-index: 3000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 音频播放器模拟 */
+        .player-modal {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .player-cover {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 24px;
+            background: var(--bg-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .player-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .player-category {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .player-progress {
+            margin-bottom: 20px;
+        }
+
+        .player-progress-bar {
+            height: 6px;
+            background: #E8E8FF;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .player-progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 35%;
+            transition: width 0.3s ease;
+        }
+
+        .player-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .player-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .player-btn.play {
+            width: 64px;
+            height: 64px;
+            background: var(--bg-gradient);
+            border-radius: 50%;
+            color: #fff;
+            font-size: 28px;
+        }
+
+        .vip-notice {
+            margin-top: 20px;
+            padding: 16px;
+            background: #FFF9E6;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            color: #996600;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🧘</div>
+                <span class="logo-text">职场焦虑疏导</span>
+            </div>
+            <button class="vip-btn" onclick="showVipModal()">
+                <span>⭐</span>
+                <span>会员</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <!-- 欢迎区域 -->
+            <section class="welcome-section">
+                <div class="welcome-emoji">🌸</div>
+                <h1 class="welcome-title">你好，今天过得怎么样？</h1>
+                <p class="welcome-text">工作再忙，也要照顾好自己的心情。这里是你专属的心灵减压站，让我们一起找回内心的平静。</p>
+            </section>
+
+            <!-- 快速入口 -->
+            <section class="quick-actions">
+                <button class="quick-action" onclick="showTestPage()">
+                    <div class="quick-action-icon">📋</div>
+                    <span class="quick-action-text">焦虑自测</span>
+                </button>
+                <button class="quick-action" onclick="showEmotionRecord()">
+                    <div class="quick-action-icon">📝</div>
+                    <span class="quick-action-text">情绪记录</span>
+                </button>
+                <button class="quick-action" onclick="showArticles()">
+                    <div class="quick-action-icon">📖</div>
+                    <span class="quick-action-text">疏导文章</span>
+                </button>
+                <button class="quick-action" onclick="showCommunity()">
+                    <div class="quick-action-icon">💬</div>
+                    <span class="quick-action-text">匿名倾诉</span>
+                </button>
+            </section>
+
+            <!-- 焦虑自测进度 -->
+            <section class="module-section">
+                <div class="section-title">
+                    <span>📊 焦虑指数</span>
+                </div>
+                <div class="test-progress">
+                    <div class="progress-ring">
+                        <svg width="80" height="80">
+                            <circle class="bg" cx="40" cy="40" r="34"></circle>
+                            <circle class="progress" cx="40" cy="40" r="34" stroke-dasharray="213.628" stroke-dashoffset="128"></circle>
+                        </svg>
+                        <div class="progress-text">
+                            <div class="progress-value" id="today-anxiety">轻度</div>
+                            <div class="progress-label">当前状态</div>
+                        </div>
+                    </div>
+                    <div class="test-info">
+                        <h4>你了解自己的焦虑水平吗？</h4>
+                        <p>通过专业量表，帮你科学评估当前的心理状态</p>
+                    </div>
+                </div>
+                <button class="start-test-btn" onclick="showTestPage()">开始焦虑自测 →</button>
+            </section>
+
+            <!-- 推荐文章 -->
+            <section class="module-section">
+                <div class="section-title">
+                    <span>📖 推荐阅读</span>
+                    <span class="more" onclick="showArticles()">查看更多</span>
+                </div>
+                <div id="home-articles"></div>
+            </section>
+
+            <!-- 热门冥想 -->
+            <section class="module-section">
+                <div class="section-title">
+                    <span>🧘 放松冥想</span>
+                    <span class="more" onclick="showMeditations()">全部音频</span>
+                </div>
+                <div class="meditation-grid" id="home-meditations"></div>
+            </section>
+
+            <!-- 热门倾诉 -->
+            <section class="module-section">
+                <div class="section-title">
+                    <span>💬 匿名倾诉</span>
+                    <span class="more" onclick="showCommunity()">进入社区</span>
+                </div>
+                <div id="home-posts"></div>
+            </section>
+        </div>
+
+        <!-- 焦虑自测页 -->
+        <div class="page" id="page-test">
+            <div class="test-container">
+                <div class="test-progress-bar">
+                    <div class="test-progress-fill" id="test-progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="test-question" id="test-question"></div>
+                <div class="test-options" id="test-options"></div>
+                <div class="test-nav">
+                    <button class="test-nav-btn test-prev" id="test-prev" onclick="prevQuestion()">上一题</button>
+                    <button class="test-nav-btn test-next" id="test-next" onclick="nextQuestion()">下一题</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试结果页 -->
+        <div class="page" id="page-result">
+            <div class="test-result">
+                <div class="result-score">
+                    <svg width="120" height="120">
+                        <circle class="bg" cx="60" cy="60" r="54"></circle>
+                        <circle class="score-circle" id="result-circle" cx="60" cy="60" r="54" stroke-dasharray="339.292" stroke-dashoffset="339.292"></circle>
+                    </svg>
+                    <div class="result-score-text">
+                        <div class="result-score-value" id="result-score">0</div>
+                        <div class="result-score-max">/ <span id="result-max">21</span></div>
+                    </div>
+                </div>
+                <div class="result-level" id="result-level">轻度焦虑</div>
+                <p class="result-description" id="result-description"></p>
+                <div class="result-suggestions">
+                    <h4>💡 建议措施</h4>
+                    <ul id="result-suggestions"></ul>
+                </div>
+                <button class="start-test-btn" style="margin-top: 24px;" onclick="goHome()">返回首页</button>
+            </div>
+        </div>
+
+        <!-- 情绪记录页 -->
+        <div class="page" id="page-emotion">
+            <div class="module-section">
+                <div class="section-title">📝 记录此刻的情绪</div>
+                <div class="emotion-tags" id="emotion-tags"></div>
+                <div class="emotion-intensity">
+                    <div class="intensity-label">
+                        <span>情绪强度</span>
+                        <span id="intensity-value">5</span>
+                    </div>
+                    <input type="range" class="intensity-slider" id="intensity-slider" min="1" max="10" value="5">
+                </div>
+                <div class="emotion-note">
+                    <textarea id="emotion-note" placeholder="写下你此刻的感受...（选填）"></textarea>
+                </div>
+                <button class="save-record-btn" onclick="saveEmotionRecord()">保存记录</button>
+            </div>
+
+            <div class="module-section record-list" id="record-list-section">
+                <div class="section-title">📅 历史记录</div>
+                <div id="record-list"></div>
+            </div>
+        </div>
+
+        <!-- 文章列表页 -->
+        <div class="page" id="page-articles">
+            <div class="module-section">
+                <div class="section-title">📖 心理疏导文章</div>
+                <div id="articles-list"></div>
+            </div>
+        </div>
+
+        <!-- 文章详情页 -->
+        <div class="page" id="page-article-detail">
+            <div class="module-section article-detail">
+                <div class="article-detail-header">
+                    <span class="article-detail-category" id="article-category"></span>
+                    <h1 class="article-detail-title" id="article-title"></h1>
+                    <div class="article-detail-meta">
+                        <span id="article-author"></span>
+                        <span>•</span>
+                        <span id="article-read-time"></span>
+                    </div>
+                </div>
+                <div class="article-body" id="article-body"></div>
+            </div>
+        </div>
+
+        <!-- 冥想列表页 -->
+        <div class="page" id="page-meditations">
+            <div class="module-section">
+                <div class="section-title">🧘 冥想音频</div>
+                <div class="meditation-grid" id="meditations-grid"></div>
+            </div>
+        </div>
+
+        <!-- 社区页 -->
+        <div class="page" id="page-community">
+            <div class="module-section">
+                <div class="section-title">💬 匿名倾诉区</div>
+                <div class="post-form">
+                    <textarea id="post-content" placeholder="说出你的心事，这里没有人认识你..."></textarea>
+                    <div class="post-tags-select" id="post-tags-select"></div>
+                    <button class="post-submit-btn" onclick="submitPost()">发布</button>
+                </div>
+                <div id="community-posts"></div>
+            </div>
+        </div>
+
+        <!-- 帖子详情页 -->
+        <div class="page" id="page-post-detail">
+            <div class="module-section">
+                <div id="post-detail-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <button class="nav-item active" onclick="switchTab('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">首页</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('test')">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">自测</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('emotion')">
+                <span class="nav-icon">📝</span>
+                <span class="nav-text">记录</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('articles')">
+                <span class="nav-icon">📖</span>
+                <span class="nav-text">文章</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('community')">
+                <span class="nav-icon">💬</span>
+                <span class="nav-text">社区</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 会员弹窗 -->
+    <div class="modal-overlay" id="vip-modal">
+        <div class="modal">
+            <div class="vip-modal">
+                <div class="vip-header">
+                    <div class="vip-icon">👑</div>
+                    <div class="vip-title">开通会员</div>
+                    <div class="vip-price">¥25<span>/月</span></div>
+                </div>
+                <div class="vip-features">
+                    <h4>✨ 会员特权</h4>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">📚</div>
+                        <div class="vip-feature-text">完整焦虑疏导系列课程</div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">🎧</div>
+                        <div class="vip-feature-text">专属冥想音频库（100+内容）</div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">💬</div>
+                        <div class="vip-feature-text">一对一匿名倾诉（3次/月）</div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">📄</div>
+                        <div class="vip-feature-text">专家文章优先阅读</div>
+                    </div>
+                    <div class="vip-feature-item">
+                        <div class="vip-feature-icon">📊</div>
+                        <div class="vip-feature-text">个性化月度情绪报告</div>
+                    </div>
+                </div>
+                <button class="vip-btn-large" onclick="closeModal('vip-modal')">立即开通</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 播放器弹窗 -->
+    <div class="modal-overlay" id="player-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">冥想音频</span>
+                <button class="modal-close" onclick="closeModal('player-modal')">✕</button>
+            </div>
+            <div class="player-modal">
+                <div class="player-cover" id="player-cover">🌿</div>
+                <div class="player-title" id="player-title">深度放松冥想</div>
+                <div class="player-category" id="player-category">深度放松</div>
+                <div class="player-progress">
+                    <div class="player-progress-bar">
+                        <div class="player-progress-fill" id="player-progress-fill"></div>
+                    </div>
+                    <div class="player-time">
+                        <span id="player-current">0:00</span>
+                        <span id="player-duration">10:00</span>
+                    </div>
+                </div>
+                <div class="player-controls">
+                    <button class="player-btn" onclick="skipBackward()">⏮</button>
+                    <button class="player-btn play" id="play-btn" onclick="togglePlay()">▶</button>
+                    <button class="player-btn" onclick="skipForward()">⏭</button>
+                </div>
+                <div class="vip-notice">
+                    💡 会员可解锁全部冥想内容，享受沉浸式放松体验
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // 全局数据
+        let currentUser = {
+            anxiety_level: '轻度',
+            anxiety_score: 0
+        };
+        let testQuestions = [];
+        let currentQuestionIndex = 0;
+        let testAnswers = [];
+        let emotionTags = [];
+        let articles = [];
+        let meditations = [];
+        let posts = [];
+        let selectedEmotion = null;
+        let selectedPostTags = [];
+        let emotionRecords = [];
+        let isPlaying = false;
+        let playerTimer = null;
+        let currentMeditation = null;
+        let playerProgress = 0;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadEmotionTags();
+            loadArticles();
+            loadMeditations();
+            loadPosts();
+            loadEmotionRecords();
+            initIntensitySlider();
+        });
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // 模态框
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            if (modalId === 'player-modal') {
+                stopPlayback();
+            }
+        }
+
+        // 点击模态框背景关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                    if (overlay.id === 'player-modal') {
+                        stopPlayback();
+                    }
+                }
+            });
+        });
+
+        // 标签页切换
+        function switchTab(tab) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            
+            // 取消所有导航激活状态
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            // 显示目标页面
+            const targetPage = document.getElementById('page-' + tab);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+            
+            // 激活对应导航
+            event.currentTarget.classList.add('active');
+        }
+
+        // 返回首页
+        function goHome() {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-home').classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector('.nav-item').classList.add('active');
+        }
+
+        // ==================== 焦虑自测 ====================
+
+        async function loadTestQuestions() {
+            try {
+                const response = await fetch(`${API_BASE}/anxiety/questions`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    testQuestions = data.data;
+                    testAnswers = new Array(testQuestions.length).fill(null);
+                    renderQuestion();
+                }
+            } catch (error) {
+                showToast('加载测试题目失败');
+            }
+        }
+
+        function showTestPage() {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-test').classList.add('active');
+            currentQuestionIndex = 0;
+            loadTestQuestions();
+        }
+
+        function renderQuestion() {
+            const question = testQuestions[currentQuestionIndex];
+            if (!question) return;
+
+            document.getElementById('test-question').textContent = `${currentQuestionIndex + 1}. ${question.question}`;
+            
+            const optionsContainer = document.getElementById('test-options');
+            optionsContainer.innerHTML = question.options.map((option, index) => `
+                <div class="test-option ${testAnswers[currentQuestionIndex] === index ? 'selected' : ''}" 
+                     onclick="selectOption(${index})">
+                    ${option.text}
+                </div>
+            `).join('');
+
+            updateTestProgress();
+            updateNavButtons();
+        }
+
+        function selectOption(index) {
+            testAnswers[currentQuestionIndex] = index;
+            renderQuestion();
+        }
+
+        function updateTestProgress() {
+            const progress = ((currentQuestionIndex + 1) / testQuestions.length) * 100;
+            document.getElementById('test-progress-fill').style.width = `${progress}%`;
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('test-prev');
+            const nextBtn = document.getElementById('test-next');
+            
+            prevBtn.style.visibility = currentQuestionIndex > 0 ? 'visible' : 'hidden';
+            nextBtn.textContent = currentQuestionIndex === testQuestions.length - 1 ? '查看结果' : '下一题';
+            nextBtn.disabled = testAnswers[currentQuestionIndex] === null;
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (testAnswers[currentQuestionIndex] === null) {
+                showToast('请选择一个选项');
+                return;
+            }
+
+            if (currentQuestionIndex < testQuestions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                submitTest();
+            }
+        }
+
+        async function submitTest() {
+            const answers = testQuestions.map((q, i) => ({
+                question_id: q.id,
+                score: q.options[testAnswers[i]].score
+            }));
+
+            try {
+                const response = await fetch(`${API_BASE}/anxiety/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ answers })
+                });
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    showTestResult(data.data);
+                }
+            } catch (error) {
+                showToast('提交失败，请重试');
+            }
+        }
+
+        function showTestResult(result) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-result').classList.add('active');
+
+            document.getElementById('result-score').textContent = result.score;
+            document.getElementById('result-max').textContent = result.max_score;
+
+            const levelEl = document.getElementById('result-level');
+            levelEl.textContent = result.level;
+            levelEl.className = 'result-level ' + result.level.toLowerCase().replace('焦虑', '');
+
+            document.getElementById('result-description').textContent = result.description;
+
+            const suggestionsList = document.getElementById('result-suggestions');
+            suggestionsList.innerHTML = result.suggestions.map(s => `<li>${s}</li>`).join('');
+
+            // 动画效果
+            const circle = document.getElementById('result-circle');
+            const maxOffset = 339.292;
+            const scoreRatio = result.score / result.max_score;
+            const offset = maxOffset * (1 - scoreRatio);
+            
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+                circle.className = 'score-circle ' + result.level.toLowerCase().replace('焦虑', '');
+            }, 100);
+
+            // 更新首页状态
+            currentUser.anxiety_score = result.score;
+            currentUser.anxiety_level = result.level;
+            document.getElementById('today-anxiety').textContent = result.level;
+        }
+
+        // ==================== 情绪记录 ====================
+
+        async function loadEmotionTags() {
+            try {
+                const response = await fetch(`${API_BASE}/emotions/tags`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    emotionTags = data.data;
+                    renderEmotionTags();
+                }
+            } catch (error) {
+                // 使用默认标签
+                emotionTags = ['😰 焦虑', '😤 愤怒', '😢 悲伤', '😰 恐惧', '😴 疲惫', '🤔 迷茫'];
+                renderEmotionTags();
+            }
+        }
+
+        function renderEmotionTags() {
+            const container = document.getElementById('emotion-tags');
+            if (!container) return;
+            
+            container.innerHTML = emotionTags.map(tag => `
+                <div class="emotion-tag ${selectedEmotion === tag ? 'selected' : ''}" 
+                     onclick="selectEmotion('${tag}')">${tag}</div>
+            `).join('');
+        }
+
+        function selectEmotion(tag) {
+            selectedEmotion = tag;
+            renderEmotionTags();
+        }
+
+        function initIntensitySlider() {
+            const slider = document.getElementById('intensity-slider');
+            const valueDisplay = document.getElementById('intensity-value');
+            
+            if (slider && valueDisplay) {
+                slider.addEventListener('input', (e) => {
+                    valueDisplay.textContent = e.target.value;
+                });
+            }
+        }
+
+        function showEmotionRecord() {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-emotion').classList.add('active');
+            loadEmotionRecords();
+        }
+
+        async function loadEmotionRecords() {
+            try {
+                const response = await fetch(`${API_BASE}/emotions/records`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    emotionRecords = data.data;
+                    renderEmotionRecords();
+                }
+            } catch (error) {
+                // 使用本地存储
+                const localRecords = localStorage.getItem('emotionRecords');
+                if (localRecords) {
+                    emotionRecords = JSON.parse(localRecords);
+                    renderEmotionRecords();
+                }
+            }
+        }
+
+        function renderEmotionRecords() {
+            const container = document.getElementById('record-list');
+            const section = document.getElementById('record-list-section');
+            
+            if (!container) return;
+            
+            if (emotionRecords.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            container.innerHTML = emotionRecords.map(record => `
+                <div class="record-item">
+                    <div class="record-emoji">${getEmojiFromEmotion(record.emotion)}</div>
+                    <div class="record-content">
+                        <div class="record-emotion">${record.emotion} (强度: ${record.intensity}/10)</div>
+                        ${record.note ? `<div class="record-note">${record.note}</div>` : ''}
+                        <div class="record-time">${record.created_at}</div>
+                    </div>
+                    <button class="record-delete" onclick="deleteRecord('${record.id}')">🗑</button>
+                </div>
+            `).join('');
+        }
+
+        function getEmojiFromEmotion(emotion) {
+            const emoji = emotion.split(' ')[0];
+            return emoji || '😊';
+        }
+
+        async function saveEmotionRecord() {
+            if (!selectedEmotion) {
+                showToast('请选择一种情绪');
+                return;
+            }
+
+            const intensity = document.getElementById('intensity-slider').value;
+            const note = document.getElementById('emotion-note').value;
+
+            const record = {
+                emotion: selectedEmotion,
+                intensity: parseInt(intensity),
+                note: note
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/emotions/records`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(record)
+                });
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    showToast('记录已保存');
+                    emotionRecords.unshift(data.data);
+                    renderEmotionRecords();
+                    
+                    // 清空表单
+                    selectedEmotion = null;
+                    document.getElementById('intensity-slider').value = 5;
+                    document.getElementById('intensity-value').textContent = 5;
+                    document.getElementById('emotion-note').value = '';
+                    renderEmotionTags();
+                }
+            } catch (error) {
+                // 保存到本地
+                record.id = 'local_' + Date.now();
+                record.created_at = new Date().toLocaleString('zh-CN');
+                emotionRecords.unshift(record);
+                localStorage.setItem('emotionRecords', JSON.stringify(emotionRecords));
+                renderEmotionRecords();
+                showToast('记录已保存（本地）');
+                
+                // 清空表单
+                selectedEmotion = null;
+                renderEmotionTags();
+            }
+        }
+
+        async function deleteRecord(id) {
+            try {
+                await fetch(`${API_BASE}/emotions/records/${id}`, { method: 'DELETE' });
+            } catch (error) {}
+            
+            // 从本地也删除
+            emotionRecords = emotionRecords.filter(r => r.id !== id);
+            localStorage.setItem('emotionRecords', JSON.stringify(emotionRecords));
+            renderEmotionRecords();
+            showToast('记录已删除');
+        }
+
+        // ==================== 文章 ====================
+
+        async function loadArticles() {
+            try {
+                const response = await fetch(`${API_BASE}/articles`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    articles = data.data;
+                    renderHomeArticles();
+                    renderArticlesList();
+                }
+            } catch (error) {
+                showToast('加载文章失败');
+            }
+        }
+
+        function renderHomeArticles() {
+            const container = document.getElementById('home-articles');
+            if (!container) return;
+            
+            const displayArticles = articles.slice(0, 3);
+            const coverEmojis = ['📚', '🧠', '💡', '🌟', '🎯', '💪'];
+            
+            container.innerHTML = displayArticles.map((article, i) => `
+                <div class="article-card" onclick="showArticleDetail(${article.id})">
+                    <div class="article-cover">${coverEmojis[i] || '📖'}</div>
+                    <div class="article-content">
+                        <span class="article-category">${article.category}</span>
+                        <h3 class="article-title">${article.title}</h3>
+                        <div class="article-meta">
+                            <span>${article.author}</span>
+                            <span>•</span>
+                            <span>${article.read_time}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderArticlesList() {
+            const container = document.getElementById('articles-list');
+            if (!container) return;
+            
+            const coverEmojis = ['📚', '🧠', '💡', '🌟', '🎯', '💪'];
+            
+            container.innerHTML = articles.map((article, i) => `
+                <div class="article-card" onclick="showArticleDetail(${article.id})">
+                    <div class="article-cover">${coverEmojis[i] || '📖'}</div>
+                    <div class="article-content">
+                        <span class="article-category">${article.category}</span>
+                        <h3 class="article-title">${article.title}</h3>
+                        <div class="article-meta">
+                            <span>👁 ${article.views}</span>
+                            <span>❤️ ${article.likes}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function showArticleDetail(id) {
+            try {
+                const response = await fetch(`${API_BASE}/articles/${id}`);
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    const article = data.data;
+                    
+                    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                    document.getElementById('page-article-detail').classList.add('active');
+                    
+                    document.getElementById('article-category').textContent = article.category;
+                    document.getElementById('article-title').textContent = article.title;
+                    document.getElementById('article-author').textContent = article.author;
+                    document.getElementById('article-read-time').textContent = article.read_time;
+                    document.getElementById('article-body').innerHTML = formatArticleContent(article.content);
+                }
+            } catch (error) {
+                showToast('加载文章失败');
+            }
+        }
+
+        function formatArticleContent(content) {
+            return content
+                .trim()
+                .split('\n')
+                .map(line => {
+                    line = line.trim();
+                    if (!line) return '';
+                    if (line.startsWith('**') && line.endsWith('**')) {
+                        return `<h3>${line.replace(/\*\*/g, '')}</h3>`;
+                    }
+                    if (line.startsWith('**')) {
+                        return `<p><strong>${line.replace(/\*\*/g, '')}</strong></p>`;
+                    }
+                    if (line.startsWith('- ') || line.startsWith('• ')) {
+                        return `<li>${line.substring(2)}</li>`;
+                    }
+                    if (line.match(/^\d+\./)) {
+                        return `<li>${line.substring(line.indexOf('.') + 1)}</li>`;
+                    }
+                    if (line.startsWith('"') || line.startsWith('"')) {
+                        return `<p><em>${line}</em></p>`;
+                    }
+                    return `<p>${line}</p>`;
+                })
+                .join('');
+        }
+
+        function showArticles() {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-articles').classList.add('active');
+            
+            // 激活导航
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        }
+
+        // ==================== 冥想音频 ====================
+
+        async function loadMeditations() {
+            try {
+                const response = await fetch(`${API_BASE}/meditations`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    meditations = data.data;
+                    renderHomeMeditations();
+                    renderMeditationsGrid();
+                }
+            } catch (error) {
+                showToast('加载冥想内容失败');
+            }
+        }
+
+        function renderHomeMeditations() {
+            const container = document.getElementById('home-meditations');
+            if (!container) return;
+            
+            const displayMeditations = meditations.slice(0, 4);
+            container.innerHTML = displayMeditations.map(med => `
+                <div class="meditation-card" onclick="openPlayer(${med.id})">
+                    <div class="meditation-icon">${med.cover}</div>
+                    <div class="meditation-title">${med.title}</div>
+                    <div class="meditation-duration">⏱ ${med.duration}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderMeditationsGrid() {
+            const container = document.getElementById('meditations-grid');
+            if (!container) return;
+            
+            container.innerHTML = meditations.map(med => `
+                <div class="meditation-card" onclick="openPlayer(${med.id})">
+                    <div class="meditation-icon">${med.cover}</div>
+                    <div class="meditation-title">${med.title}</div>
+                    <div class="meditation-duration">⏱ ${med.duration}</div>
+                </div>
+            `).join('');
+        }
+
+        function showMeditations() {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-meditations').classList.add('active');
+        }
+
+        function openPlayer(id) {
+            const med = meditations.find(m => m.id === id);
+            if (!med) return;
+            
+            currentMeditation = med;
+            playerProgress = 0;
+            
+            document.getElementById('player-cover').textContent = med.cover;
+            document.getElementById('player-title').textContent = med.title;
+            document.getElementById('player-category').textContent = med.category;
+            document.getElementById('player-duration').textContent = med.duration;
+            document.getElementById('player-progress-fill').style.width = '0%';
+            document.getElementById('player-current').textContent = '0:00';
+            document.getElementById('play-btn').textContent = '▶';
+            
+            openModal('player-modal');
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.getElementById('play-btn').textContent = isPlaying ? '⏸' : '▶';
+            
+            if (isPlaying) {
+                startPlayback();
+            } else {
+                pausePlayback();
+            }
+        }
+
+        function startPlayback() {
+            if (playerTimer) return;
+            
+            playerTimer = setInterval(() => {
+                playerProgress += 1;
+                const duration = parseDuration(currentMeditation.duration);
+                const progress = (playerProgress / duration) * 100;
+                
+                if (progress >= 100) {
+                    stopPlayback();
+                    showToast('冥想完成');
+                    return;
+                }
+                
+                document.getElementById('player-progress-fill').style.width = `${progress}%`;
+                document.getElementById('player-current').textContent = formatTime(playerProgress);
+            }, 1000);
+        }
+
+        function pausePlayback() {
+            if (playerTimer) {
+                clearInterval(playerTimer);
+                playerTimer = null;
+            }
+        }
+
+        function stopPlayback() {
+            pausePlayback();
+            isPlaying = false;
+            playerProgress = 0;
+        }
+
+        function skipBackward() {
+            playerProgress = Math.max(0, playerProgress - 30);
+            updatePlayerProgress();
+        }
+
+        function skipForward() {
+            const duration = parseDuration(currentMeditation.duration);
+            playerProgress = Math.min(duration, playerProgress + 30);
+            updatePlayerProgress();
+        }
+
+        function updatePlayerProgress() {
+            const duration = parseDuration(currentMeditation.duration);
+            const progress = (playerProgress / duration) * 100;
+            document.getElementById('player-progress-fill').style.width = `${progress}%`;
+            document.getElementById('player-current').textContent = formatTime(playerProgress);
+        }
+
+        function parseDuration(duration) {
+            const parts = duration.split(':');
+            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // ==================== 社区 ====================
+
+        async function loadPosts() {
+            try {
+                const response = await fetch(`${API_BASE}/posts`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    posts = data.data;
+                    renderHomePosts();
+                    renderCommunityPosts();
+                    initPostTags();
+                }
+            } catch (error) {
+                showToast('加载社区内容失败');
+            }
+        }
+
+        function renderHomePosts() {
+            const container = document.getElementById('home-posts');
+            if (!container) return;
+            
+            const displayPosts = posts.slice(0, 2);
+            container.innerHTML = displayPosts.map(post => `
+                <div class="post-card" onclick="showPostDetail(${post.id})">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.author.slice(-2)}</div>
+                        <div>
+                            <div class="post-author">${post.author}</div>
+                            <div class="post-time">${post.created_at}</div>
+                        </div>
+                    </div>
+                    <p class="post-content">${post.content.substring(0, 80)}${post.content.length > 80 ? '...' : ''}</p>
+                    <div class="post-actions">
+                        <button class="post-action" onclick="event.stopPropagation(); likePost(${post.id})">
+                            ❤️ ${post.likes}
+                        </button>
+                        <button class="post-action" onclick="event.stopPropagation(); showPostDetail(${post.id})">
+                            💬 ${post.replies}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCommunityPosts() {
+            const container = document.getElementById('community-posts');
+            if (!container) return;
+            
+            container.innerHTML = posts.map(post => `
+                <div class="post-card" onclick="showPostDetail(${post.id})">
+                    <div class="post-header">
+                        <div class="post-avatar">${post.author.slice(-2)}</div>
+                        <div>
+                            <div class="post-author">${post.author}</div>
+                            <div class="post-time">${post.created_at}</div>
+                        </div>
+                    </div>
+                    <p class="post-content">${post.content}</p>
+                    <div class="post-tags">
+                        ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join('')}
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action" onclick="event.stopPropagation(); likePost(${post.id})">
+                            ❤️ ${post.likes}
+                        </button>
+                        <button class="post-action" onclick="event.stopPropagation(); showPostDetail(${post.id})">
+                            💬 回复
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initPostTags() {
+            const container = document.getElementById('post-tags-select');
+            if (!container) return;
+            
+            const tags = ['职场压力', '人际关系', '失眠焦虑', '职业发展', '工作倦怠', '自我怀疑'];
+            container.innerHTML = tags.map(tag => `
+                <span class="post-tag-option" onclick="togglePostTag(this, '${tag}')">#${tag}</span>
+            `).join('');
+        }
+
+        function togglePostTag(element, tag) {
+            element.classList.toggle('selected');
+            
+            if (selectedPostTags.includes(tag)) {
+                selectedPostTags = selectedPostTags.filter(t => t !== tag);
+            } else {
+                selectedPostTags.push(tag);
+            }
+        }
+
+        async function submitPost() {
+            const content = document.getElementById('post-content').value.trim();
+            
+            if (!content) {
+                showToast('请输入你想分享的内容');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/posts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: content,
+                        tags: selectedPostTags
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    showToast('发布成功');
+                    posts.unshift(data.data);
+                    renderCommunityPosts();
+                    
+                    // 清空表单
+                    document.getElementById('post-content').value = '';
+                    document.querySelectorAll('.post-tag-option').forEach(el => el.classList.remove('selected'));
+                    selectedPostTags = [];
+                }
+            } catch (error) {
+                showToast('发布失败，请重试');
+            }
+        }
+
+        async function showPostDetail(id) {
+            try {
+                const response = await fetch(`${API_BASE}/posts/${id}`);
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    const post = data.data;
+                    
+                    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                    document.getElementById('page-post-detail').classList.add('active');
+                    
+                    const container = document.getElementById('post-detail-content');
+                    container.innerHTML = `
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="post-avatar">${post.author.slice(-2)}</div>
+                                <div>
+                                    <div class="post-author">${post.author}</div>
+                                    <div class="post-time">${post.created_at}</div>
+                                </div>
+                            </div>
+                            <p class="post-content">${post.content}</p>
+                            <div class="post-tags">
+                                ${post.tags.map(tag => `<span class="post-tag">#${tag}</span>`).join('')}
+                            </div>
+                            <div class="post-actions">
+                                <button class="post-action" onclick="likePost(${post.id})">
+                                    ❤️ ${post.likes}
+                                </button>
+                                <button class="post-action">
+                                    💬 ${post.replies}
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4 style="margin-bottom: 16px; font-size: 15px;">💬 暖心回复</h4>
+                            ${post.replies.map(reply => `
+                                <div class="post-card" style="background: #F0E8FF; margin-bottom: 10px;">
+                                    <div class="post-header">
+                                        <div class="post-avatar" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                                            ${reply.author.slice(-2)}
+                                        </div>
+                                        <div>
+                                            <div class="post-author">${reply.author}</div>
+                                            <div class="post-time">${reply.created_at}</div>
+                                        </div>
+                                    </div>
+                                    <p class="post-content">${reply.content}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <textarea id="reply-content" placeholder="写下你的回复..." 
+                                      style="width: 100%; height: 80px; padding: 12px; border: 2px solid #E8E8FF; 
+                                             border-radius: 12px; resize: none; font-family: inherit;"></textarea>
+                            <button class="save-record-btn" style="margin-top: 10px;" 
+                                    onclick="submitReply(${post.id})">发送回复</button>
+                        </div>
+                        
+                        <button class="start-test-btn" style="margin-top: 20px; background: #F5F5F5; color: #666;" 
+                                onclick="showCommunity()">返回社区</button>
+                    `;
+                }
+            } catch (error) {
+                showToast('加载帖子失败');
+            }
+        }
+
+        async function submitReply(postId) {
+            const content = document.getElementById('reply-content').value.trim();
+            
+            if (!content) {
+                showToast('请输入回复内容');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/posts/${postId}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    showToast('回复成功');
+                    showPostDetail(postId);
+                }
+            } catch (error) {
+                showToast('回复失败，请重试');
+            }
+        }
+
+        async function likePost(id) {
+            try {
+                const response = await fetch(`${API_BASE}/posts/${id}/like`, { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    const post = posts.find(p => p.id === id);
+                    if (post) {
+                        post.likes = data.data.likes;
+                        renderHomePosts();
+                        renderCommunityPosts();
+                    }
+                }
+            } catch (error) {
+                // 本地更新
+                const post = posts.find(p => p.id === id);
+                if (post) {
+                    post.likes++;
+                    renderHomePosts();
+                    renderCommunityPosts();
+                }
+            }
+        }
+
+        function showCommunity() {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-community').classList.add('active');
+        }
+
+        // ==================== 会员 ====================
+
+        function showVipModal() {
+            openModal('vip-modal');
+        }
+    </script>
+</body>
+</html>

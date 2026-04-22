@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>早起打卡 - 每天早起1小时</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff9f43;
+            --secondary-color: #ff6b35;
+            --accent-color: #f72585;
+            --success-color: #06d6a0;
+            --bg-light: #f8f9fa;
+            --text-dark: #2d3436;
+            --text-muted: #636e72;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 25px 0;
+        }
+        
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+        
+        .back-btn:hover {
+            color: white;
+            opacity: 1;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 60px 0 80px;
+            text-align: center;
+        }
+        
+        .hero-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 25px;
+        }
+        
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+        
+        .hero .highlight {
+            background: white;
+            color: var(--secondary-color);
+            display: inline-block;
+            padding: 8px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        /* Stats */
+        .stats-section {
+            background: white;
+            padding: 40px 0;
+            margin-top: -40px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 25px 15px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        /* Section */
+        .section {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            margin: 15px auto 0;
+        }
+        
+        /* Pain Points */
+        .pain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .pain-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .pain-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .pain-icon {
+            width: 70px;
+            height: 70px;
+            background: #fee2e2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #ef4444;
+            margin: 0 auto 20px;
+        }
+        
+        .pain-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .pain-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        /* Features */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(255, 159, 67, 0.2);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            margin: 0 auto 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        /* Pricing */
+        .pricing-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            margin-top: 10px;
+        }
+        
+        .pricing-card .price {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .pricing-card .price small {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        
+        .pricing-card .period {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+        
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px;
+            text-align: left;
+        }
+        
+        .pricing-card li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 1rem;
+        }
+        
+        .pricing-card li:last-child {
+            border-bottom: none;
+        }
+        
+        .pricing-card li i {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+        
+        /* Payment */
+        .payment-section {
+            background: white;
+        }
+        
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .payment-card {
+            text-align: center;
+        }
+        
+        .payment-card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .payment-card img {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            margin-bottom: 15px;
+        }
+        
+        .payment-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        /* Usage */
+        .usage-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 20px;
+            padding: 35px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .usage-box h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .usage-box ol {
+            padding-left: 20px;
+            margin: 0;
+        }
+        
+        .usage-box li {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .usage-box .email {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .usage-box .email i {
+            margin-right: 8px;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        footer a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            color: white;
+        }
+        
+        footer .copyright {
+            margin-top: 20px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+        
+        /* CTA Button */
+        .btn-warning {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                返回首页
+            </a>
+            <span class="logo-text">早起打卡</span>
+        </div>
+    </header>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-icon">
+                <i class="fas fa-sun"></i>
+            </div>
+            <h1>早起打卡</h1>
+            <p class="subtitle">每天早起1小时，一年多出15天</p>
+            <span class="highlight">
+                <i class="fas fa-bell"></i>
+                21天养成早起习惯 · 排行榜竞争 · 挑战赛
+            </span>
+        </div>
+    </section>
+    
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">10000+</div>
+                    <div class="stat-label">坚持早起的人数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">7:00</div>
+                    <div class="stat-label">平均早起时间</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">365</div>
+                    <div class="stat-label">全年无休打卡</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pain Points -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">早起难，难在哪？</h2>
+            <div class="pain-grid">
+                <div class="pain-card">
+                    <div class="pain-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <h3>闹钟响了还想睡</h3>
+                    <p>每天闹钟响了三遍，还是起不来</p>
+                </div>
+                <div class="pain-card">
+                    <div class="pain-icon">
+                        <i class="fas fa-battery-empty"></i>
+                    </div>
+                    <h3>没有动力早起</h3>
+                    <p>不知道早起要干什么，缺乏目标</p>
+                </div>
+                <div class="pain-card">
+                    <div class="pain-icon">
+                        <i class="fas fa-user-slash"></i>
+                    </div>
+                    <h3>一个人坚持太难</h3>
+                    <p>没人监督，三天打鱼两天晒网</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features -->
+    <section class="section" style="background: white;">
+        <div class="container">
+            <h2 class="section-title">核心功能</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>早起打卡</h3>
+                    <p>设定目标时间，一键打卡记录</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>排行榜</h3>
+                    <p>和全国早起党比拼，谁是最早起的人</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-flag-checkered"></i>
+                    </div>
+                    <h3>挑战赛</h3>
+                    <p>21天早起挑战，完成即返现金</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>励志内容</h3>
+                    <p>每日早安语录，给你起床的理由</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Benefits -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">早起的好处</h2>
+            <div class="pain-grid">
+                <div class="pain-card" style="border-left: 4px solid var(--primary-color);">
+                    <h3>⏰ 时间变多了</h3>
+                    <p>每天多出1小时，一年多出365小时，相当于多出15天</p>
+                </div>
+                <div class="pain-card" style="border-left: 4px solid var(--secondary-color);">
+                    <h3>💪 精力更充沛</h3>
+                    <p>早起倒逼早睡，生物钟规律，精神状态明显提升</p>
+                </div>
+                <div class="pain-card" style="border-left: 4px solid var(--success-color);">
+                    <h3>🎯 效率更高</h3>
+                    <p>早晨大脑最清醒，处理复杂工作得心应手</p>
+                </div>
+                <div class="pain-card" style="border-left: 4px solid var(--accent-color);">
+                    <h3>🌟 更自律</h3>
+                    <p>能控制早晨的人，才能控制人生</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing -->
+    <section class="section" style="background: white;">
+        <div class="container">
+            <h2 class="section-title">定价方案</h2>
+            <div class="pricing-container">
+                <div class="pricing-card">
+                    <h3>月卡会员</h3>
+                    <div class="price">¥9.9<small>/月</small></div>
+                    <p class="period">每天不到4毛钱</p>
+                    <ul>
+                        <li><i class="fas fa-check"></i> 无限次打卡记录</li>
+                        <li><i class="fas fa-check"></i> 加入排行榜</li>
+                        <li><i class="fas fa-check"></i> 参加挑战赛</li>
+                        <li><i class="fas fa-check"></i> 每日励志推送</li>
+                        <li><i class="fas fa-check"></i> 早睡提醒功能</li>
+                    </ul>
+                    <button class="btn btn-warning" style="width: 100%;">立即开通</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Payment -->
+    <section class="section payment-section">
+        <div class="container">
+            <h2 class="section-title">扫码支付</h2>
+            <div class="payment-grid">
+                <div class="payment-card">
+                    <h4><i class="fab fa-alipay" style="color: #1677ff;"></i> 支付宝</h4>
+                    <img src="../assets/alipay.jpg" alt="支付宝收款码">
+                    <p>打开支付宝扫一扫</p>
+                </div>
+                <div class="payment-card">
+                    <h4><i class="fab fa-weixin" style="color: #07c160;"></i> 微信支付</h4>
+                    <img src="../assets/wechat.png" alt="微信收款码">
+                    <p>打开微信扫一扫</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Usage -->
+    <section class="section">
+        <div class="container">
+            <div class="usage-box">
+                <h3><i class="fas fa-info-circle"></i> 使用说明</h3>
+                <ol>
+                    <li>选择需要的套餐，扫码支付</li>
+                    <li>支付成功后，<strong>截图保存</strong>支付凭证</li>
+                    <li>将截图发送到邮箱：<strong>xiaojin@coze.email</strong></li>
+                    <li>邮件主题注明：<strong>早起打卡 + 您的姓名</strong></li>
+                    <li>我们将在 <strong>24小时内</strong> 回复开通方式</li>
+                </ol>
+                <div class="email">
+                    <i class="fas fa-envelope"></i>
+                    xiaojin@coze.email
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <a href="../index.html">返回首页</a>
+            <p class="copyright">&copy; 2024 早起打卡. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

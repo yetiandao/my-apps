@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>心灵港湾 - 心理健康测评</title>
+    <style>
+        /* ==================== 全局样式 ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ==================== 顶部导航 ==================== */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* ==================== 底部导航 ==================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* ==================== 页面容器 ==================== */
+        .page {
+            display: none;
+            padding: 16px;
+            padding-bottom: 80px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== 首页样式 ==================== */
+        .banner {
+            background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .banner h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .banner p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .article-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .article-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .article-card h3 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .article-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .tag {
+            background: #ede9fe;
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        /* ==================== 测评页面样式 ==================== */
+        .test-header {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary-light);
+            background: #f5f3ff;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-nav {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-nav button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-prev {
+            background: var(--border);
+            color: var(--text-secondary);
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-next:disabled {
+            background: var(--border);
+            color: var(--text-light);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        /* ==================== 报告页面样式 ==================== */
+        .report-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .report-header {
+            text-align: center;
+            padding: 24px 0;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0deg, var(--border) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--bg-card);
+        }
+
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .dimension-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dimension-item {
+            padding: 16px;
+            background: var(--bg-main);
+            border-radius: 10px;
+        }
+
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .dimension-name {
+            font-weight: 500;
+        }
+
+        .dimension-score {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .dimension-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .dimension-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-excellent {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-good {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .status-moderate {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-concerning {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .suggestion-list {
+            list-style: none;
+        }
+
+        .suggestion-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-icon {
+            color: var(--primary);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .counselor-card {
+            display: flex;
+            gap: 14px;
+            padding: 16px;
+            background: var(--bg-main);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .counselor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .counselor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .counselor-info {
+            flex: 1;
+        }
+
+        .counselor-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .counselor-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .counselor-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .counselor-tag {
+            background: #ede9fe;
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        .counselor-meta {
+            text-align: right;
+        }
+
+        .counselor-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+        .counselor-rating {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        /* ==================== 文章页面样式 ==================== */
+        .article-detail {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .article-detail h1 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .article-detail .article-info {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .article-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .article-content h2 {
+            font-size: 1.1rem;
+            margin: 20px 0 10px;
+            color: var(--text-primary);
+        }
+
+        .article-content h3 {
+            font-size: 1rem;
+            margin: 16px 0 8px;
+            color: var(--text-primary);
+        }
+
+        .article-content p {
+            margin-bottom: 12px;
+        }
+
+        .article-content ul, .article-content ol {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .article-content li {
+            margin-bottom: 8px;
+        }
+
+        /* ==================== 咨询师页面样式 ==================== */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ==================== 会员页面样式 ==================== */
+        .pricing-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.popular {
+            border: 2px solid var(--primary);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 12px;
+            right: -30px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 40px;
+            font-size: 0.75rem;
+            transform: rotate(45deg);
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .pricing-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .pricing-original {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+
+        .pricing-features {
+            list-style: none;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            color: var(--success);
+        }
+
+        .btn-purchase {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        .btn-purchase:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ==================== 支付弹窗 ==================== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-main);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-main);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .confirm-pay {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        /* ==================== 加载状态 ==================== */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* ==================== Toast提示 ==================== */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--text-primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            z-index: 300;
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ==================== 空状态 ==================== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ==================== 响应式适配 ==================== */
+        @media (max-width: 375px) {
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 12px 8px;
+            }
+
+            .stat-card .number {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <h1>🧠 心灵港湾</h1>
+        <p>您的心理健康伙伴</p>
+    </header>
+
+    <!-- 首页 -->
+    <div id="page-home" class="page active">
+        <div class="banner">
+            <h2>了解内心，拥抱健康</h2>
+            <p>专业的心理健康测评，科学的改善建议，守护您的心理健康</p>
+            <button class="btn-primary" onclick="startTest()">立即开始测评</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number">50,000+</div>
+                <div class="label">用户测评</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">98%</div>
+                <div class="label">用户好评</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">4.9</div>
+                <div class="label">应用评分</div>
+            </div>
+        </div>
+
+        <h3 class="section-title">📚 心理知识</h3>
+        <div id="article-list-home"></div>
+    </div>
+
+    <!-- 测评页 -->
+    <div id="page-test" class="page">
+        <div class="test-header">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text" id="progress-text">第 1/5 题</div>
+        </div>
+
+        <div id="question-container"></div>
+
+        <div class="btn-nav">
+            <button class="btn-prev" id="btn-prev" onclick="prevQuestion()">上一题</button>
+            <button class="btn-next" id="btn-next" onclick="nextQuestion()">下一题</button>
+        </div>
+    </div>
+
+    <!-- 报告页 -->
+    <div id="page-report" class="page">
+        <div id="report-container"></div>
+    </div>
+
+    <!-- 知识文章页 -->
+    <div id="page-articles" class="page">
+        <h3 class="section-title">📖 心理知识文章</h3>
+        <div id="article-list"></div>
+    </div>
+
+    <!-- 文章详情页 -->
+    <div id="page-article-detail" class="page">
+        <div id="article-detail-container"></div>
+    </div>
+
+    <!-- 咨询师页 -->
+    <div id="page-counselors" class="page">
+        <h3 class="section-title">👩‍⚕️ 专业心理咨询师</h3>
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterCounselors('all')">全部</button>
+            <button class="filter-btn" onclick="filterCounselors('焦虑')">焦虑咨询</button>
+            <button class="filter-btn" onclick="filterCounselors('抑郁')">抑郁咨询</button>
+            <button class="filter-btn" onclick="filterCounselors('压力')">压力管理</button>
+            <button class="filter-btn" onclick="filterCounselors('人际关系')">人际关系</button>
+        </div>
+        <div id="counselor-list"></div>
+    </div>
+
+    <!-- 会员页 -->
+    <div id="page-vip" class="page">
+        <h3 class="section-title">💎 会员服务</h3>
+        <div id="pricing-container"></div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-page="home" onclick="switchPage('home')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>首页</span>
+        </button>
+        <button class="nav-item" data-page="test" onclick="switchPage('test')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <span>测评</span>
+        </button>
+        <button class="nav-item" data-page="articles" onclick="switchPage('articles')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            <span>知识</span>
+        </button>
+        <button class="nav-item" data-page="counselors" onclick="switchPage('counselors')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>咨询</span>
+        </button>
+        <button class="nav-item" data-page="vip" onclick="switchPage('vip')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm6 9.09c0 4-2.55 7.7-6 8.83-3.45-1.13-6-4.82-6-8.83V6.31l6-2.25 6 2.25v4.78z"/></svg>
+            <span>会员</span>
+        </button>
+    </nav>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 支付弹窗 -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">确认支付</span>
+                <button class="modal-close" onclick="closePaymentModal()">×</button>
+            </div>
+            <div id="payment-detail"></div>
+            <div class="payment-method" onclick="selectPayment(this)">
+                <div class="payment-icon">💚</div>
+                <div>
+                    <div style="font-weight: 500;">微信支付</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">推荐</div>
+                </div>
+            </div>
+            <div class="payment-method" onclick="selectPayment(this)">
+                <div class="payment-icon">🔵</div>
+                <div>
+                    <div style="font-weight: 500;">支付宝</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">便捷安全</div>
+                </div>
+            </div>
+            <button class="confirm-pay" id="confirm-pay-btn" onclick="confirmPayment()">确认支付 ¥<span id="pay-amount">9.9</span></button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let API_BASE = 'http://localhost:5000/api';
+        let currentPage = 'home';
+        let currentCategoryIndex = 0;
+        let currentQuestionIndex = 0;
+        let answers = {};
+        let questions = [];
+        let reportData = null;
+        let articles = [];
+        let counselors = [];
+
+        // ==================== 页面切换 ====================
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(`page-${page}`).classList.add('active');
+            document.querySelector(`[data-page="${page}"]`).classList.add('active');
+            
+            currentPage = page;
+            
+            // 页面加载时获取数据
+            if (page === 'home' && articles.length === 0) {
+                loadHomeData();
+            } else if (page === 'articles') {
+                loadArticles();
+            } else if (page === 'counselors') {
+                loadCounselors();
+            } else if (page === 'vip') {
+                loadPricing();
+            }
+        }
+
+        // ==================== Toast提示 ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ==================== 首页数据 ====================
+        async function loadHomeData() {
+            try {
+                const res = await fetch(`${API_BASE}/articles`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    articles = data.data;
+                    renderHomeArticles();
+                }
+            } catch (err) {
+                console.error('加载数据失败', err);
+            }
+        }
+
+        function renderHomeArticles() {
+            const container = document.getElementById('article-list-home');
+            container.innerHTML = articles.slice(0, 3).map(article => `
+                <div class="article-card" onclick="viewArticle(${article.id})">
+                    <h3>${article.title}</h3>
+                    <p>${article.summary}</p>
+                    <div class="article-meta">
+                        <span class="tag">${article.category}</span>
+                        <span>📖 ${article.read_time}</span>
+                        <span>👁 ${article.views.toLocaleString()}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 测评功能 ====================
+        async function startTest() {
+            showLoading();
+            try {
+                const res = await fetch(`${API_BASE}/questions`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    questions = data.data;
+                    currentCategoryIndex = 0;
+                    currentQuestionIndex = 0;
+                    answers = {};
+                    renderQuestion();
+                    switchPage('test');
+                }
+            } catch (err) {
+                showToast('加载题目失败，请检查网络');
+            }
+            hideLoading();
+        }
+
+        function renderQuestion() {
+            const container = document.getElementById('question-container');
+            const category = questions[currentCategoryIndex];
+            const question = category.questions[currentQuestionIndex];
+            const totalQuestions = category.questions.length;
+            
+            // 更新进度
+            const progress = ((currentCategoryIndex * totalQuestions + currentQuestionIndex + 1) / 
+                             (questions.length * 5)) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = 
+                `${category.category} - 第 ${currentQuestionIndex + 1}/${totalQuestions} 题`;
+            
+            // 渲染题目
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-text">${question.text}</div>
+                    <div class="option-list">
+                        ${question.options.map(opt => `
+                            <div class="option-item ${answers[question.qid] === opt.value ? 'selected' : ''}" 
+                                 onclick="selectOption('${question.qid}', ${opt.value})">
+                                ${opt.label}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // 更新按钮状态
+            document.getElementById('btn-prev').disabled = 
+                currentCategoryIndex === 0 && currentQuestionIndex === 0;
+            
+            const nextBtn = document.getElementById('btn-next');
+            const isLastQuestion = currentCategoryIndex === questions.length - 1 && 
+                                  currentQuestionIndex === questions[questions.length - 1].questions.length - 1;
+            
+            if (isLastQuestion) {
+                nextBtn.textContent = '提交测评';
+                nextBtn.className = 'btn-next btn-submit';
+            } else {
+                nextBtn.textContent = '下一题';
+                nextBtn.className = 'btn-next';
+            }
+        }
+
+        function selectOption(qid, value) {
+            answers[qid] = value;
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+            } else if (currentCategoryIndex > 0) {
+                currentCategoryIndex--;
+                currentQuestionIndex = questions[currentCategoryIndex].questions.length - 1;
+            }
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            const category = questions[currentCategoryIndex];
+            const question = category.questions[currentQuestionIndex];
+            
+            if (answers[question.qid] === undefined) {
+                showToast('请选择一个答案');
+                return;
+            }
+            
+            const isLastQuestion = currentCategoryIndex === questions.length - 1 && 
+                                  currentQuestionIndex === questions[questions.length - 1].questions.length - 1;
+            
+            if (isLastQuestion) {
+                submitAssessment();
+            } else {
+                if (currentQuestionIndex < category.questions.length - 1) {
+                    currentQuestionIndex++;
+                } else {
+                    currentCategoryIndex++;
+                    currentQuestionIndex = 0;
+                }
+                renderQuestion();
+            }
+        }
+
+        async function submitAssessment() {
+            showLoading();
+            try {
+                const res = await fetch(`${API_BASE}/assess`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ answers })
+                });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    reportData = data.data;
+                    renderReport();
+                    switchPage('report');
+                    showToast('测评完成！');
+                }
+            } catch (err) {
+                showToast('提交失败，请重试');
+            }
+            hideLoading();
+        }
+
+        // ==================== 报告渲染 ====================
+        function renderReport() {
+            const container = document.getElementById('report-container');
+            const report = reportData.report;
+            const overallScore = reportData.overall_score;
+            
+            const statusClass = report.summary.overall_status.level === 'excellent' ? 'status-excellent' :
+                               report.summary.overall_status.level === 'good' ? 'status-good' :
+                               report.summary.overall_status.level === 'moderate' ? 'status-moderate' : 'status-concerning';
+            
+            container.innerHTML = `
+                <div class="report-card">
+                    <div class="report-header">
+                        <div class="score-circle" id="score-circle">
+                            <span class="score-value">${overallScore}</span>
+                        </div>
+                        <span class="status-badge ${statusClass}">${report.summary.overall_status.label}</span>
+                        <div class="score-label">综合心理健康指数</div>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <h3 class="section-title">📊 各维度分析</h3>
+                    <div class="dimension-list">
+                        ${report.dimensions.map(dim => {
+                            const dimClass = dim.status.level === 'excellent' ? '#10b981' :
+                                            dim.status.level === 'good' ? '#3b82f6' :
+                                            dim.status.level === 'moderate' ? '#f59e0b' : '#ef4444';
+                            return `
+                                <div class="dimension-item">
+                                    <div class="dimension-header">
+                                        <span class="dimension-name">${dim.name}</span>
+                                        <span class="dimension-score">${dim.score}分</span>
+                                    </div>
+                                    <div class="dimension-bar">
+                                        <div class="dimension-fill" style="width: 0%; background: ${dimClass}" 
+                                             data-width="${dim.score}%"></div>
+                                    </div>
+                                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">
+                                        ${dim.analysis}
+                                    </p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <h3 class="section-title">💡 改善建议</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
+                        ${report.summary.overall_advice}
+                    </p>
+                    <ul class="suggestion-list">
+                        ${report.suggestions.map(s => `
+                            <li class="suggestion-item">
+                                <span class="suggestion-icon">✓</span>
+                                <span>${s}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                
+                <div class="report-card">
+                    <h3 class="section-title">👩‍⚕️ 推荐咨询师</h3>
+                    ${report.recommended_counselors.map(c => `
+                        <div class="counselor-card">
+                            <div class="counselor-avatar">
+                                <img src="${c.avatar}" alt="${c.name}">
+                            </div>
+                            <div class="counselor-info">
+                                <div class="counselor-name">${c.name}</div>
+                                <div class="counselor-title">${c.title} · ${c.experience}</div>
+                                <div class="counselor-tags">
+                                    ${c.specialty.map(s => `<span class="counselor-tag">${s}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="counselor-meta">
+                                <div class="counselor-price">¥${c.price}/次</div>
+                                <div class="counselor-rating">⭐ ${c.rating}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <button class="btn-primary" style="width: 100%; margin-top: 12px;" onclick="switchPage('counselors')">
+                        查看更多咨询师
+                    </button>
+                </div>
+                
+                <div style="display: flex; gap: 12px; margin-top: 16px;">
+                    <button class="btn-primary" style="flex: 1;" onclick="switchPage('vip')">
+                        开通会员查看更多
+                    </button>
+                    <button style="flex: 1; padding: 12px; background: var(--bg-main); border: none; border-radius: 10px; cursor: pointer;" onclick="switchPage('home')">
+                        返回首页
+                    </button>
+                </div>
+            `;
+            
+            // 动画效果
+            setTimeout(() => {
+                document.querySelectorAll('.dimension-fill').forEach(bar => {
+                    bar.style.width = bar.dataset.width;
+                });
+                
+                // 分数圆环动画
+                const scoreCircle = document.getElementById('score-circle');
+                const degree = (overallScore / 100) * 360;
+                const statusColor = report.summary.overall_status.level === 'excellent' ? '#10b981' :
+                                   report.summary.overall_status.level === 'good' ? '#3b82f6' :
+                                   report.summary.overall_status.level === 'moderate' ? '#f59e0b' : '#ef4444';
+                scoreCircle.style.background = `conic-gradient(${statusColor} 0deg, ${statusColor} ${degree}deg, #e2e8f0 ${degree}deg)`;
+            }, 100);
+        }
+
+        // ==================== 文章功能 ====================
+        async function loadArticles() {
+            showLoading();
+            try {
+                const res = await fetch(`${API_BASE}/articles`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    articles = data.data;
+                    renderArticles();
+                }
+            } catch (err) {
+                showToast('加载文章失败');
+            }
+            hideLoading();
+        }
+
+        function renderArticles() {
+            const container = document.getElementById('article-list');
+            container.innerHTML = articles.map(article => `
+                <div class="article-card" onclick="viewArticle(${article.id})">
+                    <h3>${article.title}</h3>
+                    <p>${article.summary}</p>
+                    <div class="article-meta">
+                        <span class="tag">${article.category}</span>
+                        <span>📖 ${article.read_time}</span>
+                        <span>👁 ${article.views.toLocaleString()}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function viewArticle(id) {
+            showLoading();
+            try {
+                const res = await fetch(`${API_BASE}/articles?id=${id}`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    renderArticleDetail(data.data);
+                    switchPage('article-detail');
+                }
+            } catch (err) {
+                showToast('加载文章失败');
+            }
+            hideLoading();
+        }
+
+        function renderArticleDetail(article) {
+            const container = document.getElementById('article-detail-container');
+            container.innerHTML = `
+                <div class="article-detail">
+                    <button onclick="switchPage('articles')" style="background: none; border: none; cursor: pointer; margin-bottom: 12px; color: var(--primary);">
+                        ← 返回文章列表
+                    </button>
+                    <h1>${article.title}</h1>
+                    <div class="article-info">
+                        <span class="tag">${article.category}</span>
+                        <span>📖 ${article.read_time}</span>
+                        <span>👁 ${article.views.toLocaleString()}</span>
+                    </div>
+                    <div class="article-content">
+                        ${formatArticleContent(article.content)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatArticleContent(content) {
+            return content.trim()
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/^(\d+\..+)$/gm, '<li>$1</li>')
+                .replace(/^- (.+)$/gm, '<li>$1</li>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/<li>/g, '<ol><li>')
+                .replace(/<\/li>\n<li>/g, '</li><li>')
+                .replace(/<\/li>$/gm, '</li></ol>');
+        }
+
+        // ==================== 咨询师功能 ====================
+        async function loadCounselors() {
+            showLoading();
+            try {
+                const res = await fetch(`${API_BASE}/counselors`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    counselors = data.data;
+                    renderCounselors('all');
+                }
+            } catch (err) {
+                showToast('加载咨询师失败');
+            }
+            hideLoading();
+        }
+
+        function filterCounselors(specialty) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(specialty) || (specialty === 'all' && btn.textContent === '全部'));
+            });
+            renderCounselors(specialty);
+        }
+
+        function renderCounselors(specialty) {
+            const container = document.getElementById('counselor-list');
+            let filtered = counselors;
+            
+            if (specialty !== 'all') {
+                filtered = counselors.filter(c => c.specialty.some(s => s.includes(specialty)));
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <div class="empty-title">暂无符合条件的咨询师</div>
+                        <div class="empty-desc">试试其他筛选条件吧</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filtered.map(c => `
+                <div class="counselor-card" style="flex-direction: column;">
+                    <div style="display: flex; gap: 14px; width: 100%;">
+                        <div class="counselor-avatar">
+                            <img src="${c.avatar}" alt="${c.name}">
+                        </div>
+                        <div class="counselor-info" style="flex: 1;">
+                            <div class="counselor-name">${c.name}</div>
+                            <div class="counselor-title">${c.title} · ${c.experience}</div>
+                            <div class="counselor-tags" style="margin-top: 8px;">
+                                ${c.specialty.map(s => `<span class="counselor-tag">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                        <div class="counselor-meta" style="text-align: left;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">已服务 ${c.consultations.toLocaleString()} 人次</div>
+                            <div class="counselor-rating" style="justify-content: flex-start;">⭐ ${c.rating} · ${c.experience}经验</div>
+                        </div>
+                        <button onclick="openPayment(${c.price}, '${c.name}')" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;">
+                            立即咨询 ¥${c.price}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 会员定价 ====================
+        async function loadPricing() {
+            showLoading();
+            try {
+                const res = await fetch(`${API_BASE}/pricing`);
+                const data = await res.json();
+                if (data.status === 'success') {
+                    renderPricing(data.data.products);
+                }
+            } catch (err) {
+                showToast('加载定价失败');
+            }
+            hideLoading();
+        }
+
+        function renderPricing(products) {
+            const container = document.getElementById('pricing-container');
+            container.innerHTML = products.map(p => `
+                <div class="pricing-card ${p.popular ? 'popular' : ''}">
+                    ${p.popular ? '<div class="popular-badge">最受欢迎</div>' : ''}
+                    <div class="pricing-header">
+                        <div class="pricing-name">${p.name}</div>
+                        <div class="pricing-original">¥${p.original_price}</div>
+                        <div class="pricing-price">¥${p.price}<span>${p.period ? '/' + p.period : ''}</span></div>
+                        ${p.savings ? `<div style="color: var(--success); font-size: 0.85rem; margin-top: 4px;">${p.savings}</div>` : ''}
+                    </div>
+                    <ul class="pricing-features">
+                        ${p.features.map(f => `
+                            <li>
+                                <span class="feature-icon">✓</span>
+                                <span>${f}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <button class="btn-purchase" onclick="openPayment(${p.price}, '${p.name}')">
+                        立即开通
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // ==================== 支付功能 ====================
+        let currentPayment = { price: 0, name: '' };
+
+        function openPayment(price, name) {
+            currentPayment = { price, name };
+            document.getElementById('pay-amount').textContent = price;
+            document.getElementById('payment-detail').innerHTML = `
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <div style="color: var(--text-secondary);">商品名称</div>
+                    <div style="font-weight: 600; font-size: 1.1rem;">${name}</div>
+                </div>
+            `;
+            document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+            document.querySelector('.payment-method').classList.add('selected');
+            document.getElementById('payment-modal').classList.add('active');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.remove('active');
+        }
+
+        function selectPayment(element) {
+            document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function confirmPayment() {
+            // 模拟支付成功
+            closePaymentModal();
+            showToast('支付成功！');
+        }
+
+        // ==================== 加载状态 ====================
+        function showLoading() {
+            // 简化：直接显示，不使用遮罩
+        }
+
+        function hideLoading() {
+            // 简化：直接隐藏
+        }
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHomeData();
+        });
+    </script>
+</body>
+</html>

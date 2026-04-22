@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>养老账本 - 养老金计算与养老规划</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="icon">📊</span>
+                <span class="title">养老账本</span>
+            </div>
+            <nav class="nav">
+                <a href="#calculator" class="nav-item active">养老金计算</a>
+                <a href="#retirement" class="nav-item">延迟退休</a>
+                <a href="#planning" class="nav-item">养老规划</a>
+                <a href="#community" class="nav-item">养老社区</a>
+                <a href="#longterm" class="nav-item">长护险指南</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1>算清养老账，规划美好晚年</h1>
+            <p class="subtitle">基于2025年最新延迟退休政策，精准计算您的养老金</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-value">6243</span>
+                    <span class="stat-label">机关退休(元/月)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">3271</span>
+                    <span class="stat-label">企业退休(元/月)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">223</span>
+                    <span class="stat-label">农村基础(元/月)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 养老金计算器 -->
+    <section id="calculator" class="section">
+        <div class="container">
+            <h2 class="section-title">养老金计算器</h2>
+            <div class="calculator-card">
+                <form id="pensionForm" class="form-grid">
+                    <div class="form-group">
+                        <label>出生年月</label>
+                        <div class="date-inputs">
+                            <input type="number" id="birthYear" min="1960" max="2005" value="1985" required>
+                            <span>年</span>
+                            <input type="number" id="birthMonth" min="1" max="12" value="1" required>
+                            <span>月</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>性别</label>
+                        <select id="gender">
+                            <option value="男">男</option>
+                            <option value="女干部">女干部</option>
+                            <option value="女工人">女工人</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>当前年龄</label>
+                        <input type="number" id="currentAge" min="18" max="65" value="40" required>
+                    </div>
+                    <div class="form-group">
+                        <label>缴费年限（含视同）</label>
+                        <input type="number" id="totalYears" min="1" max="50" value="20" required>
+                    </div>
+                    <div class="form-group">
+                        <label>个人账户缴费年限</label>
+                        <input type="number" id="personalYears" min="1" max="50" value="20" required>
+                    </div>
+                    <div class="form-group">
+                        <label>当前月工资（元）</label>
+                        <input type="number" id="monthlySalary" min="2000" max="100000" value="10000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>当地社平工资（元）</label>
+                        <input type="number" id="localAvgSalary" min="3000" max="20000" value="8000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>现有储蓄（元）</label>
+                        <input type="number" id="currentSavings" min="0" max="10000000" value="100000" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">计算养老金</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">重置</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 计算结果展示 -->
+            <div id="resultSection" class="result-section" style="display: none;">
+                <div class="result-header">
+                    <h3>您的养老金预估</h3>
+                </div>
+                
+                <!-- 核心数据 -->
+                <div class="result-grid">
+                    <div class="result-card primary">
+                        <div class="result-label">预估月养老金</div>
+                        <div class="result-value" id="totalPension">-</div>
+                        <div class="result-unit">元/月</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">退休年龄</div>
+                        <div class="result-value" id="retirementAge">-</div>
+                        <div class="result-unit">岁</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">退休日期</div>
+                        <div class="result-value" id="retirementDate">-</div>
+                    </div>
+                </div>
+
+                <!-- 养老金构成 -->
+                <div class="pension-breakdown">
+                    <h4>养老金构成明细</h4>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">基础养老金</span>
+                            <span class="breakdown-value" id="basePension">-</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">个人账户养老金</span>
+                            <span class="breakdown-value" id="personalPension">-</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">过渡性养老金</span>
+                            <span class="breakdown-value" id="transitionPension">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 对比图 -->
+                <div class="chart-section">
+                    <h4>与全国水平对比</h4>
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+
+                <!-- 趋势图 -->
+                <div class="chart-section">
+                    <h4>养老金增长趋势预测</h4>
+                    <canvas id="trendChart"></canvas>
+                </div>
+
+                <!-- 储蓄规划 -->
+                <div id="planningSection" class="planning-section">
+                    <h4>养老储蓄规划建议</h4>
+                    <div class="planning-summary">
+                        <p>距离退休还有 <span id="timeToRetire">-</span></p>
+                        <p>目标储备：<span id="targetSavings">-</span>元 | 当前储备：<span id="currentAssets">-</span>元</p>
+                        <p class="highlight">每月需储蓄：<span id="monthlySave">-</span>元</p>
+                    </div>
+                    <div class="allocation-grid" id="allocationList">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 延迟退休 -->
+    <section id="retirement" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">延迟退休对照表</h2>
+            <div class="retirement-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>出生年份</th>
+                            <th>男性退休年龄</th>
+                            <th>女性干部退休年龄</th>
+                            <th>女性工人退休年龄</th>
+                        </tr>
+                    </thead>
+                    <tbody id="retirementTableBody">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="info-box">
+                <p>📌 <strong>政策说明：</strong>2025年起实施渐进式延迟退休，每4个月延迟1个月，至2039年达到目标年龄。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 养老规划 -->
+    <section id="planning" class="section">
+        <div class="container">
+            <h2 class="section-title">养老规划方案</h2>
+            <div class="planning-cards">
+                <div class="plan-card">
+                    <div class="plan-icon">🏦</div>
+                    <h3>基础版</h3>
+                    <p class="plan-desc">适合工薪阶层</p>
+                    <ul class="plan-features">
+                        <li>基础养老金计算</li>
+                        <li>延迟退休推算</li>
+                        <li>储蓄规划建议</li>
+                    </ul>
+                    <div class="plan-price">免费</div>
+                </div>
+                <div class="plan-card featured">
+                    <div class="plan-badge">推荐</div>
+                    <div class="plan-icon">⭐</div>
+                    <h3>尊享版</h3>
+                    <p class="plan-desc">完整养老规划</p>
+                    <ul class="plan-features">
+                        <li>✓ 全部基础功能</li>
+                        <li>✓ 养老社区推荐</li>
+                        <li>✓ 长护险申请指导</li>
+                        <li>✓ 个人财务规划</li>
+                        <li>✓ 税务优化建议</li>
+                    </ul>
+                    <div class="plan-price">¥19/月</div>
+                    <button class="btn btn-primary" onclick="subscribe()">立即订阅</button>
+                </div>
+                <div class="plan-card">
+                    <div class="plan-icon">👑</div>
+                    <h3>定制版</h3>
+                    <p class="plan-desc">一对一专家服务</p>
+                    <ul class="plan-features">
+                        <li>✓ 全部尊享功能</li>
+                        <li>✓ 专业顾问咨询</li>
+                        <li>✓ 定制养老方案</li>
+                        <li>✓ 全程跟踪服务</li>
+                    </ul>
+                    <div class="plan-price">¥299/月</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 养老社区 -->
+    <section id="community" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">养老社区推荐</h2>
+            <div class="community-list" id="communityList">
+                <!-- 动态加载 -->
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 长护险指南 -->
+    <section id="longterm" class="section">
+        <div class="container">
+            <h2 class="section-title">长期护理保险指南</h2>
+            <div class="longterm-content" id="longtermContent">
+                <!-- 动态加载 -->
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 订阅弹窗 -->
+    <div id="subscribeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>订阅尊享版</h3>
+            <p>解锁全部高级功能</p>
+            <div class="price-display">¥19/月</div>
+            <ul class="modal-features">
+                <li>✓ 无限次养老金计算</li>
+                <li>✓ 养老社区详细推荐</li>
+                <li>✓ 长护险申请指导</li>
+                <li>✓ 专业财务规划建议</li>
+            </ul>
+            <button class="btn btn-primary btn-full">微信支付</button>
+            <p class="modal-note">目标：53份 = ¥1007</p>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>养老账本 © 2025 | 帮助中年人规划安心晚年</p>
+            <p class="disclaimer">本计算结果仅供参考，实际养老金以社保局核算为准</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

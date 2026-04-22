@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职业规划师 - 发现你的职业之路</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress-step {
+            position: relative;
+        }
+        
+        .progress-step::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background: #e5e7eb;
+        }
+        
+        .progress-step:last-child::before {
+            display: none;
+        }
+        
+        .pricing-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .salary-bar {
+            transition: width 0.8s ease;
+        }
+        
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .modal {
+            backdrop-filter: blur(5px);
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                        <i class="fas fa-briefcase text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">职业规划师</span>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="p-2 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-bars text-gray-600"></i>
+                    </button>
+                </div>
+                
+                <!-- 桌面端导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#test" class="nav-link text-gray-600 hover:text-purple-600 font-medium active" onclick="scrollToSection('test')">职业测评</a>
+                    <a href="#salary" class="nav-link text-gray-600 hover:text-purple-600 font-medium" onclick="scrollToSection('salary')">薪资查询</a>
+                    <a href="#path" class="nav-link text-gray-600 hover:text-purple-600 font-medium" onclick="scrollToSection('path')">发展路径</a>
+                    <a href="#interview" class="nav-link text-gray-600 hover:text-purple-600 font-medium" onclick="scrollToSection('interview')">面试题库</a>
+                    <a href="#resume" class="nav-link text-gray-600 hover:text-purple-600 font-medium" onclick="scrollToSection('resume')">简历优化</a>
+                    <a href="#pricing" class="px-4 py-2 gradient-bg text-white rounded-full font-medium hover:opacity-90 transition">
+                        立即咨询
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+            <div class="px-4 py-3 space-y-2">
+                <a href="#test" class="block py-2 text-gray-600 hover:text-purple-600" onclick="scrollToSection('test'); toggleMobileMenu()">职业测评</a>
+                <a href="#salary" class="block py-2 text-gray-600 hover:text-purple-600" onclick="scrollToSection('salary'); toggleMobileMenu()">薪资查询</a>
+                <a href="#path" class="block py-2 text-gray-600 hover:text-purple-600" onclick="scrollToSection('path'); toggleMobileMenu()">发展路径</a>
+                <a href="#interview" class="block py-2 text-gray-600 hover:text-purple-600" onclick="scrollToSection('interview'); toggleMobileMenu()">面试题库</a>
+                <a href="#resume" class="block py-2 text-gray-600 hover:text-purple-600" onclick="scrollToSection('resume'); toggleMobileMenu()">简历优化</a>
+                <a href="#pricing" class="block py-2 text-center gradient-bg text-white rounded-lg" onclick="toggleMobileMenu()">立即咨询</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero区域 -->
+    <header class="gradient-bg text-white py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">发现你的职业之路</h1>
+            <p class="text-xl text-purple-100 mb-8">专业的职业测评、薪资查询、面试指导，让你的职业生涯赢在起跑线</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="scrollToSection('test')" class="px-8 py-3 bg-white text-purple-600 rounded-full font-semibold hover:bg-purple-50 transition flex items-center gap-2">
+                    <i class="fas fa-play-circle"></i> 开始测评
+                </button>
+                <button onclick="scrollToSection('pricing')" class="px-8 py-3 border-2 border-white text-white rounded-full font-semibold hover:bg-white/10 transition flex items-center gap-2">
+                    <i class="fas fa-comments"></i> 预约咨询
+                </button>
+            </div>
+            <div class="mt-12 flex justify-center gap-8 text-center">
+                <div>
+                    <div class="text-3xl font-bold">10,000+</div>
+                    <div class="text-purple-200">用户测评</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold">95%</div>
+                    <div class="text-purple-200">满意度</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold">500+</div>
+                    <div class="text-purple-200">成功案例</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 职业兴趣测评 -->
+    <section id="test" class="py-16 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">职业兴趣测评</h2>
+                <p class="text-gray-600">基于霍兰德职业兴趣理论，发现你的职业倾向</p>
+            </div>
+            
+            <!-- 测评进度 -->
+            <div id="testProgress" class="mb-8 hidden">
+                <div class="flex items-center justify-between max-w-md mx-auto">
+                    <div id="progressDots" class="flex gap-2"></div>
+                    <span id="progressText" class="text-sm text-gray-500">1/10</span>
+                </div>
+                <div class="max-w-md mx-auto mt-2">
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="progressBar" class="h-full gradient-bg transition-all duration-300" style="width: 10%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 测评内容 -->
+            <div id="testContainer" class="bg-white rounded-2xl shadow-lg p-8">
+                <!-- 初始界面 -->
+                <div id="testStart" class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-brain text-4xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">准备好发现你的职业兴趣了吗？</h3>
+                    <p class="text-gray-600 mb-6">完成10道选择题，我们将为你分析你的职业兴趣类型，并推荐适合的职业方向</p>
+                    <div class="flex flex-wrap justify-center gap-4 mb-8">
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <i class="fas fa-clock text-purple-600"></i>
+                            <span>约3分钟</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <i class="fas fa-shield-alt text-purple-600"></i>
+                            <span>完全免费</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <i class="fas fa-chart-pie text-purple-600"></i>
+                            <span>专业分析</span>
+                        </div>
+                    </div>
+                    <button onclick="startTest()" class="px-8 py-4 gradient-bg text-white rounded-full font-semibold hover:opacity-90 transition text-lg">
+                        开始测评 <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+                
+                <!-- 题目区域 -->
+                <div id="testQuestions" class="hidden">
+                    <h3 id="questionText" class="text-xl font-semibold text-gray-800 mb-6"></h3>
+                    <div id="questionOptions" class="space-y-3"></div>
+                    <div class="flex justify-between mt-8">
+                        <button id="prevBtn" onclick="prevQuestion()" class="px-6 py-2 border border-gray-300 text-gray-600 rounded-full hover:bg-gray-50 transition hidden">
+                            <i class="fas fa-arrow-left mr-2"></i> 上一题
+                        </button>
+                        <button id="nextBtn" onclick="nextQuestion()" class="px-6 py-2 gradient-bg text-white rounded-full hover:opacity-90 transition ml-auto">
+                            下一题 <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 结果区域 -->
+                <div id="testResult" class="hidden">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-4xl text-green-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">测评完成！</h3>
+                        <p class="text-gray-600">你的职业兴趣类型是：<span id="riasecCode" class="font-bold text-purple-600"></span></p>
+                    </div>
+                    
+                    <!-- 雷达图 -->
+                    <div class="max-w-md mx-auto mb-8">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    
+                    <!-- 主要类型 -->
+                    <div id="primaryResult" class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 mb-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 gradient-bg text-white rounded-full text-sm font-medium">主要类型</span>
+                            <span id="primaryType" class="text-xl font-bold text-gray-800"></span>
+                        </div>
+                        <p id="primaryDesc" class="text-gray-600 mb-4"></p>
+                        <div>
+                            <span class="text-sm text-gray-500">推荐职业：</span>
+                            <div id="primaryCareers" class="flex flex-wrap gap-2 mt-2"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 次要类型 -->
+                    <div id="secondaryResult" class="bg-gray-50 rounded-xl p-6 mb-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-gray-600 text-white rounded-full text-sm font-medium">次要类型</span>
+                            <span id="secondaryType" class="text-xl font-bold text-gray-800"></span>
+                        </div>
+                        <p id="secondaryDesc" class="text-gray-600 mb-4"></p>
+                        <div>
+                            <span class="text-sm text-gray-500">推荐职业：</span>
+                            <div id="secondaryCareers" class="flex flex-wrap gap-2 mt-2"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 建议 -->
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+                        <h4 class="font-bold text-gray-800 mb-4"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>职业发展建议</h4>
+                        <ul id="adviceList" class="space-y-2 text-gray-600"></ul>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button onclick="resetTest()" class="px-6 py-3 border border-purple-600 text-purple-600 rounded-full hover:bg-purple-50 transition">
+                            重新测评 <i class="fas fa-redo ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 行业薪资查询 -->
+    <section id="salary" class="py-16 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">行业薪资查询</h2>
+                <p class="text-gray-600">了解各行业薪资水平，为求职谈薪提供参考</p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-3 mb-8" id="industryTabs">
+                <!-- 动态生成 -->
+            </div>
+            
+            <div id="salaryContent" class="bg-white rounded-2xl shadow-lg p-8">
+                <div id="salaryLoading" class="text-center py-12">
+                    <i class="fas fa-spinner fa-spin text-4xl text-purple-600 mb-4"></i>
+                    <p class="text-gray-600">加载中...</p>
+                </div>
+                <div id="salaryData" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 id="currentIndustry" class="text-2xl font-bold text-gray-800"></h3>
+                        <span id="salaryTrend" class="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium"></span>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-purple-50 rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-500 mb-1">基础岗位</div>
+                            <div class="text-2xl font-bold text-purple-600"><span id="salaryBasic"></span></div>
+                            <div class="text-xs text-gray-400">元/月</div>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-500 mb-1">中级岗位</div>
+                            <div class="text-2xl font-bold text-blue-600"><span id="salaryMid"></span></div>
+                            <div class="text-xs text-gray-400">元/月</div>
+                        </div>
+                        <div class="bg-green-50 rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-500 mb-1">高级岗位</div>
+                            <div class="text-2xl font-bold text-green-600"><span id="salarySenior"></span></div>
+                            <div class="text-xs text-gray-400">元/月</div>
+                        </div>
+                        <div class="bg-orange-50 rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-500 mb-1">管理岗位</div>
+                            <div class="text-2xl font-bold text-orange-600"><span id="salaryManage"></span></div>
+                            <div class="text-xs text-gray-400">元/月</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-bold text-gray-800 mb-4">薪资分布图</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600">基础岗位</span>
+                                    <span id="basicRange" class="text-gray-500"></span>
+                                </div>
+                                <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div id="basicBar" class="salary-bar h-full bg-gradient-to-r from-purple-500 to-purple-400 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600">中级岗位</span>
+                                    <span id="midRange" class="text-gray-500"></span>
+                                </div>
+                                <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div id="midBar" class="salary-bar h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600">高级岗位</span>
+                                    <span id="seniorRange" class="text-gray-500"></span>
+                                </div>
+                                <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div id="seniorBar" class="salary-bar h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600">管理岗位</span>
+                                    <span id="manageRange" class="text-gray-500"></span>
+                                </div>
+                                <div class="h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div id="manageBar" class="salary-bar h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-4">热门职位</h4>
+                        <div id="hotJobs" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 职业发展路径 -->
+    <section id="path" class="py-16 px-4 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">职业发展路径图</h2>
+                <p class="text-gray-600">清晰的职业阶梯，助你规划未来</p>
+            </div>
+            
+            <div class="grid md:grid-cols-5 gap-4 mb-8" id="pathTabs">
+                <!-- 动态生成 -->
+            </div>
+            
+            <div id="pathContent" class="bg-white rounded-2xl shadow-lg p-8">
+                <div id="pathLoading" class="text-center py-12">
+                    <i class="fas fa-spinner fa-spin text-4xl text-purple-600 mb-4"></i>
+                    <p class="text-gray-600">加载中...</p>
+                </div>
+                <div id="pathData" class="hidden">
+                    <h3 id="pathTitle" class="text-2xl font-bold text-gray-800 mb-2"></h3>
+                    <p id="pathDesc" class="text-gray-600 mb-6"></p>
+                    
+                    <div id="pathStages" class="relative">
+                        <!-- 时间轴内容 -->
+                    </div>
+                    
+                    <div class="mt-8 p-6 bg-yellow-50 rounded-xl">
+                        <h4 class="font-bold text-gray-800 mb-3"><i class="fas fa-star text-yellow-500 mr-2"></i>发展建议</h4>
+                        <ul id="pathTips" class="space-y-2 text-gray-600"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 面试题库 -->
+    <section id="interview" class="py-16 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">面试模拟题库</h2>
+                <p class="text-gray-600">常见面试问题与答题技巧，助你轻松应对面试</p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-3 mb-8" id="interviewTabs">
+                <!-- 动态生成 -->
+            </div>
+            
+            <div id="interviewContent" class="space-y-4">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 简历优化 -->
+    <section id="resume" class="py-16 px-4 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">简历优化建议</h2>
+                <p class="text-gray-600">专业HR审核标准，让你的简历脱颖而出</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- 基本原则 -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-clipboard-check text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">基本原则</h3>
+                    <div class="space-y-4" id="resumePrinciples">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 模块建议 -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-puzzle-piece text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">简历模块</h3>
+                    <div class="space-y-4" id="resumeModules">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 常见错误 -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">常见错误</h3>
+                    <ul id="resumeErrors" class="space-y-3">
+                        <!-- 动态生成 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 定价方案 -->
+    <section id="pricing" class="py-16 px-4 gradient-bg">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12 text-white">
+                <h2 class="text-3xl font-bold mb-4">专业服务定价</h2>
+                <p class="text-purple-100">灵活的付费方式，满足不同需求</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- 单次咨询 -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 card-hover">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-comments text-3xl text-purple-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">一对一咨询</h3>
+                        <p class="text-gray-500 mt-2">专业职业规划师为您答疑解惑</p>
+                    </div>
+                    <div class="text-center mb-6">
+                        <span class="text-4xl font-bold text-purple-600">¥99</span>
+                        <span class="text-gray-500">/次</span>
+                    </div>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>30分钟语音咨询
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>个性化职业分析
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>简历深度点评
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>后续跟踪服务
+                        </li>
+                    </ul>
+                    <button onclick="openModal('consultation')" class="w-full py-3 gradient-bg text-white rounded-full font-semibold hover:opacity-90 transition">
+                        立即预约
+                    </button>
+                </div>
+                
+                <!-- 年卡会员 -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 pricing-card card-hover relative">
+                    <div class="absolute top-4 right-4">
+                        <span class="px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-sm font-bold rounded-full">热门</span>
+                    </div>
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 mx-auto bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-crown text-3xl text-gradient-to-r from-yellow-500 to-orange-500"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">年卡会员</h3>
+                        <p class="text-gray-500 mt-2">全年无限次使用，优先咨询</p>
+                    </div>
+                    <div class="text-center mb-6">
+                        <span class="text-4xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">¥299</span>
+                        <span class="text-gray-500">/年</span>
+                    </div>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>无限次职业兴趣测评
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>优先预约一对一咨询
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>免费获取内部求职资料
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>加入VIP求职社群
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <i class="fas fa-check text-green-500 mr-3"></i>专属职业规划报告
+                        </li>
+                    </ul>
+                    <button onclick="openModal('vip')" class="w-full py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full font-semibold hover:opacity-90 transition">
+                        立即开通
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center text-white text-sm">
+                <p>💡 组合方案：4次咨询(¥396) + 2个年卡(¥598) = ¥994 ≈ 目标收益¥1000</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                            <i class="fas fa-briefcase text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold">职业规划师</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">专业职业规划平台，助你找到职业方向</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">功能服务</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#test" class="hover:text-white">职业兴趣测评</a></li>
+                        <li><a href="#salary" class="hover:text-white">行业薪资查询</a></li>
+                        <li><a href="#path" class="hover:text-white">职业发展路径</a></li>
+                        <li><a href="#interview" class="hover:text-white">面试模拟题库</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">付费服务</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#pricing" class="hover:text-white">一对一咨询</a></li>
+                        <li><a href="#pricing" class="hover:text-white">年卡会员</a></li>
+                        <li><a href="#resume" class="hover:text-white">简历优化</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">联系我们</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><i class="fas fa-envelope mr-2"></i>support@careerplanner.com</li>
+                        <li><i class="fas fa-phone mr-2"></i>400-888-8888</li>
+                        <li><i class="fas fa-clock mr-2"></i>工作日 9:00-18:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2024 职业规划师. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 咨询预约弹窗 -->
+    <div id="consultationModal" class="modal fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+            <button onclick="closeModal('consultation')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">预约一对一咨询</h3>
+            <p class="text-gray-500 mb-6">填写以下信息，专业顾问将尽快联系您</p>
+            
+            <form id="consultationForm" onsubmit="submitConsultation(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                        <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="请输入您的姓名">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">手机号</label>
+                        <input type="tel" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="请输入手机号码">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">咨询问题</label>
+                        <textarea name="issue" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none" placeholder="请简述您想咨询的职业问题"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">期望时间</label>
+                        <select name="preferredTime" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                            <option value="工作日白天">工作日白天</option>
+                            <option value="工作日晚上">工作日晚上</option>
+                            <option value="周末">周末</option>
+                            <option value="随时可以">随时可以</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-purple-50 rounded-lg">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">咨询费用</span>
+                        <span class="text-2xl font-bold text-purple-600">¥99</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full mt-6 py-3 gradient-bg text-white rounded-full font-semibold hover:opacity-90 transition">
+                    提交预约 <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIP购买弹窗 -->
+    <div id="vipModal" class="modal fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+            <button onclick="closeModal('vip')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">开通年卡会员</h3>
+            <p class="text-gray-500 mb-6">解锁全部功能，享受专属权益</p>
+            
+            <form id="vipForm" onsubmit="submitVIP(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                        <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="请输入您的姓名">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">手机号</label>
+                        <input type="tel" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="请输入手机号码">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+                        <input type="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" placeholder="用于接收会员信息">
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">年卡费用</span>
+                        <span class="text-2xl font-bold text-gradient-to-r from-yellow-500 to-orange-500">¥299</span>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-500">
+                        <span class="line-through">原价 ¥999</span>
+                        <span class="ml-2 text-green-500">限时优惠</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full mt-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full font-semibold hover:opacity-90 transition">
+                    立即开通 <i class="fas fa-crown ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 成功提示弹窗 -->
+    <div id="successModal" class="modal fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-8 text-center">
+            <div class="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
+                <i class="fas fa-check text-4xl text-green-600"></i>
+            </div>
+            <h3 id="successTitle" class="text-2xl font-bold text-gray-800 mb-2">提交成功!</h3>
+            <p id="successMessage" class="text-gray-600 mb-6"></p>
+            <button onclick="closeSuccessModal()" class="px-8 py-3 gradient-bg text-white rounded-full font-semibold hover:opacity-90 transition">
+                知道了
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // 全局状态
+        // ============================================
+        const API_BASE = 'http://localhost:5000/api';
+        
+        let currentQuestion = 0;
+        let answers = [];
+        let questions = [];
+        let radarChart = null;
+        
+        // ============================================
+        // 初始化
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initSalarySection();
+            initCareerPath();
+            initInterviewSection();
+            initResumeSection();
+        });
+        
+        // ============================================
+        // 导航功能
+        // ============================================
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+        
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // 更新导航高亮
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + id) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
+        
+        // 滚动时更新导航
+        window.addEventListener('scroll', () => {
+            const sections = ['test', 'salary', 'path', 'interview', 'resume', 'pricing'];
+            const scrollPos = window.scrollY + 100;
+            
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const top = section.offsetTop;
+                    const bottom = top + section.offsetHeight;
+                    
+                    if (scrollPos >= top && scrollPos < bottom) {
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + sectionId) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+        
+        // ============================================
+        // 职业兴趣测评
+        // ============================================
+        async function startTest() {
+            try {
+                const response = await fetch(`${API_BASE}/interest-test/questions`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    questions = data.data;
+                    answers = new Array(questions.length).fill(2); // 默认选择"一般"
+                    currentQuestion = 0;
+                    
+                    document.getElementById('testStart').classList.add('hidden');
+                    document.getElementById('testQuestions').classList.remove('hidden');
+                    document.getElementById('testResult').classList.add('hidden');
+                    document.getElementById('testProgress').classList.remove('hidden');
+                    
+                    renderProgress();
+                    renderQuestion();
+                }
+            } catch (error) {
+                // 使用本地数据作为备份
+                questions = getLocalQuestions();
+                answers = new Array(questions.length).fill(2);
+                currentQuestion = 0;
+                
+                document.getElementById('testStart').classList.add('hidden');
+                document.getElementById('testQuestions').classList.remove('hidden');
+                document.getElementById('testResult').classList.add('hidden');
+                document.getElementById('testProgress').classList.remove('hidden');
+                
+                renderProgress();
+                renderQuestion();
+            }
+        }
+        
+        function getLocalQuestions() {
+            return [
+                {id: 1, question: "你喜欢组装家具或修理东西吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 2, question: "你喜欢进行科学实验或数据分析吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 3, question: "你喜欢绘画、音乐或写作等艺术创作吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 4, question: "你喜欢帮助他人解决问题或提供建议吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 5, question: "你喜欢领导团队或说服他人接受你的观点吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 6, question: "你喜欢整理数据、处理文档或做计划吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 7, question: "你喜欢编程或开发软件吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 8, question: "你喜欢与不同的人交流和建立联系吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 9, question: "你喜欢独立完成有挑战性的任务吗？", options: ["非常喜欢", "比较喜欢", "一般", "不太喜欢"]},
+                {id: 10, question: "你对创业或自己经营生意有兴趣吗？", options: ["非常有兴趣", "比较有兴趣", "一般", "不太有兴趣"]}
+            ];
+        }
+        
+        function renderProgress() {
+            const dotsContainer = document.getElementById('progressDots');
+            dotsContainer.innerHTML = questions.map((_, index) => `
+                <div class="w-3 h-3 rounded-full ${index <= currentQuestion ? 'bg-purple-600' : 'bg-gray-300'} transition-colors"></div>
+            `).join('');
+            
+            document.getElementById('progressText').textContent = `${currentQuestion + 1}/${questions.length}`;
+            document.getElementById('progressBar').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+        }
+        
+        function renderQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionText').textContent = `Q${currentQuestion + 1}. ${question.question}`;
+            
+            document.getElementById('questionOptions').innerHTML = question.options.map((option, index) => `
+                <div class="p-4 border rounded-xl cursor-pointer transition-all ${answers[currentQuestion] === index ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}" onclick="selectOption(${index})">
+                    <div class="flex items-center">
+                        <div class="w-6 h-6 rounded-full border-2 ${answers[currentQuestion] === index ? 'border-purple-600 bg-purple-600' : 'border-gray-300'} flex items-center justify-center mr-3">
+                            ${answers[currentQuestion] === index ? '<div class="w-2 h-2 bg-white rounded-full"></div>' : ''}
+                        </div>
+                        <span class="${answers[currentQuestion] === index ? 'text-purple-700 font-medium' : 'text-gray-700'}">${option}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('prevBtn').classList.toggle('hidden', currentQuestion === 0);
+            document.getElementById('nextBtn').innerHTML = currentQuestion === questions.length - 1 ? '查看结果 <i class="fas fa-chart-pie ml-2"></i>' : '下一题 <i class="fas fa-arrow-right ml-2"></i>';
+        }
+        
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            renderQuestion();
+        }
+        
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderProgress();
+                renderQuestion();
+            }
+        }
+        
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderProgress();
+                renderQuestion();
+            } else {
+                submitTest();
+            }
+        }
+        
+        async function submitTest() {
+            const answersData = questions.map((q, index) => ({
+                questionId: q.id,
+                optionIndex: answers[index]
+            }));
+            
+            try {
+                const response = await fetch(`${API_BASE}/interest-test/submit`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({answers: answersData})
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    showTestResult(data.data);
+                }
+            } catch (error) {
+                // 使用本地计算结果
+                const localResult = calculateLocalResult(answers);
+                showTestResult(localResult);
+            }
+        }
+        
+        function calculateLocalResult(answers) {
+            // 简化的本地计算
+            const scores = {R: 0, I: 0, A: 0, S: 0, E: 0, C: 0};
+            
+            const weights = [
+                {R: [3,2,1,0], I: [3,2,1,0], A: [3,2,1,0], S: [3,2,1,0], E: [3,2,1,0], C: [3,2,1,0]},
+                {I: [3,2,1,0], C: [3,2,1,0]},
+                {A: [3,2,1,0]},
+                {S: [3,2,1,0], E: [3,2,1,0]},
+                {E: [3,2,1,0]},
+                {C: [3,2,1,0]},
+                {I: [3,2,1,0]},
+                {S: [3,2,1,0], E: [3,2,1,0]},
+                {R: [3,2,1,0], I: [3,2,1,0], A: [3,2,1,0]},
+                {E: [3,2,1,0]}
+            ];
+            
+            answers.forEach((answer, index) => {
+                const weight = weights[index] || {};
+                Object.keys(weight).forEach(key => {
+                    scores[key] += weight[key][answer] || 0;
+                });
+            });
+            
+            const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+            const riasecCode = sorted.slice(0, 3).map(s => s[0]).join('');
+            
+            const typeNames = {
+                R: {name: "实际型", desc: "喜欢动手操作、工具机械类工作，适合工程师、技术工人等", careers: ["机械工程师", "电工", "厨师", "运动员", "飞行员"]},
+                I: {name: "研究型", desc: "喜欢思考、分析、科学研究，适合科学家、研究员等", careers: ["研究员", "数据分析师", "医生", "软件工程师", "教授"]},
+                A: {name: "艺术型", desc: "喜欢创意、艺术表达，适合设计师、艺术家等", careers: ["设计师", "摄影师", "作家", "音乐家", "导演"]},
+                S: {name: "社会型", desc: "喜欢帮助他人、人际交往，适合教师、咨询师等", careers: ["教师", "心理咨询师", "HR", "护士", "社工"]},
+                E: {name: "企业型", desc: "喜欢领导说服、销售管理，适合管理者、创业者等", careers: ["企业家", "销售经理", "律师", "政治家", "投资人"]},
+                C: {name: "常规型", desc: "喜欢条理规划、数据处理，适合会计、行政等", careers: ["会计", "行政", "银行职员", "审计师", "物流管理"]}
+            };
+            
+            const primary = typeNames[riasecCode[0]];
+            const secondary = typeNames[riasecCode[1]] || null;
+            
+            return {
+                riasecCode,
+                scores,
+                primaryType: {code: riasecCode[0], name: primary.name, description: primary.desc, recommendedCareers: primary.careers},
+                secondaryType: secondary ? {code: riasecCode[1], name: secondary.name, description: secondary.desc, recommendedCareers: secondary.careers} : null,
+                advice: ["你的职业兴趣特征明显，建议选择与你的兴趣高度匹配的职业方向", "建议结合你的专业背景和市场需求，综合考虑职业选择"],
+                chartData: [
+                    {type: "R", label: "实际型", score: scores.R},
+                    {type: "I", label: "研究型", score: scores.I},
+                    {type: "A", label: "艺术型", score: scores.A},
+                    {type: "S", label: "社会型", score: scores.S},
+                    {type: "E", label: "企业型", score: scores.E},
+                    {type: "C", label: "常规型", score: scores.C}
+                ]
+            };
+        }
+        
+        function showTestResult(result) {
+            document.getElementById('testQuestions').classList.add('hidden');
+            document.getElementById('testProgress').classList.add('hidden');
+            document.getElementById('testResult').classList.remove('hidden');
+            
+            // 显示RIASEC代码
+            document.getElementById('riasecCode').textContent = result.riasecCode;
+            
+            // 主要类型
+            const primary = result.primaryType;
+            document.getElementById('primaryType').textContent = `${primary.code} - ${primary.name}`;
+            document.getElementById('primaryDesc').textContent = primary.description;
+            document.getElementById('primaryCareers').innerHTML = primary.recommendedCareers.map(c => 
+                `<span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">${c}</span>`
+            ).join('');
+            
+            // 次要类型
+            if (result.secondaryType) {
+                const secondary = result.secondaryType;
+                document.getElementById('secondaryResult').classList.remove('hidden');
+                document.getElementById('secondaryType').textContent = `${secondary.code} - ${secondary.name}`;
+                document.getElementById('secondaryDesc').textContent = secondary.description;
+                document.getElementById('secondaryCareers').innerHTML = secondary.recommendedCareers.map(c => 
+                    `<span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">${c}</span>`
+                ).join('');
+            } else {
+                document.getElementById('secondaryResult').classList.add('hidden');
+            }
+            
+            // 建议
+            document.getElementById('adviceList').innerHTML = result.advice.map(a => 
+                `<li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>${a}</li>`
+            ).join('');
+            
+            // 雷达图
+            renderRadarChart(result.chartData);
+        }
+        
+        function renderRadarChart(data) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            if (radarChart) {
+                radarChart.destroy();
+            }
+            
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: data.map(d => d.label),
+                    datasets: [{
+                        label: '职业兴趣得分',
+                        data: data.map(d => d.score),
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(102, 126, 234, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 30,
+                            ticks: {
+                                stepSize: 5
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        function resetTest() {
+            document.getElementById('testResult').classList.add('hidden');
+            document.getElementById('testStart').classList.remove('hidden');
+        }
+        
+        // ============================================
+        // 薪资查询
+        // ============================================
+        async function initSalarySection() {
+            const industries = [
+                '互联网/IT', '金融/银行', '教育培训', '医疗健康', '制造业',
+                '房地产/建筑', '咨询/专业服务', '快消/零售', '媒体/广告', '政府/事业单位'
+            ];
+            
+            // 渲染行业标签
+            const tabsContainer = document.getElementById('industryTabs');
+            tabsContainer.innerHTML = industries.map((industry, index) => `
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium ${index === 0 ? 'active' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}" onclick="selectIndustry('${industry}', this)">
+                    ${industry}
+                </button>
+            `).join('');
+            
+            // 默认加载第一个行业
+            loadSalaryData(industries[0]);
+        }
+        
+        async function selectIndustry(industry, btn) {
+            // 更新标签状态
+            document.querySelectorAll('#industryTabs .tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            btn.classList.add('active');
+            btn.classList.remove('bg-gray-100', 'text-gray-600');
+            
+            loadSalaryData(industry);
+        }
+        
+        async function loadSalaryData(industry) {
+            document.getElementById('salaryLoading').classList.remove('hidden');
+            document.getElementById('salaryData').classList.add('hidden');
+            
+            try {
+                const response = await fetch(`${API_BASE}/salary/${encodeURIComponent(industry)}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    renderSalaryData(industry, data.data);
+                }
+            } catch (error) {
+                // 使用本地数据
+                const localData = getLocalSalaryData(industry);
+                renderSalaryData(industry, localData);
+            }
+        }
+        
+        function getLocalSalaryData(industry) {
+            const allData = {
+                "互联网/IT": {基础岗位: {min: 8000, mid: 15000, max: 25000}, 中级岗位: {min: 15000, mid: 30000, max: 50000}, 高级岗位: {min: 35000, mid: 60000, max: 100000}, 管理岗位: {min: 50000, mid: 80000, max: 150000}, 趋势: "稳定增长", 热门职位: ["前端开发", "后端开发", "算法工程师", "产品经理", "UI设计"]},
+                "金融/银行": {基础岗位: {min: 7000, mid: 12000, max: 20000}, 中级岗位: {min: 15000, mid: 35000, max: 60000}, 高级岗位: {min: 40000, mid: 70000, max: 120000}, 管理岗位: {min: 60000, mid: 100000, max: 200000}, 趋势: "稳健", 热门职位: ["投资顾问", "风控专员", "理财经理", "审计师", "分析师"]},
+                "教育培训": {基础岗位: {min: 5000, mid: 9000, max: 15000}, 中级岗位: {min: 10000, mid: 20000, max: 35000}, 高级岗位: {min: 20000, mid: 40000, max: 60000}, 管理岗位: {min: 30000, mid: 50000, max: 80000}, 趋势: "稳步增长", 热门职位: ["课程顾问", "培训师", "学科教师", "课程设计", "教学管理"]},
+                "医疗健康": {基础岗位: {min: 6000, mid: 11000, max: 18000}, 中级岗位: {min: 12000, mid: 25000, max: 45000}, 高级岗位: {min: 30000, mid: 55000, max: 90000}, 管理岗位: {min: 45000, mid: 75000, max: 120000}, 趋势: "快速增长", 热门职位: ["医生", "护士", "健康管理师", "医药代表", "医疗器械"]},
+                "制造业": {基础岗位: {min: 5000, mid: 8000, max: 12000}, 中级岗位: {min: 9000, mid: 15000, max: 25000}, 高级岗位: {min: 18000, mid: 35000, max: 55000}, 管理岗位: {min: 25000, mid: 45000, max: 80000}, 趋势: "稳定", 热门职位: ["工艺工程师", "质量工程师", "供应链管理", "项目经理", "厂长"]},
+                "房地产/建筑": {基础岗位: {min: 6000, mid: 10000, max: 16000}, 中级岗位: {min: 12000, mid: 22000, max: 40000}, 高级岗位: {min: 25000, mid: 50000, max: 80000}, 管理岗位: {min: 40000, mid: 70000, max: 120000}, 趋势: "调整期", 热门职位: ["置业顾问", "造价工程师", "建筑师", "项目总监", "招商运营"]},
+                "咨询/专业服务": {基础岗位: {min: 7000, mid: 12000, max: 20000}, 中级岗位: {min: 18000, mid: 35000, max: 60000}, 高级岗位: {min: 45000, mid: 80000, max: 150000}, 管理岗位: {min: 60000, mid: 100000, max: 200000}, 趋势: "增长", 热门职位: ["管理咨询师", "法律顾问", "财务顾问", "人力资源咨询", "战略分析"]},
+                "快消/零售": {基础岗位: {min: 5000, mid: 8000, max: 13000}, 中级岗位: {min: 10000, mid: 18000, max: 30000}, 高级岗位: {min: 20000, mid: 40000, max: 65000}, 管理岗位: {min: 35000, mid: 60000, max: 100000}, 趋势: "稳定", 热门职位: ["市场专员", "品牌经理", "渠道销售", "运营主管", "采购管理"]},
+                "媒体/广告": {基础岗位: {min: 5500, mid: 10000, max: 17000}, 中级岗位: {min: 12000, mid: 22000, max: 40000}, 高级岗位: {min: 25000, mid: 50000, max: 80000}, 管理岗位: {min: 40000, mid: 70000, max: 120000}, 趋势: "转型中", 热门职位: ["内容运营", "新媒体编辑", "广告策划", "AE客户执行", "创意设计"]},
+                "政府/事业单位": {基础岗位: {min: 4000, mid: 7000, max: 12000}, 中级岗位: {min: 8000, mid: 15000, max: 25000}, 高级岗位: {min: 15000, mid: 30000, max: 50000}, 管理岗位: {min: 20000, mid: 40000, max: 80000}, 趋势: "稳定", 热门职位: ["公务员", "事业单位管理", "政策研究", "行政人员", "公共事务"]}
+            };
+            return allData[industry] || allData["互联网/IT"];
+        }
+        
+        function renderSalaryData(industry, data) {
+            document.getElementById('salaryLoading').classList.add('hidden');
+            document.getElementById('salaryData').classList.remove('hidden');
+            
+            document.getElementById('currentIndustry').textContent = industry;
+            
+            const trendColors = {
+                "稳定增长": {bg: "bg-green-100", text: "text-green-700", icon: "fa-arrow-up"},
+                "稳健": {bg: "bg-blue-100", text: "text-blue-700", icon: "fa-equals"},
+                "稳步增长": {bg: "bg-green-100", text: "text-green-700", icon: "fa-arrow-up"},
+                "快速增长": {bg: "bg-green-100", text: "text-green-700", icon: "fa-arrow-up"},
+                "稳定": {bg: "bg-blue-100", text: "text-blue-700", icon: "fa-equals"},
+                "调整期": {bg: "bg-yellow-100", text: "text-yellow-700", icon: "fa-arrow-right"},
+                "增长": {bg: "bg-green-100", text: "text-green-700", icon: "fa-arrow-up"},
+                "转型中": {bg: "bg-yellow-100", text: "text-yellow-700", icon: "fa-arrow-right"}
+            };
+            
+            const trend = trendColors[data.趋势] || trendColors["稳定"];
+            document.getElementById('salaryTrend').className = `px-4 py-2 ${trend.bg} ${trend.text} rounded-full text-sm font-medium`;
+            document.getElementById('salaryTrend').innerHTML = `<i class="fas ${trend.icon} mr-1"></i>${data.趋势}`;
+            
+            document.getElementById('salaryBasic').textContent = `${formatNumber(data.基础岗位.mid)}`;
+            document.getElementById('salaryMid').textContent = `${formatNumber(data.中级岗位.mid)}`;
+            document.getElementById('salarySenior').textContent = `${formatNumber(data.高级岗位.mid)}`;
+            document.getElementById('salaryManage').textContent = `${formatNumber(data.管理岗位.mid)}`;
+            
+            document.getElementById('basicRange').textContent = `${formatNumber(data.基础岗位.min)}-${formatNumber(data.基础岗位.max)}K`;
+            document.getElementById('midRange').textContent = `${formatNumber(data.中级岗位.min)}-${formatNumber(data.中级岗位.max)}K`;
+            document.getElementById('seniorRange').textContent = `${formatNumber(data.高级岗位.min)}-${formatNumber(data.高级岗位.max)}K`;
+            document.getElementById('manageRange').textContent = `${formatNumber(data.管理岗位.min)}-${formatNumber(data.管理岗位.max)}K`;
+            
+            // 动画显示进度条
+            setTimeout(() => {
+                document.getElementById('basicBar').style.width = `${(data.基础岗位.mid / 150000) * 100}%`;
+                document.getElementById('midBar').style.width = `${(data.中级岗位.mid / 150000) * 100}%`;
+                document.getElementById('seniorBar').style.width = `${(data.高级岗位.mid / 150000) * 100}%`;
+                document.getElementById('manageBar').style.width = `${(data.管理岗位.mid / 150000) * 100}%`;
+            }, 100);
+            
+            document.getElementById('hotJobs').innerHTML = data.热门职位.map(job => 
+                `<span class="px-4 py-2 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 rounded-full text-sm font-medium">${job}</span>`
+            ).join('');
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        // ============================================
+        // 职业发展路径
+        // ============================================
+        async function initCareerPath() {
+            const paths = ['技术路线', '管理路线', '产品路线', '销售路线', '创业路线'];
+            
+            const tabsContainer = document.getElementById('pathTabs');
+            tabsContainer.innerHTML = paths.map((path, index) => `
+                <button class="tab-btn px-4 py-3 rounded-xl text-sm font-medium ${index === 0 ? 'active' : 'bg-white text-gray-600 hover:bg-gray-100'} shadow-sm" onclick="selectPath('${path}', this)">
+                    <i class="fas ${getPathIcon(path)} mr-2"></i>${path}
+                </button>
+            `).join('');
+            
+            loadPathData(paths[0]);
+        }
+        
+        function getPathIcon(path) {
+            const icons = {
+                '技术路线': 'fa-code',
+                '管理路线': 'fa-users',
+                '产品路线': 'fa-box',
+                '销售路线': 'fa-chart-line',
+                '创业路线': 'fa-rocket'
+            };
+            return icons[path] || 'fa-briefcase';
+        }
+        
+        async function selectPath(path, btn) {
+            document.querySelectorAll('#pathTabs .tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.classList.add('bg-white', 'text-gray-600');
+            });
+            btn.classList.add('active');
+            btn.classList.remove('bg-white', 'text-gray-600');
+            
+            loadPathData(path);
+        }
+        
+        async function loadPathData(path) {
+            document.getElementById('pathLoading').classList.remove('hidden');
+            document.getElementById('pathData').classList.add('hidden');
+            
+            try {
+                const response = await fetch(`${API_BASE}/career-path/${encodeURIComponent(path)}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    renderPathData(path, data.data);
+                }
+            } catch (error) {
+                const localData = getLocalPathData(path);
+                renderPathData(path, localData);
+            }
+        }
+        
+        function getLocalPathData(path) {
+            const allPaths = {
+                "技术路线": {stages: [{title: "初级工程师", years: "0-2年", skills: ["基础编程", "代码规范", "版本控制"], salary: "8-15K"}, {title: "中级工程师", years: "2-4年", skills: ["架构设计", "性能优化", "团队协作"], salary: "15-30K"}, {title: "高级工程师", years: "4-6年", skills: ["技术选型", "疑难问题", "代码评审"], salary: "30-50K"}, {title: "架构师/专家", years: "6-10年", skills: ["系统架构", "技术规划", "技术影响力"], salary: "50-80K"}, {title: "CTO/技术VP", years: "10年+", skills: ["技术战略", "团队建设", "商业洞察"], salary: "80K+"}], tips: ["持续学习新技术", "深耕一个领域", "建立技术影响力", "培养全局思维"]},
+                "管理路线": {stages: [{title: "基层员工", years: "0-2年", skills: ["执行力", "专业知识", "沟通协调"], salary: "6-12K"}, {title: "主管/组长", years: "2-4年", skills: ["团队管理", "任务分配", "绩效评估"], salary: "12-25K"}, {title: "经理", years: "4-6年", skills: ["部门规划", "跨部门协作", "预算管理"], salary: "25-45K"}, {title: "总监", years: "6-10年", skills: ["战略制定", "资源配置", "危机处理"], salary: "45-80K"}, {title: "VP/总裁", years: "10年+", skills: ["企业战略", "资本运作", "文化建设"], salary: "80K+"}], tips: ["培养领导力", "拓展视野", "建立人脉", "提升商业敏感度"]},
+                "产品路线": {stages: [{title: "产品助理", years: "0-1年", skills: ["需求分析", "原型设计", "用户研究"], salary: "6-12K"}, {title: "产品经理", years: "1-3年", skills: ["产品规划", "项目管理", "数据分析"], salary: "12-25K"}, {title: "高级产品经理", years: "3-5年", skills: ["产品策略", "团队管理", "商业变现"], salary: "25-45K"}, {title: "产品总监", years: "5-8年", skills: ["产品线规划", "战略决策", "资源整合"], salary: "45-70K"}, {title: "CPO/产品VP", years: "8年+", skills: ["产品战略", "创新管理", "生态建设"], salary: "70K+"}], tips: ["深入理解用户", "培养商业思维", "提升数据分析能力", "关注行业趋势"]},
+                "销售路线": {stages: [{title: "销售代表", years: "0-1年", skills: ["产品知识", "沟通技巧", "客户开发"], salary: "5-15K+提成"}, {title: "高级销售", years: "1-3年", skills: ["大客户管理", "谈判技巧", "业绩达成"], salary: "15-30K+提成"}, {title: "销售主管", years: "3-5年", skills: ["团队管理", "销售策略", "渠道建设"], salary: "20-40K+提成"}, {title: "销售总监", years: "5-8年", skills: ["市场拓展", "战略规划", "资源整合"], salary: "40-70K+提成"}, {title: "VP of Sales", years: "8年+", skills: ["商业模式", "全球市场", "战略投资"], salary: "70K+提成+期权"}], tips: ["建立客户信任", "提升谈判能力", "培养人脉资源", "深入行业理解"]},
+                "创业路线": {stages: [{title: "创始人/CEO", years: "0-5年", skills: ["商业洞察", "团队组建", "融资能力"], salary: "不确定"}, {title: "成长期CEO", years: "5-8年", skills: ["规模化运营", "组织建设", "资本运作"], salary: "不确定"}, {title: "成熟期CEO", years: "8年+", skills: ["战略升级", "生态布局", "社会价值"], salary: "不确定"}], tips: ["找到痛点市场", "组建互补团队", "快速验证迭代", "合理利用资本"]}
+            };
+            return allPaths[path] || allPaths["技术路线"];
+        }
+        
+        function renderPathData(path, data) {
+            document.getElementById('pathLoading').classList.add('hidden');
+            document.getElementById('pathData').classList.remove('hidden');
+            
+            document.getElementById('pathTitle').textContent = path;
+            
+            const descriptions = {
+                "技术路线": "适合喜欢技术、追求专业深度的职场人",
+                "管理路线": "适合有领导力、喜欢带领团队的职场人",
+                "产品路线": "适合有创意、善于洞察用户需求的职场人",
+                "销售路线": "适合善于沟通、追求高收入的职场人",
+                "创业路线": "适合有冒险精神、想自己当老板的职场人"
+            };
+            document.getElementById('pathDesc').textContent = descriptions[path] || "";
+            
+            const stagesContainer = document.getElementById('pathStages');
+            stagesContainer.innerHTML = data.stages.map((stage, index) => `
+                <div class="relative flex ${index % 2 === 0 ? '' : 'flex-row-reverse'} items-center mb-8">
+                    <div class="w-5/12 ${index % 2 === 0 ? 'text-right pr-8' : 'text-left pl-8'}">
+                        <div class="bg-gradient-to-br ${index % 2 === 0 ? 'from-purple-50 to-blue-50' : 'from-green-50 to-teal-50'} rounded-xl p-4 inline-block">
+                            <h5 class="font-bold text-gray-800">${stage.title}</h5>
+                            <p class="text-sm text-purple-600 mb-2">${stage.years}</p>
+                            <div class="flex flex-wrap gap-1 mb-2 ${index % 2 === 0 ? 'justify-end' : ''}">
+                                ${stage.skills.map(s => `<span class="px-2 py-1 bg-white/80 text-gray-600 text-xs rounded">${s}</span>`).join('')}
+                            </div>
+                            <p class="text-sm font-medium text-green-600">💰 ${stage.salary}</p>
+                        </div>
+                    </div>
+                    <div class="w-2/12 flex justify-center">
+                        <div class="w-4 h-4 bg-purple-600 rounded-full z-10"></div>
+                    </div>
+                    <div class="w-5/12"></div>
+                </div>
+            `).join('');
+            
+            document.getElementById('pathTips').innerHTML = data.tips.map(tip => 
+                `<li class="flex items-center"><i class="fas fa-star text-yellow-500 mr-2"></i>${tip}</li>`
+            ).join('');
+        }
+        
+        // ============================================
+        // 面试题库
+        // ============================================
+        async function initInterviewSection() {
+            const types = [
+                {key: '通用问题', icon: 'fa-comments', color: 'purple'},
+                {key: '技术面试', icon: 'fa-laptop-code', color: 'blue'},
+                {key: '压力面试', icon: 'fa-brain', color: 'red'},
+                {key: '薪资谈判', icon: 'fa-dollar-sign', color: 'green'}
+            ];
+            
+            const tabsContainer = document.getElementById('interviewTabs');
+            tabsContainer.innerHTML = types.map((type, index) => `
+                <button class="tab-btn px-4 py-2 rounded-full text-sm font-medium ${index === 0 ? 'active' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}" onclick="selectInterviewType('${type.key}', this)">
+                    <i class="fas ${type.icon} mr-2"></i>${type.key}
+                </button>
+            `).join('');
+            
+            loadInterviewData(types[0].key);
+        }
+        
+        async function selectInterviewType(type, btn) {
+            document.querySelectorAll('#interviewTabs .tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            btn.classList.add('active');
+            btn.classList.remove('bg-gray-100', 'text-gray-600');
+            
+            loadInterviewData(type);
+        }
+        
+        async function loadInterviewData(type) {
+            try {
+                const response = await fetch(`${API_BASE}/interview/${encodeURIComponent(type)}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    renderInterviewData(data.data);
+                }
+            } catch (error) {
+                const localData = getLocalInterviewData(type);
+                renderInterviewData(localData);
+            }
+        }
+        
+        function getLocalInterviewData(type) {
+            const allData = {
+                "通用问题": [
+                    {question: "请做一个自我介绍", type: "behavioral", tips: "控制2-3分钟，突出与岗位相关的经历和能力", sample: "面试官好，我叫XXX，毕业于XX大学XX专业..."},
+                    {question: "你的优点和缺点是什么？", type: "behavioral", tips: "优点要与岗位要求匹配，缺点要真实但正在改进", sample: "优点：执行力强，善于从数据中发现问题..."},
+                    {question: "为什么想离开现在的公司？", type: "behavioral", tips: "保持正面，避免抱怨前任公司和同事", sample: "希望在XX领域有更深入发展..."},
+                    {question: "你未来3-5年的职业规划是什么？", type: "behavioral", tips: "与应聘岗位发展路径一致，显示稳定性", sample: "短期内希望深耕XX领域..."},
+                    {question: "你对这个行业/岗位有什么了解？", type: "knowledge", tips: "提前调研公司业务和行业趋势", sample: "我认为XX行业正在经历XX变化..."}
+                ],
+                "技术面试": [
+                    {question: "请描述一个你解决过的技术难题", type: "technical", tips: "使用STAR法则：情境、任务、行动、结果", sample: "S: 项目遇到XX性能问题；T: 需要优化..."},
+                    {question: "你最熟悉哪门编程语言？有什么项目经验？", type: "technical", tips: "展示深度和实际应用能力", sample: "Python最熟悉，曾用Django开发XX系统..."},
+                    {question: "如何保证代码质量？", type: "technical", tips: "展示工程化思维", sample: "代码规范、Code Review、单元测试..."}
+                ],
+                "压力面试": [
+                    {question: "如果你和上级意见不一致怎么办？", type: "stress", tips: "展示沟通和服从大局的平衡", sample: "会先充分理解上级的考虑，如果仍有疑虑会私下沟通..."},
+                    {question: "你抗压能力如何？举例说明", type: "stress", tips: "用实际案例展示应对能力", sample: "曾在XX项目中面临XX压力，我通过XX方式调整..."},
+                    {question: "如果多次面试失败怎么办？", type: "stress", tips: "展示反思和学习能力", sample: "会总结每次面试的不足，有针对性地提升..."}
+                ],
+                "薪资谈判": [
+                    {question: "你目前的薪资是多少？期望薪资是多少？", type: "salary", tips: "给出一个合理区间，留有谈判空间", sample: "目前月薪XX，我希望XX-XK..."},
+                    {question: "为什么你值这个薪资？", type: "salary", tips: "用价值和贡献说服", sample: "基于我的XX经验和XX能力..."},
+                    {question: "还有其他offer吗？", type: "salary", tips: "诚实回答，但不要过度强调竞争", sample: "确实有在看其他机会，但..."}
+                ]
+            };
+            return allData[type] || allData["通用问题"];
+        }
+        
+        function renderInterviewData(questions) {
+            const container = document.getElementById('interviewContent');
+            container.innerHTML = questions.map((q, index) => `
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold">${index + 1}</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold text-gray-800 mb-2">${q.question}</h4>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">${getQuestionTypeName(q.type)}</span>
+                            </div>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-3">
+                                <p class="text-sm text-gray-600"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i><strong>答题技巧：</strong>${q.tips}</p>
+                            </div>
+                            <details class="group">
+                                <summary class="cursor-pointer text-purple-600 font-medium text-sm flex items-center">
+                                    <span class="transform transition-transform group-open:rotate-90 mr-1"><i class="fas fa-chevron-right"></i></span>
+                                    查看参考答案
+                                </summary>
+                                <div class="mt-3 p-4 bg-gray-50 rounded-lg">
+                                    <p class="text-gray-700 text-sm">${q.sample}</p>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getQuestionTypeName(type) {
+            const names = {
+                behavioral: '行为面试',
+                technical: '技术面试',
+                stress: '压力面试',
+                salary: '薪资谈判',
+                knowledge: '认知面试'
+            };
+            return names[type] || type;
+        }
+        
+        // ============================================
+        // 简历优化
+        // ============================================
+        async function initResumeSection() {
+            try {
+                const response = await fetch(`${API_BASE}/resume/tips`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    renderResumeData(data.data);
+                }
+            } catch (error) {
+                const localData = getLocalResumeData();
+                renderResumeData(localData);
+            }
+        }
+        
+        function getLocalResumeData() {
+            return {
+                "基本原则": [
+                    {title: "简洁有力", content: "控制在1-2页，使用简洁的模板和字体，留白适当"},
+                    {title: "量化成果", content: "用数据展示成果，如'提升业绩30%'、'管理10人团队'"},
+                    {title: "关键词匹配", content: "根据JD提取关键词，适当融入简历提高通过率"},
+                    {title: "突出重点", content: "把最相关、最亮眼的经历放在前面"}
+                ],
+                "模块建议": [
+                    {section: "个人信息", items: ["姓名、电话、邮箱（必须）", "LinkedIn/GitHub（如有）", "城市/求职地", "求职意向（明确）"]},
+                    {section: "教育背景", items: ["学校、专业、学历、时间", "GPA高可写（如3.5+）", "相关课程（如转行）", "奖学金/荣誉"]},
+                    {section: "工作经历", items: ["公司名、职位、时间", "用动词开头：负责/主导/推动", "用数字量化成果", "与JD相关的经历重点写"]}
+                ],
+                "常见错误": [
+                    "使用'负责...'、'参与...'等模糊动词",
+                    "堆砌职责而非成果",
+                    "使用第一人称'I'",
+                    "简历格式不统一、有错别字",
+                    "使用QQ邮箱或不专业的邮箱名",
+                    "简历命名不规范（如'简历.pdf'）",
+                    "使用表格或花哨的背景",
+                    "所有岗位用同一份简历"
+                ]
+            };
+        }
+        
+        function renderResumeData(data) {
+            // 基本原则
+            document.getElementById('resumePrinciples').innerHTML = data.基本原则.map(item => `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-check text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-800">${item.title}</h4>
+                        <p class="text-sm text-gray-600">${item.content}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            // 模块建议
+            document.getElementById('resumeModules').innerHTML = data.模块建议.map(module => `
+                <div class="mb-4">
+                    <h4 class="font-medium text-gray-800 mb-2">${module.section}</h4>
+                    <ul class="space-y-1 text-sm text-gray-600">
+                        ${module.items.map(item => `<li class="flex items-center"><i class="fas fa-circle text-xs text-purple-400 mr-2"></i>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+            
+            // 常见错误
+            document.getElementById('resumeErrors').innerHTML = data.常见错误.map(error => `
+                <li class="flex items-start">
+                    <i class="fas fa-times-circle text-red-500 mt-1 mr-3 flex-shrink-0"></i>
+                    <span class="text-gray-600">${error}</span>
+                </li>
+            `).join('');
+        }
+        
+        // ============================================
+        // 弹窗控制
+        // ============================================
+        function openModal(type) {
+            document.getElementById(type + 'Modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        async function submitConsultation(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const data = {
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                issue: formData.get('issue'),
+                preferredTime: formData.get('preferredTime')
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/consultation/book`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    closeModal('consultation');
+                    showSuccessModal('预约成功！', `预约号：${result.data.bookingId}。顾问将在24小时内联系您，请保持手机畅通。`);
+                    form.reset();
+                }
+            } catch (error) {
+                closeModal('consultation');
+                showSuccessModal('预约已提交！', '由于演示模式，您的预约已记录。顾问将在24小时内联系您，请保持手机畅通。');
+                form.reset();
+            }
+        }
+        
+        async function submitVIP(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const data = {
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                email: formData.get('email')
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/vip/purchase`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    closeModal('vip');
+                    showSuccessModal('年卡开通成功！🎉', `会员号：${result.data.memberId}。您已享有年卡全部权益，有效期365天。`);
+                    form.reset();
+                }
+            } catch (error) {
+                closeModal('vip');
+                showSuccessModal('年卡开通成功！🎉', '由于演示模式，年卡已开通。您已享有年卡全部权益，有效期365天。');
+                form.reset();
+            }
+        }
+        
+        function showSuccessModal(title, message) {
+            document.getElementById('successTitle').textContent = title;
+            document.getElementById('successMessage').textContent = message;
+            document.getElementById('successModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        // 点击弹窗外部关闭
+        ['consultationModal', 'vipModal', 'successModal'].forEach(modalId => {
+            document.getElementById(modalId).addEventListener('click', (e) => {
+                if (e.target.id === modalId) {
+                    const type = modalId.replace('Modal', '');
+                    if (type !== 'success') {
+                        closeModal(type);
+                    } else {
+                        closeSuccessModal();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>语言学习 - 让学习更高效</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 底部导航栏 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 16px;
+            padding-bottom: 80px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title .user-level {
+            font-size: 12px;
+            background: var(--primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        /* 隐藏页面 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .stat-card .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        /* 进度条 */
+        .progress-section {
+            margin-top: 12px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* 功能模块网格 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .feature-item {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .feature-item .icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .feature-item .title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .feature-item .desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 单词卡片 */
+        .word-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .word-card .word {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary-light);
+        }
+
+        .word-card .phonetic {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .word-card .meaning {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .word-card .example {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .word-card .example-trans {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .word-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .word-actions .btn {
+            flex: 1;
+        }
+
+        /* 听力列表 */
+        .listening-item {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .listening-item:hover {
+            border-color: var(--primary);
+        }
+
+        .listening-item .play-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .listening-item .info {
+            flex: 1;
+        }
+
+        .listening-item .title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .listening-item .meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 对话模拟 */
+        .dialogue-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+        }
+
+        .dialogue-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dialogue-header .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .dialogue-header .info .name {
+            font-weight: 600;
+        }
+
+        .dialogue-header .info .status {
+            font-size: 12px;
+            color: var(--success);
+        }
+
+        .dialogue-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .message {
+            max-width: 80%;
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.ai {
+            margin-right: auto;
+        }
+
+        .message.user {
+            margin-left: auto;
+        }
+
+        .message .bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.ai .bubble {
+            background: var(--bg-card-hover);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user .bubble {
+            background: var(--primary);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message .tip {
+            font-size: 11px;
+            color: var(--warning);
+            margin-top: 4px;
+            padding-left: 8px;
+        }
+
+        .dialogue-input {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+        }
+
+        .dialogue-input input {
+            flex: 1;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 12px 20px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .dialogue-input input:focus {
+            border-color: var(--primary);
+        }
+
+        .dialogue-input .send-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 社区帖子 */
+        .post-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .post-header .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card-hover);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .post-header .author {
+            font-weight: 600;
+        }
+
+        .post-header .time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .post-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 24px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .post-action:hover {
+            color: var(--primary);
+        }
+
+        .post-action.liked {
+            color: var(--danger);
+        }
+
+        /* 发布帖子 */
+        .create-post {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .create-post .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card-hover);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-post .placeholder {
+            flex: 1;
+            color: var(--text-muted);
+        }
+
+        /* 订阅弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 360px;
+            width: 100%;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .modal-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .modal-features {
+            margin-bottom: 20px;
+        }
+
+        .modal-features li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        .modal-features li .check {
+            color: var(--success);
+        }
+
+        .price-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .price-section .price {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .price-section .period {
+            color: var(--text-muted);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* 场景选择 */
+        .scene-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .scene-item {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .scene-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .scene-item .icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .scene-item .title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .scene-item .difficulty {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 3000;
+            transition: transform 0.3s;
+            font-size: 14px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* 头部 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-back {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* 我的页面样式 */
+        .profile-header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .profile-header .avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .profile-header .name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-header .level {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .stats-row .stat {
+            text-align: center;
+        }
+
+        .stats-row .value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stats-row .label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .menu-list {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .menu-item .icon {
+            font-size: 20px;
+        }
+
+        .menu-item .text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .menu-item .arrow {
+            color: var(--text-muted);
+        }
+
+        /* VIP标签 */
+        .vip-badge {
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* 订阅卡片 */
+        .subscription-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subscription-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .subscription-card .tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .subscription-card .title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subscription-card .price {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .subscription-card .price span {
+            font-size: 14px;
+        }
+
+        .subscription-card .original-price {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: line-through;
+        }
+
+        .subscription-card .features {
+            margin-top: 16px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .subscription-card .btn {
+            margin-top: 16px;
+            background: white;
+            color: var(--primary);
+        }
+
+        /* 锁定功能提示 */
+        .lock-hint {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .lock-hint .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .lock-hint p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 首页 -->
+    <div class="page active" id="page-home">
+        <div class="main-content">
+            <div class="page-title">
+                <div>
+                    <div>你好，学习者 👋</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">今天也要加油哦</div>
+                </div>
+                <div class="user-level">Lv.<span id="user-level">3</span></div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon">🔥</div>
+                    <div class="value" id="streak-days">7</div>
+                    <div class="label">连续学习</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">📚</div>
+                    <div class="value" id="words-learned">5</div>
+                    <div class="label">已学单词</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">⏱️</div>
+                    <div class="value" id="study-time">120</div>
+                    <div class="label">学习分钟</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">⭐</div>
+                    <div class="value" id="total-xp">350</div>
+                    <div class="label">经验值</div>
+                </div>
+            </div>
+
+            <!-- 经验进度 -->
+            <div class="card">
+                <div class="progress-section">
+                    <div class="progress-text">
+                        <span>当前等级 Lv.<span id="level-display">3</span></span>
+                        <span><span id="current-xp">350</span> / <span id="xp-needed">300</span> XP</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="xp-progress" style="width: 80%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能入口 -->
+            <div class="feature-grid">
+                <div class="feature-item" onclick="switchTab('words')">
+                    <div class="icon">📝</div>
+                    <div class="title">单词记忆</div>
+                    <div class="desc">科学记忆法</div>
+                </div>
+                <div class="feature-item" onclick="switchTab('listening')">
+                    <div class="icon">🎧</div>
+                    <div class="title">听力练习</div>
+                    <div class="desc">磨耳朵</div>
+                </div>
+                <div class="feature-item" onclick="switchTab('dialogue')">
+                    <div class="icon">💬</div>
+                    <div class="title">口语对话</div>
+                    <div class="desc">AI陪练</div>
+                </div>
+                <div class="feature-item" onclick="switchTab('community')">
+                    <div class="icon">👥</div>
+                    <div class="title">学习社区</div>
+                    <div class="desc">互相进步</div>
+                </div>
+            </div>
+
+            <!-- 订阅卡片 -->
+            <div class="subscription-card" onclick="openSubscriptionModal()">
+                <div class="tag">🔥 限时特惠</div>
+                <div class="title">开通会员</div>
+                <div class="price">¥25 <span>/月</span></div>
+                <div class="original-price">原价 ¥39/月</div>
+                <div class="features">解锁全部课程 + AI无限对话</div>
+                <div class="btn">立即开通</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 单词记忆页面 -->
+    <div class="page" id="page-words">
+        <div class="main-content">
+            <div class="header">
+                <button class="header-back" onclick="switchTab('home')">←</button>
+                <div class="header-title">单词记忆</div>
+                <div style="width: 40px;"></div>
+            </div>
+
+            <div id="word-container">
+                <div class="word-card">
+                    <div class="word" id="current-word">abundant</div>
+                    <div class="phonetic" id="current-phonetic">/əˈbʌndənt/</div>
+                    <div class="meaning" id="current-meaning">丰富的，大量的</div>
+                    <div class="example" id="current-example">The country has abundant natural resources.</div>
+                    <div class="example-trans" id="current-example-trans">这个国家有丰富的自然资源。</div>
+                    <div class="word-actions">
+                        <button class="btn btn-secondary" onclick="showNextWord()">下一个</button>
+                        <button class="btn btn-success" onclick="markAsMastered()">已掌握</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <h4 style="margin-bottom: 12px;">📊 学习统计</h4>
+                <div style="display: flex; justify-content: space-between; text-align: center;">
+                    <div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="words-learned-count">5</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">已学习</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--success);" id="words-mastered-count">2</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">已掌握</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--warning);" id="words-remaining">18</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">剩余</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 听力练习页面 -->
+    <div class="page" id="page-listening">
+        <div class="main-content">
+            <div class="header">
+                <button class="header-back" onclick="switchTab('home')">←</button>
+                <div class="header-title">听力练习</div>
+                <div style="width: 40px;"></div>
+            </div>
+
+            <div class="card" style="margin-bottom: 20px;">
+                <h4 style="margin-bottom: 8px;">🎯 今日目标</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 40%;"></div>
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">完成2篇听力即可达成目标</div>
+            </div>
+
+            <div id="listening-list">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 听力详情页面 -->
+    <div class="page" id="page-listening-detail">
+        <div class="main-content">
+            <div class="header">
+                <button class="header-back" onclick="switchTab('listening')">←</button>
+                <div class="header-title">听力材料</div>
+                <div style="width: 40px;"></div>
+            </div>
+
+            <div id="listening-detail-content">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 口语对话页面 -->
+    <div class="page" id="page-dialogue">
+        <div class="main-content">
+            <div class="header">
+                <button class="header-back" onclick="switchTab('home')">←</button>
+                <div class="header-title">口语对话</div>
+                <div style="width: 40px;"></div>
+            </div>
+
+            <div id="scene-selection">
+                <div class="scene-grid">
+                    <div class="scene-item" onclick="selectScene(1)">
+                        <div class="icon">☕</div>
+                        <div class="title">咖啡店点单</div>
+                        <div class="difficulty">初级</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(2)">
+                        <div class="icon">✈️</div>
+                        <div class="title">机场值机</div>
+                        <div class="difficulty">初级</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(3)">
+                        <div class="icon">🏥</div>
+                        <div class="title">医院挂号</div>
+                        <div class="difficulty">中级</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(4)">
+                        <div class="icon">💼</div>
+                        <div class="title">商务会议</div>
+                        <div class="difficulty">高级</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(5)">
+                        <div class="icon">🏠</div>
+                        <div class="title">租房咨询</div>
+                        <div class="difficulty">中级</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dialogue-chat" style="display: none;">
+                <div class="dialogue-container">
+                    <div class="dialogue-header">
+                        <div class="avatar" id="dialogue-avatar">🤖</div>
+                        <div class="info">
+                            <div class="name" id="dialogue-name">AI导师</div>
+                            <div class="status">在线</div>
+                        </div>
+                    </div>
+                    <div class="dialogue-messages" id="dialogue-messages">
+                        <!-- 消息动态生成 -->
+                    </div>
+                    <div class="dialogue-input">
+                        <input type="text" id="dialogue-input" placeholder="输入你的回复..." onkeypress="handleDialogueKeypress(event)">
+                        <button class="send-btn" onclick="sendDialogueMessage()">➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 社区页面 -->
+    <div class="page" id="page-community">
+        <div class="main-content">
+            <div class="page-title">
+                <div>学习社区</div>
+            </div>
+
+            <div class="create-post" onclick="openCreatePost()">
+                <div class="avatar">🧑‍💻</div>
+                <div class="placeholder">分享你的学习心得...</div>
+                <button class="btn btn-primary" style="padding: 8px 16px;">发布</button>
+            </div>
+
+            <div id="community-list">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 我的页面 -->
+    <div class="page" id="page-profile">
+        <div class="main-content">
+            <div class="profile-header">
+                <div class="avatar">👤</div>
+                <div class="name">语言学习者</div>
+                <div class="level">Lv.<span id="profile-level">3</span></div>
+                <div class="stats-row">
+                    <div class="stat">
+                        <div class="value" id="profile-words">5</div>
+                        <div class="label">单词</div>
+                    </div>
+                    <div class="stat">
+                        <div class="value" id="profile-listening">2</div>
+                        <div class="label">听力</div>
+                    </div>
+                    <div class="stat">
+                        <div class="value" id="profile-dialogue">3</div>
+                        <div class="label">对话</div>
+                    </div>
+                    <div class="stat">
+                        <div class="value" id="profile-time">120</div>
+                        <div class="label">分钟</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subscription-card" onclick="openSubscriptionModal()">
+                <div class="tag">⭐ 开通VIP</div>
+                <div class="title">解锁全部功能</div>
+                <div class="price">¥25 <span>/月</span></div>
+                <div class="features">AI无限对话 + 全部课程 + 离线下载</div>
+                <div class="btn">立即开通</div>
+            </div>
+
+            <div class="menu-list">
+                <div class="menu-item" onclick="showToast('功能开发中...')">
+                    <div class="icon">📊</div>
+                    <div class="text">学习报告</div>
+                    <div class="arrow">→</div>
+                </div>
+                <div class="menu-item" onclick="showToast('功能开发中...')">
+                    <div class="icon">🏆</div>
+                    <div class="text">成就徽章</div>
+                    <div class="arrow">→</div>
+                </div>
+                <div class="menu-item" onclick="showToast('功能开发中...')">
+                    <div class="icon">⚙️</div>
+                    <div class="text">设置</div>
+                    <div class="arrow">→</div>
+                </div>
+                <div class="menu-item" onclick="showToast('功能开发中...')">
+                    <div class="icon">❓</div>
+                    <div class="text">帮助与反馈</div>
+                    <div class="arrow">→</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <nav class="bottom-nav">
+        <a class="nav-item active" onclick="switchTab('home')" id="nav-home">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>首页</span>
+        </a>
+        <a class="nav-item" onclick="switchTab('words')" id="nav-words">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+            <span>单词</span>
+        </a>
+        <a class="nav-item" onclick="switchTab('listening')" id="nav-listening">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>听力</span>
+        </a>
+        <a class="nav-item" onclick="switchTab('dialogue')" id="nav-dialogue">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+            <span>对话</span>
+        </a>
+        <a class="nav-item" onclick="switchTab('profile')" id="nav-profile">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <span>我的</span>
+        </a>
+    </nav>
+
+    <!-- 订阅弹窗 -->
+    <div class="modal-overlay" id="subscription-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeSubscriptionModal()">×</button>
+            <div class="modal-header">
+                <div class="icon">⭐</div>
+                <h3>开通语言学习VIP</h3>
+                <p>解锁全部高级功能，助你高效学习</p>
+            </div>
+            <ul class="modal-features">
+                <li><span class="check">✓</span> 解锁全部单词课程</li>
+                <li><span class="check">✓</span> AI无限次口语对话</li>
+                <li><span class="check">✓</span> 全部听力材料</li>
+                <li><span class="check">✓</span> 离线下载功能</li>
+                <li><span class="check">✓</span> 学习报告分析</li>
+            </ul>
+            <div class="price-section">
+                <div class="price">¥25 <span class="period">/月</span></div>
+                <div style="font-size: 12px; color: var(--text-muted);">约0.83元/天</div>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="purchaseSubscription()">立即开通</button>
+            <div style="text-align: center; margin-top: 12px;">
+                <a href="#" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">查看年卡优惠</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建帖子弹窗 -->
+    <div class="modal-overlay" id="create-post-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeCreatePostModal()">×</button>
+            <div class="modal-header">
+                <h3>发布帖子</h3>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <input type="text" id="post-title" placeholder="标题" style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text-primary); font-size: 14px; margin-bottom: 12px;">
+                <textarea id="post-content" placeholder="分享你的学习心得..." style="width: 100%; height: 120px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text-primary); font-size: 14px; resize: none;"></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="submitPost()">发布</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础URL
+        const API_BASE = '/api';
+
+        // 全局数据
+        let currentWordIndex = 0;
+        let words = [];
+        let listeningMaterials = [];
+        let currentListeningId = null;
+        let currentSceneId = null;
+        let dialogueHistory = [];
+
+        // ==================== 页面切换 ====================
+
+        function switchTab(tab) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // 取消所有导航激活状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // 显示目标页面
+            const targetPage = document.getElementById(`page-${tab}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // 激活对应导航
+            const targetNav = document.getElementById(`nav-${tab}`);
+            if (targetNav) {
+                targetNav.classList.add('active');
+            }
+
+            // 加载页面数据
+            if (tab === 'words') loadWords();
+            if (tab === 'listening') loadListeningList();
+            if (tab === 'dialogue') {
+                document.getElementById('scene-selection').style.display = 'grid';
+                document.getElementById('dialogue-chat').style.display = 'none';
+            }
+            if (tab === 'community') loadCommunityPosts();
+            if (tab === 'profile') loadUserProfile();
+        }
+
+        // ==================== Toast提示 ====================
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // ==================== 首页数据 ====================
+
+        async function loadHomeData() {
+            try {
+                // 加载用户进度
+                const progressRes = await fetch(`${API_BASE}/progress`);
+                const progress = await progressRes.json();
+                
+                document.getElementById('user-level').textContent = progress.level;
+                document.getElementById('streak-days').textContent = progress.streak_days;
+                document.getElementById('words-learned').textContent = progress.words_learned;
+                document.getElementById('study-time').textContent = progress.total_study_time;
+                document.getElementById('total-xp').textContent = progress.xp;
+                
+                // 更新进度条
+                const xpPercent = (progress.xp % progress.xp_to_next_level) / progress.xp_to_next_level * 100;
+                document.getElementById('xp-progress').style.width = `${xpPercent}%`;
+                document.getElementById('level-display').textContent = progress.level;
+                document.getElementById('current-xp').textContent = progress.xp % progress.xp_to_next_level;
+                document.getElementById('xp-needed').textContent = progress.xp_to_next_level;
+                
+            } catch (error) {
+                console.error('加载首页数据失败:', error);
+            }
+        }
+
+        // ==================== 单词记忆 ====================
+
+        async function loadWords() {
+            try {
+                const res = await fetch(`${API_BASE}/words`);
+                words = await res.json();
+                currentWordIndex = 0;
+                displayCurrentWord();
+                updateWordStats();
+            } catch (error) {
+                console.error('加载单词失败:', error);
+            }
+        }
+
+        function displayCurrentWord() {
+            if (words.length === 0) return;
+            const word = words[currentWordIndex];
+            document.getElementById('current-word').textContent = word.word;
+            document.getElementById('current-phonetic').textContent = word.phonetic;
+            document.getElementById('current-meaning').textContent = word.meaning;
+            document.getElementById('current-example').textContent = word.example;
+            document.getElementById('current-example-trans').textContent = word.example_trans;
+        }
+
+        function showNextWord() {
+            currentWordIndex = (currentWordIndex + 1) % words.length;
+            displayCurrentWord();
+            
+            // 记录学习
+            fetch(`${API_BASE}/words/review`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word_id: words[currentWordIndex].id })
+            });
+            
+            updateWordStats();
+            updateProgress('word_review');
+        }
+
+        function markAsMastered() {
+            fetch(`${API_BASE}/words/review`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word_id: words[currentWordIndex].id, mastered: true })
+            });
+            
+            showToast('太棒了！已掌握该单词 ✨');
+            showNextWord();
+            updateWordStats();
+        }
+
+        async function updateWordStats() {
+            try {
+                const res = await fetch(`${API_BASE}/progress`);
+                const progress = await res.json();
+                document.getElementById('words-learned-count').textContent = progress.words_learned;
+                document.getElementById('words-mastered-count').textContent = progress.words_mastered;
+                document.getElementById('words-remaining').textContent = words.length - progress.words_learned;
+            } catch (error) {
+                console.error('更新单词统计失败:', error);
+            }
+        }
+
+        // ==================== 听力练习 ====================
+
+        async function loadListeningList() {
+            try {
+                const res = await fetch(`${API_BASE}/listening`);
+                listeningMaterials = await res.json();
+                
+                const container = document.getElementById('listening-list');
+                container.innerHTML = listeningMaterials.map(item => `
+                    <div class="listening-item" onclick="openListeningDetail(${item.id})">
+                        <div class="play-icon">▶</div>
+                        <div class="info">
+                            <div class="title">${item.title}</div>
+                            <div class="meta">
+                                <span>⏱ ${item.duration}</span>
+                                <span>📊 ${item.level}</span>
+                                <span>📁 ${item.category}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('加载听力列表失败:', error);
+            }
+        }
+
+        async function openListeningDetail(id) {
+            currentListeningId = id;
+            try {
+                const res = await fetch(`${API_BASE}/listening/${id}`);
+                const material = await res.json();
+                
+                document.getElementById('listening-detail-content').innerHTML = `
+                    <div class="card">
+                        <h3 style="margin-bottom: 12px;">${material.title}</h3>
+                        <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                            <span>⏱ ${material.duration}</span>
+                            <span>📊 ${material.level}</span>
+                            <span>📁 ${material.category}</span>
+                        </div>
+                        <div style="background: var(--bg-dark); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                            <div style="font-size: 14px; line-height: 1.8;">${material.content}</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <button class="btn btn-primary btn-block" onclick="completeListening()">
+                                🎧 完成听力练习
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                switchTab('listening-detail');
+            } catch (error) {
+                console.error('加载听力详情失败:', error);
+            }
+        }
+
+        async function completeListening() {
+            try {
+                await fetch(`${API_BASE}/listening/complete`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ material_id: currentListeningId })
+                });
+                
+                showToast('太棒了！听力练习完成 🎉');
+                updateProgress('listening');
+                loadHomeData();
+            } catch (error) {
+                console.error('完成听力失败:', error);
+            }
+        }
+
+        // ==================== 口语对话 ====================
+
+        function selectScene(sceneId) {
+            currentSceneId = sceneId;
+            dialogueHistory = [];
+            
+            document.getElementById('scene-selection').style.display = 'none';
+            document.getElementById('dialogue-chat').style.display = 'flex';
+            
+            // 添加欢迎消息
+            addDialogueMessage('ai', 'Hello! I\'m your conversation partner. Let\'s practice speaking English together! Type your response in English.');
+        }
+
+        function addDialogueMessage(type, text, tip = '') {
+            const container = document.getElementById('dialogue-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="bubble">${text}</div>
+                ${tip ? `<div class="tip">💡 ${tip}</div>` : ''}
+            `;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            dialogueHistory.push({ type, text });
+        }
+
+        async function sendDialogueMessage() {
+            const input = document.getElementById('dialogue-input');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            // 添加用户消息
+            addDialogueMessage('user', text);
+            input.value = '';
+            
+            // 发送AI请求
+            try {
+                const res = await fetch(`${API_BASE}/dialogue/respond`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                
+                const data = await res.json();
+                
+                setTimeout(() => {
+                    addDialogueMessage('ai', data.response, data.tip);
+                    updateProgress('dialogue');
+                }, 1000);
+            } catch (error) {
+                console.error('AI回复失败:', error);
+                setTimeout(() => {
+                    addDialogueMessage('ai', 'That\'s great! Keep practicing. Can you tell me more?');
+                }, 1000);
+            }
+        }
+
+        function handleDialogueKeypress(event) {
+            if (event.key === 'Enter') {
+                sendDialogueMessage();
+            }
+        }
+
+        // ==================== 学习社区 ====================
+
+        async function loadCommunityPosts() {
+            try {
+                const res = await fetch(`${API_BASE}/community`);
+                const posts = await res.json();
+                
+                const container = document.getElementById('community-list');
+                container.innerHTML = posts.map(post => `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="avatar">${post.avatar}</div>
+                            <div>
+                                <div class="author">${post.author}</div>
+                                <div class="time">${post.time}</div>
+                            </div>
+                        </div>
+                        <div class="post-title">${post.title}</div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="post-actions">
+                            <div class="post-action" onclick="likePost(${post.id})">
+                                <span>❤️</span>
+                                <span>${post.likes}</span>
+                            </div>
+                            <div class="post-action">
+                                <span>💬</span>
+                                <span>${post.comments}</span>
+                            </div>
+                            <div class="post-action">
+                                <span>🔗</span>
+                                <span>分享</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('加载社区帖子失败:', error);
+            }
+        }
+
+        async function likePost(postId) {
+            try {
+                await fetch(`${API_BASE}/community/like/${postId}`, { method: 'POST' });
+                showToast('已点赞 ❤️');
+                updateProgress('community_like');
+                loadCommunityPosts();
+            } catch (error) {
+                console.error('点赞失败:', error);
+            }
+        }
+
+        function openCreatePost() {
+            document.getElementById('create-post-modal').classList.add('active');
+        }
+
+        function closeCreatePostModal() {
+            document.getElementById('create-post-modal').classList.remove('active');
+        }
+
+        async function submitPost() {
+            const title = document.getElementById('post-title').value.trim();
+            const content = document.getElementById('post-content').value.trim();
+            
+            if (!title || !content) {
+                showToast('请填写标题和内容');
+                return;
+            }
+            
+            try {
+                await fetch(`${API_BASE}/community/post`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content })
+                });
+                
+                showToast('发布成功！');
+                closeCreatePostModal();
+                document.getElementById('post-title').value = '';
+                document.getElementById('post-content').value = '';
+                updateProgress('community_post');
+                loadCommunityPosts();
+            } catch (error) {
+                console.error('发布失败:', error);
+            }
+        }
+
+        // ==================== 用户资料 ====================
+
+        async function loadUserProfile() {
+            try {
+                const res = await fetch(`${API_BASE}/progress`);
+                const progress = await res.json();
+                
+                document.getElementById('profile-level').textContent = progress.level;
+                document.getElementById('profile-words').textContent = progress.words_learned;
+                document.getElementById('profile-listening').textContent = progress.listening_completed;
+                document.getElementById('profile-dialogue').textContent = progress.dialogue_practiced;
+                document.getElementById('profile-time').textContent = progress.total_study_time;
+            } catch (error) {
+                console.error('加载用户资料失败:', error);
+            }
+        }
+
+        // ==================== 进度更新 ====================
+
+        async function updateProgress(activity) {
+            try {
+                await fetch(`${API_BASE}/progress/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ activity })
+                });
+                loadHomeData();
+            } catch (error) {
+                console.error('更新进度失败:', error);
+            }
+        }
+
+        // ==================== 订阅弹窗 ====================
+
+        function openSubscriptionModal() {
+            document.getElementById('subscription-modal').classList.add('active');
+        }
+
+        function closeSubscriptionModal() {
+            document.getElementById('subscription-modal').classList.remove('active');
+        }
+
+        async function purchaseSubscription() {
+            try {
+                const res = await fetch(`${API_BASE}/subscription/purchase`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan: 'monthly' })
+                });
+                
+                const data = await res.json();
+                if (data.success) {
+                    showToast('订阅成功！欢迎成为VIP会员 🎉');
+                    closeSubscriptionModal();
+                }
+            } catch (error) {
+                console.error('订阅失败:', error);
+            }
+        }
+
+        // 点击弹窗外部关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // ==================== 初始化 ====================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHomeData();
+        });
+    </script>
+</body>
+</html>

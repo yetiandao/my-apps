@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>养生食谱 - 您的专属健康饮食管家</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-light: #C8E6C9;
+            --secondary: #FF9800;
+            --secondary-dark: #F57C00;
+            --text-dark: #212121;
+            --text-light: #757575;
+            --bg-light: #F5F5F5;
+            --white: #FFFFFF;
+            --danger: #F44336;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .vip-badge {
+            background: var(--secondary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vip-badge:hover {
+            background: var(--secondary-dark);
+            transform: scale(1.05);
+        }
+
+        .vip-badge.active {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: var(--text-dark);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-light);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        /* 页面区块 */
+        .page {
+            display: none;
+            padding-bottom: 80px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 首页样式 */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #81C784 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: var(--white);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .hero-btn {
+            background: var(--white);
+            color: var(--primary);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .hero-btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        /* 功能卡片 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .feature-card h3 {
+            font-size: 15px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .feature-card p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* 内容卡片 */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 食谱卡片 */
+        .recipe-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .recipe-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .recipe-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--white) 100%);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recipe-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .recipe-time {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .recipe-body {
+            padding: 15px;
+        }
+
+        .recipe-effect {
+            color: var(--primary);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .recipe-ingredients {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .ingredient-tag {
+            background: var(--bg-light);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .recipe-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+            padding-top: 10px;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        /* 体质测试 */
+        .test-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: var(--bg-light);
+            border: 2px solid transparent;
+            padding: 15px 20px;
+            border-radius: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* 体质结果 */
+        .result-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: var(--white);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .result-type {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .result-desc {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .result-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .result-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        /* 食材查询 */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            padding-left: 45px;
+            border: 2px solid var(--bg-light);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        .ingredient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .ingredient-item {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        .ingredient-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .ingredient-icon {
+            font-size: 35px;
+            margin-bottom: 8px;
+        }
+
+        .ingredient-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .ingredient-effect {
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        /* 四季养生 */
+        .season-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .season-tab {
+            flex-shrink: 0;
+            padding: 10px 20px;
+            background: var(--white);
+            border: 2px solid var(--bg-light);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .season-tab:hover {
+            border-color: var(--primary);
+        }
+
+        .season-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
+        .season-content {
+            display: none;
+        }
+
+        .season-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .guide-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .guide-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-text {
+            font-size: 14px;
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        /* 饮食计划 */
+        .plan-header {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+
+        .plan-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .plan-meta-item {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .meal-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--bg-light);
+        }
+
+        .meal-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        .meal-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .meal-calories {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .meal-name {
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: var(--bg-light);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* VIP弹窗 */
+        .vip-modal-content {
+            text-align: center;
+        }
+
+        .vip-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .vip-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .vip-desc {
+            color: var(--text-light);
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+
+        .vip-price {
+            font-size: 36px;
+            color: var(--secondary);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .vip-price span {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        .vip-features {
+            text-align: left;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 12px;
+        }
+
+        .vip-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .vip-feature-item::before {
+            content: "✓";
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .vip-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vip-btn:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--bg-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hero h1 {
+                font-size: 22px;
+            }
+            
+            .result-type {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🍵</span>
+                <span>养生食谱</span>
+            </div>
+            <div class="vip-badge" id="vipBadge" onclick="showVipModal()">
+                开通会员
+            </div>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <main class="container">
+        <!-- 首页 -->
+        <section class="page active" id="page-home">
+            <div class="hero">
+                <h1>🍵 您的专属健康饮食管家</h1>
+                <p>基于中医体质辨识，为您推荐最适合的养生食谱</p>
+                <button class="hero-btn" onclick="switchPage('test')">立即测试体质</button>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card" onclick="switchPage('recipes')">
+                    <div class="feature-icon">🍜</div>
+                    <h3>养生食谱</h3>
+                    <p>根据体质推荐</p>
+                </div>
+                <div class="feature-card" onclick="switchPage('ingredients')">
+                    <div class="feature-icon">🥬</div>
+                    <h3>食材功效</h3>
+                    <p>了解食材价值</p>
+                </div>
+                <div class="feature-card" onclick="switchPage('seasonal')">
+                    <div class="feature-icon">🌿</div>
+                    <h3>四季养生</h3>
+                    <p>顺应时节调养</p>
+                </div>
+                <div class="feature-card" onclick="switchPage('plan')">
+                    <div class="feature-icon">📋</div>
+                    <h3>饮食计划</h3>
+                    <p>个性化方案</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">
+                    <span>📌</span> 健康小知识
+                </div>
+                <p id="healthTip">饮食有节，起居有常，不妄作劳，故能形与神俱，而尽终其天年。</p>
+            </div>
+        </section>
+
+        <!-- 体质测试页 -->
+        <section class="page" id="page-test">
+            <div class="test-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div id="testContent">
+                    <!-- 动态加载测试问题 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 食谱推荐页 -->
+        <section class="page" id="page-recipes">
+            <div class="card">
+                <div class="card-title">
+                    <span>🍜</span> 推荐食谱
+                </div>
+                <p style="color: var(--text-light); font-size: 14px;" id="recipesSubtitle">
+                    根据您的体质精心推荐
+                </p>
+            </div>
+            <div class="recipe-list" id="recipeList">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </section>
+
+        <!-- 食材查询页 -->
+        <section class="page" id="page-ingredients">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="搜索食材名称" id="ingredientSearch" oninput="filterIngredients()">
+            </div>
+            <div class="ingredient-grid" id="ingredientGrid">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </section>
+
+        <!-- 四季养生页 -->
+        <section class="page" id="page-seasonal">
+            <div class="season-tabs" id="seasonTabs">
+                <div class="season-tab active" data-season="春">🌸 春</div>
+                <div class="season-tab" data-season="夏">☀️ 夏</div>
+                <div class="season-tab" data-season="秋">🍂 秋</div>
+                <div class="season-tab" data-season="冬">❄️ 冬</div>
+            </div>
+            <div id="seasonalContent">
+                <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </section>
+
+        <!-- 饮食计划页 -->
+        <section class="page" id="page-plan">
+            <div class="plan-header">
+                <h2>📋 个性化饮食计划</h2>
+                <p>根据您的体质和目标定制</p>
+                <div class="plan-meta">
+                    <div class="plan-meta-item">⏱️ <span id="planDuration">7</span>天方案</div>
+                    <div class="plan-meta-item">🎯 <span id="planGoal">维持健康</span></div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <select id="planDurationSelect" style="flex: 1; padding: 12px; border-radius: 10px; border: 2px solid var(--bg-light); font-size: 14px;">
+                        <option value="7">7天计划</option>
+                        <option value="14">14天计划</option>
+                        <option value="30">30天计划</option>
+                    </select>
+                    <select id="planGoalSelect" style="flex: 1; padding: 12px; border-radius: 10px; border: 2px solid var(--bg-light); font-size: 14px;">
+                        <option value="maintain">维持健康</option>
+                        <option value="lose_weight">减脂塑形</option>
+                        <option value="gain_weight">增重调理</option>
+                    </select>
+                    <button onclick="generateMealPlan()" style="flex: 1; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">
+                        生成计划
+                    </button>
+                </div>
+            </div>
+            
+            <div id="mealPlanContent">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>点击上方按钮生成您的专属饮食计划</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home" onclick="switchPage('home')">
+            <span class="nav-icon">🏠</span>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" data-page="test" onclick="switchPage('test')">
+            <span class="nav-icon">🧪</span>
+            <span>测试</span>
+        </div>
+        <div class="nav-item" data-page="recipes" onclick="switchPage('recipes')">
+            <span class="nav-icon">🍜</span>
+            <span>食谱</span>
+        </div>
+        <div class="nav-item" data-page="ingredients" onclick="switchPage('ingredients')">
+            <span class="nav-icon">🥬</span>
+            <span>食材</span>
+        </div>
+        <div class="nav-item" data-page="seasonal" onclick="switchPage('seasonal')">
+            <span class="nav-icon">🌿</span>
+            <span>养生</span>
+        </div>
+    </nav>
+
+    <!-- VIP弹窗 -->
+    <div class="modal" id="vipModal">
+        <div class="modal-content vip-modal-content">
+            <div class="modal-header">
+                <div class="modal-title"></div>
+                <button class="modal-close" onclick="closeVipModal()">×</button>
+            </div>
+            <div class="vip-icon">👑</div>
+            <div class="vip-title">开通会员</div>
+            <div class="vip-desc">
+                解锁全部食谱、专属饮食计划<br>
+                以及更多高级功能
+            </div>
+            <div class="vip-price">¥15<span>/月</span></div>
+            <div class="vip-features">
+                <div class="vip-feature-item">解锁全部体质食谱（9种体质 × 50+食谱）</div>
+                <div class="vip-feature-item">专属个性化饮食计划</div>
+                <div class="vip-feature-item">食材相克相生查询</div>
+                <div class="vip-feature-item">专属养生顾问咨询</div>
+                <div class="vip-feature-item">无广告干扰体验</div>
+            </div>
+            <button class="vip-btn" onclick="subscribeVip()">立即开通 ¥15/月</button>
+        </div>
+    </div>
+
+    <!-- 食材详情弹窗 -->
+    <div class="modal" id="ingredientModal">
+        <div class="modal-content" id="ingredientModalContent">
+            <!-- 动态内容 -->
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // API基础地址
+        const API_BASE = 'http://127.0.0.1:5000/api';
+
+        // 全局状态
+        let appState = {
+            userType: null,
+            isVip: false,
+            currentSeason: '春',
+            testQuestions: [],
+            testAnswers: [],
+            currentQuestion: 0,
+            ingredients: [],
+            recipes: []
+        };
+
+        // 测试问题
+        const testQuestions = [
+            { q: "您是否经常感到疲劳乏力？", options: ["从不", "偶尔", "有时", "经常", "总是"] },
+            { q: "您是否容易气短（呼吸急促）？", options: ["从不", "偶尔", "有时", "经常", "总是"] },
+            { q: "您是否怕冷、手脚冰凉？", options: ["从不", "偶尔", "有时", "经常", "总是"] },
+            { q: "您是否口干舌燥、喜欢喝冷饮？", options: ["从不", "偶尔", "有时", "经常", "总是"] },
+            { q: "您的体型是否偏胖、腹部肥满？", options: ["完全不是", "不太是", "不确定", "有些是", "完全是"] },
+            { q: "您是否容易长痘、面部油光？", options: ["从不", "偶尔", "有时", "经常", "总是"] },
+            { q: "您的皮肤是否容易出现瘀斑？", options: ["从不", "偶尔", "有时", "经常", "总是"] },
+            { q: "您是否容易情绪低落、烦闷不安？", options: ["从不", "偶尔", "有时", "经常", "总是"] },
+            { q: "您是否容易过敏（鼻炎、湿疹等）？", options: ["从不", "偶尔", "有时", "经常", "总是"] },
+            { q: "您的睡眠质量如何？", options: ["非常好", "较好", "一般", "较差", "很差"] }
+        ];
+
+        // 健康小知识库
+        const healthTips = [
+            "饮食有节，起居有常，不妄作劳，故能形与神俱，而尽终其天年。",
+            "五谷为养，五果为助，五畜为益，五菜为充，气味合而服之，以补精益气。",
+            "早睡早起，顺应天时，是养生之根本。",
+            "怒伤肝、喜伤心、思伤脾、忧伤肺、恐伤肾，情志调和百病消。",
+            "春养肝、夏养心、秋养肺、冬养肾，顺时养生事半功倍。",
+            "饭吃七分饱，养生又长寿。",
+            "晨起一杯水，畅通肠胃又排毒。",
+            "饭后百步走，活到九十九。",
+            "养生先养心，心宽体自健。",
+            "冬吃萝卜夏吃姜，不用医生开药方。"
+        ];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        async function initApp() {
+            // 随机显示健康小知识
+            document.getElementById('healthTip').textContent = 
+                healthTips[Math.floor(Math.random() * healthTips.length)];
+            
+            // 加载初始数据
+            await loadConstitutions();
+            await loadIngredients();
+            loadSeasonalGuide('春');
+            
+            // 初始化测试
+            initTest();
+            
+            // 绑定季节切换事件
+            document.querySelectorAll('.season-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.season-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    loadSeasonalGuide(tab.dataset.season);
+                });
+            });
+        }
+
+        // 切换页面
+        function switchPage(page) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            // 显示目标页面
+            document.getElementById(`page-${page}`).classList.add('active');
+            document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+            
+            // 加载对应数据
+            if (page === 'recipes' && appState.userType) {
+                loadRecipes(appState.userType);
+            } else if (page === 'recipes' && !appState.userType) {
+                loadAllRecipes();
+            }
+            
+            // 如果没有体质测试过，先进行测试
+            if (page === 'plan' && !appState.userType) {
+                showToast('请先完成体质测试，以便获取个性化推荐');
+                setTimeout(() => switchPage('test'), 1500);
+            }
+        }
+
+        // 加载体质类型
+        async function loadConstitutions() {
+            try {
+                const res = await fetch(`${API_BASE}/constitution/types`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    appState.constitutionTypes = data.data;
+                }
+            } catch (e) {
+                console.log('使用本地数据');
+            }
+        }
+
+        // 初始化测试
+        function initTest() {
+            appState.testQuestions = testQuestions;
+            appState.testAnswers = [];
+            appState.currentQuestion = 0;
+            renderQuestion();
+        }
+
+        // 渲染问题
+        function renderQuestion() {
+            const q = appState.testQuestions[appState.currentQuestion];
+            const total = appState.testQuestions.length;
+            const progress = ((appState.currentQuestion) / total) * 100;
+            
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            
+            const content = `
+                <div class="question">${appState.currentQuestion + 1}. ${q.q}</div>
+                <div class="options">
+                    ${q.options.map((opt, i) => `
+                        <button class="option-btn" onclick="selectAnswer(${i + 1})">${opt}</button>
+                    `).join('')}
+                </div>
+                <div style="text-align: center; margin-top: 20px; color: var(--text-light); font-size: 13px;">
+                    ${appState.currentQuestion + 1} / ${total}
+                </div>
+            `;
+            
+            document.getElementById('testContent').innerHTML = content;
+        }
+
+        // 选择答案
+        function selectAnswer(value) {
+            appState.testAnswers.push(value);
+            appState.currentQuestion++;
+            
+            if (appState.currentQuestion < appState.testQuestions.length) {
+                renderQuestion();
+            } else {
+                submitTest();
+            }
+        }
+
+        // 提交测试
+        async function submitTest() {
+            document.getElementById('progressFill').style.width = '100%';
+            
+            try {
+                const res = await fetch(`${API_BASE}/constitution/test`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ answers: appState.testAnswers })
+                });
+                const data = await res.json();
+                
+                if (data.code === 200) {
+                    appState.userType = data.data.type;
+                    showTestResult(data.data);
+                }
+            } catch (e) {
+                // 模拟结果
+                const types = ['平和质', '气虚质', '阳虚质', '阴虚质', '痰湿质'];
+                const result = {
+                    type: types[Math.floor(Math.random() * types.length)],
+                    description: '根据您的答题结果，您属于平和质。平和质是最理想的体质状态。',
+                    characteristics: ['面色红润', '精力充沛', '睡眠良好', '适应力强'],
+                    diet_tips: ['饮食均衡', '荤素搭配', '定时定量', '避免偏嗜']
+                };
+                appState.userType = result.type;
+                showTestResult(result);
+            }
+        }
+
+        // 显示测试结果
+        function showTestResult(result) {
+            const content = `
+                <div class="result-card">
+                    <div class="result-type">${result.type}</div>
+                    <div class="result-desc">${result.description}</div>
+                    <div class="result-tags">
+                        ${(result.characteristics || []).map(c => `<span class="result-tag">${c}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <span>💡</span> 饮食调养建议
+                    </div>
+                    <div style="line-height: 2;">
+                        ${(result.diet_tips || []).map(t => `<span style="display: inline-block; background: var(--primary-light); padding: 5px 12px; border-radius: 15px; margin: 3px; font-size: 13px; color: var(--primary-dark);">${t}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="switchPage('recipes')" style="flex: 1; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer;">
+                        查看推荐食谱
+                    </button>
+                    <button onclick="switchPage('home')" style="flex: 1; padding: 15px; background: var(--bg-light); color: var(--text-dark); border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer;">
+                        返回首页
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('testContent').innerHTML = content;
+            showToast(`您的体质是：${result.type}`);
+        }
+
+        // 加载食谱
+        async function loadRecipes(constitution) {
+            document.getElementById('recipesSubtitle').textContent = 
+                `根据您的${constitution}体质推荐`;
+            
+            try {
+                const res = await fetch(`${API_BASE}/recipes/${encodeURIComponent(constitution)}`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    appState.recipes = data.data;
+                    renderRecipes(data.data);
+                }
+            } catch (e) {
+                showToast('加载食谱失败，请稍后重试');
+            }
+        }
+
+        async function loadAllRecipes() {
+            try {
+                const res = await fetch(`${API_BASE}/recipes`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    appState.recipes = data.data;
+                    renderRecipes(data.data.slice(0, 10));
+                }
+            } catch (e) {
+                showToast('加载食谱失败，请稍后重试');
+            }
+        }
+
+        // 渲染食谱列表
+        function renderRecipes(recipes) {
+            if (!recipes || recipes.length === 0) {
+                document.getElementById('recipeList').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🍜</div>
+                        <p>暂无推荐食谱</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const html = recipes.map(r => `
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <span class="recipe-name">${r.name}</span>
+                        <span class="recipe-time">⏱️ ${r.prep_time}</span>
+                    </div>
+                    <div class="recipe-body">
+                        <div class="recipe-effect">功效：${r.effect}</div>
+                        <div class="recipe-ingredients">
+                            ${r.ingredients.map(i => `<span class="ingredient-tag">${i}</span>`).join('')}
+                        </div>
+                        <div class="recipe-meta">
+                            <span>🔥 ${r.calories}千卡</span>
+                            ${r.禁忌 ? `<span style="color: var(--danger);">⚠️ ${r.禁忌}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('recipeList').innerHTML = html;
+        }
+
+        // 加载食材
+        async function loadIngredients() {
+            try {
+                const res = await fetch(`${API_BASE}/ingredients`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    appState.ingredients = data.data;
+                    renderIngredients(data.data);
+                }
+            } catch (e) {
+                showToast('加载食材失败，请稍后重试');
+            }
+        }
+
+        // 渲染食材网格
+        function renderIngredients(ingredients) {
+            const html = ingredients.map(i => `
+                <div class="ingredient-item" onclick="showIngredientDetail('${i.name}')">
+                    <div class="ingredient-icon">🥬</div>
+                    <div class="ingredient-name">${i.name}</div>
+                    <div class="ingredient-effect">${i.effect}</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('ingredientGrid').innerHTML = html;
+        }
+
+        // 筛选食材
+        function filterIngredients() {
+            const keyword = document.getElementById('ingredientSearch').value.toLowerCase();
+            const filtered = appState.ingredients.filter(i => 
+                i.name.toLowerCase().includes(keyword) || 
+                i.effect.toLowerCase().includes(keyword)
+            );
+            renderIngredients(filtered);
+        }
+
+        // 显示食材详情
+        function showIngredientDetail(name) {
+            const ingredient = appState.ingredients.find(i => i.name === name);
+            if (!ingredient) return;
+            
+            const content = `
+                <div class="modal-header">
+                    <div class="modal-title">${ingredient.name}</div>
+                    <button class="modal-close" onclick="closeIngredientModal()">×</button>
+                </div>
+                <div class="card" style="margin-top: 15px;">
+                    <div class="card-title"><span>💡</span> 功效</div>
+                    <p>${ingredient.effect}</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span>📂</span> 分类</div>
+                    <p>${ingredient.category}</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span>✅</span> 适宜人群</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
+                        ${(ingredient.suitable || []).map(s => `<span style="background: var(--primary-light); color: var(--primary-dark); padding: 5px 12px; border-radius: 15px; font-size: 13px;">${s}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span>⚠️</span> 禁忌人群</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
+                        ${(ingredient.avoid || []).map(a => `<span style="background: #ffebee; color: var(--danger); padding: 5px 12px; border-radius: 15px; font-size: 13px;">${a}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('ingredientModalContent').innerHTML = content;
+            document.getElementById('ingredientModal').classList.add('active');
+        }
+
+        function closeIngredientModal() {
+            document.getElementById('ingredientModal').classList.remove('active');
+        }
+
+        // 加载季节养生指南
+        async function loadSeasonalGuide(season) {
+            appState.currentSeason = season;
+            
+            try {
+                const res = await fetch(`${API_BASE}/seasonal/${encodeURIComponent(season)}`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderSeasonalGuide(data.data);
+                }
+            } catch (e) {
+                // 本地数据
+                const guides = {
+                    "春": {
+                        "title": "春季养生指南",
+                        "theme": "养肝为先，疏肝理气",
+                        "description": "春回大地，万物复苏，人体阳气升发，养生重在养肝护阳",
+                        "recommendations": [
+                            {"title": "饮食原则", "content": "宜清淡、少酸多甘，多吃新鲜蔬菜，少吃辛辣油腻"},
+                            {"title": "推荐食材", "content": "菠菜、韭菜、春笋、草莓、蜂蜜、枸杞"},
+                            {"title": "推荐食谱", "content": "枸杞猪肝汤、韭菜炒蛋、春笋炒肉、草莓蜂蜜饮"}
+                        ]
+                    },
+                    "夏": {
+                        "title": "夏季养生指南",
+                        "theme": "清热解暑，养心安神",
+                        "description": "烈日炎炎，暑湿盛行，养生重在清热祛湿、养心防暑",
+                        "recommendations": [
+                            {"title": "饮食原则", "content": "清淡易消化，多食酸味、苦味，补充水分和盐分"},
+                            {"title": "推荐食材", "content": "绿豆、苦瓜、西瓜、冬瓜、莲子、荷叶"},
+                            {"title": "推荐食谱", "content": "绿豆汤、酸梅汤、苦瓜炒肉、荷叶粥、莲子心茶"}
+                        ]
+                    },
+                    "秋": {
+                        "title": "秋季养生指南",
+                        "theme": "润肺防燥，滋阴养肺",
+                        "description": "秋高气爽，天气干燥，养生重在润燥养肺、滋阴润燥",
+                        "recommendations": [
+                            {"title": "饮食原则", "content": "少辛多酸，多食润肺生津食物，多饮水"},
+                            {"title": "推荐食材", "content": "梨、银耳、百合、蜂蜜、芝麻、山药"},
+                            {"title": "推荐食谱", "content": "川贝雪梨汤、银耳羹、百合粥、蜂蜜萝卜、芝麻核桃糊"}
+                        ]
+                    },
+                    "冬": {
+                        "title": "冬季养生指南",
+                        "theme": "温补固本，补肾藏精",
+                        "description": "寒风凛冽，万物收藏，养生重在温补肾阳、养藏精气",
+                        "recommendations": [
+                            {"title": "饮食原则", "content": "温热滋补，多食黑色食物，适当进补，忌生冷"},
+                            {"title": "推荐食材", "content": "羊肉、核桃、黑芝麻、红枣、桂圆、山药"},
+                            {"title": "推荐食谱", "content": "羊肉汤、核桃粥、当归生姜羊肉、八宝饭、桂圆红枣茶"}
+                        ]
+                    }
+                };
+                renderSeasonalGuide(guides[season]);
+            }
+        }
+
+        // 渲染季节养生指南
+        function renderSeasonalGuide(guide) {
+            if (!guide) return;
+            
+            const html = `
+                <div class="guide-card" style="background: linear-gradient(135deg, var(--primary-light) 0%, #fff 100%);">
+                    <h2 style="font-size: 20px; margin-bottom: 10px;">${guide.title}</h2>
+                    <p style="color: var(--primary); font-size: 16px; margin-bottom: 10px;">🌟 ${guide.theme}</p>
+                    <p style="color: var(--text-light); font-size: 14px;">${guide.description}</p>
+                </div>
+                ${(guide.recommendations || []).map(r => `
+                    <div class="guide-card">
+                        <div class="guide-title">
+                            <span>📌</span> ${r.title}
+                        </div>
+                        <div class="guide-text">${r.content}</div>
+                    </div>
+                `).join('')}
+            `;
+            
+            document.getElementById('seasonalContent').innerHTML = html;
+        }
+
+        // 生成饮食计划
+        async function generateMealPlan() {
+            const duration = document.getElementById('planDurationSelect').value;
+            const goal = document.getElementById('planGoalSelect').value;
+            
+            const constitution = appState.userType || '平和质';
+            const goalNames = {
+                'maintain': '维持健康',
+                'lose_weight': '减脂塑形',
+                'gain_weight': '增重调理'
+            };
+            
+            document.getElementById('planDuration').textContent = duration;
+            document.getElementById('planGoal').textContent = goalNames[goal];
+            
+            document.getElementById('mealPlanContent').innerHTML = 
+                '<div class="loading"><div class="spinner"></div></div>';
+            
+            try {
+                const res = await fetch(`${API_BASE}/meal-plan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ constitution, goal, duration: parseInt(duration) })
+                });
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderMealPlan(data.data);
+                }
+            } catch (e) {
+                // 模拟数据
+                renderMealPlan({
+                    duration: parseInt(duration),
+                    goal: goal,
+                    constitution: constitution,
+                    daily_plans: generateMockPlan(parseInt(duration))
+                });
+            }
+        }
+
+        // 生成模拟计划
+        function generateMockPlan(days) {
+            const meals = [
+                { name: '山药枸杞粥', calories: 350 },
+                { name: '红枣桂圆汤', calories: 320 },
+                { name: '清蒸鲈鱼', calories: 400 },
+                { name: '蔬菜沙拉', calories: 280 },
+                { name: '百合莲子银耳羹', calories: 300 },
+                { name: '人参炖鸡汤', calories: 450 },
+                { name: '黄芪山药粥', calories: 340 },
+                { name: '韭菜炒蛋', calories: 320 }
+            ];
+            
+            const plans = [];
+            for (let i = 1; i <= days; i++) {
+                plans.push({
+                    day: i,
+                    meals: {
+                        breakfast: { name: meals[Math.floor(Math.random() * 4)].name, time: '07:00-08:00', calories: 350 },
+                        lunch: { name: meals[Math.floor(Math.random() * 4) + 4].name, time: '12:00-13:00', calories: 550 },
+                        dinner: { name: meals[Math.floor(Math.random() * 4)].name, time: '18:00-19:00', calories: 400 },
+                        snack: { name: '水果/坚果', time: '15:00-16:00', calories: 150 }
+                    },
+                    total_calories: 1450
+                });
+            }
+            return plans;
+        }
+
+        // 渲染饮食计划
+        function renderMealPlan(plan) {
+            if (!plan || !plan.daily_plans) {
+                document.getElementById('mealPlanContent').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>生成计划失败，请稍后重试</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 只显示前3天
+            const displayPlans = plan.daily_plans.slice(0, 3);
+            
+            const html = displayPlans.map(day => `
+                <div class="meal-card">
+                    <div class="meal-header">
+                        <span class="meal-type"><span style="font-size: 20px;">📅</span> 第${day.day}天</span>
+                        <span class="meal-calories">🔥 ${day.total_calories}千卡</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 20px;">🌅</span>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">早餐 <span style="color: var(--text-light); font-weight: normal; font-size: 12px;">${day.meals.breakfast.time}</span></div>
+                                <div style="font-size: 14px; color: var(--text-dark);">${day.meals.breakfast.name}</div>
+                            </div>
+                            <span style="margin-left: auto; color: var(--primary); font-weight: bold;">${day.meals.breakfast.calories}千卡</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 20px;">☀️</span>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">午餐 <span style="color: var(--text-light); font-weight: normal; font-size: 12px;">${day.meals.lunch.time}</span></div>
+                                <div style="font-size: 14px; color: var(--text-dark);">${day.meals.lunch.name}</div>
+                            </div>
+                            <span style="margin-left: auto; color: var(--primary); font-weight: bold;">${day.meals.lunch.calories}千卡</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 20px;">🌙</span>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">晚餐 <span style="color: var(--text-light); font-weight: normal; font-size: 12px;">${day.meals.dinner.time}</span></div>
+                                <div style="font-size: 14px; color: var(--text-dark);">${day.meals.dinner.name}</div>
+                            </div>
+                            <span style="margin-left: auto; color: var(--primary); font-weight: bold;">${day.meals.dinner.calories}千卡</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 20px;">🍎</span>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">下午茶 <span style="color: var(--text-light); font-weight: normal; font-size: 12px;">${day.meals.snack.time}</span></div>
+                                <div style="font-size: 14px; color: var(--text-dark);">${day.meals.snack.name}</div>
+                            </div>
+                            <span style="margin-left: auto; color: var(--primary); font-weight: bold;">${day.meals.snack.calories}千卡</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            const moreHtml = plan.daily_plans.length > 3 ? `
+                <div style="text-align: center; padding: 20px; color: var(--text-light);">
+                    <p>还有 ${plan.daily_plans.length - 3} 天的计划</p>
+                    <p style="font-size: 13px;">开通会员解锁完整计划</p>
+                    <button onclick="showVipModal()" style="margin-top: 10px; padding: 10px 25px; background: var(--secondary); color: white; border: none; border-radius: 20px; cursor: pointer;">
+                        开通会员查看全部
+                    </button>
+                </div>
+            ` : '';
+            
+            document.getElementById('mealPlanContent').innerHTML = html + moreHtml;
+        }
+
+        // VIP相关
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('active');
+        }
+
+        function closeVipModal() {
+            document.getElementById('vipModal').classList.remove('active');
+        }
+
+        function subscribeVip() {
+            // 实际项目中这里应该调用支付接口
+            appState.isVip = true;
+            document.getElementById('vipBadge').textContent = '会员已开通';
+            document.getElementById('vipBadge').classList.add('active');
+            closeVipModal();
+            showToast('恭喜！您已成为会员');
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // 点击模态框外部关闭
+        document.getElementById('vipModal').addEventListener('click', function(e) {
+            if (e.target === this) closeVipModal();
+        });
+        document.getElementById('ingredientModal').addEventListener('click', function(e) {
+            if (e.target === this) closeIngredientModal();
+        });
+    </script>
+</body>
+</html>

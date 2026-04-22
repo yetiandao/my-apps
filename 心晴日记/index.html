@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>心晴日记 - 每天记录心晴</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF8A80;
+            --primary-light: #FFB4AB;
+            --primary-dark: #C85A54;
+            --secondary: #A5D6A7;
+            --secondary-light: #D7E8D5;
+            --accent: #FFD54F;
+            --bg: #FFF9F5;
+            --bg-card: #FFFFFF;
+            --text: #5D4E47;
+            --text-light: #8B7B74;
+            --shadow: rgba(255, 138, 128, 0.15);
+            --radius: 20px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 25px 20px;
+            text-align: center;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        /* 底部导航 */
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -4px 20px var(--shadow);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            color: var(--text-light);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .icon {
+            font-size: 1.5rem;
+        }
+
+        .nav-item span {
+            font-weight: 500;
+        }
+
+        /* 主内容区 */
+        .main {
+            padding: 20px;
+            padding-bottom: 90px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* 页面切换 */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 情绪打卡页面 */
+        .date-display {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+        }
+
+        .date-display .day {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .date-display .date-str {
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        /* Emoji选择器 */
+        .emoji-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .emoji-btn {
+            width: 52px;
+            height: 52px;
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        .emoji-btn.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: scale(1.1);
+        }
+
+        /* 文本输入 */
+        .note-input {
+            width: 100%;
+            min-height: 100px;
+            border: 2px solid var(--secondary-light);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .note-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .note-input::placeholder {
+            color: var(--text-light);
+        }
+
+        /* 提交按钮 */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 已选emoji展示 */
+        .selected-emojis {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            min-height: 50px;
+        }
+
+        .selected-emoji {
+            font-size: 2rem;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            to { transform: scale(1); }
+        }
+
+        /* 今日状态 */
+        .today-status {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+        }
+
+        .status-emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .status-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .status-score {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        /* 建议卡片 */
+        .suggestion-card {
+            background: linear-gradient(135deg, var(--secondary-light) 0%, #E8F5E9 100%);
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-top: 16px;
+        }
+
+        .suggestion-card .icon {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+
+        .suggestion-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* 历史记录 */
+        .record-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
+        }
+
+        .record-date {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            min-width: 50px;
+        }
+
+        .record-emojis {
+            font-size: 1.4rem;
+        }
+
+        .record-note {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        /* 周报图表 */
+        .chart-container {
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 20px 10px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+        }
+
+        .chart-bar {
+            width: 30px;
+            background: linear-gradient(to top, var(--primary), var(--primary-light));
+            border-radius: 6px 6px 0 0;
+            transition: height 0.5s ease;
+        }
+
+        .chart-label {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        /* AI对话 */
+        .chat-container {
+            height: calc(100vh - 250px);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            margin-bottom: 15px;
+        }
+
+        .chat-msg {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .chat-msg.user {
+            text-align: right;
+        }
+
+        .chat-bubble {
+            display: inline-block;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .chat-msg.bot .chat-bubble {
+            background: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-msg.user .chat-bubble {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid var(--secondary-light);
+            border-radius: 25px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .chat-send {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chat-send:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* 放松训练 */
+        .training-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .training-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .training-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .training-info {
+            flex: 1;
+        }
+
+        .training-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .training-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* 呼吸动画 */
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 3s ease-in-out;
+        }
+
+        .breathing-circle.inhale {
+            transform: scale(1.3);
+            background: linear-gradient(135deg, var(--secondary) 0%, #81C784 100%);
+        }
+
+        .breathing-circle.exhale {
+            transform: scale(1);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+        }
+
+        .breathing-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .breathing-timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .training-progress {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg);
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--primary-light);
+        }
+
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-dark);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            z-index: 300;
+            animation: toastIn 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--primary-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* VIP卡片 */
+        .vip-card {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: var(--radius);
+            padding: 20px;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .vip-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vip-card p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .vip-btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: #FFA500;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vip-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* 响应式 */
+        @media (max-width: 380px) {
+            .emoji-picker {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .emoji-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="header">
+        <h1>🌸 心晴日记</h1>
+        <p>每天记录心晴，生活更美好</p>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <!-- 情绪打卡页面 -->
+        <section id="page-mood" class="page active">
+            <!-- 日期展示 -->
+            <div class="date-display">
+                <div class="day" id="current-day">12</div>
+                <div class="date-str" id="current-date">2025年1月12日 周日</div>
+            </div>
+
+            <!-- 今日状态 -->
+            <div class="today-status" id="today-status" style="display: none;">
+                <div class="status-emoji" id="status-emoji">😊</div>
+                <div class="status-text" id="status-text">阳光明媚</div>
+                <div class="status-score" id="status-score">情绪指数: 85分</div>
+            </div>
+
+            <!-- 打卡卡片 -->
+            <div class="card">
+                <div class="card-title">📝 今日心情</div>
+                
+                <div class="selected-emojis" id="selected-emojis"></div>
+                
+                <div class="emoji-picker" id="emoji-picker">
+                    <button class="emoji-btn" data-emoji="😊" title="开心">😊</button>
+                    <button class="emoji-btn" data-emoji="😢" title="难过">😢</button>
+                    <button class="emoji-btn" data-emoji="😠" title="生气">😠</button>
+                    <button class="emoji-btn" data-emoji="😰" title="焦虑">😰</button>
+                    <button class="emoji-btn" data-emoji="😴" title="疲惫">😴</button>
+                    <button class="emoji-btn" data-emoji="😐" title="平静">😐</button>
+                    <button class="emoji-btn" data-emoji="🤔" title="思考">🤔</button>
+                    <button class="emoji-btn" data-emoji="😁" title="兴奋">😁</button>
+                    <button class="emoji-btn" data-emoji="😌" title="放松">😌</button>
+                    <button class="emoji-btn" data-emoji="🥰" title="被爱">🥰</button>
+                    <button class="emoji-btn" data-emoji="😤" title="挫败">😤</button>
+                    <button class="emoji-btn" data-emoji="🤗" title="温暖">🤗</button>
+                </div>
+
+                <textarea class="note-input" id="note-input" placeholder="写下一句话，记录今天的心情..."></textarea>
+                
+                <button class="btn-primary" id="save-btn">💖 记录今日心情</button>
+            </div>
+
+            <!-- 建议卡片 -->
+            <div class="suggestion-card" id="suggestion-card" style="display: none;">
+                <p><span class="icon">💡</span><span id="suggestion-text"></span></p>
+            </div>
+
+            <!-- 历史记录预览 -->
+            <div class="card" id="history-card">
+                <div class="card-title">📅 最近记录</div>
+                <div id="history-list"></div>
+            </div>
+
+            <!-- VIP卡片 -->
+            <div class="vip-card">
+                <h3>👑 心晴会员</h3>
+                <p>解锁无限情绪分析、AI陪伴对话、全部放松训练</p>
+                <button class="vip-btn">¥19.9 开通月卡</button>
+            </div>
+        </section>
+
+        <!-- 情绪周报页面 -->
+        <section id="page-report" class="page">
+            <div class="card">
+                <div class="card-title">📊 本周情绪周报</div>
+                <div id="weekly-summary" class="empty-state">
+                    <div class="icon">📊</div>
+                    <p>本周还没有记录哦，开始记录心情吧~</p>
+                </div>
+                <div id="weekly-chart" class="chart-container" style="display: none;"></div>
+                <div id="weekly-stats" style="display: none;"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💡 建议</div>
+                <p id="weekly-advice" style="color: var(--text-light);"></p>
+            </div>
+        </section>
+
+        <!-- AI陪伴页面 -->
+        <section id="page-chat" class="page">
+            <div class="card">
+                <div class="card-title">💬 心晴小助手</div>
+                <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 15px;">我是你的AI陪伴助手，随时在这里倾听你~</p>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-msg bot">
+                        <div class="chat-bubble">你好呀~今天心情怎么样？愿意和我聊聊吗？🌸</div>
+                    </div>
+                </div>
+
+                <div class="chat-input-wrapper">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="输入你想说的话...">
+                    <button class="chat-send" id="chat-send">➤</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 放松训练页面 -->
+        <section id="page-relax" class="page">
+            <div class="card">
+                <div class="card-title">🧘 放松训练</div>
+                <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 15px;">选择一项练习，帮助自己放松身心</p>
+            </div>
+
+            <div class="training-card" onclick="startTraining('breathing')">
+                <div class="training-icon">🌬️</div>
+                <div class="training-info">
+                    <div class="training-title">4-7-8 呼吸法</div>
+                    <div class="training-desc">帮助缓解焦虑和压力</div>
+                </div>
+                <span>›</span>
+            </div>
+
+            <div class="training-card" onclick="startTraining('body_scan')">
+                <div class="training-icon">🧘</div>
+                <div class="training-info">
+                    <div class="training-title">身体扫描冥想</div>
+                    <div class="training-desc">通过关注身体放松身心</div>
+                </div>
+                <span>›</span>
+            </div>
+
+            <div class="training-card" onclick="startTraining('gratitude')">
+                <div class="training-icon">🙏</div>
+                <div class="training-info">
+                    <div class="training-title">感恩冥想</div>
+                    <div class="training-desc">培养积极情绪</div>
+                </div>
+                <span>›</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="nav">
+        <button class="nav-item active" data-page="mood">
+            <span class="icon">📝</span>
+            <span>打卡</span>
+        </button>
+        <button class="nav-item" data-page="report">
+            <span class="icon">📊</span>
+            <span>周报</span>
+        </button>
+        <button class="nav-item" data-page="chat">
+            <span class="icon">💬</span>
+            <span>陪伴</span>
+        </button>
+        <button class="nav-item" data-page="relax">
+            <span class="icon">🧘</span>
+            <span>放松</span>
+        </button>
+    </nav>
+
+    <!-- 训练模态框 -->
+    <div class="modal" id="training-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="training-title">呼吸训练</h3>
+                <button class="modal-close" onclick="closeTraining()">×</button>
+            </div>
+            <div id="training-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // API基础URL
+        const API_BASE = 'http://localhost:5000/api';
+
+        // 状态
+        let selectedEmojis = [];
+        let conversationHistory = [];
+        let currentTraining = null;
+        let trainingTimer = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateDisplay();
+            initEmojiPicker();
+            initNavigation();
+            loadHistory();
+        });
+
+        // 更新日期显示
+        function updateDateDisplay() {
+            const now = new Date();
+            const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            document.getElementById('current-day').textContent = now.getDate();
+            document.getElementById('current-date').textContent = 
+                `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${days[now.getDay()]}`;
+        }
+
+        // 初始化emoji选择器
+        function initEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            const buttons = picker.querySelectorAll('.emoji-btn');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const emoji = btn.dataset.emoji;
+                    
+                    if (selectedEmojis.includes(emoji)) {
+                        selectedEmojis = selectedEmojis.filter(e => e !== emoji);
+                        btn.classList.remove('selected');
+                    } else if (selectedEmojis.length < 3) {
+                        selectedEmojis.push(emoji);
+                        btn.classList.add('selected');
+                    }
+                    
+                    updateSelectedEmojis();
+                });
+            });
+
+            // 保存按钮
+            document.getElementById('save-btn').addEventListener('click', saveMood);
+
+            // 回车发送
+            document.getElementById('note-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    saveMood();
+                }
+            });
+        }
+
+        // 更新已选emoji展示
+        function updateSelectedEmojis() {
+            const container = document.getElementById('selected-emojis');
+            container.innerHTML = selectedEmojis.map(e => 
+                `<span class="selected-emoji">${e}</span>`
+            ).join('');
+        }
+
+        // 保存心情记录
+        async function saveMood() {
+            const note = document.getElementById('note-input').value.trim();
+            
+            if (selectedEmojis.length === 0) {
+                showToast('请至少选择一个emoji哦~ 🌸');
+                return;
+            }
+
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = '记录中...';
+
+            try {
+                const response = await fetch(`${API_BASE}/moods`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ emojis: selectedEmojis, note })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    const data = result.data;
+                    
+                    // 显示今日状态
+                    document.getElementById('today-status').style.display = 'block';
+                    document.getElementById('status-emoji').textContent = data.emojis[0];
+                    document.getElementById('status-text').textContent = data.status_text;
+                    document.getElementById('status-score').textContent = `情绪指数: ${data.score}分`;
+                    
+                    // 显示建议
+                    document.getElementById('suggestion-card').style.display = 'block';
+                    document.getElementById('suggestion-text').textContent = data.suggestion;
+                    
+                    // 清空输入
+                    document.getElementById('note-input').value = '';
+                    
+                    // 刷新历史
+                    loadHistory();
+                    
+                    showToast('记录成功~今日也要好好照顾自己哦 💖');
+                } else {
+                    showToast(result.error || '保存失败，请重试');
+                }
+            } catch (error) {
+                // 离线模式：本地保存
+                const data = {
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+                    emojis: selectedEmojis,
+                    note: note,
+                    score: 70,
+                    status: 'medium',
+                    status_text: '云淡风轻 ⛅',
+                    suggestion: '记录已保存到本地~'
+                };
+                
+                document.getElementById('today-status').style.display = 'block';
+                document.getElementById('status-emoji').textContent = selectedEmojis[0];
+                document.getElementById('status-text').textContent = data.status_text;
+                document.getElementById('status-score').textContent = `情绪指数: ${data.score}分`;
+                
+                document.getElementById('note-input').value = '';
+                loadHistory();
+                showToast('记录成功（离线模式）~ 💖');
+            }
+
+            saveBtn.disabled = false;
+            saveBtn.textContent = '💖 记录今日心情';
+        }
+
+        // 加载历史记录
+        async function loadHistory() {
+            try {
+                const response = await fetch(`${API_BASE}/moods`);
+                const result = await response.json();
+                
+                if (result.success && result.data.length > 0) {
+                    const historyList = document.getElementById('history-list');
+                    const recentRecords = result.data.slice(-5).reverse();
+                    
+                    historyList.innerHTML = recentRecords.map(r => `
+                        <div class="record-item">
+                            <div class="record-date">${r.date.slice(5)}<br>${r.time}</div>
+                            <div class="record-emojis">${r.emojis.join('')}</div>
+                            <div class="record-note">${r.note || '（无文字记录）'}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                // 离线模式不显示历史
+            }
+        }
+
+        // 加载周报
+        async function loadWeeklyReport() {
+            try {
+                const response = await fetch(`${API_BASE}/moods/weekly`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const data = result.data;
+                    
+                    document.getElementById('weekly-summary').innerHTML = `
+                        <p style="font-size: 1.1rem; margin-bottom: 15px;">${data.summary}</p>
+                    `;
+                    
+                    if (data.chart_data && data.chart_data.length > 0) {
+                        document.getElementById('weekly-chart').style.display = 'flex';
+                        const maxScore = Math.max(...data.chart_data.map(d => d.score));
+                        
+                        document.getElementById('weekly-chart').innerHTML = data.chart_data.map(d => `
+                            <div>
+                                <div class="chart-bar" style="height: ${(d.score / 100) * 120}px"></div>
+                                <div class="chart-label">${d.date.slice(5)}</div>
+                            </div>
+                        `).join('');
+                    }
+                    
+                    document.getElementById('weekly-stats').style.display = 'block';
+                    document.getElementById('weekly-stats').innerHTML = `
+                        <div style="display: flex; justify-content: space-around; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${data.average_score}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">平均分</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);">${data.total_records}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">记录次数</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1rem;">${data.top_emotions || '暂无'}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-light);">常用情绪</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('weekly-advice').textContent = data.advice;
+                }
+            } catch (error) {
+                document.getElementById('weekly-summary').innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📊</div>
+                        <p>正在加载周报...</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 初始化导航
+        function initNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const page = item.dataset.page;
+                    
+                    // 更新导航状态
+                    navItems.forEach(n => n.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // 切换页面
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    document.getElementById(`page-${page}`).classList.add('active');
+                    
+                    // 加载对应数据
+                    if (page === 'report') {
+                        loadWeeklyReport();
+                    }
+                });
+            });
+        }
+
+        // AI对话
+        document.getElementById('chat-send').addEventListener('click', sendMessage);
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // 添加用户消息
+            addChatMessage(message, 'user');
+            conversationHistory.push({ role: 'user', content: message });
+            input.value = '';
+            
+            // 添加打字指示器
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'chat-msg bot';
+            typingIndicator.innerHTML = '<div class="chat-bubble">正在输入...</div>';
+            document.getElementById('chat-messages').appendChild(typingIndicator);
+            scrollChat();
+            
+            try {
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, history: conversationHistory })
+                });
+                
+                const result = await response.json();
+                typingIndicator.remove();
+                
+                if (result.success) {
+                    addChatMessage(result.data.reply, 'bot');
+                    conversationHistory.push({ role: 'assistant', content: result.data.reply });
+                }
+            } catch (error) {
+                typingIndicator.remove();
+                // 离线模式预设回复
+                const offlineReplies = [
+                    '我听到了~继续说吧，我在认真听你讲。',
+                    '你的感受很重要，谢谢你愿意分享。',
+                    '别担心，你不是一个人。',
+                    '记得照顾好自己，你值得被温柔对待。'
+                ];
+                addChatMessage(offlineReplies[Math.floor(Math.random() * offlineReplies.length)], 'bot');
+            }
+            
+            scrollChat();
+        }
+
+        function addChatMessage(text, type) {
+            const container = document.getElementById('chat-messages');
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${type}`;
+            msg.innerHTML = `<div class="chat-bubble">${text}</div>`;
+            container.appendChild(msg);
+        }
+
+        function scrollChat() {
+            const container = document.getElementById('chat-messages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 放松训练
+        async function startTraining(type) {
+            currentTraining = type;
+            const modal = document.getElementById('training-modal');
+            const content = document.getElementById('training-content');
+            
+            let title = '';
+            let steps = [];
+            
+            try {
+                const response = await fetch(`${API_BASE}/relaxation/${type}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    title = result.data.title;
+                    steps = result.data.steps;
+                }
+            } catch (error) {
+                // 离线预设
+                if (type === 'breathing') {
+                    title = '4-7-8 呼吸法';
+                    steps = [
+                        { duration: 4, action: '吸气', instruction: '用鼻子安静地吸气...' },
+                        { duration: 7, action: '屏住', instruction: '屏住呼吸，保持平静...' },
+                        { duration: 8, action: '呼气', instruction: '用嘴缓慢呼气...' }
+                    ];
+                }
+            }
+            
+            document.getElementById('training-title').textContent = title;
+            
+            content.innerHTML = `
+                <div class="training-progress" id="training-progress">第 1 步 / 共 ${steps.length} 步</div>
+                <div class="breathing-circle" id="breathing-circle">
+                    <span class="breathing-text" id="breathing-text">准备开始</span>
+                </div>
+                <div class="breathing-timer" id="breathing-timer">-</div>
+                <p style="text-align: center; margin-top: 20px; color: var(--text-light);" id="breathing-instruction"></p>
+                <button class="btn-primary" id="training-start-btn" style="margin-top: 20px;">开始训练</button>
+            `;
+            
+            modal.classList.add('active');
+            
+            document.getElementById('training-start-btn').addEventListener('click', () => {
+                document.getElementById('training-start-btn').style.display = 'none';
+                runTraining(steps);
+            });
+        }
+
+        function runTraining(steps) {
+            let currentStep = 0;
+            let currentTime = 0;
+            let isPaused = false;
+            
+            function nextStep() {
+                if (currentStep >= steps.length) {
+                    document.getElementById('breathing-text').textContent = '完成！🎉';
+                    document.getElementById('breathing-timer').textContent = '';
+                    document.getElementById('breathing-instruction').textContent = '太棒了！你完成了这次练习~';
+                    document.getElementById('breathing-circle').className = 'breathing-circle';
+                    return;
+                }
+                
+                const step = steps[currentStep];
+                document.getElementById('training-progress').textContent = `第 ${currentStep + 1} 步 / 共 ${steps.length} 步`;
+                document.getElementById('breathing-text').textContent = step.action;
+                document.getElementById('breathing-instruction').textContent = step.instruction;
+                document.getElementById('breathing-timer').textContent = step.duration;
+                
+                // 更新圆形动画
+                const circle = document.getElementById('breathing-circle');
+                if (step.action === '吸气') {
+                    circle.className = 'breathing-circle inhale';
+                } else if (step.action === '呼气') {
+                    circle.className = 'breathing-circle exhale';
+                } else {
+                    circle.className = 'breathing-circle';
+                }
+                
+                currentTime = step.duration;
+                
+                trainingTimer = setInterval(() => {
+                    if (isPaused) return;
+                    
+                    currentTime--;
+                    document.getElementById('breathing-timer').textContent = currentTime;
+                    
+                    if (currentTime <= 0) {
+                        clearInterval(trainingTimer);
+                        currentStep++;
+                        setTimeout(nextStep, 500);
+                    }
+                }, 1000);
+            }
+            
+            nextStep();
+        }
+
+        function closeTraining() {
+            if (trainingTimer) {
+                clearInterval(trainingTimer);
+            }
+            document.getElementById('training-modal').classList.remove('active');
+            currentTraining = null;
+        }
+
+        // 提示消息
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>专注力训练营 - Focus Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --primary-dark: #EE5A5A;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --bg-dark: #1A1A2E;
+            --bg-card: #16213E;
+            --bg-card-hover: #1F2B47;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0B0;
+            --success: #2ECC71;
+            --warning: #F39C12;
+            --vip-gold: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 顶部状态栏 */
+        .header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, #0F1629 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .vip-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            background: var(--vip-gold);
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .user-stats {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .vip-btn {
+            background: var(--vip-gold);
+            color: #1A1A2E;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .vip-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .vip-btn.active {
+            background: linear-gradient(135deg, #A0A0B0, #707080);
+            color: white;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            padding: 20px;
+            padding-bottom: 100px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 专注页面 */
+        .focus-page {
+            text-align: center;
+        }
+
+        .focus-date {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .timer-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 30px;
+        }
+
+        .timer-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) var(--progress, 0%), var(--bg-card) 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-ring::before {
+            content: '';
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+        }
+
+        .timer-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .timer-display {
+            font-size: 56px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 2px;
+        }
+
+        .timer-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .focus-mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .mode-btn {
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .focus-btn {
+            width: 180px;
+            height: 56px;
+            border-radius: 28px;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto;
+        }
+
+        .focus-btn.start {
+            background: var(--primary);
+            color: white;
+        }
+
+        .focus-btn.start:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .focus-btn.pause {
+            background: var(--warning);
+            color: white;
+        }
+
+        .focus-btn.stop {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 2px solid var(--text-secondary);
+        }
+
+        /* 白噪音选择 */
+        .sound-section {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sound-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .sound-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .sound-card:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .sound-card.active {
+            border-color: var(--secondary);
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .sound-card.vip-only {
+            position: relative;
+        }
+
+        .sound-card.vip-only::after {
+            content: 'VIP';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--vip-gold);
+            color: #1A1A2E;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+
+        .sound-card.locked {
+            opacity: 0.5;
+        }
+
+        .sound-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .sound-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* 统计页面 */
+        .stats-header {
+            margin-bottom: 25px;
+        }
+
+        .stats-tabs {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .stats-tab {
+            flex: 1;
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stats-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-value.secondary {
+            color: var(--secondary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 120px;
+            gap: 8px;
+        }
+
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 100%;
+            background: var(--primary);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+            min-height: 4px;
+        }
+
+        .bar-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        /* 挑战页面 */
+        .challenges-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .challenge-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-card.completed {
+            opacity: 0.7;
+        }
+
+        .challenge-card.completed::before {
+            content: '✓ 已完成';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--success);
+            color: white;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 10px;
+        }
+
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .challenge-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .challenge-reward {
+            background: rgba(255, 230, 109, 0.2);
+            color: var(--accent);
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .challenge-progress {
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 排行榜页面 */
+        .rank-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .rank-tab {
+            flex: 1;
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-secondary);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rank-tab.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .leaderboard {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .rank-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank-item.highlight {
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .rank-number {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .rank-number.top1 { color: #FFD700; }
+        .rank-number.top2 { color: #C0C0C0; }
+        .rank-number.top3 { color: #CD7F32; }
+
+        .rank-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .rank-info {
+            flex: 1;
+        }
+
+        .rank-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .rank-detail {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 15px;
+            margin-top: 4px;
+        }
+
+        .rank-minutes {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 11px;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 5px 15px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .modal-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .modal-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--bg-card);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 响应式 */
+        @media (max-width: 380px) {
+            .timer-container {
+                width: 240px;
+                height: 240px;
+            }
+            
+            .timer-ring::before {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .timer-display {
+                font-size: 46px;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .sound-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部状态栏 -->
+    <header class="header">
+        <div class="user-info">
+            <div class="avatar" id="userAvatar">🎯
+                <span class="vip-badge" id="vipBadge" style="display:none;">★</span>
+            </div>
+            <div>
+                <div class="user-name" id="userName">专注达人</div>
+                <div class="user-stats">
+                    <span id="todayMinutes">0</span>分钟 · 第<span id="userRank">-</span>名
+                </div>
+            </div>
+        </div>
+        <button class="vip-btn" id="vipBtn" onclick="showVipModal()">开通VIP</button>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 专注页面 -->
+        <div class="page active" id="focusPage">
+            <div class="focus-page">
+                <div class="focus-date" id="currentDate"></div>
+                
+                <!-- 时钟 -->
+                <div class="timer-container">
+                    <div class="timer-ring" id="timerRing" style="--progress: 0%">
+                        <div class="timer-inner">
+                            <div class="timer-display" id="timerDisplay">25:00</div>
+                            <div class="timer-label" id="timerLabel">准备开始</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 时长选择 -->
+                <div class="focus-mode-selector" id="modeSelector">
+                    <button class="mode-btn" data-duration="15">15分钟</button>
+                    <button class="mode-btn active" data-duration="25">25分钟</button>
+                    <button class="mode-btn" data-duration="45">45分钟</button>
+                    <button class="mode-btn" data-duration="60">60分钟</button>
+                </div>
+
+                <!-- 专注按钮 -->
+                <button class="focus-btn start" id="focusBtn" onclick="toggleFocus()">
+                    <span id="focusBtnText">🚀 开始专注</span>
+                </button>
+
+                <!-- 白噪音 -->
+                <div class="sound-section">
+                    <div class="section-title">🎵 专注音效</div>
+                    <div class="sound-grid" id="soundGrid">
+                        <!-- 动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计页面 -->
+        <div class="page" id="statsPage">
+            <div class="stats-header">
+                <h2>📊 专注统计</h2>
+                <div class="stats-tabs">
+                    <button class="stats-tab active" data-period="today" onclick="switchStatsTab(this)">今日</button>
+                    <button class="stats-tab" data-period="week" onclick="switchStatsTab(this)">本周</button>
+                    <button class="stats-tab" data-period="month" onclick="switchStatsTab(this)">本月</button>
+                </div>
+            </div>
+
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-value" id="statMinutes">0</div>
+                    <div class="stat-label">专注分钟</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value secondary" id="statSessions">0</div>
+                    <div class="stat-label">专注次数</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">📈 专注趋势</div>
+                <div class="bar-chart" id="weeklyChart">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 挑战页面 -->
+        <div class="page" id="challengesPage">
+            <div class="stats-header">
+                <h2>🏆 今日挑战</h2>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">
+                    完成挑战获得积分奖励
+                </p>
+            </div>
+
+            <div class="challenges-list" id="challengesList">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+
+        <!-- 排行榜页面 -->
+        <div class="page" id="rankPage">
+            <div class="stats-header">
+                <h2>📈 专注排行榜</h2>
+            </div>
+
+            <div class="rank-tabs">
+                <button class="rank-tab active" onclick="switchRankTab(this)">今日</button>
+                <button class="rank-tab" onclick="switchRankTab(this)">本周</button>
+                <button class="rank-tab" onclick="switchRankTab(this)">本月</button>
+            </div>
+
+            <div class="leaderboard" id="leaderboard">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('focus')">
+            <span class="nav-icon">🍅</span>
+            <span>专注</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('stats')">
+            <span class="nav-icon">📊</span>
+            <span>统计</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('challenges')">
+            <span class="nav-icon">🏆</span>
+            <span>挑战</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('rank')">
+            <span class="nav-icon">📈</span>
+            <span>排行</span>
+        </div>
+    </nav>
+
+    <!-- VIP弹窗 -->
+    <div class="modal-overlay" id="vipModal">
+        <div class="modal">
+            <div class="modal-icon">👑</div>
+            <div class="modal-title">开通VIP会员</div>
+            <div class="modal-text">
+                解锁全部高级白噪音<br>
+                获得详细数据分析报告<br>
+                去除所有广告
+            </div>
+            <div style="background: var(--bg-dark); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>月卡</span>
+                    <span style="color: var(--primary); font-weight: 700;">¥9.9/月</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>年卡</span>
+                    <span style="color: var(--success); font-weight: 700;">¥89.9/年 <span style="font-size: 11px; background: var(--success); color: white; padding: 2px 6px; border-radius: 8px;">省40%</span></span>
+                </div>
+            </div>
+            <button class="modal-btn primary" onclick="upgradeVip()">立即开通</button>
+            <button class="modal-btn secondary" onclick="closeModal('vipModal')">稍后再说</button>
+        </div>
+    </div>
+
+    <!-- 完成专注弹窗 -->
+    <div class="modal-overlay" id="completeModal">
+        <div class="modal">
+            <div class="modal-icon">🎉</div>
+            <div class="modal-title">太棒了！</div>
+            <div class="modal-text">
+                你完成了 <span id="completeDuration" style="color: var(--primary); font-weight: 700;">25</span> 分钟的专注训练！<br>
+                继续保持，你越来越专注了！
+            </div>
+            <button class="modal-btn primary" onclick="closeModal('completeModal')">继续努力</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== 全局状态 ====================
+        let state = {
+            isVip: false,
+            isFocusing: false,
+            focusDuration: 25,
+            focusStartTime: null,
+            selectedSound: null,
+            timerInterval: null,
+            statsPeriod: 'today',
+            userRank: '-'
+        };
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 设置日期
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' });
+            document.getElementById('currentDate').textContent = dateStr;
+
+            // 加载数据
+            await loadUserStatus();
+            await loadSounds();
+            await loadStats('today');
+            await loadChallenges();
+            await loadLeaderboard();
+
+            // 设置计时器模式按钮
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (state.isFocusing) return;
+                    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.focusDuration = parseInt(btn.dataset.duration);
+                    updateTimerDisplay(state.focusDuration * 60);
+                });
+            });
+
+            // 定期检查专注状态
+            setInterval(checkFocusStatus, 1000);
+        });
+
+        // ==================== API 请求 ====================
+        async function api(endpoint, options = {}) {
+            try {
+                const response = await fetch(`/api${endpoint}`, {
+                    headers: { 'Content-Type': 'application/json' },
+                    ...options
+                });
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                showToast('网络错误，请重试');
+                return { success: false };
+            }
+        }
+
+        // ==================== 页面导航 ====================
+        function switchPage(page) {
+            // 更新导航
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // 切换页面
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`${page}Page`).classList.add('active');
+        }
+
+        // ==================== 用户状态 ====================
+        async function loadUserStatus() {
+            const data = await api('/status');
+            if (data.success) {
+                state.isVip = data.data.user.is_vip;
+                state.userRank = data.data.rank;
+                
+                document.getElementById('userName').textContent = data.data.user.username;
+                document.getElementById('todayMinutes').textContent = data.data.today_minutes;
+                document.getElementById('userRank').textContent = data.data.rank;
+
+                const vipBadge = document.getElementById('vipBadge');
+                const vipBtn = document.getElementById('vipBtn');
+                
+                if (state.isVip) {
+                    vipBadge.style.display = 'flex';
+                    vipBtn.textContent = 'VIP会员';
+                    vipBtn.classList.add('active');
+                }
+            }
+        }
+
+        // ==================== 白噪音 ====================
+        async function loadSounds() {
+            const data = await api('/sounds');
+            if (data.success) {
+                const grid = document.getElementById('soundGrid');
+                grid.innerHTML = '';
+
+                // 免费音效
+                data.data.free.forEach(sound => {
+                    grid.innerHTML += createSoundCard(sound, false);
+                });
+
+                // VIP音效
+                data.data.vip.forEach(sound => {
+                    grid.innerHTML += createSoundCard(sound, !data.data.is_vip);
+                });
+
+                // 绑定点击事件
+                grid.querySelectorAll('.sound-card').forEach(card => {
+                    card.addEventListener('click', () => selectSound(card));
+                });
+            }
+        }
+
+        function createSoundCard(sound, locked) {
+            const activeClass = state.selectedSound === sound.id ? 'active' : '';
+            const lockedClass = locked ? 'vip-only locked' : '';
+            const onclick = locked ? 'showVipModal()' : `selectSoundById('${sound.id}')`;
+            
+            return `
+                <div class="sound-card ${activeClass} ${lockedClass}" onclick="${onclick}">
+                    <div class="sound-icon">${sound.icon}</div>
+                    <div class="sound-name">${sound.name}</div>
+                </div>
+            `;
+        }
+
+        function selectSound(card) {
+            if (card.classList.contains('locked')) return;
+            
+            document.querySelectorAll('.sound-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            state.selectedSound = card.querySelector('.sound-name').textContent;
+        }
+
+        function selectSoundById(id) {
+            document.querySelectorAll('.sound-card').forEach(c => {
+                if (c.querySelector('.sound-name').textContent === 
+                    [...document.querySelectorAll('.sound-card')].find(x => x.classList.contains('active'))?.querySelector('.sound-name')?.textContent) {
+                    c.classList.remove('active');
+                }
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        // ==================== 专注功能 ====================
+        async function toggleFocus() {
+            if (state.isFocusing) {
+                await pauseFocus();
+            } else {
+                await startFocus();
+            }
+        }
+
+        async function startFocus() {
+            const data = await api('/focus/start', {
+                method: 'POST',
+                body: JSON.stringify({
+                    duration: state.focusDuration,
+                    sound: state.selectedSound
+                })
+            });
+
+            if (data.success) {
+                state.isFocusing = true;
+                state.focusStartTime = data.data.start_time * 1000;
+                
+                document.getElementById('focusBtn').className = 'focus-btn pause';
+                document.getElementById('focusBtnText').textContent = '⏸️ 暂停';
+                document.getElementById('timerLabel').textContent = '专注中...';
+                document.getElementById('modeSelector').style.opacity = '0.5';
+                document.getElementById('modeSelector').style.pointerEvents = 'none';
+            }
+        }
+
+        async function pauseFocus() {
+            const data = await api('/focus/complete', {
+                method: 'POST'
+            });
+
+            if (data.success) {
+                stopFocus();
+                document.getElementById('completeDuration').textContent = data.data.session.duration;
+                document.getElementById('completeModal').classList.add('show');
+                
+                // 更新今日统计
+                document.getElementById('todayMinutes').textContent = data.data.today_stats.total_minutes;
+                
+                showToast('🎉 专注完成！太棒了！');
+            }
+        }
+
+        function cancelFocus() {
+            api('/focus/cancel', { method: 'POST' });
+            stopFocus();
+            showToast('专注已取消');
+        }
+
+        function stopFocus() {
+            state.isFocusing = false;
+            state.focusStartTime = null;
+            
+            document.getElementById('focusBtn').className = 'focus-btn start';
+            document.getElementById('focusBtnText').textContent = '🚀 开始专注';
+            document.getElementById('timerLabel').textContent = '准备开始';
+            document.getElementById('timerRing').style.setProperty('--progress', '0%');
+            document.getElementById('modeSelector').style.opacity = '1';
+            document.getElementById('modeSelector').style.pointerEvents = 'auto';
+            
+            updateTimerDisplay(state.focusDuration * 60);
+        }
+
+        function checkFocusStatus() {
+            if (!state.isFocusing || !state.focusStartTime) return;
+
+            const elapsed = Math.floor((Date.now() - state.focusStartTime) / 1000);
+            const total = state.focusDuration * 60;
+            const remaining = Math.max(0, total - elapsed);
+            const progress = Math.min(100, (elapsed / total) * 100);
+
+            document.getElementById('timerRing').style.setProperty('--progress', `${progress}%`);
+            updateTimerDisplay(remaining);
+
+            if (remaining === 0) {
+                completeFocus();
+            }
+        }
+
+        async function completeFocus() {
+            const data = await api('/focus/complete', {
+                method: 'POST'
+            });
+
+            if (data.success) {
+                stopFocus();
+                document.getElementById('completeDuration').textContent = data.data.session.duration;
+                document.getElementById('completeModal').classList.add('show');
+                
+                document.getElementById('todayMinutes').textContent = data.data.today_stats.total_minutes;
+                showToast('🎉 专注完成！太棒了！');
+                
+                // 刷新挑战
+                loadChallenges();
+            }
+        }
+
+        function updateTimerDisplay(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // ==================== 统计数据 ====================
+        async function loadStats(period) {
+            const data = await api('/stats');
+            if (data.success) {
+                const stats = data.data[period] || data.data.today;
+                
+                document.getElementById('statMinutes').textContent = stats.total_minutes;
+                document.getElementById('statSessions').textContent = stats.session_count;
+
+                // 绘制图表
+                if (data.data.week && data.data.week.daily_data) {
+                    renderWeeklyChart(data.data.week.daily_data);
+                }
+            }
+        }
+
+        function switchStatsTab(tab) {
+            document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            state.statsPeriod = tab.dataset.period;
+            loadStats(state.statsPeriod);
+        }
+
+        function renderWeeklyChart(dailyData) {
+            const chart = document.getElementById('weeklyChart');
+            const maxMinutes = Math.max(...dailyData.map(d => d.minutes), 1);
+            
+            const days = ['日', '一', '二', '三', '四', '五', '六'];
+            
+            chart.innerHTML = dailyData.map((d, i) => {
+                const date = new Date(d.date);
+                const dayName = days[date.getDay()];
+                const height = Math.max(4, (d.minutes / maxMinutes) * 100);
+                return `
+                    <div class="bar-item">
+                        <div class="bar" style="height: ${height}px"></div>
+                        <div class="bar-label">${dayName}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== 挑战 ====================
+        async function loadChallenges() {
+            const data = await api('/challenges/today');
+            if (data.success) {
+                const list = document.getElementById('challengesList');
+                list.innerHTML = data.data.challenges.map(challenge => `
+                    <div class="challenge-card ${challenge.completed ? 'completed' : ''}">
+                        <div class="challenge-header">
+                            <div class="challenge-title">${challenge.title}</div>
+                            <div class="challenge-reward">
+                                <span>🪙</span> +${challenge.reward}
+                            </div>
+                        </div>
+                        <div class="challenge-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${Math.min(100, (challenge.progress / challenge.target) * 100)}%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>${challenge.progress} / ${challenge.target}</span>
+                                <span>${Math.min(100, Math.round((challenge.progress / challenge.target) * 100))}%</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ==================== 排行榜 ====================
+        async function loadLeaderboard() {
+            const data = await api('/leaderboard');
+            if (data.success) {
+                const board = document.getElementById('leaderboard');
+                const userRank = data.data.current_user;
+                
+                // 添加当前用户到列表
+                const allRanks = [...data.data.leaderboard];
+                let inserted = false;
+                for (let i = 0; i < allRanks.length; i++) {
+                    if (userRank.minutes > allRanks[i].minutes) {
+                        allRanks.splice(i, 0, userRank);
+                        inserted = true;
+                        break;
+                    }
+                }
+                if (!inserted) allRanks.push(userRank);
+
+                board.innerHTML = allRanks.map((rank, index) => {
+                    const rankNum = rank.is_current_user ? userRank.rank : index + 1;
+                    const highlight = rank.is_current_user ? 'highlight' : '';
+                    const topClass = rankNum <= 3 ? `top${rankNum}` : '';
+                    
+                    return `
+                        <div class="rank-item ${highlight}">
+                            <div class="rank-number ${topClass}">${rankNum <= 3 ? ['👑', '🥈', '🥉'][rankNum-1] : rankNum}</div>
+                            <div class="rank-avatar">${rank.avatar}</div>
+                            <div class="rank-info">
+                                <div class="rank-name">${rank.username}${rank.is_current_user ? ' (你)' : ''}</div>
+                                <div class="rank-detail">
+                                    <span class="rank-minutes">${rank.minutes}分钟</span>
+                                    <span>🔥 ${rank.streak}天连续</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function switchRankTab(tab) {
+            document.querySelectorAll('.rank-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        }
+
+        // ==================== VIP ====================
+        function showVipModal() {
+            document.getElementById('vipModal').classList.add('show');
+        }
+
+        async function upgradeVip() {
+            const data = await api('/vip/upgrade', { method: 'POST' });
+            if (data.success) {
+                state.isVip = true;
+                document.getElementById('vipBadge').style.display = 'flex';
+                document.getElementById('vipBtn').textContent = 'VIP会员';
+                document.getElementById('vipBtn').classList.add('active');
+                closeModal('vipModal');
+                loadSounds();
+                showToast('🎉 VIP开通成功！');
+            }
+        }
+
+        // ==================== 弹窗 ====================
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // 点击遮罩关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+
+        // ==================== Toast ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+    </script>
+</body>
+</html>
